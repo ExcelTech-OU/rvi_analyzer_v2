@@ -17,6 +17,8 @@ class _DropDownCustomState extends State<DropDownCustom> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Material(
         color: const Color.fromARGB(255, 30, 41, 59),
         child: SafeArea(
@@ -66,83 +68,93 @@ class _DropDownCustomState extends State<DropDownCustom> {
                 const SizedBox(
                   height: 20,
                 ),
-                ListView.builder(
-                    itemCount: dropDownData.items.length,
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                        child: ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            side: BorderSide(
-                                color: selectedIndex == index
-                                    ? const Color.fromARGB(255, 34, 197, 94)
-                                    : Colors.grey),
-                          ),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: selectedIndex == index
-                                    ? const Icon(
-                                        Icons.account_circle,
-                                        color: Colors.green,
-                                        size: 30,
-                                      )
-                                    : const Icon(
-                                        Icons.account_circle,
-                                        color: Colors.white,
-                                        size: 30,
-                                      ),
+                SizedBox(
+                  height: height / 2,
+                  child: Scrollbar(
+                    thumbVisibility: false,
+                    child: ListView.builder(
+                        itemCount: dropDownData.items.length,
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                side: BorderSide(
+                                    color: selectedIndex == index
+                                        ? const Color.fromARGB(255, 34, 197, 94)
+                                        : Colors.grey),
                               ),
-                              const Expanded(flex: 1, child: SizedBox.shrink()),
-                              Expanded(
-                                flex: 12,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(dropDownData.items[index].title,
-                                        style: const TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 255, 254, 254))),
-                                    dropDownData.items[index].subTitle != null
-                                        ? Text(
-                                            dropDownData.items[index].subTitle!,
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: selectedIndex == index
+                                        ? const Icon(
+                                            Icons.account_circle,
+                                            color: Colors.green,
+                                            size: 30,
+                                          )
+                                        : const Icon(
+                                            Icons.account_circle,
+                                            color: Colors.white,
+                                            size: 30,
+                                          ),
+                                  ),
+                                  const Expanded(
+                                      flex: 1, child: SizedBox.shrink()),
+                                  Expanded(
+                                    flex: 12,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(dropDownData.items[index].title,
                                             style: const TextStyle(
                                                 color: Color.fromARGB(
-                                                    255, 255, 255, 255)))
-                                        : Container(),
-                                  ],
-                                ),
+                                                    255, 255, 254, 254))),
+                                        dropDownData.items[index].subTitle !=
+                                                null
+                                            ? Text(
+                                                dropDownData
+                                                    .items[index].subTitle!,
+                                                style: const TextStyle(
+                                                    color: Color.fromARGB(
+                                                        255, 255, 255, 255)))
+                                            : Container(),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                      flex: 1,
+                                      child: selectedIndex == index
+                                          ? const Icon(
+                                              Icons.check_circle_sharp,
+                                              color: Colors.lightGreen,
+                                            )
+                                          : const Icon(
+                                              Icons.circle_outlined,
+                                              color: Colors.grey,
+                                            )),
+                                ],
                               ),
-                              Expanded(
-                                  flex: 1,
-                                  child: selectedIndex == index
-                                      ? const Icon(
-                                          Icons.check_circle_sharp,
-                                          color: Colors.lightGreen,
-                                        )
-                                      : const Icon(
-                                          Icons.circle_outlined,
-                                          color: Colors.grey,
-                                        )),
-                            ],
-                          ),
-                          tileColor: const Color.fromARGB(255, 30, 41, 59),
-                          onTap: () => {
-                            setState(() {
-                              selectedIndex = index;
-                            }),
-                            dropDownData.updateConnectDevices(
-                                dropDownData.items[index]),
-                            Navigator.pop(context, 'OK')
-                          },
-                        ),
-                      );
-                    }),
+                              tileColor: const Color.fromARGB(255, 30, 41, 59),
+                              onTap: () => {
+                                setState(() {
+                                  selectedIndex = index;
+                                }),
+                                dropDownData.updateConnectDevices(
+                                    dropDownData.items[index]),
+                                Navigator.pop(context, 'OK')
+                              },
+                            ),
+                          );
+                        }),
+                  ),
+                ),
                 const SizedBox(
                   height: 20,
                 )

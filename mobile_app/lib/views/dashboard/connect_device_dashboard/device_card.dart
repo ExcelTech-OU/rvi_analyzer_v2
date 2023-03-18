@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rvi_analyzer/domain/after_start_data.dart';
 import 'package:rvi_analyzer/providers/connected_devices_provider.dart';
 import 'package:rvi_analyzer/service/device_service.dart';
+import 'package:rvi_analyzer/views/configure/configure_layout.dart';
 import 'package:rvi_analyzer/views/dashboard/connect_device_dashboard/device_status_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -230,7 +231,12 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                                   onPressed: isClicked
                                       ? null
                                       : () {
-                                          connect();
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ConfigureLayout(
+                                                          sc: scanResult)));
                                         },
                                   child: const Text(
                                     'Configure',
