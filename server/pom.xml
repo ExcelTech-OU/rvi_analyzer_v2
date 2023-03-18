@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.3</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.elextrone</groupId>
+	<artifactId>achilles</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>achilles</name>
+	<description>Achilles Server</description>
+	<properties>
+		<java.version>11</java.version>
+		<jsw.assemble.dir>target/generated-resources/appassembler/jsw</jsw.assemble.dir>
+		<appassembler.basedir>target/generated-resources/appassembler/jsw/achilles</appassembler.basedir>
+		<resource.file.location>.</resource.file.location>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>2.7.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.2</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.11.2</version>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+		<testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-maven-plugin</artifactId>
+				<configuration>
+					<args>
+						<arg>-Xjsr305=strict</arg>
+					</args>
+					<compilerPlugins>
+						<plugin>spring</plugin>
+					</compilerPlugins>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.jetbrains.kotlin</groupId>
+						<artifactId>kotlin-maven-allopen</artifactId>
+						<version>${kotlin.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<excludes>
+						<exclude>*.conf</exclude>
+						<exclude>*.properties</exclude>
+						<exclude>*.xml</exclude>
+						<exclude>*.yml</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<id>generate-jsw-scripts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-daemons</goal>
+							<goal>create-repository</goal>
+						</goals>
+						<configuration>
+							<repositoryLayout>flat</repositoryLayout>
+							<configurationDirectory>conf</configurationDirectory>
+							<useWildcardClassPath>true</useWildcardClassPath>
+							<daemons>
+								<daemon>
+									<id>achilles</id>
+									<wrapperMainClass>org.tanukisoftware.wrapper.WrapperSimpleApp</wrapperMainClass>
+									<mainClass>
+										com.elextrone.achilles.AchillesApplication
+									</mainClass>
+									<commandLineArguments>
+										<commandLineArgument>start</commandLineArgument>
+									</commandLineArguments>
+									<platforms>
+										<platform>jsw</platform>
+									</platforms>
+									<generatorConfigurations>
+										<generatorConfiguration>
+											<generator>jsw</generator>
+											<configuration>
+												<property>
+													<name>wrapper.java.additional.1</name>
+													<value>-XX:MaxDirectMemorySize=256M</value>
+												</property>
+												<property>
+													<name>configuration.directory.in.classpath.first</name>
+													<value>conf</value>
+												</property>
+												<property>
+													<name>set.default.REPO_DIR</name>
+													<value>lib</value>
+												</property>
+												<property>
+													<name>wrapper.logfile</name>
+													<value>logs/wrapper.log</value>
+												</property>
+												<property>
+													<name>wrapper.startup.timeout</name>
+													<value>0</value>
+												</property>
+												<property>
+													<name>wrapper.ping.timeout</name>
+													<value>60</value>
+												</property>
+											</configuration>
+											<includes>
+												<include>linux-x86-64</include>
+											</includes>
+										</generatorConfiguration>
+									</generatorConfigurations>
+								</daemon>
+							</daemons>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>make-log-dir</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="${appassembler.basedir}/logs"/>
+								<mkdir dir="target/achilles/logs"/>
+
+								<copy todir="target/achilles/bin" overwrite="true">
+									<fileset dir="${jsw.assemble.dir}/achilles/bin"/>
+								</copy>
+								<copy todir="target/achilles/lib" overwrite="true">
+									<fileset dir="${jsw.assemble.dir}/achilles/lib"/>
+								</copy>
+								<copy todir="target/achilles/lib" overwrite="true">
+									<fileset dir="${jsw.assemble.dir}/achilles/lib"/>
+								</copy>
+								<copy todir="target/achilles/conf">
+									<fileset dir="${jsw.assemble.dir}/achilles/conf"/>
+								</copy>
+								<copy todir="target/achilles/conf" overwrite="true">
+									<fileset dir="src/main/${resource.file.location}/resources"/>
+									<filterset>
+										<filter token="VERSION" value="${project.version}"/>
+									</filterset>
+								</copy>
+								<chmod dir="target/achilles/bin" perm="777" includes="**/**"/>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

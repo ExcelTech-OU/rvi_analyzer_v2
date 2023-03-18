@@ -1,0 +1,40 @@
+server:
+  port: '8090'
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    username: username
+    password: password
+    port: '587'
+    properties:
+      mail:
+        smtp:
+          writetimeout: '5000'
+          starttls:
+            enable: 'true'
+          timeout: '5000'
+          auth: 'true'
+          connectiontimeout: '5000'
+  datasource:
+    password: password
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    url: jdbc:mariadb://127.0.0.1:3306/test
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+    hibernate:
+      ddl-auto: create
+    show-sql: 'true'
+
+springbootwebfluxjjwt:
+  password:
+    encoder:
+      secret: mysecret
+      iteration: '33'
+      keylength: '256'
+  jjwt:
+    expiration: '2628000'
+    secret: ThisIsSecretForJWTHS512SignatureAlgorithmThatMUSTHave64ByteLength

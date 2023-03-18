@@ -1,0 +1,15 @@
+const String baseUrl = "http://18.136.146.172/achilles-api/";
+const String loginPath = "user/login";
+const String loginPathWithGoogle = "user/login/google";
+const String registerPath = "user/register";
+const String userDetailsPath = "user/details";
+const String heaterDetailsPath = "heater/";
+const String deviceValidationPath = "device/validate/name";
+const String userPasswordValidatePath = "user/password/validate";
+const String userUsernameValidatePath = "user/username/validate";
+const String userDevicePath = "user/devices";
+const String userDeviceRemovePath = "device/remove/";
+const String questionsPath = "resource/questions";
+const String saveBeforeTreatmentDataPath = "user/before/session/start";
+const String userSaveFeedbackPath = "user/save/feedback";
+const String userHistoryPath = "user/history";
