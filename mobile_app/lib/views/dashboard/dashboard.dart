@@ -27,7 +27,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
       RoundedLoadingButtonController();
   Blue blue = Blue();
   void _doSomething() async {
-    ref.read(deviceManagementState).availableDeviceList.clear();
+    ref.watch(deviceManagementState).clearAvailableDeviceList();
     blue.scanDevices().then((value) => {
           ref.read(deviceManagementState).addAvailableDevice(value),
           _btnController.reset()
@@ -139,117 +139,121 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                               ),
                               child: Column(
                                 children: [
-                                  Scrollbar(
-                                      child: Align(
-                                          alignment: FractionalOffset.center,
-                                          child: (ref
-                                                      .watch(
-                                                          deviceManagementState)
-                                                      .availableDeviceList
-                                                      .isEmpty &&
-                                                  ref
-                                                      .watch(
-                                                          deviceManagementState)
-                                                      .connectedBlueDeviceList
-                                                      .isEmpty)
-                                              ? SizedBox(
-                                                  width: width,
-                                                  height: height - 150,
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        "You didn't setup any device yet",
-                                                        style: TextStyle(
-                                                          color:
-                                                              Colors.grey[600],
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              : SafeArea(
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: <Widget>[
-                                                      ref
+                                  SizedBox(
+                                    height: height - 130,
+                                    child: Scrollbar(
+                                        child: ListView.builder(
+                                            itemCount: 1,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Align(
+                                                  alignment:
+                                                      FractionalOffset.center,
+                                                  child: (ref
+                                                              .watch(
+                                                                  deviceManagementState)
+                                                              .availableDeviceList
+                                                              .isEmpty &&
+                                                          ref
                                                               .watch(
                                                                   deviceManagementState)
                                                               .connectedBlueDeviceList
-                                                              .isEmpty
-                                                          ? const SizedBox
-                                                              .shrink()
-                                                          : Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                const Text(
-                                                                  "Connected Devices",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .grey,
-                                                                      fontSize:
-                                                                          18,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
+                                                              .isEmpty)
+                                                      ? SizedBox(
+                                                          width: width,
+                                                          height: height - 150,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                "You didn't setup any device yet",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      600],
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 16,
                                                                 ),
-                                                                const SizedBox(
-                                                                  height: 10,
+                                                              )
+                                                            ],
+                                                          ),
+                                                        )
+                                                      : SafeArea(
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: <Widget>[
+                                                              ref
+                                                                      .watch(
+                                                                          deviceManagementState)
+                                                                      .connectedBlueDeviceList
+                                                                      .isEmpty
+                                                                  ? const SizedBox
+                                                                      .shrink()
+                                                                  : Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        const Text(
+                                                                          "Connected Devices",
+                                                                          style: TextStyle(
+                                                                              color: Colors.grey,
+                                                                              fontSize: 18,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              10,
+                                                                        ),
+                                                                        for (var i in ref
+                                                                            .watch(deviceManagementState)
+                                                                            .connectedBlueDeviceList
+                                                                            .values)
+                                                                          DeviceCardHomePage(
+                                                                            scanResult:
+                                                                                i,
+                                                                          ),
+                                                                        Row(
+                                                                          children: const [
+                                                                            Expanded(
+                                                                              flex: 2,
+                                                                              child: Divider(
+                                                                                color: Color.fromARGB(255, 220, 220, 220),
+                                                                                thickness: 2,
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              5,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                              for (var i in ref
+                                                                  .watch(
+                                                                      deviceManagementState)
+                                                                  .availableDeviceList
+                                                                  .values)
+                                                                DeviceCardHomePage(
+                                                                  scanResult: i,
                                                                 ),
-                                                                for (var i in ref
-                                                                    .watch(
-                                                                        deviceManagementState)
-                                                                    .connectedBlueDeviceList
-                                                                    .values)
-                                                                  DeviceCardHomePage(
-                                                                    scanResult:
-                                                                        i,
-                                                                  ),
-                                                                Row(
-                                                                  children: const [
-                                                                    Expanded(
-                                                                      flex: 2,
-                                                                      child:
-                                                                          Divider(
-                                                                        color: Color.fromARGB(
-                                                                            255,
-                                                                            220,
-                                                                            220,
-                                                                            220),
-                                                                        thickness:
-                                                                            2,
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                                const SizedBox(
-                                                                  height: 5,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                      for (var i in ref
-                                                          .watch(
-                                                              deviceManagementState)
-                                                          .availableDeviceList
-                                                          .values)
-                                                        DeviceCardHomePage(
-                                                          scanResult: i,
-                                                        ),
-                                                    ],
-                                                  ),
-                                                ))),
+                                                            ],
+                                                          ),
+                                                        ));
+                                            })),
+                                  ),
                                   const Spacer(),
                                   RoundedLoadingButton(
                                     height: 55,
-                                    width: (width / 2) - 50,
+                                    width: (width / 2) - 30,
                                     borderRadius: 12,
                                     loaderStrokeWidth: 4,
                                     controller: _btnController,
@@ -407,7 +411,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                       const Spacer(),
                                       RoundedLoadingButton(
                                         height: 55,
-                                        width: (width / 2) - 50,
+                                        width: (width) - 10,
                                         borderRadius: 12,
                                         loaderStrokeWidth: 4,
                                         controller: _btnController,

@@ -32,6 +32,11 @@ class ConnectedDevicesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearAvailableDeviceList() {
+    availableDeviceList.clear();
+    notifyListeners();
+  }
+
   void removeDevice(ScanResult scanResult) {
     connectedBlueDeviceList.remove(scanResult.device.name);
     notifyListeners();

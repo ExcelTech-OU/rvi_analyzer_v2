@@ -20,7 +20,7 @@ class _DropDownCustomState extends State<DropDownCustom> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Material(
-        color: const Color.fromARGB(255, 30, 41, 59),
+        color: Colors.white,
         child: SafeArea(
           top: false,
           child: Container(
@@ -34,7 +34,7 @@ class _DropDownCustomState extends State<DropDownCustom> {
                     const Expanded(
                       flex: 2,
                       child: Divider(
-                        color: Color.fromARGB(255, 220, 220, 220),
+                        color: Colors.grey,
                         thickness: 4,
                       ),
                     ),
@@ -52,7 +52,7 @@ class _DropDownCustomState extends State<DropDownCustom> {
                       style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 255, 255, 255)),
+                          color: Colors.grey),
                     ),
                     InkWell(
                       onTap: () {
@@ -60,7 +60,7 @@ class _DropDownCustomState extends State<DropDownCustom> {
                       },
                       child: const Icon(
                         Icons.close,
-                        color: Colors.white,
+                        color: Colors.grey,
                       ),
                     )
                   ],
@@ -84,56 +84,56 @@ class _DropDownCustomState extends State<DropDownCustom> {
                                 borderRadius: BorderRadius.circular(15),
                                 side: BorderSide(
                                     color: selectedIndex == index
-                                        ? const Color.fromARGB(255, 34, 197, 94)
+                                        ? Colors.cyan
                                         : Colors.grey),
                               ),
                               title: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Expanded(
-                                    flex: 2,
+                                  SizedBox(
+                                    width: 50,
                                     child: selectedIndex == index
                                         ? const Icon(
-                                            Icons.account_circle,
-                                            color: Colors.green,
+                                            Icons.mode_standby_sharp,
+                                            color: Colors.cyan,
                                             size: 30,
                                           )
                                         : const Icon(
-                                            Icons.account_circle,
-                                            color: Colors.white,
+                                            Icons.mode_standby_sharp,
+                                            color: Colors.grey,
                                             size: 30,
                                           ),
                                   ),
-                                  const Expanded(
-                                      flex: 1, child: SizedBox.shrink()),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
                                   Expanded(
-                                    flex: 12,
+                                    flex: 1,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(dropDownData.items[index].title,
                                             style: const TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 255, 254, 254))),
+                                                color: Colors.grey)),
                                         dropDownData.items[index].subTitle !=
                                                 null
                                             ? Text(
                                                 dropDownData
                                                     .items[index].subTitle!,
                                                 style: const TextStyle(
-                                                    color: Color.fromARGB(
-                                                        255, 255, 255, 255)))
+                                                    color: Colors.grey))
                                             : Container(),
                                       ],
                                     ),
                                   ),
-                                  Expanded(
-                                      flex: 1,
+                                  const Spacer(),
+                                  SizedBox(
+                                      width: 20,
                                       child: selectedIndex == index
                                           ? const Icon(
                                               Icons.check_circle_sharp,
-                                              color: Colors.lightGreen,
+                                              color: Colors.cyan,
                                             )
                                           : const Icon(
                                               Icons.circle_outlined,
@@ -141,7 +141,7 @@ class _DropDownCustomState extends State<DropDownCustom> {
                                             )),
                                 ],
                               ),
-                              tileColor: const Color.fromARGB(255, 30, 41, 59),
+                              tileColor: Colors.white,
                               onTap: () => {
                                 setState(() {
                                   selectedIndex = index;

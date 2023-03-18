@@ -16,8 +16,6 @@ class _QRScannerState extends State<QRScanner> {
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
   @override
   void reassemble() {
     super.reassemble();
