@@ -9,6 +9,8 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
     @Mapping(target = "createdDateTime", ignore = true)
     @Mapping(target = "lastUpdatedDateTime", ignore = true)
-    User userToUserDto(UserDto userDto);
-    UserDto userDtoToUser(User user);
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "type", ignore = true)
+    User userDtoToUser(UserDto userDto);
+    UserDto userToUserDto(User user);
 }
