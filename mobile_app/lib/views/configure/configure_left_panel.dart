@@ -59,7 +59,7 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
       }
     }
     DateTime now = DateTime.now();
-    var formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    var formatter = DateFormat('yyyy-MM-dd');
     String date = formatter.format(now);
     dateController.text = date;
 
@@ -75,9 +75,8 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
         MediaQuery.of(context).orientation == Orientation.landscape;
 
     return SizedBox(
-      width: width < 600 ? width : (width / 2) - 32,
+      width: isLandscape ? (width / 3) - 32 : width,
       child: SizedBox(
-        height: isLandscape ? height - 65 : 540,
         child: Container(
             decoration: BoxDecoration(
               color: Colors.grey[300],
@@ -116,19 +115,7 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  isLandscape
-                      ? SizedBox(
-                          height: isLandscape ? height - 150 : 450,
-                          child: Scrollbar(
-                            child: ListView.builder(
-                              itemCount: 1,
-                              itemBuilder: (BuildContext context, int index) {
-                                return getScrollBody();
-                              },
-                            ),
-                          ),
-                        )
-                      : getScrollBody()
+                  getScrollBody(width)
                 ],
               ),
             )),
@@ -136,7 +123,7 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
     );
   }
 
-  Widget getScrollBody() {
+  Widget getScrollBody(double width) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -154,8 +141,15 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                   color: Colors.cyan,
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
-                    showCupertinoModalBottomSheet(
-                      expand: false,
+                    showModalBottomSheet(
+                      constraints: BoxConstraints(
+                        maxWidth: width / 3,
+                      ),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                      ),
                       context: context,
                       barrierColor: const Color.fromARGB(178, 0, 0, 0),
                       builder: (context) => DropDownCustom(DropDownData(

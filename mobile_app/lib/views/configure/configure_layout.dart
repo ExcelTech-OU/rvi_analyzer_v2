@@ -36,29 +36,33 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
         MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: SafeArea(
           child: isLandscape
-              ? Container(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                  child: Row(
-                    children: [
-                      ConfigureLeftPanel(
-                          sc: widget.sc,
-                          defaultIndex: selectedModeId,
-                          updateIndex: setDropDownIndex),
-                      const Spacer(),
-                      selectedModeId == -1
-                          ? const SizedBox.shrink()
-                          : AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 500),
-                              transitionBuilder:
-                                  (Widget child, Animation<double> animation) {
-                                return ScaleTransition(
-                                    scale: animation, child: child);
-                              },
-                              child: secondWidget),
-                    ],
+              ? SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ConfigureLeftPanel(
+                            sc: widget.sc,
+                            defaultIndex: selectedModeId,
+                            updateIndex: setDropDownIndex),
+                        const Spacer(),
+                        selectedModeId == -1
+                            ? const SizedBox.shrink()
+                            : AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 500),
+                                transitionBuilder: (Widget child,
+                                    Animation<double> animation) {
+                                  return ScaleTransition(
+                                      scale: animation, child: child);
+                                },
+                                child: secondWidget),
+                      ],
+                    ),
                   ),
                 )
               : SingleChildScrollView(

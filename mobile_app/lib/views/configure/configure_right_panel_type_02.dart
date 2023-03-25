@@ -20,7 +20,7 @@ class _ConfigureRightPanelType02State extends State<ConfigureRightPanelType02> {
     var isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     return SizedBox(
-      width: width < 600 ? width : (width / 2) - 32,
+      width: isLandscape ? (width / 2) - 32 : width,
       child: SizedBox(
         height: isLandscape ? height - 65 : 530,
         child: Container(

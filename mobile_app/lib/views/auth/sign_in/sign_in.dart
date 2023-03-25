@@ -68,7 +68,7 @@ class _SignInState extends State<SignIn> {
             child: SafeArea(
               child: isLandscape
                   ? Container(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                      padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                       child: Row(
                         children: [
                           SizedBox(

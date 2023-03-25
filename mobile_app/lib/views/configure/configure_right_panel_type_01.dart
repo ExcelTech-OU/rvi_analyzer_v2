@@ -23,12 +23,11 @@ class _ConfigureRightPanelType01State extends State<ConfigureRightPanelType01> {
     var isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     return SizedBox(
-      width: width < 600 ? width : (width / 2) - 32,
+      width: isLandscape ? (width / 3) * 2 - 32 : width,
       child: SizedBox(
-        height: isLandscape ? height - 65 : 530,
         child: Container(
             decoration: BoxDecoration(
-              color: Colors.black38,
+              color: Colors.grey[300],
               borderRadius: BorderRadius.circular(10.0),
               boxShadow: [
                 BoxShadow(
@@ -43,6 +42,7 @@ class _ConfigureRightPanelType01State extends State<ConfigureRightPanelType01> {
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Text(
                     "Mode 01",
@@ -57,18 +57,10 @@ class _ConfigureRightPanelType01State extends State<ConfigureRightPanelType01> {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  isLandscape
-                      ? SizedBox(
-                          height: height - 130,
-                          child: Scrollbar(
-                            child: ListView.builder(
-                                itemCount: 1,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return getScrollView();
-                                }),
-                          ),
-                        )
-                      : getScrollView(),
+                  getScrollView(),
+                  const SizedBox(
+                    height: 30.0,
+                  ),
                 ],
               ),
             )),
