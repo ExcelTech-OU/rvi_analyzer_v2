@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rvi_analyzer/views/common/drop_down.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:intl/intl.dart';
@@ -11,11 +10,28 @@ class ConfigureLeftPanel extends StatefulWidget {
   final ScanResult sc;
   final void Function(DropDownItem) updateIndex;
   final int defaultIndex;
+  final GlobalKey<FormState> keyForm;
+  final bool started;
+  final TextEditingController customerNameController;
+  final TextEditingController batchNoController;
+  final TextEditingController operatorIdController;
+  final TextEditingController sessionIdController;
+  final TextEditingController testIdController;
+  final TextEditingController dateController;
+
   const ConfigureLeftPanel(
       {Key? key,
       required this.sc,
       required this.updateIndex,
-      required this.defaultIndex})
+      required this.defaultIndex,
+      required this.keyForm,
+      required this.started,
+      required this.customerNameController,
+      required this.batchNoController,
+      required this.operatorIdController,
+      required this.sessionIdController,
+      required this.testIdController,
+      required this.dateController})
       : super(key: key);
 
   @override
@@ -23,14 +39,6 @@ class ConfigureLeftPanel extends StatefulWidget {
 }
 
 class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
-  final _formKey = GlobalKey<FormState>();
-  final customerNameController = TextEditingController();
-  final batchNoController = TextEditingController();
-  final operatorIdController = TextEditingController();
-  final sessionIdController = TextEditingController();
-  final testIdController = TextEditingController();
-  final dateController = TextEditingController();
-
   List<DropDownItem> items = [];
 
   List<String> ModePositions = <String>[
@@ -44,7 +52,7 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
   void setQRCode(String? qrCode) {
     setState(() {
       if (qrCode != null) {
-        batchNoController.text = qrCode;
+        widget.batchNoController.text = qrCode;
       }
     });
   }
@@ -61,10 +69,11 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
     DateTime now = DateTime.now();
     var formatter = DateFormat('yyyy-MM-dd');
     String date = formatter.format(now);
-    dateController.text = date;
+    widget.dateController.text = date;
 
     int milliseconds = now.millisecondsSinceEpoch;
-    testIdController.text = milliseconds.toString();
+    widget.testIdController.text = milliseconds.toString();
+    widget.sessionIdController.text = "S_$milliseconds";
   }
 
   @override
@@ -140,25 +149,27 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                 child: CupertinoButton(
                   color: Colors.cyan,
                   padding: const EdgeInsets.all(0),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      constraints: BoxConstraints(
-                        maxWidth: width / 3,
-                      ),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10)),
-                      ),
-                      context: context,
-                      barrierColor: const Color.fromARGB(178, 0, 0, 0),
-                      builder: (context) => DropDownCustom(DropDownData(
-                          "Select Mode",
-                          items,
-                          widget.updateIndex,
-                          widget.defaultIndex)),
-                    );
-                  },
+                  onPressed: widget.started
+                      ? null
+                      : () {
+                          showModalBottomSheet(
+                            constraints: BoxConstraints(
+                              maxWidth: width / 3,
+                            ),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10)),
+                            ),
+                            context: context,
+                            barrierColor: const Color.fromARGB(178, 0, 0, 0),
+                            builder: (context) => DropDownCustom(DropDownData(
+                                "Select Mode",
+                                items,
+                                widget.updateIndex,
+                                widget.defaultIndex)),
+                          );
+                        },
                   child: Text(
                     widget.defaultIndex != -1
                         ? ModePositions[widget.defaultIndex]
@@ -175,13 +186,13 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
         ),
         const SizedBox(height: 10.0),
         Form(
-          key: _formKey,
+          key: widget.keyForm,
           onChanged: () {},
           child: Column(
             children: [
               TextInput(
                   data: TestInputData(
-                      controller: customerNameController,
+                      controller: widget.customerNameController,
                       validatorFun: (val) {
                         if (val!.isEmpty) {
                           return "Customer Name cannot be empty";
@@ -189,7 +200,8 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                           null;
                         }
                       },
-                      labelText: 'Customer Name')),
+                      labelText: 'Customer Name',
+                      enabled: !(widget.started))),
               const SizedBox(
                 height: 10,
               ),
@@ -199,7 +211,7 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                     flex: 1,
                     child: TextInput(
                         data: TestInputData(
-                            controller: batchNoController,
+                            controller: widget.batchNoController,
                             validatorFun: (val) {
                               if (val!.isEmpty) {
                                 return "Batch No cannot be empty";
@@ -209,7 +221,8 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                             },
                             labelText: 'Batch No',
                             textInputAction: TextInputAction.done,
-                            obscureText: false)),
+                            obscureText: false,
+                            enabled: !widget.started)),
                   ),
                   const SizedBox(width: 10),
                   SizedBox(
@@ -218,17 +231,19 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                     child: CupertinoButton(
                       color: Colors.cyan,
                       padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    QRScanner(updateQRCode: setQRCode)));
-                      },
+                      onPressed: widget.started
+                          ? null
+                          : () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          QRScanner(updateQRCode: setQRCode)));
+                            },
                       child: const Text(
                         'QR Scan',
                         style: TextStyle(
-                            color: Color.fromARGB(255, 231, 230, 230)),
+                            color: Color.fromARGB(255, 255, 255, 255)),
                       ),
                     ),
                   ),
@@ -239,7 +254,7 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
               ),
               TextInput(
                   data: TestInputData(
-                      controller: operatorIdController,
+                      controller: widget.operatorIdController,
                       validatorFun: (val) {
                         if (val!.isEmpty) {
                           return "Operator Id cannot be empty";
@@ -247,13 +262,14 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                           null;
                         }
                       },
-                      labelText: 'Operator ID')),
+                      labelText: 'Operator ID',
+                      enabled: !widget.started)),
               const SizedBox(
                 height: 10,
               ),
               TextInput(
                   data: TestInputData(
-                      controller: sessionIdController,
+                      controller: widget.sessionIdController,
                       validatorFun: (val) {
                         if (val!.isEmpty) {
                           return "Session Id cannot be empty";
@@ -261,7 +277,8 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                           null;
                         }
                       },
-                      labelText: 'Session ID')),
+                      labelText: 'Session ID',
+                      enabled: !widget.started)),
               const SizedBox(
                 height: 10,
               ),
@@ -271,7 +288,7 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                     flex: 1,
                     child: TextInput(
                         data: TestInputData(
-                            controller: testIdController,
+                            controller: widget.testIdController,
                             enabled: false,
                             validatorFun: (val) {
                               return null;
@@ -285,7 +302,7 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                     flex: 1,
                     child: TextInput(
                         data: TestInputData(
-                            controller: dateController,
+                            controller: widget.dateController,
                             enabled: false,
                             validatorFun: (val) {
                               return null;

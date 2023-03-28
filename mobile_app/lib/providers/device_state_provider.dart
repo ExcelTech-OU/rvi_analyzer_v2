@@ -38,6 +38,16 @@ class StreamData extends ChangeNotifier {
 
   int get state => notifyDataList[0];
 
+  int get temperature => notifyDataList[8];
+
+  int get currentProtocol => notifyDataList[1];
+
+  double get voltage => (notifyDataList[4] * 255 + notifyDataList[5]) / 100;
+
+  double get current => (notifyDataList[6] * 255 + notifyDataList[7]) / 1000;
+
+  double get resistance => voltage / current;
+
   int get curTime => currentTime;
   int get getPreTime => preTime;
   int get getFullTime => fullTime;
@@ -45,29 +55,25 @@ class StreamData extends ChangeNotifier {
   bool get isCompleted => completed;
 
   void resetData() {
-    notifyDataList = [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00];
+    notifyDataList = [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00];
     notifyListeners();
   }
 
   void setStateStop() {
     stopped = true;
-    notifyDataList = [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00];
+    notifyDataList = [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00];
     notifyListeners();
   }
 
   Future<void> runNotify(ScanResult scanResult) async {
     BluetoothDevice device = scanResult.device;
 
-    // FlutterBlue flutterBlue = FlutterBlue.instance;
-    // flutterBlue.state.listen((event) {
-    //   print("Status Blue :  " + event.name);
-    // });
     List<BluetoothService> services = await device.discoverServices();
     for (var service in services) {
-      if (service.uuid.toString() == "f0000007-0451-4000-b000-000000000000") {
+      if (service.uuid.toString() == "f0000005-0451-4000-b000-000000000000") {
         for (var element in service.characteristics) {
           if (element.uuid.toString() ==
-              "f0000008-0451-4000-b000-000000000000") {
+              "f000beef-0451-4000-b000-000000000000") {
             await element.setNotifyValue(true);
             Stream stream = element.value;
             subscription = stream.listen((value) {
@@ -113,7 +119,6 @@ class StreamData extends ChangeNotifier {
                   // notifyDataList = value;
                 }
                 notifyDataList = value;
-                print("Near Listners" + notifyDataList.toString() + "sfafa");
                 notifyListeners();
               }
             });

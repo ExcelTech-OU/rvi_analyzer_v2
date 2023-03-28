@@ -2,20 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:rvi_analyzer/domain/after_start_data.dart';
 import 'package:rvi_analyzer/providers/connected_devices_provider.dart';
-import 'package:rvi_analyzer/service/device_service.dart';
 import 'package:rvi_analyzer/views/configure/configure_layout.dart';
 import 'package:rvi_analyzer/views/dashboard/connect_device_dashboard/device_status_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
-import 'package:rvi_analyzer/service/common_service.dart';
-import 'package:rvi_analyzer/views/treatment/configure/configure_treatment.dart';
-import 'package:rvi_analyzer/views/dashboard/connect_device_dashboard/device_already_running_popup.dart';
 
 class DeviceCardHomePage extends StatefulWidget {
   const DeviceCardHomePage({

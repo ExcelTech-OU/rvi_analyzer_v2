@@ -67,7 +67,7 @@ class Blue {
       if (service.uuid.toString() == "f0001001-0451-4000-b000-000000000000") {
         for (var element in service.characteristics) {
           if (element.uuid.toString() ==
-              "f0001001-0451-4000-b000-000000000000") {
+              "f0000001-0451-4000-b000-000000000000") {
             await element
                 .write([0x01, 0x00, 0x00])
                 .then((value) => response = true)
@@ -98,25 +98,37 @@ class Blue {
     return response;
   }
 
-  Future<bool> run(BluetoothDevice device, TreatmentConfig config) async {
+  Future<bool> runMode01(
+      BluetoothDevice device, int fixedVoltage, int current) async {
     List<BluetoothService> services = await device.discoverServices();
-    int ledVal = config.ledState ? 1 : 0;
-    int time = int.parse(config.time) * 60;
-    int remainingTime = time - ((time / 255).truncate() * 255);
     bool response = false;
     for (var service in services) {
-      if (service.uuid.toString() == "f0000001-0451-4000-b000-000000000000") {
+      if (service.uuid.toString() == "f0000002-0451-4000-b000-000000000000") {
         for (var element in service.characteristics) {
           if (element.uuid.toString() ==
-              "f0000002-0451-4000-b000-000000000000") {
+              "f0000021-0451-4000-b000-000000000000") {
             await element
                 .write([
-                  config.protocolId + 1,
-                  getTemValue(config.temp),
-                  (time / 255).truncate(),
-                  remainingTime,
-                  ledVal,
-                  3
+                  01,
+                  01,
+                  fixedVoltage * 10,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  (current / 255).truncate(),
+                  current - (current / 255).truncate() * 255,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00
                 ])
                 .then((value) => response = true)
                 .onError((error, stackTrace) => response = false);

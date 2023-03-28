@@ -1,27 +1,65 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rvi_analyzer/providers/device_state_provider.dart';
+import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 
-class ConfigureRightPanelType01 extends StatefulWidget {
+class ConfigureRightPanelType01 extends ConsumerStatefulWidget {
   final ScanResult sc;
-  const ConfigureRightPanelType01({Key? key, required this.sc})
+  final GlobalKey<FormState> keyForm;
+  final void Function() updateStarted;
+  final void Function() updateTestId;
+  final TextEditingController customerNameController;
+  final TextEditingController batchNoController;
+  final TextEditingController operatorIdController;
+  final TextEditingController sessionIdController;
+  final TextEditingController testIdController;
+  final TextEditingController dateController;
+  const ConfigureRightPanelType01(
+      {Key? key,
+      required this.sc,
+      required this.keyForm,
+      required this.updateStarted,
+      required this.updateTestId,
+      required this.customerNameController,
+      required this.batchNoController,
+      required this.operatorIdController,
+      required this.sessionIdController,
+      required this.testIdController,
+      required this.dateController})
       : super(key: key);
 
   @override
-  State<ConfigureRightPanelType01> createState() =>
+  ConsumerState<ConfigureRightPanelType01> createState() =>
       _ConfigureRightPanelType01State();
 }
 
-class _ConfigureRightPanelType01State extends State<ConfigureRightPanelType01> {
+class _ConfigureRightPanelType01State
+    extends ConsumerState<ConfigureRightPanelType01> {
+  Blue blue = Blue();
+  final _formKey = GlobalKey<FormState>();
   final voltageController = TextEditingController();
   final maxCurrentController = TextEditingController();
+  final minCurrentRangeController = TextEditingController();
+  final maxCurrentRangeController = TextEditingController();
+
+  final currentReadingVoltageController = TextEditingController();
+  final currentReadingTemController = TextEditingController();
+  final currentReadingResistanceController = TextEditingController();
+
+  bool started = false;
+  bool saveClicked = false;
+  bool passed = false;
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     var isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
+
     return SizedBox(
       width: isLandscape ? (width / 3) * 2 - 32 : width,
       child: SizedBox(
@@ -68,217 +106,368 @@ class _ConfigureRightPanelType01State extends State<ConfigureRightPanelType01> {
     );
   }
 
+  String getVoltage() {
+    if (started) {
+      if (ref
+              .watch(
+                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+              .currentProtocol ==
+          0) {
+        return (ref
+            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+            .voltage
+            .toString());
+      }
+    }
+    return "00";
+  }
+
+  String getResistance() {
+    if (started) {
+      if (ref
+              .watch(
+                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+              .currentProtocol ==
+          0) {
+        return (ref
+            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+            .resistance
+            .toStringAsFixed(3));
+      }
+    }
+    return "00";
+  }
+
+  String getTemp() {
+    if (started) {
+      if (ref
+              .watch(
+                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+              .currentProtocol ==
+          0) {
+        return (ref
+            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+            .temperature
+            .toString());
+      }
+    }
+    return "00";
+  }
+
+  void saveModeOne() {
+    double current = ref
+        .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+        .current;
+    setState(() {
+      saveClicked = true;
+    });
+
+    if (double.parse(minCurrentRangeController.text) < current &&
+        current < double.parse(maxCurrentRangeController.text)) {
+      setState(() {
+        passed = true;
+      });
+    } else {
+      setState(() {
+        passed = false;
+      });
+    }
+    widget.updateTestId();
+  }
+
   Widget getScrollView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: TextInput(
-                  data: TestInputData(
-                      inputType: TextInputType.number,
-                      controller: voltageController,
-                      validatorFun: (val) {
-                        if (val!.isEmpty) {
-                          return "Voltage cannot be empty";
-                        } else {
-                          null;
-                        }
-                      },
-                      labelText: 'Voltage (V)')),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Expanded(
-              flex: 1,
-              child: TextInput(
-                  data: TestInputData(
-                      inputType: TextInputType.number,
-                      controller: maxCurrentController,
-                      validatorFun: (val) {
-                        if (val!.isEmpty) {
-                          return "Max current cannot be empty";
-                        } else {
-                          null;
-                        }
-                      },
-                      labelText: 'Max current (A)')),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        const Text(
-          'Current Range : ',
-          style: TextStyle(fontSize: 15, color: Colors.grey),
-        ),
-        const SizedBox(
-          height: 5.0,
-        ),
-        Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: TextInput(
-                  data: TestInputData(
-                      controller: voltageController,
-                      inputType: TextInputType.number,
-                      validatorFun: (val) {
-                        if (val!.isEmpty) {
-                          return "Max current cannot be empty";
-                        } else {
-                          null;
-                        }
-                      },
-                      labelText: 'Min (A)')),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Expanded(
-              flex: 1,
-              child: TextInput(
-                  data: TestInputData(
-                      inputType: TextInputType.number,
-                      controller: maxCurrentController,
-                      validatorFun: (val) {
-                        if (val!.isEmpty) {
-                          return "Max current cannot be empty";
-                        } else {
-                          null;
-                        }
-                      },
-                      labelText: 'Max (A)')),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        const Text(
-          'Current Readings : ',
-          style: TextStyle(fontSize: 15, color: Colors.grey),
-        ),
-        const SizedBox(
-          height: 5.0,
-        ),
-        Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: TextInput(
-                  data: TestInputData(
-                      controller: voltageController,
-                      inputType: TextInputType.number,
-                      enabled: false,
-                      validatorFun: (val) {
-                        null;
-                      },
-                      labelText: 'Voltage (V)')),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Expanded(
-              flex: 1,
-              child: TextInput(
-                  data: TestInputData(
-                      inputType: TextInputType.number,
-                      controller: maxCurrentController,
-                      enabled: false,
-                      validatorFun: (val) {
-                        null;
-                      },
-                      labelText: 'Temp (A)')),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        TextInput(
-            data: TestInputData(
-                controller: maxCurrentController,
-                enabled: false,
-                validatorFun: (val) {
-                  null;
-                },
-                labelText: 'Resistance (Om)')),
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          children: const [
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                height: 55,
-                child: CupertinoButton(
-                  disabledColor: Colors.red,
-                  color: Colors.cyan,
-                  onPressed: null,
-                  child: Text(
-                    'FAIL',
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 231, 230, 230),
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
+    return Form(
+      key: _formKey,
+      onChanged: () {},
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: TextInput(
+                    data: TestInputData(
+                        inputType: TextInputType.number,
+                        controller: voltageController,
+                        validatorFun: (val) {
+                          if (val!.isEmpty) {
+                            return "Voltage cannot be empty";
+                          } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                              .hasMatch(val)) {
+                            return "Only allowed numbers";
+                          } else if (!RegExp(
+                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1})?$")
+                              .hasMatch(val)) {
+                            return "Voltage ONLY allowed one Place Value";
+                          } else {
+                            null;
+                          }
+                        },
+                        labelText: 'Voltage (V)',
+                        enabled: !started)),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                height: 55,
-                child: CupertinoButton(
-                  padding: EdgeInsets.all(0),
-                  disabledColor: Colors.grey,
-                  color: Colors.cyan,
-                  onPressed: () {},
-                  child: const Text(
-                    'Start',
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 231, 230, 230),
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
+              const SizedBox(
+                width: 5,
               ),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                height: 55,
-                child: CupertinoButton(
-                  padding: EdgeInsets.all(0),
-                  disabledColor: Colors.grey,
-                  color: Colors.green,
-                  onPressed: () {},
-                  child: const Text(
-                    'Save',
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 231, 230, 230),
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
+              Expanded(
+                flex: 1,
+                child: TextInput(
+                    data: TestInputData(
+                        inputType: TextInputType.number,
+                        controller: maxCurrentController,
+                        validatorFun: (val) {
+                          if (val!.isEmpty) {
+                            return "Max current cannot be empty";
+                          } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                              .hasMatch(val)) {
+                            return "Only allowed numbers";
+                          } else if (!RegExp(
+                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
+                              .hasMatch(val)) {
+                            return "Current ONLY allowed two Place Value";
+                          } else {
+                            null;
+                          }
+                        },
+                        labelText: 'Max current (A)',
+                        enabled: !started)),
               ),
-            ),
-          ],
-        )
-      ],
+            ],
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+          const Text(
+            'Current Range : ',
+            style: TextStyle(fontSize: 15, color: Colors.grey),
+          ),
+          const SizedBox(
+            height: 5.0,
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: TextInput(
+                    data: TestInputData(
+                        controller: minCurrentRangeController,
+                        inputType: TextInputType.number,
+                        validatorFun: (val) {
+                          if (val!.isEmpty) {
+                            return "Min current cannot be empty";
+                          } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                              .hasMatch(val)) {
+                            return "Only allowed numbers";
+                          } else if (!RegExp(
+                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
+                              .hasMatch(val)) {
+                            return "Current ONLY allowed two Place Value";
+                          } else {
+                            null;
+                          }
+                        },
+                        labelText: 'Min (A)')),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              Expanded(
+                flex: 1,
+                child: TextInput(
+                    data: TestInputData(
+                        inputType: TextInputType.number,
+                        controller: maxCurrentRangeController,
+                        validatorFun: (val) {
+                          if (val!.isEmpty) {
+                            return "Max current cannot be empty";
+                          } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                              .hasMatch(val)) {
+                            return "Only allowed numbers";
+                          } else if (!RegExp(
+                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
+                              .hasMatch(val)) {
+                            return "Current ONLY allowed two Place Value";
+                          } else {
+                            null;
+                          }
+                        },
+                        labelText: 'Max (A)')),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+          const Text(
+            'Current Readings : ',
+            style: TextStyle(fontSize: 15, color: Colors.grey),
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: TextInput(
+                    data: TestInputData(
+                        controller: currentReadingVoltageController,
+                        inputType: TextInputType.number,
+                        enabled: false,
+                        validatorFun: (val) {
+                          null;
+                        },
+                        labelText: 'Voltage : ${getVoltage()} V')),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              Expanded(
+                flex: 1,
+                child: TextInput(
+                    data: TestInputData(
+                        inputType: TextInputType.number,
+                        controller: currentReadingTemController,
+                        enabled: false,
+                        validatorFun: (val) {
+                          null;
+                        },
+                        labelText: 'Temp : ${getTemp()} \u2103')),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          TextInput(
+              data: TestInputData(
+                  controller: currentReadingResistanceController,
+                  enabled: false,
+                  validatorFun: (val) {
+                    null;
+                  },
+                  labelText: 'Resistance : ${getResistance()} \u2126')),
+          const SizedBox(
+            height: 10,
+          ),
+          started && saveClicked
+              ? Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 55,
+                        child: CupertinoButton(
+                          disabledColor: passed ? Colors.green : Colors.red,
+                          color: Colors.cyan,
+                          onPressed: null,
+                          child: Text(
+                            passed ? 'PASS' : 'FAIL',
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 231, 230, 230),
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
+          const SizedBox(
+            height: 15,
+          ),
+          started
+              ? Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 55,
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          disabledColor: Colors.grey,
+                          color: Colors.orange,
+                          onPressed: () {
+                            blue.stop(widget.sc.device);
+                            widget.updateStarted();
+                            setState(() {
+                              started = !started;
+                            });
+                          },
+                          child: const Text(
+                            'Stop',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 231, 230, 230),
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 55,
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          disabledColor: Colors.grey,
+                          color: Colors.green,
+                          onPressed: () {
+                            saveModeOne();
+                          },
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 231, 230, 230),
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 55,
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          disabledColor: Colors.grey,
+                          color: Colors.cyan,
+                          onPressed: () {
+                            if (widget.keyForm.currentState!.validate() &&
+                                _formKey.currentState!.validate()) {
+                              blue.runMode01(
+                                  widget.sc.device,
+                                  (double.parse(voltageController.text) * 10)
+                                      .toInt(),
+                                  (double.parse(maxCurrentController.text) *
+                                          100)
+                                      .toInt());
+                              setState(() {
+                                started = !started;
+                              });
+                              widget.updateStarted();
+                            }
+                          },
+                          child: const Text(
+                            'Start',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 231, 230, 230),
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+        ],
+      ),
     );
   }
 }

@@ -576,42 +576,42 @@ class _ConfigureDashboardState extends State<ConfigureDashboard> {
                         disabledColor: Colors.grey,
                         onPressed: isTreatmentConfigured
                             ? () {
-                                blue
-                                    .run(scanResult.device, getConfig())
-                                    .then((value) => {
-                                          if (value)
-                                            {
-                                              ref
-                                                  .read(ref
-                                                      .read(deviceDataMap[
-                                                          scanResult
-                                                              .device.name]!)
-                                                      .streamData)
-                                                  .resetData(),
-                                              ref
-                                                  .read(deviceDataMap[
-                                                      scanResult.device.name]!)
-                                                  .setTreatmentConfig(config),
-                                              // Navigator.pushReplacement(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (context) =>
-                                              //             TreatmentRunning(
-                                              //                 RunningTreatmentData(
-                                              //                     userName:
-                                              //                         username,
-                                              //                     config:
-                                              //                         config,
-                                              //                     scanResult:
-                                              //                         scanResult)))),
-                                            }
-                                          else
-                                            {
-                                              showErrorDialog(context,
-                                                  "Something went wrong. Please try again")
-                                            }
-                                        })
-                                    .onError((error, stackTrace) => {});
+                                // blue
+                                //     .run(scanResult.device, getConfig())
+                                //     .then((value) => {
+                                //           if (value)
+                                //             {
+                                //               ref
+                                //                   .read(ref
+                                //                       .read(deviceDataMap[
+                                //                           scanResult
+                                //                               .device.name]!)
+                                //                       .streamData)
+                                //                   .resetData(),
+                                //               ref
+                                //                   .read(deviceDataMap[
+                                //                       scanResult.device.name]!)
+                                //                   .setTreatmentConfig(config),
+                                //               // Navigator.pushReplacement(
+                                //               //     context,
+                                //               //     MaterialPageRoute(
+                                //               //         builder: (context) =>
+                                //               //             TreatmentRunning(
+                                //               //                 RunningTreatmentData(
+                                //               //                     userName:
+                                //               //                         username,
+                                //               //                     config:
+                                //               //                         config,
+                                //               //                     scanResult:
+                                //               //                         scanResult)))),
+                                //             }
+                                //           else
+                                //             {
+                                //               showErrorDialog(context,
+                                //                   "Something went wrong. Please try again")
+                                //             }
+                                //         })
+                                //     .onError((error, stackTrace) => {});
                               }
                             : null,
                         child: const Text('Start',

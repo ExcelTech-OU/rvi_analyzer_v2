@@ -3,23 +3,17 @@ import 'package:flutter/material.dart';
 MaterialColor getStatusColor(int statusId) {
   switch (statusId) {
     case 1:
-      return Colors.red;
+      return Colors.orange;
     case 2:
       return Colors.green;
     case 3:
-      return Colors.orange;
+      return Colors.yellow;
     case 4:
       return Colors.blue;
     case 5:
       return Colors.red;
     case 6:
       return Colors.orange;
-    case 7:
-      return Colors.orange;
-    case 8:
-      return Colors.green;
-    case 9:
-      return Colors.red;
     default:
       return Colors.green;
   }
@@ -28,7 +22,7 @@ MaterialColor getStatusColor(int statusId) {
 String getStatusText(int statusId) {
   switch (statusId) {
     case 1:
-      return "Not calibrated";
+      return "Powered on Not ready";
     case 2:
       return "Ready";
     case 3:
@@ -36,15 +30,9 @@ String getStatusText(int statusId) {
     case 4:
       return "Calibrating";
     case 5:
-      return "Not ready";
+      return "Error/ Not ready";
     case 6:
-      return "Paused";
-    case 7:
-      return "Stopped";
-    case 8:
-      return "Other";
-    case 9:
-      return "Manually Operating";
+      return "Stopped / Completed";
     default:
       return "Other";
   }

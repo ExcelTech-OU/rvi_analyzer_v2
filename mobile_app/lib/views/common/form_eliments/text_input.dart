@@ -26,37 +26,34 @@ class TextInput extends StatefulWidget {
   const TextInput({Key? key, required this.data}) : super(key: key);
 
   @override
-  State<TextInput> createState() => _TextInputState(data);
+  State<TextInput> createState() => _TextInputState(data.obscureText);
 }
 
 class _TextInputState extends State<TextInput> {
-  late TestInputData data;
-  bool isPasswordVisible = false;
+  bool isPasswordVisible;
 
-  _TextInputState(this.data) {
-    isPasswordVisible = data.obscureText;
-  }
+  _TextInputState(this.isPasswordVisible);
 
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context),
       child: TextFormField(
-        enabled: data.enabled,
+        enabled: widget.data.enabled,
         maxLines: widget.data.maxLines,
         style: const TextStyle(color: Colors.black),
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        textInputAction: data.textInputAction ?? TextInputAction.next,
-        controller: data.controller,
-        validator: (val) => data.validatorFun(val),
+        textInputAction: widget.data.textInputAction ?? TextInputAction.next,
+        controller: widget.data.controller,
+        validator: (val) => widget.data.validatorFun(val),
         obscureText: isPasswordVisible,
         keyboardType: widget.data.inputType,
-        decoration: data.obscureText
+        decoration: widget.data.obscureText
             ? InputDecoration(
-                labelText: data.labelText,
+                labelText: widget.data.labelText,
                 suffixIcon: IconButton(
                   icon: Icon(
-                    !isPasswordVisible && data.obscureText
+                    !isPasswordVisible && widget.data.obscureText
                         ? Icons.visibility
                         : Icons.visibility_off,
                     color: Colors.grey,

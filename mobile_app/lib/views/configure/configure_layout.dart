@@ -16,15 +16,49 @@ class ConfigureLayout extends StatefulWidget {
 class _ConfigureLayoutState extends State<ConfigureLayout> {
   int selectedModeId = -1;
   Widget secondWidget = const SizedBox.shrink();
+  final _formKey = GlobalKey<FormState>();
+  bool started = false;
+
+  final customerNameController = TextEditingController();
+  final batchNoController = TextEditingController();
+  final operatorIdController = TextEditingController();
+  final sessionIdController = TextEditingController();
+  final testIdController = TextEditingController();
+  final dateController = TextEditingController();
 
   void setDropDownIndex(DropDownItem dropDownItem) {
     setState(() {
       selectedModeId = dropDownItem.index;
       if (dropDownItem.index == 0) {
-        secondWidget = ConfigureRightPanelType01(sc: widget.sc);
+        secondWidget = ConfigureRightPanelType01(
+            updateStarted: updateStarted,
+            updateTestId: updateTestID,
+            sc: widget.sc,
+            keyForm: _formKey,
+            batchNoController: batchNoController,
+            customerNameController: customerNameController,
+            dateController: dateController,
+            operatorIdController: operatorIdController,
+            sessionIdController: sessionIdController,
+            testIdController: testIdController);
       } else if (dropDownItem.index == 1) {
         secondWidget = const ConfigureRightPanelType02();
       }
+    });
+  }
+
+  void updateStarted() {
+    setState(() {
+      started = !started;
+    });
+  }
+
+  void updateTestID() {
+    DateTime now = DateTime.now();
+    int milliseconds = now.millisecondsSinceEpoch;
+
+    setState(() {
+      testIdController.text = milliseconds.toString();
     });
   }
 
@@ -49,7 +83,15 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
                         ConfigureLeftPanel(
                             sc: widget.sc,
                             defaultIndex: selectedModeId,
-                            updateIndex: setDropDownIndex),
+                            updateIndex: setDropDownIndex,
+                            keyForm: _formKey,
+                            started: started,
+                            batchNoController: batchNoController,
+                            customerNameController: customerNameController,
+                            dateController: dateController,
+                            operatorIdController: operatorIdController,
+                            sessionIdController: sessionIdController,
+                            testIdController: testIdController),
                         const Spacer(),
                         selectedModeId == -1
                             ? const SizedBox.shrink()
@@ -73,7 +115,15 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
                         ConfigureLeftPanel(
                             sc: widget.sc,
                             defaultIndex: selectedModeId,
-                            updateIndex: setDropDownIndex),
+                            updateIndex: setDropDownIndex,
+                            keyForm: _formKey,
+                            started: started,
+                            batchNoController: batchNoController,
+                            customerNameController: customerNameController,
+                            dateController: dateController,
+                            operatorIdController: operatorIdController,
+                            sessionIdController: sessionIdController,
+                            testIdController: testIdController),
                         const SizedBox(height: 15),
                         selectedModeId == -1
                             ? const SizedBox.shrink()
