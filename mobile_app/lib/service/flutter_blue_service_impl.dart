@@ -111,7 +111,7 @@ class Blue {
                 .write([
                   01,
                   01,
-                  fixedVoltage * 10,
+                  fixedVoltage,
                   00,
                   00,
                   00,
@@ -119,6 +119,47 @@ class Blue {
                   00,
                   (current / 255).truncate(),
                   current - (current / 255).truncate() * 255,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00
+                ])
+                .then((value) => response = true)
+                .onError((error, stackTrace) => response = false);
+          }
+        }
+      }
+    }
+    return response;
+  }
+
+  Future<bool> runMode02(
+      BluetoothDevice device, int fixedCurrent, int voltage) async {
+    List<BluetoothService> services = await device.discoverServices();
+    bool response = false;
+    for (var service in services) {
+      if (service.uuid.toString() == "f0000002-0451-4000-b000-000000000000") {
+        for (var element in service.characteristics) {
+          if (element.uuid.toString() ==
+              "f0000021-0451-4000-b000-000000000000") {
+            await element
+                .write([
+                  01,
+                  02,
+                  00,
+                  voltage,
+                  00,
+                  00,
+                  (fixedCurrent / 255).truncate(),
+                  fixedCurrent - (fixedCurrent / 255).truncate() * 255,
+                  00,
+                  00,
                   00,
                   00,
                   00,

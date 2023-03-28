@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:intl/intl.dart';
 import 'package:rvi_analyzer/views/common/drop_down.dart';
 import 'package:rvi_analyzer/views/configure/configure_left_panel.dart';
 import 'package:rvi_analyzer/views/configure/configure_right_panel_type_01.dart';
@@ -30,6 +31,12 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
     setState(() {
       selectedModeId = dropDownItem.index;
       if (dropDownItem.index == 0) {
+        customerNameController.text = "";
+        batchNoController.text = "";
+        operatorIdController.text = "";
+
+        updateDisabledParams();
+
         secondWidget = ConfigureRightPanelType01(
             updateStarted: updateStarted,
             updateTestId: updateTestID,
@@ -42,9 +49,34 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
             sessionIdController: sessionIdController,
             testIdController: testIdController);
       } else if (dropDownItem.index == 1) {
-        secondWidget = const ConfigureRightPanelType02();
+        customerNameController.text = "";
+        batchNoController.text = "";
+        operatorIdController.text = "";
+        updateDisabledParams();
+        secondWidget = ConfigureRightPanelType02(
+            updateStarted: updateStarted,
+            updateTestId: updateTestID,
+            sc: widget.sc,
+            keyForm: _formKey,
+            batchNoController: batchNoController,
+            customerNameController: customerNameController,
+            dateController: dateController,
+            operatorIdController: operatorIdController,
+            sessionIdController: sessionIdController,
+            testIdController: testIdController);
       }
     });
+  }
+
+  void updateDisabledParams() {
+    DateTime now = DateTime.now();
+    var formatter = DateFormat('yyyy-MM-dd');
+    String date = formatter.format(now);
+    dateController.text = date;
+
+    int milliseconds = now.millisecondsSinceEpoch;
+    testIdController.text = milliseconds.toString();
+    sessionIdController.text = "S_$milliseconds";
   }
 
   void updateStarted() {

@@ -278,7 +278,7 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                         }
                       },
                       labelText: 'Session ID',
-                      enabled: !widget.started)),
+                      enabled: false)),
               const SizedBox(
                 height: 10,
               ),
