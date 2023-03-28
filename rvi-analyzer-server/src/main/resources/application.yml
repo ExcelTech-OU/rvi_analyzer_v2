@@ -9,3 +9,13 @@ spring:
       database: rvi_analyzer
 #      username: rviUser
 #      password: password
+
+jwt:
+  secretKey: "thisWasSecurityKeyUsedForMakingJWTKeys"
+  validityInMs: 60000
+  password:
+    encoder:
+      secret: rviAnalyzerKey
+      iteration: 33
+      key-length: 256
+
