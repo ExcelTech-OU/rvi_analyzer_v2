@@ -12,7 +12,7 @@ spring:
 
 jwt:
   secretKey: "thisWasSecurityKeyUsedForMakingJWTKeys"
-  validityInMs: 60000
+  validityInMs: 6000000
   password:
     encoder:
       secret: rviAnalyzerKey

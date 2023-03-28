@@ -1,8 +1,8 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.LoginRequest;
 import com.rvi.analyzer.rvianalyzerserver.domain.LoginResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.NewUserResponse;
 import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.mappers.UserMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
@@ -30,43 +30,55 @@ public class UserService {
 
     final private PasswordEncoder encoder;
 
-    public Mono<UserDto> getUserByUsername(String username){
-      return Mono.just(username)
-              .doOnNext(uName -> log.info("Finding user for username [{}]", uName))
-              .flatMap(userRepository::findByUserName)
-              .map(userMapper::userToUserDto);
+    public Mono<UserDto> getUserByUsername(String username) {
+        return Mono.just(username)
+                .doOnNext(uName -> log.info("Finding user for username [{}]", uName))
+                .flatMap(userRepository::findByUserName)
+                .map(userMapper::userToUserDto);
     }
 
-    public Mono<CommonResponse> addAdmin(UserDto userDto) {
+    public Mono<NewUserResponse> addAdmin(UserDto userDto) {
         return Mono.just(userDto)
                 .doOnNext(userDto1 -> log.info("Admin add request received [{}]", userDto))
+                .flatMap(request -> userRepository.findByUserName(request.getUserName()))
+                .flatMap(user -> Mono.just(NewUserResponse.builder()
+                        .status("E1002")
+                        .statusDescription("User Already exists")
+                        .build()))
+                .switchIfEmpty(addAdminUser(userDto))
+                .doOnError(e ->
+                        NewUserResponse.builder()
+                                .status("E1000")
+                                .statusDescription("Failed")
+                                .build());
+
+    }
+
+    private Mono<NewUserResponse> addAdminUser(UserDto userDto){
+        return Mono.just(userDto)
                 .map(userMapper::userDtoToUser)
                 .doOnNext(user -> {
-                        user.setType("ROLE_ADMIN");
-                        user.setStatus("ACTIVE");
+                    user.setType("ROLE_ADMIN");
+                    user.setStatus("ACTIVE");
                     user.setCreatedDateTime(LocalDateTime.now());
                     user.setLastUpdatedDateTime(LocalDateTime.now());
                     user.setPassword(encoder.encode("password"));
                 })
                 .flatMap(userRepository::insert)
                 .doOnSuccess(user -> log.info("Successfully saved the user [{}]", user))
-                .map(user -> CommonResponse.builder()
+                .map(user -> NewUserResponse.builder()
                         .status("S1000")
                         .statusDescription("Success")
-                        .build())
-                .doOnError(e ->
-                        CommonResponse.builder()
-                                .status("S1000")
-                                .statusDescription("Success")
-                                .build());
-
+                        .userName(user.getUserName())
+                        .build());
     }
 
-    public Mono<ResponseEntity<LoginResponse>> login(LoginRequest loginRequest) {
+    public Mono<ResponseEntity<LoginResponse>> login(LoginRequest loginRequest, String userType) {
         return Mono.just(loginRequest)
                 .doOnNext(request -> log.info("Login request received [{}]", request.getUserName()))
                 .flatMap(request -> userRepository.findByUserName(request.getUserName()))
-                .filter(user -> user != null && Objects.equals(encoder.encode(loginRequest.getPassword()), user.getPassword()))
+                .filter(user -> user != null && Objects.equals(encoder.encode(loginRequest.getPassword()), user.getPassword())
+                        && user.getType().equals(userType))
                 .map(user -> {
                     if (user == null) {
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
