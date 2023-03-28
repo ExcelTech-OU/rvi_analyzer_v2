@@ -15,16 +15,14 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-public class ModeOne {
-
-    private String _id;
+public class ModeThree {
     @Field(name = "created-by")
     private String createdBy;
     @Field(name = "default-configurations")
     private DefaultConfiguration defaultConfigurations;
     @Field(name = "session-configurations")
-    private SessionConfigurationModeOne sessionConfigurationModeOne;
-    private List<SessionResult> results;
+    private SessionConfigurationModeThree sessionConfigurationModeThree;
+    private SessionResult results;
     private String status;
     @Field(name = "created-date")
     @CreatedDate

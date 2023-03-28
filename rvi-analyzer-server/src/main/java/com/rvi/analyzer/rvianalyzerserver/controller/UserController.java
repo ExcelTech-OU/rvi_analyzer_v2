@@ -1,6 +1,5 @@
-package com.rvi.analyzer.rvianalyzerserver.route;
+package com.rvi.analyzer.rvianalyzerserver.controller;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.LoginRequest;
 import com.rvi.analyzer.rvianalyzerserver.domain.LoginResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.NewUserResponse;

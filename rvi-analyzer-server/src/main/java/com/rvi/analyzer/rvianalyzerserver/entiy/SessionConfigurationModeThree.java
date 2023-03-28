@@ -10,12 +10,15 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Builder
 @Getter
 @Setter
-public class SessionConfigurationModeOne {
-    private String voltage;
+public class SessionConfigurationModeThree {
+    @Field(name = "starting-voltage")
+    private String startingVoltage;
+    @Field(name = "desired-voltage")
+    private String desiredVoltage;
     @Field(name = "max-current")
     private String maxCurrent;
-    @Field(name = "pass-min-current")
-    private String passMinCurrent;
-    @Field(name = "pass-max-current")
-    private String passMaxCurrent;
+    @Field(name = "voltage-resolution")
+    private String voltageResolution;
+    @Field(name = "change-in-time")
+    private String chargeInTime;
 }

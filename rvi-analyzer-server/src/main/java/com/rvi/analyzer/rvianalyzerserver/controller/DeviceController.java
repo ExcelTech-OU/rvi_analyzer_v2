@@ -1,9 +1,8 @@
-package com.rvi.analyzer.rvianalyzerserver.route;
+package com.rvi.analyzer.rvianalyzerserver.controller;
 
 
 import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
 import com.rvi.analyzer.rvianalyzerserver.dto.DeviceDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.service.DeviceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

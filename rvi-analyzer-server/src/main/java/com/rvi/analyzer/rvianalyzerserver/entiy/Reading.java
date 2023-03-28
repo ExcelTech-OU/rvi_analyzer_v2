@@ -6,16 +6,17 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDateTime;
+
 @Document
 @Builder
 @Getter
 @Setter
-public class SessionConfigurationModeOne {
+public class Reading {
+    private String temperature;
+    private String current;
     private String voltage;
-    @Field(name = "max-current")
-    private String maxCurrent;
-    @Field(name = "pass-min-current")
-    private String passMinCurrent;
-    @Field(name = "pass-max-current")
-    private String passMaxCurrent;
+    @Field(name = "read-at")
+    private LocalDateTime readAt;
+    private String result;
 }
