@@ -66,6 +66,7 @@ class StreamData extends ChangeNotifier {
   }
 
   Future<void> runNotify(ScanResult scanResult) async {
+    print("gsfgdfgdfgdfg");
     BluetoothDevice device = scanResult.device;
 
     List<BluetoothService> services = await device.discoverServices();

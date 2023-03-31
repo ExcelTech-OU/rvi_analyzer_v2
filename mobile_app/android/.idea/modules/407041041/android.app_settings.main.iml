@@ -13,6 +13,7 @@
           <stringArguments>
             <stringArg name="classpath">
               <args>
+                <arg>$MODULE_DIR$/../../../../build/app_settings/intermediates/compile_r_class_jar/debug/R.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/08a721705b5b1f96e55c64966eb5f347/transformed/jetified-flutter_embedding_debug-1.0.0-800594f1f4a6674010a6f1603c07a919b4d7ebd7.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.lifecycle/lifecycle-common-java8/2.2.0/cd3478503da69b1a7e0319bd2d1389943db9b364/lifecycle-common-java8-2.2.0.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/11002bfd90e33f61ee6739f6185cc3b1/transformed/fragment-1.1.0-api.jar</arg>
@@ -83,11 +84,17 @@
       <sourceFolder url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/app_settings-4.2.0/android/src/main/kotlin" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/../../../../build/app_settings/generated/aidl_source_output_dir/debug/out" />
-    <content url="file://$MODULE_DIR$/../../../../build/app_settings/generated/ap_generated_sources/debug/out" />
+    <content url="file://$MODULE_DIR$/../../../../build/app_settings/generated/ap_generated_sources/debug/out">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../build/app_settings/generated/ap_generated_sources/debug/out" isTestSource="false" generated="true" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../../build/app_settings/generated/renderscript_source_output_dir/debug/out" />
-    <content url="file://$MODULE_DIR$/../../../../build/app_settings/generated/res/resValues/debug" />
+    <content url="file://$MODULE_DIR$/../../../../build/app_settings/generated/res/resValues/debug">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../build/app_settings/generated/res/resValues/debug" type="java-resource" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../../build/app_settings/generated/res/rs/debug" />
-    <content url="file://$MODULE_DIR$/../../../../build/app_settings/generated/source/buildConfig/debug" />
+    <content url="file://$MODULE_DIR$/../../../../build/app_settings/generated/source/buildConfig/debug">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../build/app_settings/generated/source/buildConfig/debug" isTestSource="false" generated="true" />
+    </content>
     <orderEntry type="jdk" jdkName="Android API 31 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: io.flutter:flutter_embedding_debug:1.0.0-800594f1f4a6674010a6f1603c07a919b4d7ebd7" level="project" />

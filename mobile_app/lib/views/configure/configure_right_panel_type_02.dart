@@ -33,10 +33,10 @@ class ConfigureRightPanelType02 extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ConfigureRightPanelType02> createState() =>
-      _ConfigureRightPanelType01State();
+      _ConfigureRightPanelType02State();
 }
 
-class _ConfigureRightPanelType01State
+class _ConfigureRightPanelType02State
     extends ConsumerState<ConfigureRightPanelType02> {
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
@@ -82,12 +82,26 @@ class _ConfigureRightPanelType01State
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Mode 01",
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54),
+                  Row(
+                    children: [
+                      const Text(
+                        "Mode 02",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Text(
+                        "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 2.0,

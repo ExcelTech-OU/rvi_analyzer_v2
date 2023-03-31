@@ -180,6 +180,99 @@ class Blue {
     return response;
   }
 
+  Future<bool> runMode03(
+      BluetoothDevice device,
+      int startingVoltage,
+      int desiredVoltage,
+      int maxCurrent,
+      int voltageResolution,
+      int chargeInTime) async {
+    List<BluetoothService> services = await device.discoverServices();
+    bool response = false;
+    for (var service in services) {
+      if (service.uuid.toString() == "f0000002-0451-4000-b000-000000000000") {
+        for (var element in service.characteristics) {
+          if (element.uuid.toString() ==
+              "f0000021-0451-4000-b000-000000000000") {
+            await element
+                .write([
+                  01,
+                  03,
+                  00,
+                  00,
+                  startingVoltage,
+                  desiredVoltage,
+                  00,
+                  00,
+                  (maxCurrent / 255).truncate(),
+                  maxCurrent - (maxCurrent / 255).truncate() * 255,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  voltageResolution,
+                  00,
+                  00,
+                  chargeInTime,
+                  00
+                ])
+                .then((value) => response = true)
+                .onError((error, stackTrace) => response = false);
+          }
+        }
+      }
+    }
+    return response;
+  }
+
+  Future<bool> runMode04(
+      BluetoothDevice device,
+      int startingCurrent,
+      int desiredCurrent,
+      int maxVoltage,
+      int currentResolution,
+      int chargeInTime) async {
+    List<BluetoothService> services = await device.discoverServices();
+    bool response = false;
+    for (var service in services) {
+      if (service.uuid.toString() == "f0000002-0451-4000-b000-000000000000") {
+        for (var element in service.characteristics) {
+          if (element.uuid.toString() ==
+              "f0000021-0451-4000-b000-000000000000") {
+            await element
+                .write([
+                  01,
+                  04,
+                  00,
+                  maxVoltage,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  00,
+                  (startingCurrent / 255).truncate(),
+                  startingCurrent - (startingCurrent / 255).truncate() * 255,
+                  (desiredCurrent / 255).truncate(),
+                  desiredCurrent - (desiredCurrent / 255).truncate() * 255,
+                  00,
+                  00,
+                  (currentResolution / 255).truncate(),
+                  currentResolution -
+                      (currentResolution / 255).truncate() * 255,
+                  chargeInTime,
+                  00
+                ])
+                .then((value) => response = true)
+                .onError((error, stackTrace) => response = false);
+          }
+        }
+      }
+    }
+    return response;
+  }
+
   int getTemValue(String val) {
     if (val == "LOW") {
       return 35;

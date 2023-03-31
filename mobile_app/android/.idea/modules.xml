@@ -19,6 +19,10 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/2082097224/android.flutter_secure_storage.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/2082097224/android.flutter_secure_storage.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/2082097224/android.flutter_secure_storage.main.iml" filepath="$PROJECT_DIR$/.idea/modules/2082097224/android.flutter_secure_storage.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/2082097224/android.flutter_secure_storage.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/2082097224/android.flutter_secure_storage.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-505574032/android.qr_code_scanner.iml" filepath="$PROJECT_DIR$/.idea/modules/-505574032/android.qr_code_scanner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-505574032/android.qr_code_scanner.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/-505574032/android.qr_code_scanner.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-505574032/android.qr_code_scanner.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-505574032/android.qr_code_scanner.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-505574032/android.qr_code_scanner.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/-505574032/android.qr_code_scanner.unitTest.iml" />
     </modules>
   </component>
 </project>

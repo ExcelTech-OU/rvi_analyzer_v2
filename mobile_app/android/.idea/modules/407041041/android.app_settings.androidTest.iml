@@ -25,6 +25,7 @@
           <stringArguments>
             <stringArg name="classpath">
               <args>
+                <arg>$MODULE_DIR$/../../../../build/app_settings/intermediates/compile_library_classes_jar/debug/classes.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/08a721705b5b1f96e55c64966eb5f347/transformed/jetified-flutter_embedding_debug-1.0.0-800594f1f4a6674010a6f1603c07a919b4d7ebd7.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.lifecycle/lifecycle-common-java8/2.2.0/cd3478503da69b1a7e0319bd2d1389943db9b364/lifecycle-common-java8-2.2.0.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/11002bfd90e33f61ee6739f6185cc3b1/transformed/fragment-1.1.0-api.jar</arg>

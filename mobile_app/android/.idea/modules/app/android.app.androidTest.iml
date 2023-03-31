@@ -13,6 +13,15 @@
           <stringArguments>
             <stringArg name="classpath">
               <args>
+                <arg>$MODULE_DIR$/../../../../build/app/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debugAndroidTest/R.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/eb02314db7d11341b1cce9b18560c3c9/transformed/jetified-libs.jar</arg>
+                <arg>$MODULE_DIR$/../../../../build/app/intermediates/compile_app_classes_jar/debug/classes.jar</arg>
+                <arg>$MODULE_DIR$/../../../../build/app_settings/intermediates/compile_library_classes_jar/debug/classes.jar</arg>
+                <arg>$MODULE_DIR$/../../../../build/flutter_blue/intermediates/compile_library_classes_jar/debug/classes.jar</arg>
+                <arg>$MODULE_DIR$/../../../../build/qr_code_scanner/intermediates/compile_library_classes_jar/debug/classes.jar</arg>
+                <arg>$MODULE_DIR$/../../../../build/flutter_secure_storage/intermediates/compile_library_classes_jar/debug/classes.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/1e2ae0bcf831655b928f0123cc3128b9/transformed/multidex-instrumentation-2.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/93cc54a81b9cc705f9f2f3a94f94549c/transformed/multidex-2.0.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/8329ad129d7e7149a67675c3a317c6c4/transformed/jetified-armeabi_v7a_debug-1.0.0-800594f1f4a6674010a6f1603c07a919b4d7ebd7.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/0a73a59cbe58c5330d7d205c56476774/transformed/jetified-arm64_v8a_debug-1.0.0-800594f1f4a6674010a6f1603c07a919b4d7ebd7.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/c20ebf01f15cc2b43bfdae0f6d60b32a/transformed/jetified-x86_64_debug-1.0.0-800594f1f4a6674010a6f1603c07a919b4d7ebd7.jar</arg>
@@ -90,15 +99,22 @@
     <content url="file://$MODULE_DIR$/../../../app/src/androidTest" />
     <content url="file://$MODULE_DIR$/../../../app/src/androidTestDebug" />
     <content url="file://$MODULE_DIR$/../../../../build/app/generated/aidl_source_output_dir/debugAndroidTest/out" />
-    <content url="file://$MODULE_DIR$/../../../../build/app/generated/ap_generated_sources/debugAndroidTest/out" />
+    <content url="file://$MODULE_DIR$/../../../../build/app/generated/ap_generated_sources/debugAndroidTest/out">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../build/app/generated/ap_generated_sources/debugAndroidTest/out" isTestSource="true" generated="true" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../../build/app/generated/renderscript_source_output_dir/debugAndroidTest/out" />
-    <content url="file://$MODULE_DIR$/../../../../build/app/generated/res/resValues/androidTest/debug" />
+    <content url="file://$MODULE_DIR$/../../../../build/app/generated/res/resValues/androidTest/debug">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../build/app/generated/res/resValues/androidTest/debug" type="java-test-resource" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../../build/app/generated/res/rs/androidTest/debug" />
-    <content url="file://$MODULE_DIR$/../../../../build/app/generated/source/buildConfig/androidTest/debug" />
+    <content url="file://$MODULE_DIR$/../../../../build/app/generated/source/buildConfig/androidTest/debug">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../build/app/generated/source/buildConfig/androidTest/debug" isTestSource="true" generated="true" />
+    </content>
     <orderEntry type="jdk" jdkName="Android API 33, extension level 3 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="android.app_settings.main" scope="TEST" />
     <orderEntry type="module" module-name="android.flutter_blue.main" scope="TEST" />
+    <orderEntry type="module" module-name="android.qr_code_scanner.main" scope="TEST" />
     <orderEntry type="module" module-name="android.flutter_secure_storage.main" scope="TEST" />
     <orderEntry type="module" module-name="android.app.main" scope="TEST" />
     <orderEntry type="library" scope="TEST" name="Gradle: io.flutter:flutter_embedding_debug:1.0.0-800594f1f4a6674010a6f1603c07a919b4d7ebd7" level="project" />
@@ -136,6 +152,8 @@
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.tracing:tracing:1.0.0@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.window:window-java:1.0.0-beta04@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.window:window:1.0.0-beta04@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.multidex:multidex-instrumentation:2.0.0@aar" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: androidx.multidex:multidex:2.0.0@aar" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="android.app.main" />
 </module>

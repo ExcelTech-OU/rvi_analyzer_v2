@@ -39,6 +39,7 @@ class _TextInputState extends State<TextInput> {
     return Theme(
       data: Theme.of(context),
       child: TextFormField(
+        autofocus: false,
         enabled: widget.data.enabled,
         maxLines: widget.data.maxLines,
         style: const TextStyle(color: Colors.black),

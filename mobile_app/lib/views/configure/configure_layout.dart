@@ -5,6 +5,8 @@ import 'package:rvi_analyzer/views/common/drop_down.dart';
 import 'package:rvi_analyzer/views/configure/configure_left_panel.dart';
 import 'package:rvi_analyzer/views/configure/configure_right_panel_type_01.dart';
 import 'package:rvi_analyzer/views/configure/configure_right_panel_type_02.dart';
+import 'package:rvi_analyzer/views/configure/configure_right_panel_type_03.dart';
+import 'package:rvi_analyzer/views/configure/configure_right_panel_type_04.dart';
 
 class ConfigureLayout extends StatefulWidget {
   final ScanResult sc;
@@ -54,6 +56,38 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
         operatorIdController.text = "";
         updateDisabledParams();
         secondWidget = ConfigureRightPanelType02(
+            updateStarted: updateStarted,
+            updateTestId: updateTestID,
+            sc: widget.sc,
+            keyForm: _formKey,
+            batchNoController: batchNoController,
+            customerNameController: customerNameController,
+            dateController: dateController,
+            operatorIdController: operatorIdController,
+            sessionIdController: sessionIdController,
+            testIdController: testIdController);
+      } else if (dropDownItem.index == 2) {
+        customerNameController.text = "";
+        batchNoController.text = "";
+        operatorIdController.text = "";
+        updateDisabledParams();
+        secondWidget = ConfigureRightPanelType03(
+            updateStarted: updateStarted,
+            updateTestId: updateTestID,
+            sc: widget.sc,
+            keyForm: _formKey,
+            batchNoController: batchNoController,
+            customerNameController: customerNameController,
+            dateController: dateController,
+            operatorIdController: operatorIdController,
+            sessionIdController: sessionIdController,
+            testIdController: testIdController);
+      } else if (dropDownItem.index == 3) {
+        customerNameController.text = "";
+        batchNoController.text = "";
+        operatorIdController.text = "";
+        updateDisabledParams();
+        secondWidget = ConfigureRightPanelType04(
             updateStarted: updateStarted,
             updateTestId: updateTestID,
             sc: widget.sc,

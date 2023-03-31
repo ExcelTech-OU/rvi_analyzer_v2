@@ -46,7 +46,8 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
     'Mode 02',
     'Mode 03',
     'Mode 04',
-    'Mode 05'
+    'Mode 05',
+    'Mode 06'
   ];
 
   void setQRCode(String? qrCode) {
@@ -137,7 +138,7 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Select one of 5 options',
+          'Select one of 6 options',
           style: TextStyle(fontSize: 15, color: Colors.grey),
         ),
         const SizedBox(height: 10.0),
