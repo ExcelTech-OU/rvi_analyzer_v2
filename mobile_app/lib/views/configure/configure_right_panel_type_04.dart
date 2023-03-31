@@ -65,7 +65,7 @@ class _ConfigureRightPanelType04State
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
               .currentProtocol ==
-          0) {
+          4) {
         voltageValues.add(BubbleValue<void>(ref
             .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
             .voltage));

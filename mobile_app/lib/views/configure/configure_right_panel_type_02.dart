@@ -142,7 +142,7 @@ class _ConfigureRightPanelType02State
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
               .currentProtocol ==
-          0) {
+          2) {
         return (ref
             .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
             .resistance
@@ -158,7 +158,7 @@ class _ConfigureRightPanelType02State
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
               .currentProtocol ==
-          0) {
+          2) {
         return (ref
             .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
             .temperature

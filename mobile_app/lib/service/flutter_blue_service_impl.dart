@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:rvi_analyzer/domain/configure_data.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
 class Blue {
@@ -67,7 +66,7 @@ class Blue {
       if (service.uuid.toString() == "f0001001-0451-4000-b000-000000000000") {
         for (var element in service.characteristics) {
           if (element.uuid.toString() ==
-              "f0000001-0451-4000-b000-000000000000") {
+              "f0001001-0451-4000-b000-000000000000") {
             await element
                 .write([0x01, 0x00, 0x00])
                 .then((value) => response = true)
@@ -86,7 +85,7 @@ class Blue {
       if (service.uuid.toString() == "f0001001-0451-4000-b000-000000000000") {
         for (var element in service.characteristics) {
           if (element.uuid.toString() ==
-              "f0001002-0451-4000-b000-000000000000") {
+              "f0001001-0451-4000-b000-000000000000") {
             await element
                 .write([0x02, 0x00, 0x00])
                 .then((value) => response = true)
@@ -103,32 +102,32 @@ class Blue {
     List<BluetoothService> services = await device.discoverServices();
     bool response = false;
     for (var service in services) {
-      if (service.uuid.toString() == "f0000002-0451-4000-b000-000000000000") {
+      if (service.uuid.toString() == "f0002001-0451-4000-b000-000000000000") {
         for (var element in service.characteristics) {
           if (element.uuid.toString() ==
-              "f0000021-0451-4000-b000-000000000000") {
+              "f0002001-0451-4000-b000-000000000000") {
             await element
                 .write([
-                  01,
-                  01,
+                  0x01,
+                  0x01,
                   fixedVoltage,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
                   (current / 255).truncate(),
                   current - (current / 255).truncate() * 255,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00
                 ])
                 .then((value) => response = true)
                 .onError((error, stackTrace) => response = false);
@@ -144,32 +143,32 @@ class Blue {
     List<BluetoothService> services = await device.discoverServices();
     bool response = false;
     for (var service in services) {
-      if (service.uuid.toString() == "f0000002-0451-4000-b000-000000000000") {
+      if (service.uuid.toString() == "f0002001-0451-4000-b000-000000000000") {
         for (var element in service.characteristics) {
           if (element.uuid.toString() ==
-              "f0000021-0451-4000-b000-000000000000") {
+              "f0002001-0451-4000-b000-000000000000") {
             await element
                 .write([
-                  01,
-                  02,
-                  00,
+                  0x01,
+                  0x02,
+                  0x00,
                   voltage,
-                  00,
-                  00,
+                  0x00,
+                  0x00,
                   (fixedCurrent / 255).truncate(),
                   fixedCurrent - (fixedCurrent / 255).truncate() * 255,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00
                 ])
                 .then((value) => response = true)
                 .onError((error, stackTrace) => response = false);
@@ -190,32 +189,32 @@ class Blue {
     List<BluetoothService> services = await device.discoverServices();
     bool response = false;
     for (var service in services) {
-      if (service.uuid.toString() == "f0000002-0451-4000-b000-000000000000") {
+      if (service.uuid.toString() == "f0002001-0451-4000-b000-000000000000") {
         for (var element in service.characteristics) {
           if (element.uuid.toString() ==
-              "f0000021-0451-4000-b000-000000000000") {
+              "f0002001-0451-4000-b000-000000000000") {
             await element
                 .write([
-                  01,
-                  03,
-                  00,
-                  00,
+                  0x01,
+                  0x03,
+                  0x00,
+                  0x00,
                   startingVoltage,
                   desiredVoltage,
-                  00,
-                  00,
+                  0x00,
+                  0x00,
                   (maxCurrent / 255).truncate(),
                   maxCurrent - (maxCurrent / 255).truncate() * 255,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
                   voltageResolution,
-                  00,
-                  00,
+                  0x00,
+                  0x00,
                   chargeInTime,
-                  00
+                  0x00
                 ])
                 .then((value) => response = true)
                 .onError((error, stackTrace) => response = false);
@@ -236,33 +235,33 @@ class Blue {
     List<BluetoothService> services = await device.discoverServices();
     bool response = false;
     for (var service in services) {
-      if (service.uuid.toString() == "f0000002-0451-4000-b000-000000000000") {
+      if (service.uuid.toString() == "f0002001-0451-4000-b000-000000000000") {
         for (var element in service.characteristics) {
           if (element.uuid.toString() ==
-              "f0000021-0451-4000-b000-000000000000") {
+              "f0002001-0451-4000-b000-000000000000") {
             await element
                 .write([
-                  01,
-                  04,
-                  00,
+                  0x01,
+                  0x04,
+                  0x00,
                   maxVoltage,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
-                  00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
                   (startingCurrent / 255).truncate(),
                   startingCurrent - (startingCurrent / 255).truncate() * 255,
                   (desiredCurrent / 255).truncate(),
                   desiredCurrent - (desiredCurrent / 255).truncate() * 255,
-                  00,
-                  00,
+                  0x00,
+                  0x00,
                   (currentResolution / 255).truncate(),
                   currentResolution -
                       (currentResolution / 255).truncate() * 255,
                   chargeInTime,
-                  00
+                  0x00
                 ])
                 .then((value) => response = true)
                 .onError((error, stackTrace) => response = false);
