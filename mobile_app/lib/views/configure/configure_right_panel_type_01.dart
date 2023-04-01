@@ -10,23 +10,11 @@ class ConfigureRightPanelType01 extends ConsumerStatefulWidget {
   final ScanResult sc;
   final GlobalKey<FormState> keyForm;
   final void Function() updateTestId;
-  final TextEditingController customerNameController;
-  final TextEditingController batchNoController;
-  final TextEditingController operatorIdController;
-  final TextEditingController sessionIdController;
-  final TextEditingController testIdController;
-  final TextEditingController dateController;
   const ConfigureRightPanelType01(
       {Key? key,
       required this.sc,
       required this.keyForm,
-      required this.updateTestId,
-      required this.customerNameController,
-      required this.batchNoController,
-      required this.operatorIdController,
-      required this.sessionIdController,
-      required this.testIdController,
-      required this.dateController})
+      required this.updateTestId})
       : super(key: key);
 
   @override
@@ -444,6 +432,9 @@ class _ConfigureRightPanelType01State
                                 !ref
                                     .read(deviceDataMap[widget.sc.device.name]!)
                                     .started;
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .updateStatus();
                           },
                           child: const Text(
                             'Stop',
@@ -515,6 +506,10 @@ class _ConfigureRightPanelType01State
                                       .read(
                                           deviceDataMap[widget.sc.device.name]!)
                                       .started;
+
+                              ref
+                                  .read(deviceDataMap[widget.sc.device.name]!)
+                                  .updateStatus();
                             }
                           },
                           child: const Text(

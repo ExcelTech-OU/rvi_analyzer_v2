@@ -13,25 +13,13 @@ class ConfigureLeftPanel extends ConsumerStatefulWidget {
   final void Function(DropDownItem) updateIndex;
   final int defaultIndex;
   final GlobalKey<FormState> keyForm;
-  final TextEditingController customerNameController;
-  final TextEditingController batchNoController;
-  final TextEditingController operatorIdController;
-  final TextEditingController sessionIdController;
-  final TextEditingController testIdController;
-  final TextEditingController dateController;
 
   const ConfigureLeftPanel(
       {Key? key,
       required this.sc,
       required this.updateIndex,
       required this.defaultIndex,
-      required this.keyForm,
-      required this.customerNameController,
-      required this.batchNoController,
-      required this.operatorIdController,
-      required this.sessionIdController,
-      required this.testIdController,
-      required this.dateController})
+      required this.keyForm})
       : super(key: key);
 
   @override
@@ -53,7 +41,10 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
   void setQRCode(String? qrCode) {
     setState(() {
       if (qrCode != null) {
-        widget.batchNoController.text = qrCode;
+        ref
+            .watch(deviceDataMap[widget.sc.device.name]!)
+            .batchNoController
+            .text = qrCode;
       }
     });
   }
@@ -70,11 +61,13 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
     DateTime now = DateTime.now();
     var formatter = DateFormat('yyyy-MM-dd');
     String date = formatter.format(now);
-    widget.dateController.text = date;
+    ref.read(deviceDataMap[widget.sc.device.name]!).dateController.text = date;
 
     int milliseconds = now.millisecondsSinceEpoch;
-    widget.testIdController.text = milliseconds.toString();
-    widget.sessionIdController.text = "S_$milliseconds";
+    ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text =
+        milliseconds.toString();
+    ref.read(deviceDataMap[widget.sc.device.name]!).sessionIdController.text =
+        "S_$milliseconds";
   }
 
   @override
@@ -195,7 +188,9 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
             children: [
               TextInput(
                   data: TestInputData(
-                      controller: widget.customerNameController,
+                      controller: ref
+                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .customerNameController,
                       validatorFun: (val) {
                         if (val!.isEmpty) {
                           return "Customer Name cannot be empty";
@@ -216,7 +211,9 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                     flex: 1,
                     child: TextInput(
                         data: TestInputData(
-                            controller: widget.batchNoController,
+                            controller: ref
+                                .watch(deviceDataMap[widget.sc.device.name]!)
+                                .batchNoController,
                             validatorFun: (val) {
                               if (val!.isEmpty) {
                                 return "Batch No cannot be empty";
@@ -263,7 +260,9 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
               ),
               TextInput(
                   data: TestInputData(
-                      controller: widget.operatorIdController,
+                      controller: ref
+                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .operatorIdController,
                       validatorFun: (val) {
                         if (val!.isEmpty) {
                           return "Operator Id cannot be empty";
@@ -280,7 +279,9 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
               ),
               TextInput(
                   data: TestInputData(
-                      controller: widget.sessionIdController,
+                      controller: ref
+                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .sessionIdController,
                       validatorFun: (val) {
                         if (val!.isEmpty) {
                           return "Session Id cannot be empty";
@@ -299,7 +300,9 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                     flex: 1,
                     child: TextInput(
                         data: TestInputData(
-                            controller: widget.testIdController,
+                            controller: ref
+                                .watch(deviceDataMap[widget.sc.device.name]!)
+                                .testIdController,
                             enabled: false,
                             validatorFun: (val) {
                               return null;
@@ -313,7 +316,9 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                     flex: 1,
                     child: TextInput(
                         data: TestInputData(
-                            controller: widget.dateController,
+                            controller: ref
+                                .watch(deviceDataMap[widget.sc.device.name]!)
+                                .dateController,
                             enabled: false,
                             validatorFun: (val) {
                               return null;

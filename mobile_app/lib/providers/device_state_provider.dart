@@ -15,6 +15,18 @@ class DeviceState extends ChangeNotifier {
   String deviceName = "";
   TreatmentConfig? config;
 
+  // Left pannel date
+
+  TextEditingController customerNameController = TextEditingController();
+  TextEditingController batchNoController = TextEditingController();
+  TextEditingController operatorIdController = TextEditingController();
+  TextEditingController sessionIdController = TextEditingController();
+  TextEditingController testIdController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+
+  int dropDownIndex = -1;
+  //
+
   // Mode 1 data
 
   TextEditingController voltageControllerMode01 = TextEditingController();
@@ -34,6 +46,10 @@ class DeviceState extends ChangeNotifier {
   bool started = false;
   bool mode01SaveClicked = false;
   bool mode01Passed = false;
+
+  void updateStatus() {
+    notifyListeners();
+  }
 
   //=========================
 

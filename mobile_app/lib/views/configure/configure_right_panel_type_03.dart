@@ -14,23 +14,11 @@ class ConfigureRightPanelType03 extends ConsumerStatefulWidget {
   final ScanResult sc;
   final GlobalKey<FormState> keyForm;
   final void Function() updateTestId;
-  final TextEditingController customerNameController;
-  final TextEditingController batchNoController;
-  final TextEditingController operatorIdController;
-  final TextEditingController sessionIdController;
-  final TextEditingController testIdController;
-  final TextEditingController dateController;
   const ConfigureRightPanelType03(
       {Key? key,
       required this.sc,
       required this.keyForm,
-      required this.updateTestId,
-      required this.customerNameController,
-      required this.batchNoController,
-      required this.operatorIdController,
-      required this.sessionIdController,
-      required this.testIdController,
-      required this.dateController})
+      required this.updateTestId})
       : super(key: key);
 
   @override
@@ -356,6 +344,17 @@ class _ConfigureRightPanelType03State
                                 .watch(deviceDataMap[widget.sc.device.name]!)
                                 .spotDataGraph02Mode03
                                 .clear();
+
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .xMaxGraph01Mode03 = 0.0;
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .yMaxGraph01Mode03 = 0.2;
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .yMaxGraph02Mode03 = 0.0;
+
                             ref
                                     .read(deviceDataMap[widget.sc.device.name]!)
                                     .started =
@@ -363,6 +362,9 @@ class _ConfigureRightPanelType03State
                                     .watch(
                                         deviceDataMap[widget.sc.device.name]!)
                                     .started;
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .updateStatus();
                           },
                           child: const Text(
                             'Stop',
@@ -468,6 +470,7 @@ class _ConfigureRightPanelType03State
             .text);
     ref.read(deviceDataMap[widget.sc.device.name]!).started =
         !ref.watch(deviceDataMap[widget.sc.device.name]!).started;
+    ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
 
     Timer.periodic(
         Duration(

@@ -10,23 +10,11 @@ class ConfigureRightPanelType02 extends ConsumerStatefulWidget {
   final ScanResult sc;
   final GlobalKey<FormState> keyForm;
   final void Function() updateTestId;
-  final TextEditingController customerNameController;
-  final TextEditingController batchNoController;
-  final TextEditingController operatorIdController;
-  final TextEditingController sessionIdController;
-  final TextEditingController testIdController;
-  final TextEditingController dateController;
   const ConfigureRightPanelType02(
       {Key? key,
       required this.sc,
       required this.keyForm,
-      required this.updateTestId,
-      required this.customerNameController,
-      required this.batchNoController,
-      required this.operatorIdController,
-      required this.sessionIdController,
-      required this.testIdController,
-      required this.dateController})
+      required this.updateTestId})
       : super(key: key);
 
   @override
@@ -112,7 +100,7 @@ class _ConfigureRightPanelType02State
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
               .currentProtocol ==
-          0) {
+          2) {
         return (ref
             .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
             .voltage
@@ -429,6 +417,9 @@ class _ConfigureRightPanelType02State
                                     .watch(
                                         deviceDataMap[widget.sc.device.name]!)
                                     .started;
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .updateStatus();
                           },
                           child: const Text(
                             'Stop',
@@ -500,6 +491,9 @@ class _ConfigureRightPanelType02State
                                       .watch(
                                           deviceDataMap[widget.sc.device.name]!)
                                       .started;
+                              ref
+                                  .read(deviceDataMap[widget.sc.device.name]!)
+                                  .updateStatus();
                             }
                           },
                           child: const Text(

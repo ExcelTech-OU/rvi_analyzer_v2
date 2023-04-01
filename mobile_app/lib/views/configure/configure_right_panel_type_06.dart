@@ -14,24 +14,12 @@ class ConfigureRightPanelType06 extends ConsumerStatefulWidget {
   final ScanResult sc;
   final GlobalKey<FormState> keyForm;
   final void Function() updateTestId;
-  final TextEditingController customerNameController;
-  final TextEditingController batchNoController;
-  final TextEditingController operatorIdController;
-  final TextEditingController sessionIdController;
-  final TextEditingController testIdController;
-  final TextEditingController dateController;
-  const ConfigureRightPanelType06(
-      {Key? key,
-      required this.sc,
-      required this.keyForm,
-      required this.updateTestId,
-      required this.customerNameController,
-      required this.batchNoController,
-      required this.operatorIdController,
-      required this.sessionIdController,
-      required this.testIdController,
-      required this.dateController})
-      : super(key: key);
+  const ConfigureRightPanelType06({
+    Key? key,
+    required this.sc,
+    required this.keyForm,
+    required this.updateTestId,
+  }) : super(key: key);
 
   @override
   ConsumerState<ConfigureRightPanelType06> createState() =>
@@ -56,7 +44,7 @@ class _ConfigureRightPanelType06State
                 .watch(
                     ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
                 .currentProtocol ==
-            5) {
+            6) {
           double currentReadingVoltage = ref
               .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
               .voltage;
@@ -65,7 +53,7 @@ class _ConfigureRightPanelType06State
               .current;
 
           double currentReadingRes =
-              currentReadingVoltage / currentReadingVoltage;
+              currentReadingVoltage / currentReadingCurrent;
           int currentReadingTem = ref
               .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
               .temperature;
@@ -393,6 +381,23 @@ class _ConfigureRightPanelType06State
                                 .watch(deviceDataMap[widget.sc.device.name]!)
                                 .spotDataGraph02Mode06
                                 .clear();
+
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .xMaxGraph01Mode06 = 0.0;
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .yMaxGraph01Mode06 = 0.2;
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .yMaxGraph02Mode06 = 0.0;
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .yMaxGraph03Mode06 = 0.0;
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .timeMode06 = 0;
+
                             ref
                                     .read(deviceDataMap[widget.sc.device.name]!)
                                     .started =
@@ -400,6 +405,10 @@ class _ConfigureRightPanelType06State
                                     .watch(
                                         deviceDataMap[widget.sc.device.name]!)
                                     .started;
+
+                            ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .updateStatus();
                           },
                           child: const Text(
                             'Stop',
@@ -490,6 +499,8 @@ class _ConfigureRightPanelType06State
 
     ref.read(deviceDataMap[widget.sc.device.name]!).started =
         !ref.watch(deviceDataMap[widget.sc.device.name]!).started;
+
+    ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
 
     Timer.periodic(const Duration(seconds: 1), (Timer t) => setGraphValues());
   }

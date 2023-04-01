@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/views/common/drop_down.dart';
 import 'package:rvi_analyzer/views/configure/configure_left_panel.dart';
 import 'package:rvi_analyzer/views/configure/configure_right_panel_type_01.dart';
@@ -10,143 +12,104 @@ import 'package:rvi_analyzer/views/configure/configure_right_panel_type_04.dart'
 import 'package:rvi_analyzer/views/configure/configure_right_panel_type_05.dart';
 import 'package:rvi_analyzer/views/configure/configure_right_panel_type_06.dart';
 
-class ConfigureLayout extends StatefulWidget {
+class ConfigureLayout extends ConsumerStatefulWidget {
   final ScanResult sc;
   const ConfigureLayout({Key? key, required this.sc}) : super(key: key);
 
   @override
-  State<ConfigureLayout> createState() => _ConfigureLayoutState();
+  ConsumerState<ConfigureLayout> createState() => _ConfigureLayoutState();
 }
 
-class _ConfigureLayoutState extends State<ConfigureLayout> {
+class _ConfigureLayoutState extends ConsumerState<ConfigureLayout> {
   int selectedModeId = -1;
   Widget secondWidget = const SizedBox.shrink();
   final _formKey = GlobalKey<FormState>();
-
-  final customerNameController = TextEditingController();
-  final batchNoController = TextEditingController();
-  final operatorIdController = TextEditingController();
-  final sessionIdController = TextEditingController();
-  final testIdController = TextEditingController();
-  final dateController = TextEditingController();
 
   void setDropDownIndex(DropDownItem dropDownItem) {
     setState(() {
       selectedModeId = dropDownItem.index;
       if (dropDownItem.index == 0) {
-        customerNameController.text = "";
-        batchNoController.text = "";
-        operatorIdController.text = "";
-
         updateDisabledParams();
 
         secondWidget = ConfigureRightPanelType01(
-            updateTestId: updateTestID,
-            sc: widget.sc,
-            keyForm: _formKey,
-            batchNoController: batchNoController,
-            customerNameController: customerNameController,
-            dateController: dateController,
-            operatorIdController: operatorIdController,
-            sessionIdController: sessionIdController,
-            testIdController: testIdController);
+            updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
       } else if (dropDownItem.index == 1) {
-        customerNameController.text = "";
-        batchNoController.text = "";
-        operatorIdController.text = "";
         updateDisabledParams();
         secondWidget = ConfigureRightPanelType02(
-            updateTestId: updateTestID,
-            sc: widget.sc,
-            keyForm: _formKey,
-            batchNoController: batchNoController,
-            customerNameController: customerNameController,
-            dateController: dateController,
-            operatorIdController: operatorIdController,
-            sessionIdController: sessionIdController,
-            testIdController: testIdController);
+            updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
       } else if (dropDownItem.index == 2) {
-        customerNameController.text = "";
-        batchNoController.text = "";
-        operatorIdController.text = "";
         updateDisabledParams();
         secondWidget = ConfigureRightPanelType03(
-            updateTestId: updateTestID,
-            sc: widget.sc,
-            keyForm: _formKey,
-            batchNoController: batchNoController,
-            customerNameController: customerNameController,
-            dateController: dateController,
-            operatorIdController: operatorIdController,
-            sessionIdController: sessionIdController,
-            testIdController: testIdController);
+            updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
       } else if (dropDownItem.index == 3) {
-        customerNameController.text = "";
-        batchNoController.text = "";
-        operatorIdController.text = "";
         updateDisabledParams();
         secondWidget = ConfigureRightPanelType04(
-            updateTestId: updateTestID,
-            sc: widget.sc,
-            keyForm: _formKey,
-            batchNoController: batchNoController,
-            customerNameController: customerNameController,
-            dateController: dateController,
-            operatorIdController: operatorIdController,
-            sessionIdController: sessionIdController,
-            testIdController: testIdController);
+            updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
       } else if (dropDownItem.index == 4) {
-        customerNameController.text = "";
-        batchNoController.text = "";
-        operatorIdController.text = "";
         updateDisabledParams();
         secondWidget = ConfigureRightPanelType05(
-            updateTestId: updateTestID,
-            sc: widget.sc,
-            keyForm: _formKey,
-            batchNoController: batchNoController,
-            customerNameController: customerNameController,
-            dateController: dateController,
-            operatorIdController: operatorIdController,
-            sessionIdController: sessionIdController,
-            testIdController: testIdController);
+            updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
       } else if (dropDownItem.index == 5) {
-        customerNameController.text = "";
-        batchNoController.text = "";
-        operatorIdController.text = "";
         updateDisabledParams();
         secondWidget = ConfigureRightPanelType06(
-            updateTestId: updateTestID,
-            sc: widget.sc,
-            keyForm: _formKey,
-            batchNoController: batchNoController,
-            customerNameController: customerNameController,
-            dateController: dateController,
-            operatorIdController: operatorIdController,
-            sessionIdController: sessionIdController,
-            testIdController: testIdController);
+            updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
       }
     });
+
+    // ref.read(deviceDataMap[widget.sc.device.name]!).dropDownIndex =
+    //     dropDownItem.index;
   }
+
+  void updateSecondWidget(int index) {
+    if (index == 0) {
+      secondWidget = ConfigureRightPanelType01(
+          updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
+    } else if (index == 1) {
+      secondWidget = ConfigureRightPanelType02(
+          updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
+    } else if (index == 2) {
+      secondWidget = ConfigureRightPanelType03(
+          updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
+    } else if (index == 3) {
+      secondWidget = ConfigureRightPanelType04(
+          updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
+    } else if (index == 4) {
+      secondWidget = ConfigureRightPanelType05(
+          updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
+    } else if (index == 5) {
+      secondWidget = ConfigureRightPanelType06(
+          updateTestId: updateTestID, sc: widget.sc, keyForm: _formKey);
+    }
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   if (ref.read(deviceDataMap[widget.sc.device.name]!).dropDownIndex != -1) {
+  //     updateSecondWidget(
+  //         ref.read(deviceDataMap[widget.sc.device.name]!).dropDownIndex);
+  //   }
+  // }
 
   void updateDisabledParams() {
     DateTime now = DateTime.now();
     var formatter = DateFormat('yyyy-MM-dd');
     String date = formatter.format(now);
-    dateController.text = date;
+    ref.watch(deviceDataMap[widget.sc.device.name]!).dateController.text = date;
 
     int milliseconds = now.millisecondsSinceEpoch;
-    testIdController.text = milliseconds.toString();
-    sessionIdController.text = "S_$milliseconds";
+    ref.watch(deviceDataMap[widget.sc.device.name]!).testIdController.text =
+        milliseconds.toString();
+    ref.watch(deviceDataMap[widget.sc.device.name]!).sessionIdController.text =
+        "S_$milliseconds";
   }
 
   void updateTestID() {
     DateTime now = DateTime.now();
     int milliseconds = now.millisecondsSinceEpoch;
 
-    setState(() {
-      testIdController.text = milliseconds.toString();
-    });
+    ref.watch(deviceDataMap[widget.sc.device.name]!).testIdController.text =
+        milliseconds.toString();
   }
 
   @override
@@ -171,13 +134,7 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
                             sc: widget.sc,
                             defaultIndex: selectedModeId,
                             updateIndex: setDropDownIndex,
-                            keyForm: _formKey,
-                            batchNoController: batchNoController,
-                            customerNameController: customerNameController,
-                            dateController: dateController,
-                            operatorIdController: operatorIdController,
-                            sessionIdController: sessionIdController,
-                            testIdController: testIdController),
+                            keyForm: _formKey),
                         const Spacer(),
                         selectedModeId == -1
                             ? const SizedBox.shrink()
@@ -202,13 +159,7 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
                             sc: widget.sc,
                             defaultIndex: selectedModeId,
                             updateIndex: setDropDownIndex,
-                            keyForm: _formKey,
-                            batchNoController: batchNoController,
-                            customerNameController: customerNameController,
-                            dateController: dateController,
-                            operatorIdController: operatorIdController,
-                            sessionIdController: sessionIdController,
-                            testIdController: testIdController),
+                            keyForm: _formKey),
                         const SizedBox(height: 15),
                         selectedModeId == -1
                             ? const SizedBox.shrink()
