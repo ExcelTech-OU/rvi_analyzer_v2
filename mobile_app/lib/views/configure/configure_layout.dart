@@ -20,7 +20,6 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
   int selectedModeId = -1;
   Widget secondWidget = const SizedBox.shrink();
   final _formKey = GlobalKey<FormState>();
-  bool started = false;
 
   final customerNameController = TextEditingController();
   final batchNoController = TextEditingController();
@@ -40,7 +39,6 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
         updateDisabledParams();
 
         secondWidget = ConfigureRightPanelType01(
-            updateStarted: updateStarted,
             updateTestId: updateTestID,
             sc: widget.sc,
             keyForm: _formKey,
@@ -56,7 +54,6 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
         operatorIdController.text = "";
         updateDisabledParams();
         secondWidget = ConfigureRightPanelType02(
-            updateStarted: updateStarted,
             updateTestId: updateTestID,
             sc: widget.sc,
             keyForm: _formKey,
@@ -72,7 +69,6 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
         operatorIdController.text = "";
         updateDisabledParams();
         secondWidget = ConfigureRightPanelType03(
-            updateStarted: updateStarted,
             updateTestId: updateTestID,
             sc: widget.sc,
             keyForm: _formKey,
@@ -88,7 +84,6 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
         operatorIdController.text = "";
         updateDisabledParams();
         secondWidget = ConfigureRightPanelType04(
-            updateStarted: updateStarted,
             updateTestId: updateTestID,
             sc: widget.sc,
             keyForm: _formKey,
@@ -111,12 +106,6 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
     int milliseconds = now.millisecondsSinceEpoch;
     testIdController.text = milliseconds.toString();
     sessionIdController.text = "S_$milliseconds";
-  }
-
-  void updateStarted() {
-    setState(() {
-      started = !started;
-    });
   }
 
   void updateTestID() {
@@ -151,7 +140,6 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
                             defaultIndex: selectedModeId,
                             updateIndex: setDropDownIndex,
                             keyForm: _formKey,
-                            started: started,
                             batchNoController: batchNoController,
                             customerNameController: customerNameController,
                             dateController: dateController,
@@ -183,7 +171,6 @@ class _ConfigureLayoutState extends State<ConfigureLayout> {
                             defaultIndex: selectedModeId,
                             updateIndex: setDropDownIndex,
                             keyForm: _formKey,
-                            started: started,
                             batchNoController: batchNoController,
                             customerNameController: customerNameController,
                             dateController: dateController,

@@ -9,7 +9,6 @@ import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 class ConfigureRightPanelType02 extends ConsumerStatefulWidget {
   final ScanResult sc;
   final GlobalKey<FormState> keyForm;
-  final void Function() updateStarted;
   final void Function() updateTestId;
   final TextEditingController customerNameController;
   final TextEditingController batchNoController;
@@ -21,7 +20,6 @@ class ConfigureRightPanelType02 extends ConsumerStatefulWidget {
       {Key? key,
       required this.sc,
       required this.keyForm,
-      required this.updateStarted,
       required this.updateTestId,
       required this.customerNameController,
       required this.batchNoController,
@@ -109,7 +107,7 @@ class _ConfigureRightPanelType02State
   }
 
   String getVoltage() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).startedMode02) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -125,7 +123,7 @@ class _ConfigureRightPanelType02State
   }
 
   String getResistance() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).startedMode02) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -141,7 +139,7 @@ class _ConfigureRightPanelType02State
   }
 
   String getTemp() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).startedMode02) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -213,7 +211,7 @@ class _ConfigureRightPanelType02State
                         labelText: 'Current (A)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .startedMode02)),
+                            .started)),
               ),
               const SizedBox(
                 width: 5,
@@ -243,7 +241,7 @@ class _ConfigureRightPanelType02State
                         labelText: 'Max voltage (V)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .startedMode02)),
+                            .started)),
               ),
             ],
           ),
@@ -373,7 +371,7 @@ class _ConfigureRightPanelType02State
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).startedMode02 &&
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started &&
                   ref
                       .watch(deviceDataMap[widget.sc.device.name]!)
                       .saveClickedMode02
@@ -411,7 +409,7 @@ class _ConfigureRightPanelType02State
           const SizedBox(
             height: 15,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).startedMode02
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started
               ? Row(
                   children: [
                     Expanded(
@@ -424,16 +422,13 @@ class _ConfigureRightPanelType02State
                           color: Colors.orange,
                           onPressed: () {
                             blue.stop(widget.sc.device);
-                            widget.updateStarted();
-                            setState(() {
-                              ref
-                                      .read(deviceDataMap[widget.sc.device.name]!)
-                                      .startedMode02 =
-                                  !ref
-                                      .watch(
-                                          deviceDataMap[widget.sc.device.name]!)
-                                      .startedMode02;
-                            });
+                            ref
+                                    .read(deviceDataMap[widget.sc.device.name]!)
+                                    .started =
+                                !ref
+                                    .watch(
+                                        deviceDataMap[widget.sc.device.name]!)
+                                    .started;
                           },
                           child: const Text(
                             'Stop',
@@ -498,16 +493,13 @@ class _ConfigureRightPanelType02State
                                               .text) *
                                           10)
                                       .toInt());
-                              setState(() {
-                                ref
-                                        .read(deviceDataMap[widget.sc.device.name]!)
-                                        .startedMode02 =
-                                    !ref
-                                        .watch(deviceDataMap[
-                                            widget.sc.device.name]!)
-                                        .startedMode02;
-                              });
-                              widget.updateStarted();
+                              ref
+                                      .read(deviceDataMap[widget.sc.device.name]!)
+                                      .started =
+                                  !ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started;
                             }
                           },
                           child: const Text(

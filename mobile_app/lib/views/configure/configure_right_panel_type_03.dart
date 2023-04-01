@@ -13,7 +13,6 @@ import 'package:rvi_analyzer/views/common/test_line.dart';
 class ConfigureRightPanelType03 extends ConsumerStatefulWidget {
   final ScanResult sc;
   final GlobalKey<FormState> keyForm;
-  final void Function() updateStarted;
   final void Function() updateTestId;
   final TextEditingController customerNameController;
   final TextEditingController batchNoController;
@@ -25,7 +24,6 @@ class ConfigureRightPanelType03 extends ConsumerStatefulWidget {
       {Key? key,
       required this.sc,
       required this.keyForm,
-      required this.updateStarted,
       required this.updateTestId,
       required this.customerNameController,
       required this.batchNoController,
@@ -46,13 +44,13 @@ class _ConfigureRightPanelType03State
   final _formKey = GlobalKey<FormState>();
 
   void setGraphValues() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).startedMode03) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
               .state ==
           6) {
-        ref.read(deviceDataMap[widget.sc.device.name]!).startedMode03 = false;
+        ref.read(deviceDataMap[widget.sc.device.name]!).started = false;
       } else {
         if (ref
                 .watch(
@@ -159,7 +157,7 @@ class _ConfigureRightPanelType03State
                         labelText: 'Starting voltage (V)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .startedMode03)),
+                            .started)),
               ),
               const SizedBox(
                 width: 5,
@@ -189,7 +187,7 @@ class _ConfigureRightPanelType03State
                         labelText: 'Desired Voltage (V)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .startedMode03)),
+                            .started)),
               ),
             ],
           ),
@@ -223,7 +221,7 @@ class _ConfigureRightPanelType03State
                         labelText: 'Max Current (A)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .startedMode03)),
+                            .started)),
               ),
             ],
           ),
@@ -257,7 +255,7 @@ class _ConfigureRightPanelType03State
                         labelText: 'Voltage resolution',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .startedMode03)),
+                            .started)),
               ),
               const SizedBox(
                 width: 5,
@@ -283,14 +281,14 @@ class _ConfigureRightPanelType03State
                         labelText: 'Change in time (Sec)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .startedMode03)),
+                            .started)),
               ),
             ],
           ),
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).startedMode03
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started
               ? Row(
                   children: [
                     Expanded(
@@ -315,7 +313,7 @@ class _ConfigureRightPanelType03State
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).startedMode03
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started
               ? Row(
                   children: [
                     Expanded(
@@ -337,7 +335,7 @@ class _ConfigureRightPanelType03State
                   ],
                 )
               : const SizedBox.shrink(),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).startedMode03
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started
               ? Row(
                   children: [
                     Expanded(
@@ -350,7 +348,6 @@ class _ConfigureRightPanelType03State
                           color: Colors.orange,
                           onPressed: () {
                             blue.stop(widget.sc.device);
-                            widget.updateStarted();
                             ref
                                 .watch(deviceDataMap[widget.sc.device.name]!)
                                 .spotDataGraph01Mode03
@@ -361,11 +358,11 @@ class _ConfigureRightPanelType03State
                                 .clear();
                             ref
                                     .read(deviceDataMap[widget.sc.device.name]!)
-                                    .startedMode03 =
+                                    .started =
                                 !ref
                                     .watch(
                                         deviceDataMap[widget.sc.device.name]!)
-                                    .startedMode03;
+                                    .started;
                           },
                           child: const Text(
                             'Stop',
@@ -469,8 +466,8 @@ class _ConfigureRightPanelType03State
             .watch(deviceDataMap[widget.sc.device.name]!)
             .desiredVoltageControllerMode03
             .text);
-    ref.read(deviceDataMap[widget.sc.device.name]!).startedMode03 =
-        !ref.watch(deviceDataMap[widget.sc.device.name]!).startedMode03;
+    ref.read(deviceDataMap[widget.sc.device.name]!).started =
+        !ref.watch(deviceDataMap[widget.sc.device.name]!).started;
 
     Timer.periodic(
         Duration(
@@ -480,12 +477,9 @@ class _ConfigureRightPanelType03State
                 .text)),
         (Timer t) => {
               setGraphValues(),
-              if (!ref
-                  .watch(deviceDataMap[widget.sc.device.name]!)
-                  .startedMode03)
+              if (!ref.watch(deviceDataMap[widget.sc.device.name]!).started)
                 {t.cancel()}
             });
-    widget.updateStarted();
   }
 
   @override

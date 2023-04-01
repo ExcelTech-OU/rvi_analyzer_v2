@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:rvi_analyzer/common/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,7 @@ class AchillesUIApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _portraitModeOnly();
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
@@ -30,5 +32,12 @@ class AchillesUIApp extends StatelessWidget {
             )
       },
     );
+  }
+
+  void _portraitModeOnly() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
   }
 }

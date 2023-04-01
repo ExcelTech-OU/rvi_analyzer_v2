@@ -31,7 +31,7 @@ class DeviceState extends ChangeNotifier {
   TextEditingController currentReadingResistanceControllerMode01 =
       TextEditingController();
 
-  bool mode01Started = false;
+  bool started = false;
   bool mode01SaveClicked = false;
   bool mode01Passed = false;
 
@@ -53,7 +53,6 @@ class DeviceState extends ChangeNotifier {
   TextEditingController currentReadingResistanceControllerMode02 =
       TextEditingController();
 
-  bool startedMode02 = false;
   bool saveClickedMode02 = false;
   bool passedMode02 = false;
 
@@ -61,29 +60,56 @@ class DeviceState extends ChangeNotifier {
 
   // Mode 03 data
 
-  TextEditingController startingVoltageController = TextEditingController();
-  TextEditingController desiredVoltageController = TextEditingController();
-  TextEditingController maxCurrentController = TextEditingController();
-  TextEditingController voltageResolutionController = TextEditingController();
-  TextEditingController changeInTimeController = TextEditingController();
+  TextEditingController startingVoltageControllerMode03 =
+      TextEditingController();
+  TextEditingController desiredVoltageControllerMode03 =
+      TextEditingController();
+  TextEditingController maxCurrentControllerMode03 = TextEditingController();
+  TextEditingController voltageResolutionControllerMode03 =
+      TextEditingController();
+  TextEditingController changeInTimeControllerMode03 = TextEditingController();
 
-  bool started = false;
-  bool saveClicked = false;
-  bool passed = false;
-  bool isNotInitial = false;
+  bool saveClickedMode03 = false;
+  bool passedMode03 = false;
+  bool isNotInitialMode03 = false;
 
   // voltage vs current graph
 
-  double xMaxGraph01 = 0.0;
-  double yMaxGraph01 = 0.2;
-  List<FlSpot> spotDataGraph01 = [];
-  double lastVoltage = 0.0;
+  double xMaxGraph01Mode03 = 0.0;
+  double yMaxGraph01Mode03 = 0.2;
+  List<FlSpot> spotDataGraph01Mode03 = [];
+  double lastVoltageMode03 = 0.0;
 
-  double xMaxGraph02 = 0.0;
-  double yMaxGraph02 = 0.0;
-  List<FlSpot> spotDataGraph02 = [];
+  double xMaxGraph02Mode03 = 0.0;
+  double yMaxGraph02Mode03 = 0.0;
+  List<FlSpot> spotDataGraph02Mode03 = [];
 
   //==============
+
+  // Mode 04 data
+  TextEditingController startingCurrentControllerMode04 =
+      TextEditingController();
+  TextEditingController desiredCurrentControllerMode04 =
+      TextEditingController();
+  TextEditingController maxVoltageControllerMode04 = TextEditingController();
+  TextEditingController currentResolutionControllerMode04 =
+      TextEditingController();
+  TextEditingController changeInTimeControllerMode04 = TextEditingController();
+
+  bool saveClickedMode04 = false;
+  bool passedMode04 = false;
+  bool isNotInitialMode04 = false;
+
+  double xMaxGraph01Mode04 = 0.0;
+  double yMaxGraph01Mode04 = 0.2;
+  List<FlSpot> spotDataGraph01Mode04 = [];
+  double lastVoltageMode04 = 0.0;
+
+  double xMaxGraph02Mode04 = 0.0;
+  double yMaxGraph02Mode04 = 0.0;
+  List<FlSpot> spotDataGraph02Mode04 = [];
+
+  //=====
 
   void setTreatmentConfig(TreatmentConfig? config) {
     this.config = config;

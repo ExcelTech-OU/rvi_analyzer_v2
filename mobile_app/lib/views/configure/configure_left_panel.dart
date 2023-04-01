@@ -1,17 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/views/common/drop_down.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:intl/intl.dart';
 import 'package:rvi_analyzer/views/configure/qr_scanner.dart';
 
-class ConfigureLeftPanel extends StatefulWidget {
+class ConfigureLeftPanel extends ConsumerStatefulWidget {
   final ScanResult sc;
   final void Function(DropDownItem) updateIndex;
   final int defaultIndex;
   final GlobalKey<FormState> keyForm;
-  final bool started;
   final TextEditingController customerNameController;
   final TextEditingController batchNoController;
   final TextEditingController operatorIdController;
@@ -25,7 +26,6 @@ class ConfigureLeftPanel extends StatefulWidget {
       required this.updateIndex,
       required this.defaultIndex,
       required this.keyForm,
-      required this.started,
       required this.customerNameController,
       required this.batchNoController,
       required this.operatorIdController,
@@ -35,10 +35,10 @@ class ConfigureLeftPanel extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<ConfigureLeftPanel> createState() => _ConfigureLeftPanelState();
+  ConsumerState<ConfigureLeftPanel> createState() => _ConfigureLeftPanelState();
 }
 
-class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
+class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
   List<DropDownItem> items = [];
 
   List<String> ModePositions = <String>[
@@ -150,7 +150,9 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                 child: CupertinoButton(
                   color: Colors.cyan,
                   padding: const EdgeInsets.all(0),
-                  onPressed: widget.started
+                  onPressed: ref
+                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .started
                       ? null
                       : () {
                           showModalBottomSheet(
@@ -202,7 +204,9 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                         }
                       },
                       labelText: 'Customer Name',
-                      enabled: !(widget.started))),
+                      enabled: !(ref
+                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .started))),
               const SizedBox(
                 height: 10,
               ),
@@ -223,7 +227,9 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                             labelText: 'Batch No',
                             textInputAction: TextInputAction.done,
                             obscureText: false,
-                            enabled: !widget.started)),
+                            enabled: !ref
+                                .watch(deviceDataMap[widget.sc.device.name]!)
+                                .started)),
                   ),
                   const SizedBox(width: 10),
                   SizedBox(
@@ -232,7 +238,9 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                     child: CupertinoButton(
                       color: Colors.cyan,
                       padding: const EdgeInsets.all(0),
-                      onPressed: widget.started
+                      onPressed: ref
+                              .watch(deviceDataMap[widget.sc.device.name]!)
+                              .started
                           ? null
                           : () {
                               Navigator.push(
@@ -264,7 +272,9 @@ class _ConfigureLeftPanelState extends State<ConfigureLeftPanel> {
                         }
                       },
                       labelText: 'Operator ID',
-                      enabled: !widget.started)),
+                      enabled: !ref
+                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .started)),
               const SizedBox(
                 height: 10,
               ),

@@ -9,7 +9,6 @@ import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 class ConfigureRightPanelType01 extends ConsumerStatefulWidget {
   final ScanResult sc;
   final GlobalKey<FormState> keyForm;
-  final void Function() updateStarted;
   final void Function() updateTestId;
   final TextEditingController customerNameController;
   final TextEditingController batchNoController;
@@ -21,7 +20,6 @@ class ConfigureRightPanelType01 extends ConsumerStatefulWidget {
       {Key? key,
       required this.sc,
       required this.keyForm,
-      required this.updateStarted,
       required this.updateTestId,
       required this.customerNameController,
       required this.batchNoController,
@@ -109,7 +107,7 @@ class _ConfigureRightPanelType01State
   }
 
   String getVoltage() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -125,7 +123,7 @@ class _ConfigureRightPanelType01State
   }
 
   String getCurrent() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -141,7 +139,7 @@ class _ConfigureRightPanelType01State
   }
 
   String getResistance() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -157,7 +155,7 @@ class _ConfigureRightPanelType01State
   }
 
   String getTemp() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -229,7 +227,7 @@ class _ConfigureRightPanelType01State
                         labelText: 'Voltage (V)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .mode01Started)),
+                            .started)),
               ),
               const SizedBox(
                 width: 5,
@@ -259,7 +257,7 @@ class _ConfigureRightPanelType01State
                         labelText: 'Max current (A)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .mode01Started)),
+                            .started)),
               ),
             ],
           ),
@@ -389,7 +387,7 @@ class _ConfigureRightPanelType01State
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started &&
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started &&
                   ref
                       .watch(deviceDataMap[widget.sc.device.name]!)
                       .mode01SaveClicked
@@ -427,7 +425,7 @@ class _ConfigureRightPanelType01State
           const SizedBox(
             height: 15,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started
               ? Row(
                   children: [
                     Expanded(
@@ -440,13 +438,12 @@ class _ConfigureRightPanelType01State
                           color: Colors.orange,
                           onPressed: () {
                             blue.stop(widget.sc.device);
-                            widget.updateStarted();
                             ref
                                     .read(deviceDataMap[widget.sc.device.name]!)
-                                    .mode01Started =
+                                    .started =
                                 !ref
                                     .read(deviceDataMap[widget.sc.device.name]!)
-                                    .mode01Started;
+                                    .started;
                           },
                           child: const Text(
                             'Stop',
@@ -513,12 +510,11 @@ class _ConfigureRightPanelType01State
                                       .toInt());
                               ref
                                       .read(deviceDataMap[widget.sc.device.name]!)
-                                      .mode01Started =
+                                      .started =
                                   !ref
                                       .read(
                                           deviceDataMap[widget.sc.device.name]!)
-                                      .mode01Started;
-                              widget.updateStarted();
+                                      .started;
                             }
                           },
                           child: const Text(
