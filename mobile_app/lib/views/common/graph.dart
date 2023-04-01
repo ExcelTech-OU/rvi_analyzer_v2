@@ -37,19 +37,10 @@ class _LineChartScreenState extends State<LineChartScreen> {
     super.initState();
   }
 
-  // void _updateValues() {
-  //   final Random _rand = Random();
-  //   final double _difference = 2 + (_rand.nextDouble() * 15);
-
-  //   targetMax =
-  //       3 + (_rand.nextDouble() * _difference * 0.75) - (_difference * 0.25);
-  //   for (int i = 0; i < minItems; i++) {
-  //     _values.add(BubbleValue<void>(2 + _rand.nextDouble() * _difference));
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
+    print(widget.values);
+    print("ADADADADADADDADADDAD");
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
       child: SizedBox(
@@ -72,7 +63,10 @@ class _LineChartScreenState extends State<LineChartScreen> {
           smoothCurves: true,
           backgroundDecorations: [
             GridDecoration(
+              gridWidth: 2,
               horizontalLegendPosition: HorizontalLegendPosition.start,
+              verticalAxisValueFromIndex: (value) =>
+                  (value * widget.verticalAxisStep).toString(),
               showVerticalGrid: true,
               showTopHorizontalValue: true,
               showVerticalValues: true,

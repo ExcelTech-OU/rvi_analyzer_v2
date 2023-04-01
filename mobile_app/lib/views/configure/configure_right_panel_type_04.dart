@@ -50,8 +50,8 @@ class _ConfigureRightPanelType04State
   final currentResolutionController = TextEditingController();
   final changeInTimeController = TextEditingController();
 
-  List<BubbleValue<void>> voltageValues = List.empty(growable: true);
-  List<BubbleValue<void>> tempValues = List.empty(growable: true);
+  List<BubbleValue<void>> voltageValues = [BubbleValue<void>(0)];
+  List<BubbleValue<void>> tempValues = [BubbleValue<void>(0)];
 
   bool started = false;
   bool saveClicked = false;
@@ -60,22 +60,6 @@ class _ConfigureRightPanelType04State
 
   @override
   Widget build(BuildContext context) {
-    if (started) {
-      if (ref
-              .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-              .currentProtocol ==
-          4) {
-        voltageValues.add(BubbleValue<void>(ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-            .voltage));
-        tempValues.add(BubbleValue<void>(ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-            .temperature
-            .toDouble()));
-      }
-    }
-
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     var isLandscape =
@@ -141,38 +125,6 @@ class _ConfigureRightPanelType04State
     );
   }
 
-  String getCurrent() {
-    if (started) {
-      if (ref
-              .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-              .currentProtocol ==
-          0) {
-        return (ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-            .current
-            .toString());
-      }
-    }
-    return "00";
-  }
-
-  String getResistance() {
-    if (started) {
-      if (ref
-              .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-              .currentProtocol ==
-          0) {
-        return (ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-            .resistance
-            .toStringAsFixed(3));
-      }
-    }
-    return "00";
-  }
-
   void setGraphValues() {
     if (started) {
       if (ref
@@ -188,7 +140,7 @@ class _ConfigureRightPanelType04State
                 .watch(
                     ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
                 .currentProtocol ==
-            0) {
+            4) {
           voltageValues.add(BubbleValue<void>(ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -377,7 +329,7 @@ class _ConfigureRightPanelType04State
                         flex: 1,
                         child: LineChartScreen(
                           horizontalAxisName: "Voltage",
-                          horizontalAxisStep: 2,
+                          horizontalAxisStep: 1,
                           values: voltageValues,
                           verticalAxisName: "Current",
                           verticalAxisStep:
@@ -396,7 +348,7 @@ class _ConfigureRightPanelType04State
                         flex: 1,
                         child: LineChartScreen(
                           horizontalAxisName: "Temperature",
-                          horizontalAxisStep: 3,
+                          horizontalAxisStep: 5,
                           values: tempValues,
                           verticalAxisName: "current",
                           verticalAxisStep:
@@ -421,6 +373,8 @@ class _ConfigureRightPanelType04State
                             voltageValues.clear();
                             tempValues.clear();
                             widget.updateStarted();
+                            voltageValues.add(BubbleValue<void>(0));
+                            tempValues.add(BubbleValue<void>(0));
                             setState(() {
                               started = !started;
                             });
