@@ -176,27 +176,21 @@ class _ConfigureRightPanelType01State
     double current = ref
         .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
         .current;
-    setState(() {
-      ref.read(deviceDataMap[widget.sc.device.name]!).mode01SaveClicked = true;
-    });
+    ref.read(deviceDataMap[widget.sc.device.name]!).mode01SaveClicked = true;
 
     if (double.parse(ref
                 .watch(deviceDataMap[widget.sc.device.name]!)
-                .minCurrentRangeController
+                .minCurrentRangeControllerMode01
                 .text) <
             current &&
         current <
             double.parse(ref
                 .watch(deviceDataMap[widget.sc.device.name]!)
-                .maxCurrentRangeController
+                .maxCurrentRangeControllerMode01
                 .text)) {
-      setState(() {
-        ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Passed;
-      });
+      ref.read(deviceDataMap[widget.sc.device.name]!).mode01Passed = true;
     } else {
-      setState(() {
-        ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Passed = false;
-      });
+      ref.read(deviceDataMap[widget.sc.device.name]!).mode01Passed = false;
     }
     widget.updateTestId();
   }
@@ -217,7 +211,7 @@ class _ConfigureRightPanelType01State
                         inputType: TextInputType.number,
                         controller: ref
                             .read(deviceDataMap[widget.sc.device.name]!)
-                            .voltageController,
+                            .voltageControllerMode01,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
                             return "Voltage cannot be empty";
@@ -247,7 +241,7 @@ class _ConfigureRightPanelType01State
                         inputType: TextInputType.number,
                         controller: ref
                             .read(deviceDataMap[widget.sc.device.name]!)
-                            .maxCurrentController,
+                            .maxCurrentControllerMode01,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
                             return "Max current cannot be empty";
@@ -287,7 +281,7 @@ class _ConfigureRightPanelType01State
                     data: TestInputData(
                         controller: ref
                             .read(deviceDataMap[widget.sc.device.name]!)
-                            .minCurrentRangeController,
+                            .minCurrentRangeControllerMode01,
                         inputType: TextInputType.number,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
@@ -315,7 +309,7 @@ class _ConfigureRightPanelType01State
                         inputType: TextInputType.number,
                         controller: ref
                             .read(deviceDataMap[widget.sc.device.name]!)
-                            .maxCurrentRangeController,
+                            .maxCurrentRangeControllerMode01,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
                             return "Max current cannot be empty";
@@ -352,7 +346,7 @@ class _ConfigureRightPanelType01State
                     data: TestInputData(
                         controller: ref
                             .read(deviceDataMap[widget.sc.device.name]!)
-                            .currentReadingVoltageController,
+                            .currentReadingVoltageControllerMode01,
                         inputType: TextInputType.number,
                         enabled: false,
                         validatorFun: (val) {
@@ -370,7 +364,7 @@ class _ConfigureRightPanelType01State
                         inputType: TextInputType.number,
                         controller: ref
                             .read(deviceDataMap[widget.sc.device.name]!)
-                            .currentReadingTemController,
+                            .currentReadingTemControllerMode01,
                         enabled: false,
                         validatorFun: (val) {
                           null;
@@ -386,7 +380,7 @@ class _ConfigureRightPanelType01State
               data: TestInputData(
                   controller: ref
                       .read(deviceDataMap[widget.sc.device.name]!)
-                      .currentReadingResistanceController,
+                      .currentReadingResistanceControllerMode01,
                   enabled: false,
                   validatorFun: (val) {
                     null;
@@ -506,14 +500,14 @@ class _ConfigureRightPanelType01State
                                   (double.parse(ref
                                               .read(deviceDataMap[
                                                   widget.sc.device.name]!)
-                                              .voltageController
+                                              .voltageControllerMode01
                                               .text) *
                                           10)
                                       .toInt(),
                                   (double.parse(ref
                                               .read(deviceDataMap[
                                                   widget.sc.device.name]!)
-                                              .maxCurrentController
+                                              .maxCurrentControllerMode01
                                               .text) *
                                           100)
                                       .toInt());

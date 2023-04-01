@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:rvi_analyzer/domain/configure_data.dart';
 import 'package:flutter/material.dart';
@@ -17,15 +16,18 @@ class DeviceState extends ChangeNotifier {
 
   // Mode 1 data
 
-  TextEditingController voltageController = TextEditingController();
-  TextEditingController maxCurrentController = TextEditingController();
-  TextEditingController minCurrentRangeController = TextEditingController();
-  TextEditingController maxCurrentRangeController = TextEditingController();
-
-  TextEditingController currentReadingVoltageController =
+  TextEditingController voltageControllerMode01 = TextEditingController();
+  TextEditingController maxCurrentControllerMode01 = TextEditingController();
+  TextEditingController minCurrentRangeControllerMode01 =
       TextEditingController();
-  TextEditingController currentReadingTemController = TextEditingController();
-  TextEditingController currentReadingResistanceController =
+  TextEditingController maxCurrentRangeControllerMode01 =
+      TextEditingController();
+
+  TextEditingController currentReadingVoltageControllerMode01 =
+      TextEditingController();
+  TextEditingController currentReadingTemControllerMode01 =
+      TextEditingController();
+  TextEditingController currentReadingResistanceControllerMode01 =
       TextEditingController();
 
   bool mode01Started = false;
@@ -33,6 +35,28 @@ class DeviceState extends ChangeNotifier {
   bool mode01Passed = false;
 
   //=========================
+
+  // Mode 02 data
+
+  TextEditingController currentControllerMode02 = TextEditingController();
+  TextEditingController maxVoltageControllerMode02 = TextEditingController();
+  TextEditingController minVoltageRangeControllerMode02 =
+      TextEditingController();
+  TextEditingController maxVoltageRangeControllerMode02 =
+      TextEditingController();
+
+  TextEditingController currentReadingCurrentControllerMode02 =
+      TextEditingController();
+  TextEditingController currentReadingTemControllerMode02 =
+      TextEditingController();
+  TextEditingController currentReadingResistanceControllerMode02 =
+      TextEditingController();
+
+  bool startedMode02 = false;
+  bool saveClickedMode02 = false;
+  bool passedMode02 = false;
+
+  //===================
 
   void setTreatmentConfig(TreatmentConfig? config) {
     this.config = config;
