@@ -120,7 +120,7 @@ class _ConfigureRightPanelType02State
     );
   }
 
-  String getCurrent() {
+  String getVoltage() {
     if (started) {
       if (ref
               .watch(
@@ -129,7 +129,7 @@ class _ConfigureRightPanelType02State
           0) {
         return (ref
             .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-            .current
+            .voltage
             .toString());
       }
     }
@@ -332,7 +332,7 @@ class _ConfigureRightPanelType02State
                         validatorFun: (val) {
                           null;
                         },
-                        labelText: 'Current : ${getCurrent()} A')),
+                        labelText: 'Voltage : ${getVoltage()} V')),
               ),
               const SizedBox(
                 width: 5,

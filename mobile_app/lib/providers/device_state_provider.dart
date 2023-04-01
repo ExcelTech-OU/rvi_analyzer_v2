@@ -15,6 +15,25 @@ class DeviceState extends ChangeNotifier {
   String deviceName = "";
   TreatmentConfig? config;
 
+  // Mode 1 data
+
+  TextEditingController voltageController = TextEditingController();
+  TextEditingController maxCurrentController = TextEditingController();
+  TextEditingController minCurrentRangeController = TextEditingController();
+  TextEditingController maxCurrentRangeController = TextEditingController();
+
+  TextEditingController currentReadingVoltageController =
+      TextEditingController();
+  TextEditingController currentReadingTemController = TextEditingController();
+  TextEditingController currentReadingResistanceController =
+      TextEditingController();
+
+  bool mode01Started = false;
+  bool mode01SaveClicked = false;
+  bool mode01Passed = false;
+
+  //=========================
+
   void setTreatmentConfig(TreatmentConfig? config) {
     this.config = config;
   }

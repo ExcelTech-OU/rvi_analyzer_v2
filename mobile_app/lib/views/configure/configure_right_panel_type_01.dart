@@ -40,18 +40,6 @@ class _ConfigureRightPanelType01State
     extends ConsumerState<ConfigureRightPanelType01> {
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
-  final voltageController = TextEditingController();
-  final maxCurrentController = TextEditingController();
-  final minCurrentRangeController = TextEditingController();
-  final maxCurrentRangeController = TextEditingController();
-
-  final currentReadingVoltageController = TextEditingController();
-  final currentReadingTemController = TextEditingController();
-  final currentReadingResistanceController = TextEditingController();
-
-  bool started = false;
-  bool saveClicked = false;
-  bool passed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +109,7 @@ class _ConfigureRightPanelType01State
   }
 
   String getVoltage() {
-    if (started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -136,8 +124,24 @@ class _ConfigureRightPanelType01State
     return "00";
   }
 
+  String getCurrent() {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started) {
+      if (ref
+              .watch(
+                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+              .currentProtocol ==
+          1) {
+        return (ref
+            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+            .current
+            .toString());
+      }
+    }
+    return "00";
+  }
+
   String getResistance() {
-    if (started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -153,7 +157,7 @@ class _ConfigureRightPanelType01State
   }
 
   String getTemp() {
-    if (started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -173,17 +177,25 @@ class _ConfigureRightPanelType01State
         .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
         .current;
     setState(() {
-      saveClicked = true;
+      ref.read(deviceDataMap[widget.sc.device.name]!).mode01SaveClicked = true;
     });
 
-    if (double.parse(minCurrentRangeController.text) < current &&
-        current < double.parse(maxCurrentRangeController.text)) {
+    if (double.parse(ref
+                .watch(deviceDataMap[widget.sc.device.name]!)
+                .minCurrentRangeController
+                .text) <
+            current &&
+        current <
+            double.parse(ref
+                .watch(deviceDataMap[widget.sc.device.name]!)
+                .maxCurrentRangeController
+                .text)) {
       setState(() {
-        passed = true;
+        ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Passed;
       });
     } else {
       setState(() {
-        passed = false;
+        ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Passed = false;
       });
     }
     widget.updateTestId();
@@ -203,7 +215,9 @@ class _ConfigureRightPanelType01State
                 child: TextInput(
                     data: TestInputData(
                         inputType: TextInputType.number,
-                        controller: voltageController,
+                        controller: ref
+                            .read(deviceDataMap[widget.sc.device.name]!)
+                            .voltageController,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
                             return "Voltage cannot be empty";
@@ -219,7 +233,9 @@ class _ConfigureRightPanelType01State
                           }
                         },
                         labelText: 'Voltage (V)',
-                        enabled: !started)),
+                        enabled: !ref
+                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .mode01Started)),
               ),
               const SizedBox(
                 width: 5,
@@ -229,7 +245,9 @@ class _ConfigureRightPanelType01State
                 child: TextInput(
                     data: TestInputData(
                         inputType: TextInputType.number,
-                        controller: maxCurrentController,
+                        controller: ref
+                            .read(deviceDataMap[widget.sc.device.name]!)
+                            .maxCurrentController,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
                             return "Max current cannot be empty";
@@ -245,7 +263,9 @@ class _ConfigureRightPanelType01State
                           }
                         },
                         labelText: 'Max current (A)',
-                        enabled: !started)),
+                        enabled: !ref
+                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .mode01Started)),
               ),
             ],
           ),
@@ -265,7 +285,9 @@ class _ConfigureRightPanelType01State
                 flex: 1,
                 child: TextInput(
                     data: TestInputData(
-                        controller: minCurrentRangeController,
+                        controller: ref
+                            .read(deviceDataMap[widget.sc.device.name]!)
+                            .minCurrentRangeController,
                         inputType: TextInputType.number,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
@@ -291,7 +313,9 @@ class _ConfigureRightPanelType01State
                 child: TextInput(
                     data: TestInputData(
                         inputType: TextInputType.number,
-                        controller: maxCurrentRangeController,
+                        controller: ref
+                            .read(deviceDataMap[widget.sc.device.name]!)
+                            .maxCurrentRangeController,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
                             return "Max current cannot be empty";
@@ -326,13 +350,15 @@ class _ConfigureRightPanelType01State
                 flex: 1,
                 child: TextInput(
                     data: TestInputData(
-                        controller: currentReadingVoltageController,
+                        controller: ref
+                            .read(deviceDataMap[widget.sc.device.name]!)
+                            .currentReadingVoltageController,
                         inputType: TextInputType.number,
                         enabled: false,
                         validatorFun: (val) {
                           null;
                         },
-                        labelText: 'Voltage : ${getVoltage()} V')),
+                        labelText: 'Current : ${getCurrent()} A')),
               ),
               const SizedBox(
                 width: 5,
@@ -342,7 +368,9 @@ class _ConfigureRightPanelType01State
                 child: TextInput(
                     data: TestInputData(
                         inputType: TextInputType.number,
-                        controller: currentReadingTemController,
+                        controller: ref
+                            .read(deviceDataMap[widget.sc.device.name]!)
+                            .currentReadingTemController,
                         enabled: false,
                         validatorFun: (val) {
                           null;
@@ -356,7 +384,9 @@ class _ConfigureRightPanelType01State
           ),
           TextInput(
               data: TestInputData(
-                  controller: currentReadingResistanceController,
+                  controller: ref
+                      .read(deviceDataMap[widget.sc.device.name]!)
+                      .currentReadingResistanceController,
                   enabled: false,
                   validatorFun: (val) {
                     null;
@@ -365,7 +395,10 @@ class _ConfigureRightPanelType01State
           const SizedBox(
             height: 10,
           ),
-          started && saveClicked
+          ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started &&
+                  ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .mode01SaveClicked
               ? Row(
                   children: [
                     Expanded(
@@ -373,11 +406,20 @@ class _ConfigureRightPanelType01State
                       child: SizedBox(
                         height: 55,
                         child: CupertinoButton(
-                          disabledColor: passed ? Colors.green : Colors.red,
+                          disabledColor: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .mode01Passed
+                              ? Colors.green
+                              : Colors.red,
                           color: Colors.cyan,
                           onPressed: null,
                           child: Text(
-                            passed ? 'PASS' : 'FAIL',
+                            ref
+                                    .watch(
+                                        deviceDataMap[widget.sc.device.name]!)
+                                    .mode01Passed
+                                ? 'PASS'
+                                : 'FAIL',
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 231, 230, 230),
                                 fontWeight: FontWeight.bold),
@@ -391,7 +433,7 @@ class _ConfigureRightPanelType01State
           const SizedBox(
             height: 15,
           ),
-          started
+          ref.watch(deviceDataMap[widget.sc.device.name]!).mode01Started
               ? Row(
                   children: [
                     Expanded(
@@ -405,9 +447,12 @@ class _ConfigureRightPanelType01State
                           onPressed: () {
                             blue.stop(widget.sc.device);
                             widget.updateStarted();
-                            setState(() {
-                              started = !started;
-                            });
+                            ref
+                                    .read(deviceDataMap[widget.sc.device.name]!)
+                                    .mode01Started =
+                                !ref
+                                    .read(deviceDataMap[widget.sc.device.name]!)
+                                    .mode01Started;
                           },
                           child: const Text(
                             'Stop',
@@ -458,14 +503,27 @@ class _ConfigureRightPanelType01State
                                 _formKey.currentState!.validate()) {
                               blue.runMode01(
                                   widget.sc.device,
-                                  (double.parse(voltageController.text) * 10)
+                                  (double.parse(ref
+                                              .read(deviceDataMap[
+                                                  widget.sc.device.name]!)
+                                              .voltageController
+                                              .text) *
+                                          10)
                                       .toInt(),
-                                  (double.parse(maxCurrentController.text) *
+                                  (double.parse(ref
+                                              .read(deviceDataMap[
+                                                  widget.sc.device.name]!)
+                                              .maxCurrentController
+                                              .text) *
                                           100)
                                       .toInt());
-                              setState(() {
-                                started = !started;
-                              });
+                              ref
+                                      .read(deviceDataMap[widget.sc.device.name]!)
+                                      .mode01Started =
+                                  !ref
+                                      .read(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .mode01Started;
                               widget.updateStarted();
                             }
                           },

@@ -89,7 +89,12 @@ class _SignInState extends State<SignIn> {
                                       ),
                                     ],
                                   ),
-                                  child: const SizedBox.shrink()),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(30.0),
+                                    child: Image(
+                                        image: AssetImage(
+                                            'assets/images/logo.png')),
+                                  )),
                             ),
                           ),
                           const SizedBox(

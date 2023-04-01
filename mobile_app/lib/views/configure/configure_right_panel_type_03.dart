@@ -326,6 +326,7 @@ class _ConfigureRightPanelType03State
                             widget.updateStarted();
                             setState(() {
                               spotDataGraph01.clear();
+                              spotDataGraph02.clear();
                               started = !started;
                             });
                           },

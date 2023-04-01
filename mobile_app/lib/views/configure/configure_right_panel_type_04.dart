@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:charts_painter/chart.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
-import 'package:rvi_analyzer/views/common/graph.dart';
+import 'package:rvi_analyzer/views/common/test_line.dart';
 
 class ConfigureRightPanelType04 extends ConsumerStatefulWidget {
   final ScanResult sc;
@@ -50,80 +50,19 @@ class _ConfigureRightPanelType04State
   final currentResolutionController = TextEditingController();
   final changeInTimeController = TextEditingController();
 
-  List<BubbleValue<void>> voltageValues = [BubbleValue<void>(0)];
-  List<BubbleValue<void>> tempValues = [BubbleValue<void>(0)];
-
   bool started = false;
   bool saveClicked = false;
   bool passed = false;
   bool isNotInitial = false;
 
-  @override
-  Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    var isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+  double xMaxGraph01 = 0.0;
+  double yMaxGraph01 = 0.2;
+  List<FlSpot> spotDataGraph01 = [];
+  double lastVoltage = 0.0;
 
-    return SizedBox(
-      width: isLandscape ? (width / 3) * 2 - 32 : width,
-      child: SizedBox(
-        child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 5,
-                  offset: const Offset(0, 0.5), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        "Mode 04",
-                        style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54),
-                      ),
-                      const SizedBox(
-                        width: 50,
-                      ),
-                      Text(
-                        "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
-                        style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 2.0,
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  getScrollView(),
-                  const SizedBox(
-                    height: 30.0,
-                  ),
-                ],
-              ),
-            )),
-      ),
-    );
-  }
+  double xMaxGraph02 = 0.0;
+  double yMaxGraph02 = 0.0;
+  List<FlSpot> spotDataGraph02 = [];
 
   void setGraphValues() {
     if (started) {
@@ -141,15 +80,45 @@ class _ConfigureRightPanelType04State
                     ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
                 .currentProtocol ==
             4) {
-          voltageValues.add(BubbleValue<void>(ref
-              .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-              .current));
-          tempValues.add(BubbleValue<void>(ref
-              .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-              .temperature
-              .toDouble()));
+          double currentReadingVoltage = ref
+              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+              .voltage;
+          double currentReadingCurrent = ref
+              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+              .current;
+          int currentReadingTem = ref
+              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+              .temperature;
+
+          //Update when x axis value groth
+          if (xMaxGraph01 < currentReadingCurrent) {
+            if (yMaxGraph01 < currentReadingVoltage) {
+              setState(() {
+                if (yMaxGraph02 < currentReadingTem) {
+                  yMaxGraph02 = currentReadingTem.toDouble();
+                }
+                xMaxGraph01 = currentReadingCurrent;
+                yMaxGraph01 = currentReadingVoltage;
+              });
+            } else {
+              setState(() {
+                xMaxGraph01 = currentReadingCurrent;
+              });
+            }
+          } else {
+            if (yMaxGraph01 < currentReadingVoltage) {
+              setState(() {
+                yMaxGraph01 = currentReadingVoltage;
+              });
+            }
+          }
+
+          setState(() {
+            spotDataGraph01
+                .add(FlSpot(currentReadingCurrent, currentReadingVoltage));
+            spotDataGraph02.add(
+                FlSpot(currentReadingCurrent, currentReadingTem.toDouble()));
+          });
         }
       }
     }
@@ -262,7 +231,7 @@ class _ConfigureRightPanelType04State
                             null;
                           }
                         },
-                        labelText: 'Max Current (A)',
+                        labelText: 'Max Voltage (A)',
                         enabled: !started)),
               ),
             ],
@@ -327,13 +296,13 @@ class _ConfigureRightPanelType04State
                   children: [
                     Expanded(
                         flex: 1,
-                        child: LineChartScreen(
-                          horizontalAxisName: "Voltage",
-                          horizontalAxisStep: 1,
-                          values: voltageValues,
-                          verticalAxisName: "Current",
-                          verticalAxisStep:
-                              double.parse(currentResolutionController.text),
+                        child: LineChartSample2(
+                          data: LineChartDataCustom(
+                              xAxisName: "Current",
+                              spotData: spotDataGraph01,
+                              xMax: xMaxGraph01,
+                              yAxisName: "Voltage",
+                              yMax: yMaxGraph01),
                         )),
                   ],
                 )
@@ -346,13 +315,13 @@ class _ConfigureRightPanelType04State
                   children: [
                     Expanded(
                         flex: 1,
-                        child: LineChartScreen(
-                          horizontalAxisName: "Temperature",
-                          horizontalAxisStep: 5,
-                          values: tempValues,
-                          verticalAxisName: "current",
-                          verticalAxisStep:
-                              double.parse(currentResolutionController.text),
+                        child: LineChartSample2(
+                          data: LineChartDataCustom(
+                              xAxisName: "Current",
+                              spotData: spotDataGraph02,
+                              xMax: xMaxGraph01,
+                              yAxisName: "Temperature",
+                              yMax: yMaxGraph02),
                         )),
                   ],
                 )
@@ -370,11 +339,9 @@ class _ConfigureRightPanelType04State
                           color: Colors.orange,
                           onPressed: () {
                             blue.stop(widget.sc.device);
-                            voltageValues.clear();
-                            tempValues.clear();
                             widget.updateStarted();
-                            voltageValues.add(BubbleValue<void>(0));
-                            tempValues.add(BubbleValue<void>(0));
+                            spotDataGraph01.clear();
+                            spotDataGraph02.clear();
                             setState(() {
                               started = !started;
                             });
@@ -426,31 +393,7 @@ class _ConfigureRightPanelType04State
                           onPressed: () {
                             if (widget.keyForm.currentState!.validate() &&
                                 _formKey.currentState!.validate()) {
-                              blue.runMode04(
-                                  widget.sc.device,
-                                  (double.parse(
-                                              startingCurrentController.text) *
-                                          100)
-                                      .toInt(),
-                                  (double.parse(desiredCurrentController.text) *
-                                          100)
-                                      .toInt(),
-                                  (double.parse(maxVoltageController.text) * 10)
-                                      .toInt(),
-                                  (double.parse(currentResolutionController
-                                              .text) *
-                                          100)
-                                      .toInt(),
-                                  (int.parse(changeInTimeController.text)));
-                              setState(() {
-                                started = !started;
-                              });
-                              Timer.periodic(
-                                  Duration(
-                                      seconds: int.parse(
-                                          changeInTimeController.text)),
-                                  (Timer t) => setGraphValues());
-                              widget.updateStarted();
+                              startMode4();
                             }
                           },
                           child: const Text(
@@ -465,6 +408,95 @@ class _ConfigureRightPanelType04State
                   ],
                 )
         ],
+      ),
+    );
+  }
+
+  void startMode4() {
+    blue.runMode04(
+        widget.sc.device,
+        (double.parse(startingCurrentController.text) * 100).toInt(),
+        (double.parse(desiredCurrentController.text) * 100).toInt(),
+        (double.parse(maxVoltageController.text) * 10).toInt(),
+        (double.parse(currentResolutionController.text) * 100).toInt(),
+        (int.parse(changeInTimeController.text)));
+    setState(() {
+      started = !started;
+    });
+
+    setState(() {
+      xMaxGraph01 = double.parse(desiredCurrentController.text);
+      started = !started;
+    });
+
+    Timer.periodic(Duration(seconds: int.parse(changeInTimeController.text)),
+        (Timer t) => setGraphValues());
+    widget.updateStarted();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    var isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    return SizedBox(
+      width: isLandscape ? (width / 3) * 2 - 32 : width,
+      child: SizedBox(
+        child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 5,
+                  offset: const Offset(0, 0.5), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        "Mode 04",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Text(
+                        "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 2.0,
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  getScrollView(),
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                ],
+              ),
+            )),
       ),
     );
   }

@@ -115,7 +115,12 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                   ),
                                 ],
                               ),
-                              child: const SizedBox.shrink()),
+                              child: const Padding(
+                                padding: EdgeInsets.all(30.0),
+                                child: Image(
+                                    image:
+                                        AssetImage('assets/images/logo.png')),
+                              )),
                         ),
                       ),
                       const Spacer(),
