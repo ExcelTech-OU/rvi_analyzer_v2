@@ -137,14 +137,11 @@ class DeviceState extends ChangeNotifier {
   //=====
 
   // Mode 06 data
-  TextEditingController startingCurrentControllerMode06 =
-      TextEditingController();
-  TextEditingController desiredCurrentControllerMode06 =
-      TextEditingController();
+  TextEditingController fixedCurrentControllerMode06 = TextEditingController();
+  TextEditingController timeDurationControllerMode06 = TextEditingController();
   TextEditingController maxVoltageControllerMode06 = TextEditingController();
-  TextEditingController currentResolutionControllerMode06 =
-      TextEditingController();
-  TextEditingController changeInTimeControllerMode06 = TextEditingController();
+
+  double timeMode06 = 0;
 
   bool saveClickedMode06 = false;
   bool passedMode06 = false;

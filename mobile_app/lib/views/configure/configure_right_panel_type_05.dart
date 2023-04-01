@@ -125,7 +125,7 @@ class _ConfigureRightPanelType05State
             if (ref
                     .watch(deviceDataMap[widget.sc.device.name]!)
                     .yMaxGraph01Mode05 <
-                currentReadingVoltage) {
+                currentReadingCurrent) {
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
                   .yMaxGraph01Mode05 = currentReadingCurrent;
@@ -269,9 +269,6 @@ class _ConfigureRightPanelType05State
               ),
             ],
           ),
-          const SizedBox(
-            height: 20.0,
-          ),
           ref.watch(deviceDataMap[widget.sc.device.name]!).started
               ? Row(
                   children: [
@@ -344,9 +341,6 @@ class _ConfigureRightPanelType05State
                   ],
                 )
               : const SizedBox.shrink(),
-          const SizedBox(
-            height: 10,
-          ),
           const SizedBox(
             height: 10,
           ),

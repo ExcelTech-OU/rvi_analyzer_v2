@@ -399,8 +399,8 @@ class Blue {
     return response;
   }
 
-  Future<bool> runMode06(BluetoothDevice device, int fixedVoltage,
-      int maxCurrent, int timeDuration) async {
+  Future<bool> runMode06(BluetoothDevice device, int fixedCurrent,
+      int maxVoltage, int timeDuration) async {
     List<BluetoothService> services = await device.discoverServices();
     bool response = false;
     for (var service in services) {
@@ -411,15 +411,15 @@ class Blue {
             await element
                 .write([
                   0x01,
-                  0x05,
-                  fixedVoltage,
+                  0x06,
+                  0x00,
+                  maxVoltage,
                   0x00,
                   0x00,
+                  (fixedCurrent / 255).truncate(),
+                  fixedCurrent - (fixedCurrent / 255).truncate() * 255,
                   0x00,
                   0x00,
-                  0x00,
-                  (maxCurrent / 255).truncate(),
-                  maxCurrent - (maxCurrent / 255).truncate() * 255,
                   0x00,
                   0x00,
                   0x00,
