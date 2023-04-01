@@ -111,6 +111,60 @@ class DeviceState extends ChangeNotifier {
 
   //=====
 
+  // Mode 05 data
+  TextEditingController fixedVoltageControllerMode05 = TextEditingController();
+  TextEditingController maxCurrentControllerMode05 = TextEditingController();
+  TextEditingController timeDurationControllerMode05 = TextEditingController();
+
+  bool saveClickedMode05 = false;
+  bool passedMode05 = false;
+  bool isNotInitialMode05 = false;
+
+  double timeMode05 = 0;
+  double xMaxGraph01Mode05 = 10;
+  double yMaxGraph01Mode05 = 0.2;
+  List<FlSpot> spotDataGraph01Mode05 = [];
+  double lastVoltageMode05 = 0.0;
+
+  double xMaxGraph02Mode05 = 0.0;
+  double yMaxGraph02Mode05 = 0.0;
+  List<FlSpot> spotDataGraph02Mode05 = [];
+
+  double xMaxGraph03Mode05 = 1;
+  double yMaxGraph03Mode05 = 0.0;
+  List<FlSpot> spotDataGraph03Mode05 = [];
+
+  //=====
+
+  // Mode 06 data
+  TextEditingController startingCurrentControllerMode06 =
+      TextEditingController();
+  TextEditingController desiredCurrentControllerMode06 =
+      TextEditingController();
+  TextEditingController maxVoltageControllerMode06 = TextEditingController();
+  TextEditingController currentResolutionControllerMode06 =
+      TextEditingController();
+  TextEditingController changeInTimeControllerMode06 = TextEditingController();
+
+  bool saveClickedMode06 = false;
+  bool passedMode06 = false;
+  bool isNotInitialMode06 = false;
+
+  double xMaxGraph01Mode06 = 0.0;
+  double yMaxGraph01Mode06 = 0.2;
+  List<FlSpot> spotDataGraph01Mode06 = [];
+  double lastVoltageMode06 = 0.0;
+
+  double xMaxGraph02Mode06 = 0.0;
+  double yMaxGraph02Mode06 = 0.0;
+  List<FlSpot> spotDataGraph02Mode06 = [];
+
+  double xMaxGraph03Mode06 = 0.0;
+  double yMaxGraph03Mode06 = 0.0;
+  List<FlSpot> spotDataGraph03Mode06 = [];
+
+  //=====
+
   void setTreatmentConfig(TreatmentConfig? config) {
     this.config = config;
   }

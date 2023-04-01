@@ -357,4 +357,86 @@ class Blue {
     }
     return response;
   }
+
+  Future<bool> runMode05(BluetoothDevice device, int fixedVoltage,
+      int maxCurrent, int timeDuration) async {
+    List<BluetoothService> services = await device.discoverServices();
+    bool response = false;
+    for (var service in services) {
+      if (service.uuid.toString() == "f0002001-0451-4000-b000-000000000000") {
+        for (var element in service.characteristics) {
+          if (element.uuid.toString() ==
+              "f0002001-0451-4000-b000-000000000000") {
+            await element
+                .write([
+                  0x01,
+                  0x05,
+                  fixedVoltage,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  (maxCurrent / 255).truncate(),
+                  maxCurrent - (maxCurrent / 255).truncate() * 255,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  timeDuration,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00
+                ])
+                .then((value) => response = true)
+                .onError((error, stackTrace) => response = false);
+          }
+        }
+      }
+    }
+    return response;
+  }
+
+  Future<bool> runMode06(BluetoothDevice device, int fixedVoltage,
+      int maxCurrent, int timeDuration) async {
+    List<BluetoothService> services = await device.discoverServices();
+    bool response = false;
+    for (var service in services) {
+      if (service.uuid.toString() == "f0002001-0451-4000-b000-000000000000") {
+        for (var element in service.characteristics) {
+          if (element.uuid.toString() ==
+              "f0002001-0451-4000-b000-000000000000") {
+            await element
+                .write([
+                  0x01,
+                  0x05,
+                  fixedVoltage,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  (maxCurrent / 255).truncate(),
+                  maxCurrent - (maxCurrent / 255).truncate() * 255,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  timeDuration,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00
+                ])
+                .then((value) => response = true)
+                .onError((error, stackTrace) => response = false);
+          }
+        }
+      }
+    }
+    return response;
+  }
 }

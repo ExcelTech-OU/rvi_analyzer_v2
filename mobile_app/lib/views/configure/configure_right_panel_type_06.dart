@@ -10,7 +10,7 @@ import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:rvi_analyzer/views/common/test_line.dart';
 
-class ConfigureRightPanelType05 extends ConsumerStatefulWidget {
+class ConfigureRightPanelType06 extends ConsumerStatefulWidget {
   final ScanResult sc;
   final GlobalKey<FormState> keyForm;
   final void Function() updateTestId;
@@ -20,7 +20,7 @@ class ConfigureRightPanelType05 extends ConsumerStatefulWidget {
   final TextEditingController sessionIdController;
   final TextEditingController testIdController;
   final TextEditingController dateController;
-  const ConfigureRightPanelType05(
+  const ConfigureRightPanelType06(
       {Key? key,
       required this.sc,
       required this.keyForm,
@@ -34,12 +34,12 @@ class ConfigureRightPanelType05 extends ConsumerStatefulWidget {
       : super(key: key);
 
   @override
-  ConsumerState<ConfigureRightPanelType05> createState() =>
-      _ConfigureRightPanelType05State();
+  ConsumerState<ConfigureRightPanelType06> createState() =>
+      _ConfigureRightPanelType06State();
 }
 
-class _ConfigureRightPanelType05State
-    extends ConsumerState<ConfigureRightPanelType05> {
+class _ConfigureRightPanelType06State
+    extends ConsumerState<ConfigureRightPanelType06> {
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
 
@@ -63,87 +63,57 @@ class _ConfigureRightPanelType05State
           double currentReadingCurrent = ref
               .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
               .current;
-
-          double currentReadingRes =
-              currentReadingVoltage / currentReadingVoltage;
           int currentReadingTem = ref
               .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
               .temperature;
 
-          ref.read(deviceDataMap[widget.sc.device.name]!).timeMode05 =
-              ref.read(deviceDataMap[widget.sc.device.name]!).timeMode05 + 1;
-
-          double time =
-              ref.read(deviceDataMap[widget.sc.device.name]!).timeMode05;
-
           //Update when x axis value groth
           if (ref
                   .watch(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode05 <
-              time) {
+                  .xMaxGraph01Mode06 <
+              currentReadingCurrent) {
             if (ref
                     .watch(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph01Mode05 <
-                currentReadingCurrent) {
-              //Tem
+                    .yMaxGraph01Mode06 <
+                currentReadingVoltage) {
               if (ref
                       .watch(deviceDataMap[widget.sc.device.name]!)
-                      .yMaxGraph02Mode05 <
+                      .yMaxGraph02Mode06 <
                   currentReadingTem) {
                 ref
                     .read(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph02Mode05 = currentReadingTem.toDouble();
+                    .yMaxGraph02Mode06 = currentReadingTem.toDouble();
               }
-
-              if (ref
-                      .watch(deviceDataMap[widget.sc.device.name]!)
-                      .yMaxGraph03Mode05 <
-                  currentReadingRes) {
-                ref
-                    .read(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph02Mode05 = currentReadingRes;
-              }
-
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode05 = ref
-                      .read(deviceDataMap[widget.sc.device.name]!)
-                      .xMaxGraph01Mode05 +
-                  10;
+                  .xMaxGraph01Mode06 = currentReadingCurrent;
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
-                  .yMaxGraph01Mode05 = currentReadingCurrent;
+                  .yMaxGraph01Mode06 = currentReadingVoltage;
             } else {
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode05 = ref
-                      .read(deviceDataMap[widget.sc.device.name]!)
-                      .xMaxGraph01Mode05 +
-                  10;
+                  .xMaxGraph01Mode06 = currentReadingCurrent;
             }
           } else {
             if (ref
                     .watch(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph01Mode05 <
+                    .yMaxGraph01Mode06 <
                 currentReadingVoltage) {
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
-                  .yMaxGraph01Mode05 = currentReadingCurrent;
+                  .yMaxGraph01Mode06 = currentReadingVoltage;
             }
           }
 
           ref
               .watch(deviceDataMap[widget.sc.device.name]!)
-              .spotDataGraph01Mode05
-              .add(FlSpot(time, currentReadingCurrent));
+              .spotDataGraph01Mode06
+              .add(FlSpot(currentReadingCurrent, currentReadingVoltage));
           ref
               .watch(deviceDataMap[widget.sc.device.name]!)
-              .spotDataGraph02Mode05
-              .add(FlSpot(time, currentReadingTem.toDouble()));
-          ref
-              .watch(deviceDataMap[widget.sc.device.name]!)
-              .spotDataGraph03Mode05
-              .add(FlSpot(time, currentReadingRes));
+              .spotDataGraph02Mode06
+              .add(FlSpot(currentReadingCurrent, currentReadingTem.toDouble()));
         }
       }
     }
@@ -187,22 +157,22 @@ class _ConfigureRightPanelType05State
                         inputType: TextInputType.number,
                         controller: ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .fixedVoltageControllerMode05,
+                            .startingCurrentControllerMode06,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
-                            return "Fixed Voltage cannot be empty";
+                            return "Fixed Current cannot be empty";
                           } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
                               .hasMatch(val)) {
                             return "Only allowed numbers";
                           } else if (!RegExp(
-                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1})?$")
+                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
                               .hasMatch(val)) {
-                            return "Fixed Voltage ONLY allowed one Place Value";
+                            return "Fixed current ONLY allowed one Place Value";
                           } else {
                             null;
                           }
                         },
-                        labelText: 'Fixed Voltage (V)',
+                        labelText: 'Fixed Current (A)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
                             .started)),
@@ -217,22 +187,22 @@ class _ConfigureRightPanelType05State
                         inputType: TextInputType.number,
                         controller: ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .maxCurrentControllerMode05,
+                            .desiredCurrentControllerMode06,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
-                            return "Max Current cannot be empty";
+                            return "Max Voltage cannot be empty";
                           } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
                               .hasMatch(val)) {
                             return "Only allowed numbers";
                           } else if (!RegExp(
                                   r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
                               .hasMatch(val)) {
-                            return "Max Current ONLY allowed two Place Value";
+                            return "Max Voltage ONLY allowed two Place Value";
                           } else {
                             null;
                           }
                         },
-                        labelText: 'Max Current (A)',
+                        labelText: 'Max Voltage (V)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
                             .started)),
@@ -251,7 +221,7 @@ class _ConfigureRightPanelType05State
                         inputType: TextInputType.number,
                         controller: ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
-                            .timeDurationControllerMode05,
+                            .maxVoltageControllerMode06,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
                             return "Time Duration cannot be empty";
@@ -262,7 +232,7 @@ class _ConfigureRightPanelType05State
                             null;
                           }
                         },
-                        labelText: 'Time Duration (Min)',
+                        labelText: 'Time Duration (Sec)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
                             .started)),
@@ -270,7 +240,7 @@ class _ConfigureRightPanelType05State
             ],
           ),
           const SizedBox(
-            height: 20.0,
+            height: 10.0,
           ),
           ref.watch(deviceDataMap[widget.sc.device.name]!).started
               ? Row(
@@ -279,67 +249,17 @@ class _ConfigureRightPanelType05State
                         flex: 1,
                         child: LineChartSample2(
                           data: LineChartDataCustom(
-                              xAxisName: "Time (Sec)",
+                              xAxisName: "Current",
                               spotData: ref
                                   .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .spotDataGraph01Mode05,
+                                  .spotDataGraph01Mode06,
                               xMax: ref
                                   .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .xMaxGraph01Mode05,
-                              yAxisName: "Current",
+                                  .xMaxGraph01Mode06,
+                              yAxisName: "Voltage",
                               yMax: ref
                                   .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .yMaxGraph01Mode05),
-                        )),
-                  ],
-                )
-              : const SizedBox.shrink(),
-          const SizedBox(
-            height: 20,
-          ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
-              ? Row(
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: LineChartSample2(
-                          data: LineChartDataCustom(
-                              xAxisName: "Time (Sec)",
-                              spotData: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .spotDataGraph03Mode05,
-                              xMax: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .xMaxGraph01Mode05,
-                              yAxisName: "Resistance",
-                              yMax: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .yMaxGraph03Mode05),
-                        )),
-                  ],
-                )
-              : const SizedBox.shrink(),
-          const SizedBox(
-            height: 20,
-          ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
-              ? Row(
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: LineChartSample2(
-                          data: LineChartDataCustom(
-                              xAxisName: "Time (Sec)",
-                              spotData: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .spotDataGraph02Mode05,
-                              xMax: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .xMaxGraph01Mode05,
-                              yAxisName: "Temperature",
-                              yMax: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .yMaxGraph02Mode05),
+                                  .yMaxGraph01Mode06),
                         )),
                   ],
                 )
@@ -347,6 +267,53 @@ class _ConfigureRightPanelType05State
           const SizedBox(
             height: 10,
           ),
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+              ? Row(
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: LineChartSample2(
+                          data: LineChartDataCustom(
+                              xAxisName: "Current",
+                              spotData: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .spotDataGraph02Mode06,
+                              xMax: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .xMaxGraph01Mode06,
+                              yAxisName: "Temperature",
+                              yMax: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .yMaxGraph02Mode06),
+                        )),
+                  ],
+                )
+              : const SizedBox.shrink(),
+          const SizedBox(
+            height: 10,
+          ),
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+              ? Row(
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: LineChartSample2(
+                          data: LineChartDataCustom(
+                              xAxisName: "Current",
+                              spotData: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .spotDataGraph02Mode06,
+                              xMax: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .xMaxGraph01Mode06,
+                              yAxisName: "Temperature",
+                              yMax: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .yMaxGraph02Mode06),
+                        )),
+                  ],
+                )
+              : const SizedBox.shrink(),
           const SizedBox(
             height: 10,
           ),
@@ -365,11 +332,11 @@ class _ConfigureRightPanelType05State
                             blue.stop(widget.sc.device);
                             ref
                                 .watch(deviceDataMap[widget.sc.device.name]!)
-                                .spotDataGraph01Mode05
+                                .spotDataGraph01Mode06
                                 .clear();
                             ref
                                 .watch(deviceDataMap[widget.sc.device.name]!)
-                                .spotDataGraph02Mode05
+                                .spotDataGraph02Mode06
                                 .clear();
                             ref
                                     .read(deviceDataMap[widget.sc.device.name]!)
@@ -426,7 +393,7 @@ class _ConfigureRightPanelType05State
                           onPressed: () {
                             if (widget.keyForm.currentState!.validate() &&
                                 _formKey.currentState!.validate()) {
-                              startMode5();
+                              startMode6();
                             }
                           },
                           child: const Text(
@@ -445,31 +412,43 @@ class _ConfigureRightPanelType05State
     );
   }
 
-  void startMode5() {
-    blue.runMode05(
+  void startMode6() {
+    blue.runMode06(
         widget.sc.device,
         (double.parse(ref
                     .watch(deviceDataMap[widget.sc.device.name]!)
-                    .fixedVoltageControllerMode05
-                    .text) *
-                10)
-            .toInt(),
-        (double.parse(ref
-                    .watch(deviceDataMap[widget.sc.device.name]!)
-                    .maxCurrentControllerMode05
+                    .startingCurrentControllerMode06
                     .text) *
                 100)
             .toInt(),
-        double.parse(ref
-                .watch(deviceDataMap[widget.sc.device.name]!)
-                .timeDurationControllerMode05
-                .text)
+        (double.parse(ref
+                    .watch(deviceDataMap[widget.sc.device.name]!)
+                    .desiredCurrentControllerMode06
+                    .text) *
+                100)
+            .toInt(),
+        (double.parse(ref
+                    .watch(deviceDataMap[widget.sc.device.name]!)
+                    .maxVoltageControllerMode06
+                    .text) *
+                10)
             .toInt());
 
+    ref.read(deviceDataMap[widget.sc.device.name]!).xMaxGraph01Mode06 =
+        double.parse(ref
+            .watch(deviceDataMap[widget.sc.device.name]!)
+            .desiredCurrentControllerMode06
+            .text);
     ref.read(deviceDataMap[widget.sc.device.name]!).started =
         !ref.watch(deviceDataMap[widget.sc.device.name]!).started;
 
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => setGraphValues());
+    Timer.periodic(
+        Duration(
+            seconds: int.parse(ref
+                .watch(deviceDataMap[widget.sc.device.name]!)
+                .changeInTimeControllerMode06
+                .text)),
+        (Timer t) => setGraphValues());
   }
 
   @override
@@ -504,7 +483,7 @@ class _ConfigureRightPanelType05State
                   Row(
                     children: [
                       const Text(
-                        "Mode 05",
+                        "Mode 06",
                         style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,

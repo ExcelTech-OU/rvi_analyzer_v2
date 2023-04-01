@@ -202,7 +202,7 @@ class _ConfigureRightPanelType04State
                             null;
                           }
                         },
-                        labelText: 'Desired Current (V)',
+                        labelText: 'Desired Current (A)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
                             .started)),
@@ -236,7 +236,7 @@ class _ConfigureRightPanelType04State
                             null;
                           }
                         },
-                        labelText: 'Max Voltage (A)',
+                        labelText: 'Max Voltage (V)',
                         enabled: !ref
                             .watch(deviceDataMap[widget.sc.device.name]!)
                             .started)),
