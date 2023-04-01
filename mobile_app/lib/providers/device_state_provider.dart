@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:rvi_analyzer/domain/configure_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -57,6 +58,32 @@ class DeviceState extends ChangeNotifier {
   bool passedMode02 = false;
 
   //===================
+
+  // Mode 03 data
+
+  TextEditingController startingVoltageController = TextEditingController();
+  TextEditingController desiredVoltageController = TextEditingController();
+  TextEditingController maxCurrentController = TextEditingController();
+  TextEditingController voltageResolutionController = TextEditingController();
+  TextEditingController changeInTimeController = TextEditingController();
+
+  bool started = false;
+  bool saveClicked = false;
+  bool passed = false;
+  bool isNotInitial = false;
+
+  // voltage vs current graph
+
+  double xMaxGraph01 = 0.0;
+  double yMaxGraph01 = 0.2;
+  List<FlSpot> spotDataGraph01 = [];
+  double lastVoltage = 0.0;
+
+  double xMaxGraph02 = 0.0;
+  double yMaxGraph02 = 0.0;
+  List<FlSpot> spotDataGraph02 = [];
+
+  //==============
 
   void setTreatmentConfig(TreatmentConfig? config) {
     this.config = config;
