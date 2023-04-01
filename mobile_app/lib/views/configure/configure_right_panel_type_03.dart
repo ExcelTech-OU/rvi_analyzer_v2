@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
-import 'package:rvi_analyzer/views/common/graph.dart';
 import 'package:rvi_analyzer/views/common/test_line.dart';
 
 class ConfigureRightPanelType03 extends ConsumerStatefulWidget {
@@ -58,15 +57,14 @@ class _ConfigureRightPanelType03State
 
   // voltage vs current graph
 
-  double xMin = 0.0;
-  double xMax = 0.0;
-  double yMin = 0.0;
-  double yMax = 0.0;
-  double xInterval = 1;
-  double yInterval = 1;
-  List<FlSpot> spotData = [];
-  double lastCurrent = 0.0;
+  double xMaxGraph01 = 0.0;
+  double yMaxGraph01 = 0.2;
+  List<FlSpot> spotDataGraph01 = [];
   double lastVoltage = 0.0;
+
+  double xMaxGraph02 = 0.0;
+  double yMaxGraph02 = 0.0;
+  List<FlSpot> spotDataGraph02 = [];
 
   void setGraphValues() {
     if (started) {
@@ -90,59 +88,39 @@ class _ConfigureRightPanelType03State
           double currentReadingCurrent = ref
               .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
               .current;
+          int currentReadingTem = ref
+              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+              .temperature;
 
           //Update when x axis value groth
-          if (xMax < currentReadingVoltage) {
-            if (yMax < currentReadingCurrent) {
-              List<FlSpot> tempSpotData = spotData;
-              for (var i = 0; i < tempSpotData.length; i++) {
-                FlSpot item = tempSpotData[i];
-                tempSpotData[i] = FlSpot(item.x * 2, item.x * 2);
-              }
-              tempSpotData
-                  .add(FlSpot(currentReadingVoltage, currentReadingCurrent));
+          if (xMaxGraph01 < currentReadingVoltage) {
+            if (yMaxGraph01 < currentReadingCurrent) {
               setState(() {
-                spotData = tempSpotData;
-                xMax = xMax * 2;
-                yMax = yMax * 2;
-                xInterval = xInterval * 2;
-                yInterval = yInterval * 2;
+                if (yMaxGraph02 < currentReadingTem) {
+                  yMaxGraph02 = currentReadingTem.toDouble();
+                }
+                xMaxGraph01 = currentReadingVoltage;
+                yMaxGraph01 = currentReadingCurrent;
               });
             } else {
-              List<FlSpot> tempSpotData = spotData;
-              for (var i = 0; i < tempSpotData.length; i++) {
-                FlSpot item = tempSpotData[i];
-                tempSpotData[i] = FlSpot(item.x, item.x * 2);
-              }
-              tempSpotData
-                  .add(FlSpot(currentReadingVoltage, currentReadingCurrent));
               setState(() {
-                spotData = tempSpotData;
-                xMax = xMax * 2;
-                xInterval = xInterval * 2;
+                xMaxGraph01 = currentReadingVoltage;
               });
             }
           } else {
-            if (yMax < currentReadingCurrent) {
-              List<FlSpot> tempSpotData = spotData;
-              for (var i = 0; i < tempSpotData.length; i++) {
-                FlSpot item = tempSpotData[i];
-                tempSpotData[i] = FlSpot(item.x * 2, item.x);
-              }
-              tempSpotData
-                  .add(FlSpot(currentReadingVoltage, currentReadingCurrent));
+            if (yMaxGraph01 < currentReadingCurrent) {
               setState(() {
-                spotData = tempSpotData;
-                yMax = yMax * 2;
-                yInterval = yInterval * 2;
-              });
-            } else {
-              setState(() {
-                spotData
-                    .add(FlSpot(currentReadingVoltage, currentReadingCurrent));
+                yMaxGraph01 = currentReadingCurrent;
               });
             }
           }
+
+          setState(() {
+            spotDataGraph01
+                .add(FlSpot(currentReadingVoltage, currentReadingCurrent));
+            spotDataGraph02.add(
+                FlSpot(currentReadingVoltage, currentReadingTem.toDouble()));
+          });
         }
       }
     }
@@ -153,8 +131,6 @@ class _ConfigureRightPanelType03State
   }
 
   Widget getScrollView() {
-    print("CCCCCCCCCCCCC");
-
     return Form(
       key: _formKey,
       onChanged: () {},
@@ -307,14 +283,10 @@ class _ConfigureRightPanelType03State
                         child: LineChartSample2(
                           data: LineChartDataCustom(
                               xAxisName: "Voltage",
-                              spotData: spotData,
-                              xMax: xMax,
-                              xMin: xMin,
+                              spotData: spotDataGraph01,
+                              xMax: xMaxGraph01,
                               yAxisName: "Current",
-                              yMax: yMax,
-                              yMin: yMin,
-                              xInterval: xInterval,
-                              yInterval: yInterval),
+                              yMax: yMaxGraph01),
                         )),
                   ],
                 )
@@ -322,22 +294,22 @@ class _ConfigureRightPanelType03State
           const SizedBox(
             height: 10,
           ),
-          // started
-          //     ? Row(
-          //         children: [
-          //           Expanded(
-          //               flex: 1,
-          //               child: LineChartScreen(
-          //                 horizontalAxisName: "Temperature",
-          //                 horizontalAxisStep: 5,
-          //                 values: [],
-          //                 verticalAxisName: "Voltage",
-          //                 verticalAxisStep:
-          //                     double.parse(voltageResolutionController.text),
-          //               )),
-          //         ],
-          //       )
-          //     : const SizedBox.shrink(),
+          started
+              ? Row(
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: LineChartSample2(
+                          data: LineChartDataCustom(
+                              xAxisName: "Voltage",
+                              spotData: spotDataGraph02,
+                              xMax: xMaxGraph01,
+                              yAxisName: "Temperature",
+                              yMax: yMaxGraph02),
+                        )),
+                  ],
+                )
+              : const SizedBox.shrink(),
           started
               ? Row(
                   children: [
@@ -353,6 +325,7 @@ class _ConfigureRightPanelType03State
                             blue.stop(widget.sc.device);
                             widget.updateStarted();
                             setState(() {
+                              spotDataGraph01.clear();
                               started = !started;
                             });
                           },
@@ -435,14 +408,7 @@ class _ConfigureRightPanelType03State
         (int.parse(changeInTimeController.text)));
 
     setState(() {
-      yMax = double.parse(maxCurrentController.text);
-      xMax = double.parse(desiredVoltageController.text);
-
-      xInterval =
-          double.parse(((xMax - startingVoltage) / 20).toStringAsFixed(2));
-
-      yInterval = yMax / 10;
-      xMin = startingVoltage;
+      xMaxGraph01 = double.parse(desiredVoltageController.text);
       started = !started;
     });
 
@@ -457,8 +423,6 @@ class _ConfigureRightPanelType03State
 
   @override
   Widget build(BuildContext context) {
-    print("DDDDDDDDDDDDD");
-
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     var isLandscape =

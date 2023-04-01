@@ -4,23 +4,15 @@ import 'package:flutter/material.dart';
 class LineChartDataCustom {
   String yAxisName;
   String xAxisName;
-  double xMin;
   double xMax;
-  double yMin;
   double yMax;
-  double xInterval;
-  double yInterval;
   List<FlSpot> spotData;
   LineChartDataCustom(
       {required this.xAxisName,
       required this.spotData,
       required this.xMax,
-      required this.xMin,
       required this.yAxisName,
-      required this.yMax,
-      required this.yMin,
-      required this.xInterval,
-      required this.yInterval});
+      required this.yMax});
 }
 
 class LineChartSample2 extends StatefulWidget {
@@ -108,8 +100,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           ),
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 30,
-            interval: widget.data.xInterval,
+            reservedSize: 10,
             getTitlesWidget: bottomTitleWidgets,
           ),
         ),
@@ -120,9 +111,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
           ),
           sideTitles: SideTitles(
             showTitles: true,
-            interval: widget.data.yInterval,
             getTitlesWidget: leftTitleWidgets,
-            reservedSize: 42,
+            reservedSize: 25,
           ),
         ),
       ),
@@ -130,14 +120,12 @@ class _LineChartSample2State extends State<LineChartSample2> {
         show: true,
         border: Border.all(color: const Color(0xff37434d)),
       ),
-      minX: widget.data.xMin,
       maxX: widget.data.xMax,
-      minY: widget.data.yMin,
       maxY: widget.data.yMax,
       lineBarsData: [
         LineChartBarData(
           spots: widget.data.spotData,
-          isCurved: true,
+          isCurved: false,
           gradient: LinearGradient(
             colors: gradientColors,
           ),
