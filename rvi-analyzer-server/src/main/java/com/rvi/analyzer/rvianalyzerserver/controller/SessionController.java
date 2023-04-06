@@ -2,9 +2,8 @@ package com.rvi.analyzer.rvianalyzerserver.controller;
 
 
 import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
-import com.rvi.analyzer.rvianalyzerserver.dto.DeviceDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.ModeOneDto;
-import com.rvi.analyzer.rvianalyzerserver.service.DeviceService;
+import com.rvi.analyzer.rvianalyzerserver.dto.ModeTwoDto;
 import com.rvi.analyzer.rvianalyzerserver.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,5 +20,10 @@ public class SessionController {
     @PostMapping(path = "/rvi/analyzer/v1/session/add/one")
     public Mono<CommonResponse> addModeOne(@RequestBody ModeOneDto modeOneDto){
         return sessionService.addModeOne(modeOneDto);
+    }
+
+    @PostMapping(path = "/rvi/analyzer/v1/session/add/two")
+    public Mono<CommonResponse> addModeTwo(@RequestBody ModeTwoDto modeTwoDto){
+        return sessionService.addModeTwo(modeTwoDto);
     }
 }

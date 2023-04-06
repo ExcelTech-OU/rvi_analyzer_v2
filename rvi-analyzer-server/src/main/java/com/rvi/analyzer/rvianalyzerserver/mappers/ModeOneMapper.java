@@ -9,5 +9,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ModeOneMapper {
     ModeOne modeOneDtoToModeOne(ModeOneDto modeOneDto);
+
     ModeOneDto modeOneToModeOneDto(ModeOne modeOne);
 }
