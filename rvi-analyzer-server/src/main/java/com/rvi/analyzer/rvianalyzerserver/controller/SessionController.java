@@ -3,6 +3,7 @@ package com.rvi.analyzer.rvianalyzerserver.controller;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
 import com.rvi.analyzer.rvianalyzerserver.dto.ModeOneDto;
+import com.rvi.analyzer.rvianalyzerserver.dto.ModeThreeDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.ModeTwoDto;
 import com.rvi.analyzer.rvianalyzerserver.service.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +26,10 @@ public class SessionController {
     @PostMapping(path = "/rvi/analyzer/v1/session/add/two")
     public Mono<CommonResponse> addModeTwo(@RequestBody ModeTwoDto modeTwoDto){
         return sessionService.addModeTwo(modeTwoDto);
+    }
+
+    @PostMapping(path = "/rvi/analyzer/v1/session/add/three")
+    public Mono<CommonResponse> addModeThree(@RequestBody ModeThreeDto modeThreeDto){
+        return sessionService.addModeThree(modeThreeDto);
     }
 }
