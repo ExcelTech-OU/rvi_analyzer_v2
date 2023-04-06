@@ -1,15 +1,17 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
+import com.rvi.analyzer.rvianalyzerserver.dto.ModeFourDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.ModeOneDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.ModeThreeDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.ModeTwoDto;
 import com.rvi.analyzer.rvianalyzerserver.entiy.ModeOne;
-import com.rvi.analyzer.rvianalyzerserver.entiy.ModeThree;
 import com.rvi.analyzer.rvianalyzerserver.entiy.ModeTwo;
+import com.rvi.analyzer.rvianalyzerserver.mappers.ModeFourMapper;
 import com.rvi.analyzer.rvianalyzerserver.mappers.ModeOneMapper;
 import com.rvi.analyzer.rvianalyzerserver.mappers.ModeThreeMapper;
 import com.rvi.analyzer.rvianalyzerserver.mappers.ModeTwoMapper;
+import com.rvi.analyzer.rvianalyzerserver.repository.ModeFourRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.ModeOneRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.ModeThreeRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.ModeTwoRepository;
@@ -29,9 +31,11 @@ public class SessionService {
     final private ModeOneMapper modeOneMapper;
     final private ModeTwoMapper modeTwoMapper;
     final private ModeThreeMapper modeThreeMapper;
+    final private ModeFourMapper modeFourMapper;
     final private ModeOneRepository modeOneRepository;
     final private ModeTwoRepository modeTwoRepository;
     final private ModeThreeRepository modeThreeRepository;
+    final private ModeFourRepository modeFourRepository;
 
     public Mono<CommonResponse> addModeOne(ModeOneDto modeOneDto) {
         return Mono.just(modeOneDto)
@@ -143,7 +147,7 @@ public class SessionService {
     // Mode Three related services
     public Mono<CommonResponse> addModeThree(ModeThreeDto modeThreeDto) {
         return Mono.just(modeThreeDto)
-                .doOnNext(modeThreeDto1 -> log.info("MOde Two add request received [{}]", modeThreeDto1))
+                .doOnNext(modeThreeDto1 -> log.info("MOde three add request received [{}]", modeThreeDto1))
                 .flatMap(modeThreeDto1 -> modeThreeRepository.findBySessionID(modeThreeDto1.getDefaultConfigurations().getSessionId()))
                 .flatMap(modeThree -> Mono.just(modeThree)
                         .filter(mOne -> Objects.equals(mOne.getResults().getTestId(), modeThreeDto.getResults().getTestId()))
@@ -164,7 +168,7 @@ public class SessionService {
     }
 
     private Mono<CommonResponse> saveModeThree(ModeThreeDto ModeThreeDto) {
-        return Mono.just(modeThreeMapper.ModeThreeDtoToModeThree(ModeThreeDto))
+        return Mono.just(modeThreeMapper.modeThreeDtoToModeThree(ModeThreeDto))
                 .doOnNext(modeThree -> {
                     modeThree.setStatus("ACTIVE");
                     modeThree.setCreatedDateTime(LocalDateTime.now());
@@ -173,6 +177,45 @@ public class SessionService {
                 })
                 .flatMap(modeThreeRepository::save)
                 .doOnSuccess(device -> log.info("Successfully saved the Mode Three [{}]", device))
+                .map(device -> CommonResponse.builder()
+                        .status("S1000")
+                        .statusDescription("Success")
+                        .build());
+    }
+
+    // Mode Four related services
+    public Mono<CommonResponse> addModeFour(ModeFourDto modeFourDto) {
+        return Mono.just(modeFourDto)
+                .doOnNext(modeFourDto1 -> log.info("MOde four add request received [{}]", modeFourDto1))
+                .flatMap(modeFourDto1 -> modeFourRepository.findBySessionID(modeFourDto1.getDefaultConfigurations().getSessionId()))
+                .flatMap(modeFour -> Mono.just(modeFour)
+                        .filter(mOne -> Objects.equals(mOne.getResults().getTestId(), modeFourDto.getResults().getTestId()))
+                        .flatMap(modeThree1 ->
+                                Mono.just(CommonResponse.builder()
+                                        .status("E1010")
+                                        .statusDescription("Mode Already exist with taskID, Session Id")
+                                        .build())
+                        )
+                )
+                .switchIfEmpty(saveModeFour(modeFourDto))
+                .doOnError(e ->
+                        CommonResponse.builder()
+                                .status("E1000")
+                                .statusDescription("Failed")
+                                .build());
+
+    }
+
+    private Mono<CommonResponse> saveModeFour(ModeFourDto modeFourDto) {
+        return Mono.just(modeFourMapper.modeFourDtoToModeFour(modeFourDto))
+                .doOnNext(modeFour -> {
+                    modeFour.setStatus("ACTIVE");
+                    modeFour.setCreatedDateTime(LocalDateTime.now());
+                    modeFour.setLastUpdatedDateTime(LocalDateTime.now());
+                    modeFour.getResults().getReadings().get(0).setReadAt(LocalDateTime.now());
+                })
+                .flatMap(modeFourRepository::save)
+                .doOnSuccess(device -> log.info("Successfully saved the Mode Four [{}]", device))
                 .map(device -> CommonResponse.builder()
                         .status("S1000")
                         .statusDescription("Success")

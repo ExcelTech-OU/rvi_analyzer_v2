@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ModeThreeMapper {
-    ModeThree ModeThreeDtoToModeThree(ModeThreeDto ModeThreeDto);
+    ModeThree modeThreeDtoToModeThree(ModeThreeDto modeThreeDto);
 
-    ModeThreeDto ModeThreeToModeThreeDto(ModeThree ModeThree);
+    ModeThreeDto modeThreeToModeThreeDto(ModeThree modeThree);
 }
