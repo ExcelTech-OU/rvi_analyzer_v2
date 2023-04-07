@@ -16,6 +16,8 @@ import java.util.List;
 @Getter
 @Setter
 public class ModeThree {
+
+    private String _id;
     @Field(name = "created-by")
     private String createdBy;
     @Field(name = "default-configurations")

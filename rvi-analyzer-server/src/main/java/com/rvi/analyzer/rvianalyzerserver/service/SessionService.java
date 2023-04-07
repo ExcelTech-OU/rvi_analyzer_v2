@@ -109,8 +109,9 @@ public class SessionService {
     }
 
     private Mono<CommonResponse> updateSessionTwo(ModeTwoDto modeTwoDto, ModeTwo modeTwo) {
+        System.out.println(modeTwo);
         return Mono.just(modeTwo)
-                .doOnNext(modeOne1 -> {
+                .doOnNext(modeTwo1 -> {
                     modeTwoDto.getResults().get(0).getReadings().get(0).setReadAt(LocalDateTime.now());
                     modeTwo.getResults().add(modeTwoDto.getResults().get(0));
                     modeTwo.setLastUpdatedDateTime(LocalDateTime.now());
@@ -144,13 +145,10 @@ public class SessionService {
         return Mono.just(modeThreeDto)
                 .doOnNext(modeThreeDto1 -> log.info("MOde three add request received [{}]", modeThreeDto1))
                 .flatMap(modeThreeDto1 -> modeThreeRepository.findBySessionID(modeThreeDto1.getDefaultConfigurations().getSessionId()))
-                .flatMap(modeThree -> Mono.just(modeThree)
-                        .filter(mOne -> Objects.equals(mOne.getResults().getTestId(), modeThreeDto.getResults().getTestId()))
-                        .flatMap(modeThree1 ->
-                                Mono.just(CommonResponse.builder()
-                                        .status("E1010")
-                                        .statusDescription("Mode Already exist with taskID, Session Id")
-                                        .build())
+                .flatMap(modeThree -> Mono.just(CommonResponse.builder()
+                                .status("E1010")
+                                .statusDescription("Mode Already exist with taskID, Session Id")
+                                .build()
                         )
                 )
                 .switchIfEmpty(saveModeThree(modeThreeDto))
@@ -168,7 +166,6 @@ public class SessionService {
                     modeThree.setStatus("ACTIVE");
                     modeThree.setCreatedDateTime(LocalDateTime.now());
                     modeThree.setLastUpdatedDateTime(LocalDateTime.now());
-                    modeThree.getResults().getReadings().get(0).setReadAt(LocalDateTime.now());
                 })
                 .flatMap(modeThreeRepository::save)
                 .doOnSuccess(device -> log.info("Successfully saved the Mode Three [{}]", device))
@@ -183,14 +180,11 @@ public class SessionService {
         return Mono.just(modeFourDto)
                 .doOnNext(modeFourDto1 -> log.info("MOde four add request received [{}]", modeFourDto1))
                 .flatMap(modeFourDto1 -> modeFourRepository.findBySessionID(modeFourDto1.getDefaultConfigurations().getSessionId()))
-                .flatMap(modeFour -> Mono.just(modeFour)
-                        .filter(mOne -> Objects.equals(mOne.getResults().getTestId(), modeFourDto.getResults().getTestId()))
-                        .flatMap(modeFour1 ->
-                                Mono.just(CommonResponse.builder()
-                                        .status("E1010")
-                                        .statusDescription("Mode Already exist with taskID, Session Id")
-                                        .build())
-                        )
+                .flatMap(modeFour -> Mono.just(CommonResponse.builder()
+                        .status("E1010")
+                        .statusDescription("Mode Already exist with taskID, Session Id")
+                        .build())
+
                 )
                 .switchIfEmpty(saveModeFour(modeFourDto))
                 .doOnError(e ->
@@ -207,7 +201,6 @@ public class SessionService {
                     modeFour.setStatus("ACTIVE");
                     modeFour.setCreatedDateTime(LocalDateTime.now());
                     modeFour.setLastUpdatedDateTime(LocalDateTime.now());
-                    modeFour.getResults().getReadings().get(0).setReadAt(LocalDateTime.now());
                 })
                 .flatMap(modeFourRepository::save)
                 .doOnSuccess(device -> log.info("Successfully saved the Mode Four [{}]", device))
@@ -222,14 +215,11 @@ public class SessionService {
         return Mono.just(modeFiveDto)
                 .doOnNext(modeFiveDto1 -> log.info("MOde five add request received [{}]", modeFiveDto1))
                 .flatMap(modeFiveDto1 -> modeFiveRepository.findBySessionID(modeFiveDto1.getDefaultConfigurations().getSessionId()))
-                .flatMap(modeFive -> Mono.just(modeFive)
-                        .filter(mOne -> Objects.equals(mOne.getResults().getTestId(), modeFiveDto.getResults().getTestId()))
-                        .flatMap(modeFive1 ->
-                                Mono.just(CommonResponse.builder()
-                                        .status("E1010")
-                                        .statusDescription("Mode Already exist with taskID, Session Id")
-                                        .build())
-                        )
+                .flatMap(modeFive -> Mono.just(CommonResponse.builder()
+                        .status("E1010")
+                        .statusDescription("Mode Already exist with taskID, Session Id")
+                        .build())
+
                 )
                 .switchIfEmpty(saveModeFive(modeFiveDto))
                 .doOnError(e ->
@@ -246,7 +236,6 @@ public class SessionService {
                     modeFive.setStatus("ACTIVE");
                     modeFive.setCreatedDateTime(LocalDateTime.now());
                     modeFive.setLastUpdatedDateTime(LocalDateTime.now());
-                    modeFive.getResults().getReadings().get(0).setReadAt(LocalDateTime.now());
                 })
                 .flatMap(modeFiveRepository::save)
                 .doOnSuccess(device -> log.info("Successfully saved the Mode Five [{}]", device))
@@ -261,14 +250,11 @@ public class SessionService {
         return Mono.just(modeSixDto)
                 .doOnNext(modeSixDto1 -> log.info("MOde six add request received [{}]", modeSixDto1))
                 .flatMap(modeSixDto1 -> modeSixRepository.findBySessionID(modeSixDto1.getDefaultConfigurations().getSessionId()))
-                .flatMap(modeSix -> Mono.just(modeSix)
-                        .filter(mOne -> Objects.equals(mOne.getResults().getTestId(), modeSixDto.getResults().getTestId()))
-                        .flatMap(modeSix1 ->
-                                Mono.just(CommonResponse.builder()
-                                        .status("E1010")
-                                        .statusDescription("Mode Already exist with taskID, Session Id")
-                                        .build())
-                        )
+                .flatMap(modeSix -> Mono.just(CommonResponse.builder()
+                        .status("E1010")
+                        .statusDescription("Mode Already exist with taskID, Session Id")
+                        .build())
+
                 )
                 .switchIfEmpty(saveModeSix(modeSixDto))
                 .doOnError(e ->
@@ -285,7 +271,6 @@ public class SessionService {
                     modeSix.setStatus("ACTIVE");
                     modeSix.setCreatedDateTime(LocalDateTime.now());
                     modeSix.setLastUpdatedDateTime(LocalDateTime.now());
-                    modeSix.getResults().getReadings().get(0).setReadAt(LocalDateTime.now());
                 })
                 .flatMap(modeSixRepository::save)
                 .doOnSuccess(device -> log.info("Successfully saved the Mode Six [{}]", device))

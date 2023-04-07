@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ModeFour {
+
+    private String _id;
     @Field(name = "created-by")
     private String createdBy;
     @Field(name = "default-configurations")
