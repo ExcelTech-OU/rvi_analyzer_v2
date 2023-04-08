@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rvi_analyzer/domain/default_configuration.dart';
 import 'package:rvi_analyzer/domain/mode_three.dart';
 import 'package:rvi_analyzer/domain/session_result.dart';
@@ -222,6 +223,23 @@ class _ConfigureRightPanelType03State
                     "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
                     "Saving Failed"))
             });
+    updateSessionID();
+    widget.updateTestId();
+  }
+
+  void resetGraph() {
+    ref
+        .watch(deviceDataMap[widget.sc.device.name]!)
+        .spotDataGraph01Mode03
+        .clear();
+    ref
+        .watch(deviceDataMap[widget.sc.device.name]!)
+        .spotDataGraph02Mode03
+        .clear();
+
+    ref.read(deviceDataMap[widget.sc.device.name]!).xMaxGraph01Mode03 = 0.0;
+    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph01Mode03 = 0.2;
+    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph02Mode03 = 0.0;
     updateSessionID();
     widget.updateTestId();
   }
@@ -449,40 +467,27 @@ class _ConfigureRightPanelType03State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.orange,
-                          onPressed: () {
-                            blue.stop(widget.sc.device);
-                            ref
-                                .watch(deviceDataMap[widget.sc.device.name]!)
-                                .spotDataGraph01Mode03
-                                .clear();
-                            ref
-                                .watch(deviceDataMap[widget.sc.device.name]!)
-                                .spotDataGraph02Mode03
-                                .clear();
+                          onPressed: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .saveClickedMode03
+                              ? null
+                              : () {
+                                  blue.stop(widget.sc.device);
 
-                            ref
-                                .read(deviceDataMap[widget.sc.device.name]!)
-                                .xMaxGraph01Mode03 = 0.0;
-                            ref
-                                .read(deviceDataMap[widget.sc.device.name]!)
-                                .yMaxGraph01Mode03 = 0.2;
-                            ref
-                                .read(deviceDataMap[widget.sc.device.name]!)
-                                .yMaxGraph02Mode03 = 0.0;
-
-                            ref
-                                    .read(deviceDataMap[widget.sc.device.name]!)
-                                    .started =
-                                !ref
-                                    .watch(
-                                        deviceDataMap[widget.sc.device.name]!)
-                                    .started;
-                            ref
-                                .read(deviceDataMap[widget.sc.device.name]!)
-                                .updateStatus();
-                            updateSessionID();
-                            widget.updateTestId();
-                          },
+                                  ref
+                                          .read(deviceDataMap[
+                                              widget.sc.device.name]!)
+                                          .started =
+                                      !ref
+                                          .watch(deviceDataMap[
+                                              widget.sc.device.name]!)
+                                          .started;
+                                  ref
+                                      .read(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .updateStatus();
+                                  resetGraph();
+                                },
                           child: const Text(
                             'Stop',
                             style: TextStyle(
@@ -503,15 +508,26 @@ class _ConfigureRightPanelType03State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.green,
-                          onPressed: () {
-                            saveMode();
-                          },
-                          child: const Text(
-                            'Save',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
-                          ),
+                          onPressed: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .saveClickedMode03
+                              ? null
+                              : () {
+                                  saveMode();
+                                },
+                          child: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .saveClickedMode03
+                              ? const SpinKitWave(
+                                  color: Colors.white,
+                                  size: 20.0,
+                                )
+                              : const Text(
+                                  'Save',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 231, 230, 230),
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     ),
@@ -530,6 +546,7 @@ class _ConfigureRightPanelType03State
                           onPressed: () {
                             if (widget.keyForm.currentState!.validate() &&
                                 _formKey.currentState!.validate()) {
+                              resetGraph();
                               startMode3();
                             }
                           },

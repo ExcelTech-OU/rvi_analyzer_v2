@@ -1,14 +1,22 @@
 import 'dart:async';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:rvi_analyzer/domain/default_configuration.dart';
+import 'package:rvi_analyzer/domain/mode_four.dart';
+import 'package:rvi_analyzer/domain/session_result.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
+import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:rvi_analyzer/views/common/test_line.dart';
+import 'package:rvi_analyzer/views/configure/snack_bar.dart';
+import 'package:rvi_analyzer/service/common_service.dart';
 
 class ConfigureRightPanelType04 extends ConsumerStatefulWidget {
   final ScanResult sc;
@@ -107,25 +115,129 @@ class _ConfigureRightPanelType04State
     }
   }
 
-  void saveModeOne() {
-    // spots.add(FlSpot(8, 1));
-    // double voltage = ref
-    //     .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
-    //     .voltage;
-    // setState(() {
-    //   saveClicked = true;
-    // });
+  void updateSessionID() {
+    DateTime now = DateTime.now();
+    int milliseconds = now.millisecondsSinceEpoch;
 
-    // if (double.parse(minCurrentRangeController.text) < voltage &&
-    //     voltage < double.parse(maxCurrentController.text)) {
-    //   setState(() {
-    //     passed = true;
-    //   });
-    // } else {
-    //   setState(() {
-    //     passed = false;
-    //   });
-    // }
+    ref.watch(deviceDataMap[widget.sc.device.name]!).sessionIdController.text =
+        "S_$milliseconds";
+  }
+
+  void saveMode() {
+    List<Reading> readings = [];
+
+    List<FlSpot> voltageCurrentReadings =
+        ref.read(deviceDataMap[widget.sc.device.name]!).spotDataGraph01Mode04;
+
+    List<FlSpot> temCurrentReadings =
+        ref.read(deviceDataMap[widget.sc.device.name]!).spotDataGraph02Mode04;
+
+    for (var i = 0; i < voltageCurrentReadings.length; i++) {
+      readings.add(Reading(
+          temperature: temCurrentReadings[i].y.toString(),
+          current: voltageCurrentReadings[i].x.toString(),
+          voltage: voltageCurrentReadings[i].y.toString()));
+    }
+
+    ModeFour modeFour = ModeFour(
+        createdBy: "rukshan",
+        defaultConfigurations: DefaultConfiguration(
+            customerName: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .customerNameController
+                .text,
+            operatorId: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .operatorIdController
+                .text,
+            batchNo: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .batchNoController
+                .text,
+            sessionId: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .sessionIdController
+                .text),
+        sessionConfigurationModeFour: SessionConfigurationModeFour(
+            startingCurrent: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .startingCurrentControllerMode04
+                .text,
+            desiredCurrent: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .desiredCurrentControllerMode04
+                .text,
+            maxVoltage: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .maxVoltageControllerMode04
+                .text,
+            currentResolution: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .currentResolutionControllerMode04
+                .text,
+            chargeInTime: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .changeInTimeControllerMode04
+                .text),
+        results: SessionResult(
+            testId: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .testIdController
+                .text,
+            readings: readings),
+        status: "ACTIVE");
+
+    saveModeFour(modeFour)
+        .then((value) => {
+              if (value.status == "S1000")
+                {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(getSnackBar(
+                        ContentType.success,
+                        "Date saved successfully with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
+                        "Saving Success"))
+                }
+              else if (value.status == "E2000")
+                {showLogoutPopup(context)}
+              else
+                {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(getSnackBar(
+                        ContentType.failure,
+                        "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
+                        "Saving Failed"))
+                },
+              ref
+                  .read(deviceDataMap[widget.sc.device.name]!)
+                  .saveClickedMode03 = false
+            })
+        .onError((error, stackTrace) => {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(getSnackBar(
+                    ContentType.failure,
+                    "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
+                    "Saving Failed"))
+            });
+    widget.updateTestId();
+  }
+
+  void resetGraph() {
+    ref
+        .watch(deviceDataMap[widget.sc.device.name]!)
+        .spotDataGraph01Mode04
+        .clear();
+    ref
+        .watch(deviceDataMap[widget.sc.device.name]!)
+        .spotDataGraph02Mode04
+        .clear();
+
+    ref.read(deviceDataMap[widget.sc.device.name]!).xMaxGraph01Mode04 = 0.0;
+    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph01Mode04 = 0.2;
+    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph02Mode04 = 0.0;
+    updateSessionID();
     widget.updateTestId();
   }
 
@@ -352,39 +464,28 @@ class _ConfigureRightPanelType04State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.orange,
-                          onPressed: () {
-                            blue.stop(widget.sc.device);
-                            ref
-                                .watch(deviceDataMap[widget.sc.device.name]!)
-                                .spotDataGraph01Mode04
-                                .clear();
-                            ref
-                                .watch(deviceDataMap[widget.sc.device.name]!)
-                                .spotDataGraph02Mode04
-                                .clear();
+                          onPressed: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .saveClickedMode04
+                              ? null
+                              : () {
+                                  blue.stop(widget.sc.device);
 
-                            ref
-                                .read(deviceDataMap[widget.sc.device.name]!)
-                                .xMaxGraph01Mode04 = 0.0;
-                            ref
-                                .read(deviceDataMap[widget.sc.device.name]!)
-                                .yMaxGraph01Mode04 = 0.2;
-                            ref
-                                .read(deviceDataMap[widget.sc.device.name]!)
-                                .yMaxGraph02Mode04 = 0.0;
+                                  ref
+                                          .read(deviceDataMap[
+                                              widget.sc.device.name]!)
+                                          .started =
+                                      !ref
+                                          .watch(deviceDataMap[
+                                              widget.sc.device.name]!)
+                                          .started;
 
-                            ref
-                                    .read(deviceDataMap[widget.sc.device.name]!)
-                                    .started =
-                                !ref
-                                    .watch(
-                                        deviceDataMap[widget.sc.device.name]!)
-                                    .started;
-
-                            ref
-                                .read(deviceDataMap[widget.sc.device.name]!)
-                                .updateStatus();
-                          },
+                                  ref
+                                      .read(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .updateStatus();
+                                  resetGraph();
+                                },
                           child: const Text(
                             'Stop',
                             style: TextStyle(
@@ -405,15 +506,26 @@ class _ConfigureRightPanelType04State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.green,
-                          onPressed: () {
-                            saveModeOne();
-                          },
-                          child: const Text(
-                            'Save',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
-                          ),
+                          onPressed: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .saveClickedMode04
+                              ? null
+                              : () {
+                                  saveMode();
+                                },
+                          child: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .saveClickedMode04
+                              ? const SpinKitWave(
+                                  color: Colors.white,
+                                  size: 20.0,
+                                )
+                              : const Text(
+                                  'Save',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 231, 230, 230),
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     ),
@@ -432,6 +544,7 @@ class _ConfigureRightPanelType04State
                           onPressed: () {
                             if (widget.keyForm.currentState!.validate() &&
                                 _formKey.currentState!.validate()) {
+                              resetGraph();
                               startMode4();
                             }
                           },
