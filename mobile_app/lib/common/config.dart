@@ -1,5 +1,6 @@
-const String baseUrl = "http://18.136.146.172/achilles-api/";
-const String loginPath = "user/login";
+const String baseUrl = "http://34.199.91.167/rvi-analyzer-api/";
+const String loginPath = "login/admin";
+const String saveModeOnePath = "rvi/analyzer/v1/session/add/one";
 const String loginPathWithGoogle = "user/login/google";
 const String registerPath = "user/register";
 const String userDetailsPath = "user/details";

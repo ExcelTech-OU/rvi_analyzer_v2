@@ -1,9 +1,12 @@
 const String jwtK = 'jwt';
+const String userK = "user";
 const String contentTypeK = 'Content-Type';
 const String authorizationK = 'Authorization';
 const String contentTypeJsonK = 'application/json; charset=UTF-8';
 const String bearerK = 'Bearer';
 const String statusK = 'status';
+const String createdByK = 'createdBy';
+const String typeK = 'type';
 const String statusDescriptionK = 'statusDescription';
 const String heaterK = 'heater';
 const String stateK = 'state';
@@ -14,6 +17,7 @@ const String lastLoginK = 'lastLogin';
 
 //login
 const String usernameK = 'username';
+const String userNameK = 'userName';
 const String passwordK = 'password';
 
 //registration

@@ -2,9 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:rvi_analyzer/domain/default_configuration.dart';
+import 'package:rvi_analyzer/domain/mode_one.dart';
+import 'package:rvi_analyzer/domain/session_result.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
+import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:rvi_analyzer/views/configure/snack_bar.dart';
+import 'package:rvi_analyzer/service/common_service.dart';
 
 class ConfigureRightPanelType01 extends ConsumerStatefulWidget {
   final ScanResult sc;
@@ -26,6 +34,8 @@ class _ConfigureRightPanelType01State
     extends ConsumerState<ConfigureRightPanelType01> {
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
+
+  bool savePressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +75,16 @@ class _ConfigureRightPanelType01State
                             fontWeight: FontWeight.bold,
                             color: Colors.black54),
                       ),
-                      const SizedBox(
-                        width: 50,
-                      ),
-                      Text(
-                        "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
-                        style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54),
-                      ),
+                      // const SizedBox(
+                      //   width: 50,
+                      // ),
+                      // Text(
+                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
+                      //   style: const TextStyle(
+                      //       fontSize: 15,
+                      //       fontWeight: FontWeight.bold,
+                      //       color: Colors.black54),
+                      // ),
                     ],
                   ),
                   const SizedBox(
@@ -158,7 +168,10 @@ class _ConfigureRightPanelType01State
     return "00";
   }
 
-  void saveModeOne() {
+  void saveMode() {
+    setState(() {
+      savePressed = true;
+    });
     double current = ref
         .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
         .current;
@@ -178,6 +191,99 @@ class _ConfigureRightPanelType01State
     } else {
       ref.read(deviceDataMap[widget.sc.device.name]!).mode01Passed = false;
     }
+
+    ModeOne modeOne = ModeOne(
+        createdBy: "rukshan",
+        defaultConfigurations: DefaultConfiguration(
+            customerName: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .customerNameController
+                .text,
+            operatorId: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .operatorIdController
+                .text,
+            batchNo: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .batchNoController
+                .text,
+            sessionId: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .sessionIdController
+                .text),
+        sessionConfigurationModeOne: SessionConfigurationModeOne(
+            voltage: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .voltageControllerMode01
+                .text,
+            maxCurrent: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .maxCurrentControllerMode01
+                .text,
+            passMinCurrent: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .minCurrentRangeControllerMode01
+                .text,
+            passMaxCurrent: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .maxCurrentRangeControllerMode01
+                .text),
+        results: [
+          SessionResult(
+              testId: ref
+                  .read(deviceDataMap[widget.sc.device.name]!)
+                  .testIdController
+                  .text,
+              readings: [
+                Reading(
+                    temperature: getTemp(),
+                    current: getCurrent(),
+                    voltage: getVoltage(),
+                    result: ref
+                            .read(deviceDataMap[widget.sc.device.name]!)
+                            .mode01Passed
+                        ? "PASS"
+                        : "FAIL",
+                    readAt:
+                        DateTime.now().toUtc().toString().replaceAll(" ", "T"))
+              ])
+        ],
+        status: "ACTIVE");
+
+    saveModeOne(modeOne)
+        .then((value) => {
+              if (value.status == "S1000")
+                {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(getSnackBar(
+                        ContentType.success,
+                        "Date saved successfully with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
+                        "Saving Success"))
+                }
+              else if (value.status == "E2000")
+                {showLogoutPopup(context)}
+              else
+                {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(getSnackBar(
+                        ContentType.failure,
+                        "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
+                        "Saving Failed"))
+                },
+              setState(() {
+                savePressed = false;
+              })
+            })
+        .onError((error, stackTrace) => {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(getSnackBar(
+                    ContentType.failure,
+                    "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
+                    "Saving Failed"))
+            });
     widget.updateTestId();
   }
 
@@ -424,18 +530,23 @@ class _ConfigureRightPanelType01State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.orange,
-                          onPressed: () {
-                            blue.stop(widget.sc.device);
-                            ref
-                                    .read(deviceDataMap[widget.sc.device.name]!)
-                                    .started =
-                                !ref
-                                    .read(deviceDataMap[widget.sc.device.name]!)
-                                    .started;
-                            ref
-                                .read(deviceDataMap[widget.sc.device.name]!)
-                                .updateStatus();
-                          },
+                          onPressed: savePressed
+                              ? null
+                              : () {
+                                  blue.stop(widget.sc.device);
+                                  ref
+                                          .read(deviceDataMap[
+                                              widget.sc.device.name]!)
+                                          .started =
+                                      !ref
+                                          .read(deviceDataMap[
+                                              widget.sc.device.name]!)
+                                          .started;
+                                  ref
+                                      .read(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .updateStatus();
+                                },
                           child: const Text(
                             'Stop',
                             style: TextStyle(
@@ -456,15 +567,22 @@ class _ConfigureRightPanelType01State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.green,
-                          onPressed: () {
-                            saveModeOne();
-                          },
-                          child: const Text(
-                            'Save',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
-                          ),
+                          onPressed: savePressed
+                              ? null
+                              : () {
+                                  saveMode();
+                                },
+                          child: savePressed
+                              ? const SpinKitWave(
+                                  color: Colors.white,
+                                  size: 20.0,
+                                )
+                              : const Text(
+                                  'Save',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 231, 230, 230),
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     ),

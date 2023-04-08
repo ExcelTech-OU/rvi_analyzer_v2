@@ -543,16 +543,16 @@ class _ConfigureRightPanelType06State
                             fontWeight: FontWeight.bold,
                             color: Colors.black54),
                       ),
-                      const SizedBox(
-                        width: 50,
-                      ),
-                      Text(
-                        "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
-                        style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54),
-                      ),
+                      // const SizedBox(
+                      //   width: 50,
+                      // ),
+                      // Text(
+                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
+                      //   style: const TextStyle(
+                      //       fontSize: 15,
+                      //       fontWeight: FontWeight.bold,
+                      //       color: Colors.black54),
+                      // ),
                     ],
                   ),
                   const SizedBox(

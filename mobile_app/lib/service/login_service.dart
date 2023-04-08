@@ -10,26 +10,25 @@ import '../domain/simple_user.dart';
 
 Future<LoginResponse> login(String userName, String password) async {
   const storage = FlutterSecureStorage();
-  // final response = await http.post(
-  //   Uri.parse('$baseUrl$loginPath'),
-  //   headers: <String, String>{
-  //     contentTypeK: contentTypeJsonK,
-  //   },
-  //   body: jsonEncode(<String, String>{
-  //     usernameK: userName,
-  //     passwordK: password,
-  //   }),
-  // );
+  final response = await http.post(
+    Uri.parse('$baseUrl$loginPath'),
+    headers: <String, String>{
+      contentTypeK: contentTypeJsonK,
+    },
+    body: jsonEncode(<String, String>{
+      userNameK: userName,
+      passwordK: password,
+    }),
+  );
   await Future.delayed(const Duration(seconds: 3));
-  // if (response.statusCode == 200) {
-  // LoginResponse loginResponse =
-  //     LoginResponse.fromJson(jsonDecode(response.body));
-  await storage.write(key: jwtK, value: "loginResponse.jwt");
-  // return loginResponse;
-  return LoginResponse.fromDetails("S1000", "Error", "Hello error");
-  // } else {
-  //   return LoginResponse.fromDetails("E1000", "Error", "Hello error");
-  // }
+  if (response.statusCode == 200) {
+    LoginResponse loginResponse =
+        LoginResponse.fromJson(jsonDecode(response.body));
+    await storage.write(key: jwtK, value: loginResponse.jwt);
+    return loginResponse;
+  } else {
+    return LoginResponse.fromDetails("E1000", "Error", "Hello error", null);
+  }
 }
 
 Future<SimpleUser> userDetails() async {
