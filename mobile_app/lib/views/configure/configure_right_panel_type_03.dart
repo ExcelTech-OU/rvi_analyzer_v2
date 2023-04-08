@@ -1,14 +1,21 @@
 import 'dart:async';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rvi_analyzer/domain/default_configuration.dart';
+import 'package:rvi_analyzer/domain/mode_three.dart';
+import 'package:rvi_analyzer/domain/session_result.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
+import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:rvi_analyzer/views/common/test_line.dart';
+import 'package:rvi_analyzer/views/configure/snack_bar.dart';
+import 'package:rvi_analyzer/service/common_service.dart';
 
 class ConfigureRightPanelType03 extends ConsumerStatefulWidget {
   final ScanResult sc;
@@ -107,7 +114,115 @@ class _ConfigureRightPanelType03State
     }
   }
 
-  void saveModeOne() {
+  void updateSessionID() {
+    DateTime now = DateTime.now();
+    int milliseconds = now.millisecondsSinceEpoch;
+
+    ref.watch(deviceDataMap[widget.sc.device.name]!).sessionIdController.text =
+        "S_$milliseconds";
+  }
+
+  void saveMode() {
+    ref.read(deviceDataMap[widget.sc.device.name]!).saveClickedMode03 = true;
+
+    List<Reading> readings = [];
+
+    List<FlSpot> currentVoltageReadings =
+        ref.read(deviceDataMap[widget.sc.device.name]!).spotDataGraph01Mode03;
+
+    List<FlSpot> temVoltageReadings =
+        ref.read(deviceDataMap[widget.sc.device.name]!).spotDataGraph02Mode03;
+
+    for (var i = 0; i < currentVoltageReadings.length; i++) {
+      readings.add(Reading(
+          temperature: temVoltageReadings[i].y.toString(),
+          current: currentVoltageReadings[i].y.toString(),
+          voltage: currentVoltageReadings[i].x.toString()));
+    }
+
+    ModeThree modeThree = ModeThree(
+        createdBy: "rukshan",
+        defaultConfigurations: DefaultConfiguration(
+            customerName: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .customerNameController
+                .text,
+            operatorId: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .operatorIdController
+                .text,
+            batchNo: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .batchNoController
+                .text,
+            sessionId: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .sessionIdController
+                .text),
+        sessionConfigurationModeThree: SessionConfigurationModeThree(
+            startingVoltage: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .startingVoltageControllerMode03
+                .text,
+            desiredVoltage: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .desiredVoltageControllerMode03
+                .text,
+            maxCurrent: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .maxCurrentControllerMode03
+                .text,
+            voltageResolution: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .voltageResolutionControllerMode03
+                .text,
+            chargeInTime: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .changeInTimeControllerMode03
+                .text),
+        results: SessionResult(
+            testId: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .testIdController
+                .text,
+            readings: readings),
+        status: "ACTIVE");
+
+    saveModeThree(modeThree)
+        .then((value) => {
+              if (value.status == "S1000")
+                {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(getSnackBar(
+                        ContentType.success,
+                        "Date saved successfully with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
+                        "Saving Success"))
+                }
+              else if (value.status == "E2000")
+                {showLogoutPopup(context)}
+              else
+                {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(getSnackBar(
+                        ContentType.failure,
+                        "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
+                        "Saving Failed"))
+                },
+              ref
+                  .read(deviceDataMap[widget.sc.device.name]!)
+                  .saveClickedMode03 = false
+            })
+        .onError((error, stackTrace) => {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(getSnackBar(
+                    ContentType.failure,
+                    "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
+                    "Saving Failed"))
+            });
+    updateSessionID();
     widget.updateTestId();
   }
 
@@ -365,6 +480,8 @@ class _ConfigureRightPanelType03State
                             ref
                                 .read(deviceDataMap[widget.sc.device.name]!)
                                 .updateStatus();
+                            updateSessionID();
+                            widget.updateTestId();
                           },
                           child: const Text(
                             'Stop',
@@ -387,7 +504,7 @@ class _ConfigureRightPanelType03State
                           disabledColor: Colors.grey,
                           color: Colors.green,
                           onPressed: () {
-                            saveModeOne();
+                            saveMode();
                           },
                           child: const Text(
                             'Save',

@@ -1,6 +1,12 @@
-const String baseUrl = "http://34.199.91.167/rvi-analyzer-api/";
+const String baseUrl = "http://54.251.199.35/rvi-analyzer-api/";
 const String loginPath = "login/admin";
 const String saveModeOnePath = "rvi/analyzer/v1/session/add/one";
+const String saveModeTwoPath = "rvi/analyzer/v1/session/add/two";
+const String saveModeThreePath = "rvi/analyzer/v1/session/add/three";
+const String saveModeFourPath = "rvi/analyzer/v1/session/add/four";
+const String saveModeFivePath = "rvi/analyzer/v1/session/add/five";
+const String saveModeSixPath = "rvi/analyzer/v1/session/add/six";
+
 const String loginPathWithGoogle = "user/login/google";
 const String registerPath = "user/register";
 const String userDetailsPath = "user/details";

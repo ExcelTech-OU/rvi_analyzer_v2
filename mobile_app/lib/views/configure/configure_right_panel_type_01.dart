@@ -35,7 +35,13 @@ class _ConfigureRightPanelType01State
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
 
-  bool savePressed = false;
+  void updateSessionID() {
+    DateTime now = DateTime.now();
+    int milliseconds = now.millisecondsSinceEpoch;
+
+    ref.watch(deviceDataMap[widget.sc.device.name]!).sessionIdController.text =
+        "S_$milliseconds";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,9 +175,7 @@ class _ConfigureRightPanelType01State
   }
 
   void saveMode() {
-    setState(() {
-      savePressed = true;
-    });
+    ref.read(deviceDataMap[widget.sc.device.name]!).mode01SaveClicked = true;
     double current = ref
         .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
         .current;
@@ -272,9 +276,9 @@ class _ConfigureRightPanelType01State
                         "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
                         "Saving Failed"))
                 },
-              setState(() {
-                savePressed = false;
-              })
+              ref
+                  .read(deviceDataMap[widget.sc.device.name]!)
+                  .mode01SaveClicked = false
             })
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
@@ -530,7 +534,9 @@ class _ConfigureRightPanelType01State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.orange,
-                          onPressed: savePressed
+                          onPressed: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .mode01SaveClicked
                               ? null
                               : () {
                                   blue.stop(widget.sc.device);
@@ -546,6 +552,7 @@ class _ConfigureRightPanelType01State
                                       .read(
                                           deviceDataMap[widget.sc.device.name]!)
                                       .updateStatus();
+                                  updateSessionID();
                                 },
                           child: const Text(
                             'Stop',
@@ -567,12 +574,16 @@ class _ConfigureRightPanelType01State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.green,
-                          onPressed: savePressed
+                          onPressed: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .mode01SaveClicked
                               ? null
                               : () {
                                   saveMode();
                                 },
-                          child: savePressed
+                          child: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .mode01SaveClicked
                               ? const SpinKitWave(
                                   color: Colors.white,
                                   size: 20.0,

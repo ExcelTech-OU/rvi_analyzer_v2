@@ -11,15 +11,15 @@ class Reading {
   final String temperature;
   final String current;
   final String voltage;
-  final String result;
-  final String readAt;
+  final String? result;
+  final String? readAt;
 
   Reading(
       {required this.temperature,
       required this.current,
       required this.voltage,
-      required this.result,
-      required this.readAt});
+      this.result,
+      this.readAt});
 
   Map toJson() => {
         'temperature': temperature,
