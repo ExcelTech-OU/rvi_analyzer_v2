@@ -267,7 +267,7 @@ class _ConfigureRightPanelType01State
                         getSnackBar(context, Colors.green, "Saving Success"))
                 }
               else if (value.status == "E2000")
-                {showLogoutPopup(context)}
+                {showLogoutPopup(context, ref)}
               else
                 {
                   ScaffoldMessenger.of(context)

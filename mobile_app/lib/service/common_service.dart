@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:rvi_analyzer/providers/connected_devices_provider.dart';
+import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/login_service.dart';
 import 'package:rvi_analyzer/views/auth/sign_in/sign_in.dart';
 
@@ -90,7 +93,7 @@ void showErrorDialog(BuildContext context, String error) {
   );
 }
 
-void showLogoutPopup(BuildContext context) {
+void showLogoutPopup(BuildContext context, WidgetRef ref) {
   showGeneralDialog(
     context: context,
     barrierDismissible: false,
@@ -116,6 +119,9 @@ void showLogoutPopup(BuildContext context) {
               child: const Text('Logout'),
               onPressed: () {
                 logout().then((value) => {
+                      ref.read(deviceManagementState).removeAllConnectDevices(),
+                      deviceDataMap = {},
+                      deviceConnectionStatusMap = {},
                       Navigator.of(context).pop(),
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           '/login', (Route route) => false)

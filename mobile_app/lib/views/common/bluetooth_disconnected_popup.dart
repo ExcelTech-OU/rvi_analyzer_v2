@@ -16,75 +16,47 @@ class BluetoothDisconnectionState {
       builder: (BuildContext context) => Theme(
         data: ThemeData.dark(),
         child: AlertDialog(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.white,
           shape: const RoundedRectangleBorder(
-              side: BorderSide(color: Colors.green),
+              side: BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.all(Radius.circular(15.0))),
           elevation: 24,
           title: Center(
             child: Column(
               children: const [
                 Text('Bluetooth turn off',
-                    style: TextStyle(color: Colors.white, fontSize: 15)),
+                    style: TextStyle(color: Colors.black, fontSize: 15)),
                 SizedBox(
                   height: 10,
                 ),
                 Text('Please check the Bluetooth connection status',
-                    style: TextStyle(color: Colors.grey, fontSize: 13)),
+                    style: TextStyle(color: Colors.black, fontSize: 13)),
               ],
             ),
           ),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    SizedBox(
-                      height: 45,
-                      width: 45,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(0.0),
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        ref
-                            .read(deviceManagementState)
-                            .removeAllConnectDevices();
-                        deviceDataMap = {};
-                        deviceConnectionStatusMap = {};
-                        if (closeDialog) {
-                          ref
-                              .read(deviceManagementState)
-                              .removeAllConnectDevices();
-                          Navigator.pop(context);
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DashboardPage(
-                                        initialIndex: 1,
-                                      )));
-                        } else {
-                          Navigator.pop(context);
-                          showAlertDialog(ref);
-                        }
-                      },
-                      child: const Icon(
-                        Icons.cancel_rounded,
-                        color: Color.fromARGB(255, 148, 163, 184),
-                        size: 45,
-                      ),
-                    ),
-                  ],
-                )
-              ],
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                ref.read(deviceManagementState).removeAllConnectDevices();
+                deviceDataMap = {};
+                deviceConnectionStatusMap = {};
+                if (closeDialog) {
+                  ref.read(deviceManagementState).removeAllConnectDevices();
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DashboardPage(
+                                initialIndex: 1,
+                              )));
+                } else {
+                  Navigator.pop(context);
+                  showAlertDialog(ref);
+                }
+              },
             ),
-          ),
+          ],
         ),
       ),
     );

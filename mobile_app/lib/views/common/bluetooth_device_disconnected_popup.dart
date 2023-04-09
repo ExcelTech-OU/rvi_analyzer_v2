@@ -17,84 +17,53 @@ class BluetoothDeviceDisconnectedPopup {
       builder: (BuildContext context) => Theme(
         data: ThemeData.dark(),
         child: AlertDialog(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.white,
           shape: const RoundedRectangleBorder(
-              side: BorderSide(color: Colors.green),
+              side: BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.all(Radius.circular(15.0))),
           elevation: 24,
           title: Center(
             child: Column(
               children: [
                 Text('${scanResult.device.name} is disconnected',
-                    style: const TextStyle(color: Colors.white, fontSize: 15)),
+                    style: const TextStyle(color: Colors.black, fontSize: 15)),
                 const Text('Please reconnect again',
-                    style: TextStyle(color: Colors.white, fontSize: 15)),
+                    style: TextStyle(color: Colors.black, fontSize: 15)),
               ],
             ),
           ),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Stack(
-                  children: [
-                    SizedBox(
-                      height: 45,
-                      width: 45,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(0.0),
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        ref
-                            .read(deviceManagementState)
-                            .removeDevice(scanResult);
-                        ref
-                            .read(
-                                deviceDataMap[scanResult.device.name]!.notifier)
-                            .setTreatmentConfig(null);
-                        if (deviceConnectionStatusMap
-                            .containsKey(scanResult.device.name)) {
-                          ref
-                              .read(deviceConnectionStatusMap[
-                                      scanResult.device.name]!
-                                  .notifier)
-                              .alreadyListening = false;
-                          ref
-                              .read(deviceConnectionStatusMap[
-                                      scanResult.device.name]!
-                                  .notifier)
-                              .cancelSubscription();
-                          deviceConnectionStatusMap
-                              .remove(scanResult.device.name);
-                        }
-                        Navigator.pop(context);
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DashboardPage(
-                                      initialIndex: 1,
-                                    )));
-                      },
-                      child: const Icon(
-                        Icons.cancel_rounded,
-                        color: Color.fromARGB(255, 148, 163, 184),
-                        size: 45,
-                      ),
-                    ),
-                  ],
-                )
-              ],
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                scanResult.device.disconnect();
+                ref.read(deviceManagementState).removeDevice(scanResult);
+                ref
+                    .read(deviceDataMap[scanResult.device.name]!.notifier)
+                    .setTreatmentConfig(null);
+                deviceDataMap.remove(scanResult.device.name);
+                if (deviceConnectionStatusMap
+                    .containsKey(scanResult.device.name)) {
+                  ref
+                      .read(deviceConnectionStatusMap[scanResult.device.name]!
+                          .notifier)
+                      .alreadyListening = false;
+                  ref
+                      .read(deviceConnectionStatusMap[scanResult.device.name]!
+                          .notifier)
+                      .cancelSubscription();
+                  deviceConnectionStatusMap.remove(scanResult.device.name);
+                }
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DashboardPage(
+                              initialIndex: 1,
+                            )));
+              },
             ),
-          ),
+          ],
         ),
       ),
     );

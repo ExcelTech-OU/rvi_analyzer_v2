@@ -167,6 +167,9 @@ class _ConfigureRightPanelType04State
   }
 
   void saveMode() {
+    ref.read(deviceDataMap[widget.sc.device.name]!).saveClickedMode04 = true;
+    ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
+
     List<Reading> readings = [];
 
     List<FlSpot> voltageCurrentReadings =
@@ -240,7 +243,7 @@ class _ConfigureRightPanelType04State
                         getSnackBar(context, Colors.green, "Saving Success"))
                 }
               else if (value.status == "E2000")
-                {showLogoutPopup(context)}
+                {showLogoutPopup(context, ref)}
               else
                 {
                   ScaffoldMessenger.of(context)
@@ -250,7 +253,7 @@ class _ConfigureRightPanelType04State
                 },
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
-                  .saveClickedMode03 = false
+                  .saveClickedMode04 = false
             })
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
@@ -722,7 +725,11 @@ class _ConfigureRightPanelType04State
                 .watch(deviceDataMap[widget.sc.device.name]!)
                 .changeInTimeControllerMode04
                 .text)),
-        (Timer t) => setGraphValues());
+        (Timer t) => {
+              setGraphValues(),
+              if (!ref.watch(deviceDataMap[widget.sc.device.name]!).started)
+                {t.cancel()}
+            });
   }
 
   @override

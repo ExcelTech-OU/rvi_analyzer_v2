@@ -19,6 +19,7 @@ class ConnectedDevicesProvider extends ChangeNotifier {
   int get connectedDeviceCount => connectedBlueDeviceList.length;
 
   void addDevice(ScanResult scanResult) {
+    print(connectedBlueDeviceList);
     connectedBlueDeviceList.putIfAbsent(
         scanResult.device.name, () => scanResult);
     availableDeviceList.clear();

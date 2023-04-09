@@ -43,6 +43,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
               //     {
               //       if (value.status == "S1000")
               //         {
+              print(scanResult.device);
               scanResult.device
                   .connect()
                   .then((value) => {

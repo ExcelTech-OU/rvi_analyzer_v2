@@ -26,16 +26,6 @@ class Blue {
     );
   }
 
-  Stream<List<ScanResult>> scanDevicesNew() {
-    blueDeviceList = HashMap();
-    // Start scanning
-    flutterBlue.startScan(timeout: const Duration(seconds: 10));
-
-    // Listen to scan results
-    return flutterBlue.scanResults;
-    // return blueDeviceList;
-  }
-
   Future<bool> write(BluetoothDevice device, List<int> data, String ServiceUUID,
       String charUUID) async {
     bool response = false;

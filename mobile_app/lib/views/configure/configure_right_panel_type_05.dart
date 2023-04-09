@@ -197,6 +197,9 @@ class _ConfigureRightPanelType05State
   }
 
   void saveMode() {
+    ref.read(deviceDataMap[widget.sc.device.name]!).saveClickedMode05 = true;
+    ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
+
     List<Reading> readings = [];
 
     List<FlSpot> currentTimeReadings =
@@ -266,7 +269,7 @@ class _ConfigureRightPanelType05State
                         getSnackBar(context, Colors.green, "Saving Success"))
                 }
               else if (value.status == "E2000")
-                {showLogoutPopup(context)}
+                {showLogoutPopup(context, ref)}
               else
                 {
                   ScaffoldMessenger.of(context)
@@ -276,7 +279,7 @@ class _ConfigureRightPanelType05State
                 },
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
-                  .saveClickedMode03 = false
+                  .saveClickedMode05 = false
             })
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
@@ -430,9 +433,11 @@ class _ConfigureRightPanelType05State
                   ],
                 )
               : const SizedBox.shrink(),
-          const SizedBox(
-            height: 20,
-          ),
+          !closed
+              ? const SizedBox(
+                  height: 20,
+                )
+              : const SizedBox.shrink(),
           !closed
               ? Row(
                   children: [
@@ -455,9 +460,11 @@ class _ConfigureRightPanelType05State
                   ],
                 )
               : const SizedBox.shrink(),
-          const SizedBox(
-            height: 20,
-          ),
+          !closed
+              ? const SizedBox(
+                  height: 20,
+                )
+              : const SizedBox.shrink(),
           !closed
               ? Row(
                   children: [
@@ -696,7 +703,13 @@ class _ConfigureRightPanelType05State
 
     ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
 
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => setGraphValues());
+    Timer.periodic(
+        const Duration(seconds: 1),
+        (Timer t) => {
+              setGraphValues(),
+              if (!ref.watch(deviceDataMap[widget.sc.device.name]!).started)
+                {t.cancel()}
+            });
   }
 
   @override
