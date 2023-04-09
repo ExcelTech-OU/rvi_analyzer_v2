@@ -10,8 +10,7 @@ import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:rvi_analyzer/views/configure/snack_bar.dart';
+import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
 
 class ConfigureRightPanelType01 extends ConsumerStatefulWidget {
@@ -34,6 +33,7 @@ class _ConfigureRightPanelType01State
     extends ConsumerState<ConfigureRightPanelType01> {
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
+  bool showResult = false;
 
   void updateSessionID() {
     DateTime now = DateTime.now();
@@ -81,16 +81,16 @@ class _ConfigureRightPanelType01State
                             fontWeight: FontWeight.bold,
                             color: Colors.black54),
                       ),
-                      // const SizedBox(
-                      //   width: 50,
-                      // ),
-                      // Text(
-                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
-                      //   style: const TextStyle(
-                      //       fontSize: 15,
-                      //       fontWeight: FontWeight.bold,
-                      //       color: Colors.black54),
-                      // ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Text(
+                        "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
                     ],
                   ),
                   const SizedBox(
@@ -179,7 +179,6 @@ class _ConfigureRightPanelType01State
     double current = ref
         .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
         .current;
-    ref.read(deviceDataMap[widget.sc.device.name]!).mode01SaveClicked = true;
 
     if (double.parse(ref
                 .watch(deviceDataMap[widget.sc.device.name]!)
@@ -195,6 +194,10 @@ class _ConfigureRightPanelType01State
     } else {
       ref.read(deviceDataMap[widget.sc.device.name]!).mode01Passed = false;
     }
+
+    setState(() {
+      showResult = true;
+    });
 
     ModeOne modeOne = ModeOne(
         createdBy: "rukshan",
@@ -260,10 +263,8 @@ class _ConfigureRightPanelType01State
                 {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(getSnackBar(
-                        ContentType.success,
-                        "Date saved successfully with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
-                        "Saving Success"))
+                    ..showSnackBar(
+                        getSnackBar(context, Colors.green, "Saving Success"))
                 }
               else if (value.status == "E2000")
                 {showLogoutPopup(context)}
@@ -271,10 +272,8 @@ class _ConfigureRightPanelType01State
                 {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(getSnackBar(
-                        ContentType.failure,
-                        "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
-                        "Saving Failed"))
+                    ..showSnackBar(
+                        getSnackBar(context, Colors.red, "Saving Failed"))
                 },
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
@@ -283,10 +282,8 @@ class _ConfigureRightPanelType01State
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
-                ..showSnackBar(getSnackBar(
-                    ContentType.failure,
-                    "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
-                    "Saving Failed"))
+                ..showSnackBar(
+                    getSnackBar(context, Colors.red, "Saving Failed"))
             });
     widget.updateTestId();
   }
@@ -485,10 +482,7 @@ class _ConfigureRightPanelType01State
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started &&
-                  ref
-                      .watch(deviceDataMap[widget.sc.device.name]!)
-                      .mode01SaveClicked
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started && showResult
               ? Row(
                   children: [
                     Expanded(
@@ -552,6 +546,9 @@ class _ConfigureRightPanelType01State
                                       .read(
                                           deviceDataMap[widget.sc.device.name]!)
                                       .updateStatus();
+                                  setState(() {
+                                    showResult = false;
+                                  });
                                   updateSessionID();
                                 },
                           child: const Text(

@@ -1,4 +1,3 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -11,7 +10,7 @@ import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
-import 'package:rvi_analyzer/views/configure/snack_bar.dart';
+import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
 
 class ConfigureRightPanelType02 extends ConsumerStatefulWidget {
@@ -34,6 +33,7 @@ class _ConfigureRightPanelType02State
     extends ConsumerState<ConfigureRightPanelType02> {
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
+  bool showResult = false;
 
   @override
   Widget build(BuildContext context) {
@@ -195,6 +195,10 @@ class _ConfigureRightPanelType02State
       ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = false;
     }
 
+    setState(() {
+      showResult = true;
+    });
+
     ModeTwo modeTwo = ModeTwo(
         createdBy: "rukshan",
         defaultConfigurations: DefaultConfiguration(
@@ -259,10 +263,8 @@ class _ConfigureRightPanelType02State
                 {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(getSnackBar(
-                        ContentType.success,
-                        "Date saved successfully with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
-                        "Saving Success"))
+                    ..showSnackBar(
+                        getSnackBar(context, Colors.green, "Saving Success"))
                 }
               else if (value.status == "E2000")
                 {showLogoutPopup(context)}
@@ -270,10 +272,8 @@ class _ConfigureRightPanelType02State
                 {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(getSnackBar(
-                        ContentType.failure,
-                        "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
-                        "Saving Failed"))
+                    ..showSnackBar(
+                        getSnackBar(context, Colors.red, "Saving Failed"))
                 },
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
@@ -282,10 +282,8 @@ class _ConfigureRightPanelType02State
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
-                ..showSnackBar(getSnackBar(
-                    ContentType.failure,
-                    "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
-                    "Saving Failed"))
+                ..showSnackBar(
+                    getSnackBar(context, Colors.red, "Saving Failed"))
             });
 
     widget.updateTestId();
@@ -485,10 +483,7 @@ class _ConfigureRightPanelType02State
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started &&
-                  ref
-                      .watch(deviceDataMap[widget.sc.device.name]!)
-                      .saveClickedMode02
+          ref.watch(deviceDataMap[widget.sc.device.name]!).started && showResult
               ? Row(
                   children: [
                     Expanded(
@@ -553,6 +548,9 @@ class _ConfigureRightPanelType02State
                                           deviceDataMap[widget.sc.device.name]!)
                                       .updateStatus();
                                   updateSessionID();
+                                  setState(() {
+                                    showResult = false;
+                                  });
                                 },
                           child: const Text(
                             'Stop',

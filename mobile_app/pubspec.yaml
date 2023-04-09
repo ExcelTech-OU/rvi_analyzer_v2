@@ -36,21 +36,14 @@ dependencies:
   cupertino_icons: ^1.0.2
   hexcolor: ^3.0.1
   font_awesome_flutter: ^10.3.0
-  otp_text_field: ^1.1.1
   http: ^0.13.4
   json_annotation: ^4.4.0
-  modal_bottom_sheet: ^3.0.0-pre
   flutter_blue:
     git:
       url: https://github.com/espresso3389/flutter_blue
       ref: 9758034dc41956d7edd3b6917f3ed3dd9eab5ef1
-  toggle_switch: ^2.0.1
   flutter_riverpod: ^2.0.2
-  persistent_bottom_nav_bar: ^5.0.2
-  percent_indicator: ^4.0.1
   flutter_secure_storage: ^7.0.1
-  flutter_rating_bar: ^4.0.1  
-  app_settings: ^4.2.0
   roundcheckbox: ^2.0.5
   animations: ^2.0.7
   intl: ^0.18.0
@@ -58,8 +51,7 @@ dependencies:
   rounded_loading_button: ^2.1.0
   qr_code_scanner: ^1.0.1
   fl_chart: ^0.61.0
-  awesome_snackbar_content: ^0.1.1
-  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

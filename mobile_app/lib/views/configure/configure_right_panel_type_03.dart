@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +13,8 @@ import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
-import 'package:rvi_analyzer/views/common/test_line.dart';
-import 'package:rvi_analyzer/views/configure/snack_bar.dart';
+import 'package:rvi_analyzer/views/common/line_chart.dart';
+import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
 
 class ConfigureRightPanelType03 extends ConsumerStatefulWidget {
@@ -38,78 +37,126 @@ class _ConfigureRightPanelType03State
     extends ConsumerState<ConfigureRightPanelType03> {
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
+  int startTimer = 0;
+  bool statusChanged = false;
+  int currentStatus = 6;
+
+  bool forceStopped = false;
+  bool closed = true;
+  bool dataSavedSuccess = false;
+  bool stopClicked = false;
+
+  bool isNeedToShowGraph() {
+    return !closed;
+  }
 
   void setGraphValues() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
+    if (currentStatus == 6 && !statusChanged) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
               .state ==
-          6) {
-        ref.read(deviceDataMap[widget.sc.device.name]!).started = false;
+          3) {
+        setState(() {
+          closed = false;
+
+          statusChanged = true;
+          currentStatus = 3;
+        });
       } else {
+        setState(() {
+          startTimer++;
+        });
+      }
+    } else {
+      if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
         if (ref
                 .watch(
                     ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-                .currentProtocol ==
-            3) {
-          double currentReadingVoltage = ref
-              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
-              .voltage;
-          double currentReadingCurrent = ref
-              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
-              .current;
-          int currentReadingTem = ref
-              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
-              .temperature;
-
-          //Update when x axis value groth
+                .state ==
+            6) {
+          ref.read(deviceDataMap[widget.sc.device.name]!).started = false;
+          setState(() {
+            currentStatus = 6;
+            statusChanged = false;
+            startTimer = 0;
+          });
+        } else {
+          setState(() {
+            closed = false;
+            currentStatus = 3;
+            statusChanged = true;
+            startTimer = 0;
+            dataSavedSuccess = false;
+          });
           if (ref
-                  .watch(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode03 <
-              currentReadingVoltage) {
+                  .watch(ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .streamData)
+                  .currentProtocol ==
+              3) {
+            double currentReadingVoltage = ref
+                .read(
+                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                .voltage;
+            double currentReadingCurrent = ref
+                .read(
+                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                .current;
+            int currentReadingTem = ref
+                .read(
+                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                .temperature;
+
+            //Update when x axis value groth
             if (ref
                     .watch(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph01Mode03 <
-                currentReadingCurrent) {
+                    .xMaxGraph01Mode03 <
+                currentReadingVoltage) {
               if (ref
                       .watch(deviceDataMap[widget.sc.device.name]!)
-                      .yMaxGraph02Mode03 <
-                  currentReadingTem) {
+                      .yMaxGraph01Mode03 <
+                  currentReadingCurrent) {
+                if (ref
+                        .watch(deviceDataMap[widget.sc.device.name]!)
+                        .yMaxGraph02Mode03 <
+                    currentReadingTem) {
+                  ref
+                      .read(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph02Mode03 = currentReadingTem.toDouble();
+                }
                 ref
                     .read(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph02Mode03 = currentReadingTem.toDouble();
+                    .xMaxGraph01Mode03 = currentReadingVoltage;
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph01Mode03 = currentReadingCurrent;
+              } else {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .xMaxGraph01Mode03 = currentReadingVoltage;
               }
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode03 = currentReadingVoltage;
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .yMaxGraph01Mode03 = currentReadingCurrent;
             } else {
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode03 = currentReadingVoltage;
+              if (ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph01Mode03 <
+                  currentReadingCurrent) {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph01Mode03 = currentReadingCurrent;
+              }
             }
-          } else {
-            if (ref
-                    .watch(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph01Mode03 <
-                currentReadingCurrent) {
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .yMaxGraph01Mode03 = currentReadingCurrent;
-            }
-          }
 
-          ref
-              .watch(deviceDataMap[widget.sc.device.name]!)
-              .spotDataGraph01Mode03
-              .add(FlSpot(currentReadingVoltage, currentReadingCurrent));
-          ref
-              .watch(deviceDataMap[widget.sc.device.name]!)
-              .spotDataGraph02Mode03
-              .add(FlSpot(currentReadingVoltage, currentReadingTem.toDouble()));
+            ref
+                .watch(deviceDataMap[widget.sc.device.name]!)
+                .spotDataGraph01Mode03
+                .add(FlSpot(currentReadingVoltage, currentReadingCurrent));
+            ref
+                .watch(deviceDataMap[widget.sc.device.name]!)
+                .spotDataGraph02Mode03
+                .add(FlSpot(
+                    currentReadingVoltage, currentReadingTem.toDouble()));
+          }
         }
       }
     }
@@ -125,6 +172,7 @@ class _ConfigureRightPanelType03State
 
   void saveMode() {
     ref.read(deviceDataMap[widget.sc.device.name]!).saveClickedMode03 = true;
+    ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
 
     List<Reading> readings = [];
 
@@ -193,12 +241,13 @@ class _ConfigureRightPanelType03State
         .then((value) => {
               if (value.status == "S1000")
                 {
+                  setState(() {
+                    dataSavedSuccess = true;
+                  }),
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(getSnackBar(
-                        ContentType.success,
-                        "Date saved successfully with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
-                        "Saving Success"))
+                    ..showSnackBar(
+                        getSnackBar(context, Colors.green, "Saving Success"))
                 }
               else if (value.status == "E2000")
                 {showLogoutPopup(context)}
@@ -206,10 +255,8 @@ class _ConfigureRightPanelType03State
                 {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(getSnackBar(
-                        ContentType.failure,
-                        "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
-                        "Saving Failed"))
+                    ..showSnackBar(
+                        getSnackBar(context, Colors.red, "Saving Failed"))
                 },
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
@@ -218,10 +265,8 @@ class _ConfigureRightPanelType03State
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
-                ..showSnackBar(getSnackBar(
-                    ContentType.failure,
-                    "Data save failed with test id ${ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text}",
-                    "Saving Failed"))
+                ..showSnackBar(
+                    getSnackBar(context, Colors.red, "Saving Failed"))
             });
     updateSessionID();
     widget.updateTestId();
@@ -407,9 +452,9 @@ class _ConfigureRightPanelType03State
             ],
           ),
           const SizedBox(
-            height: 10,
+            height: 15,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          isNeedToShowGraph()
               ? Row(
                   children: [
                     Expanded(
@@ -434,7 +479,7 @@ class _ConfigureRightPanelType03State
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          isNeedToShowGraph()
               ? Row(
                   children: [
                     Expanded(
@@ -456,7 +501,7 @@ class _ConfigureRightPanelType03State
                   ],
                 )
               : const SizedBox.shrink(),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          !closed
               ? Row(
                   children: [
                     Expanded(
@@ -466,34 +511,91 @@ class _ConfigureRightPanelType03State
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
-                          color: Colors.orange,
+                          color: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .started
+                              ? Colors.orange
+                              : Colors.red,
                           onPressed: ref
                                   .watch(deviceDataMap[widget.sc.device.name]!)
                                   .saveClickedMode03
                               ? null
                               : () {
-                                  blue.stop(widget.sc.device);
+                                  if (!ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started) {
+                                    resetGraph();
+                                    setState(() {
+                                      closed = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      stopClicked = true;
+                                    });
+                                    blue
+                                        .stop(widget.sc.device)
+                                        .then((value) => {
+                                              ref
+                                                      .read(deviceDataMap[widget
+                                                          .sc.device.name]!)
+                                                      .started =
+                                                  !ref
+                                                      .watch(deviceDataMap[
+                                                          widget
+                                                              .sc.device.name]!)
+                                                      .started,
+                                              ref
+                                                  .read(deviceDataMap[
+                                                      widget.sc.device.name]!)
+                                                  .updateStatus(),
+                                              setState(() {
+                                                stopClicked = false;
+                                              }),
+                                              ScaffoldMessenger.of(context)
+                                                ..hideCurrentSnackBar()
+                                                ..showSnackBar(getSnackBar(
+                                                    context,
+                                                    Colors.green,
+                                                    "Stopping Success"))
+                                            })
+                                        .onError((error, stackTrace) => {
+                                              ScaffoldMessenger.of(context)
+                                                ..hideCurrentSnackBar()
+                                                ..showSnackBar(getSnackBar(
+                                                    context,
+                                                    Colors.red,
+                                                    "Stop Failed"))
+                                            });
+                                  }
 
+                                  setState(() {
+                                    currentStatus = 6;
+                                    statusChanged = false;
+                                    startTimer = 0;
+                                    forceStopped = true;
+                                  });
+                                },
+                          child: (ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started &&
+                                  stopClicked)
+                              ? const SpinKitWave(
+                                  color: Colors.white,
+                                  size: 20.0,
+                                )
+                              : Text(
                                   ref
-                                          .read(deviceDataMap[
-                                              widget.sc.device.name]!)
-                                          .started =
-                                      !ref
                                           .watch(deviceDataMap[
                                               widget.sc.device.name]!)
-                                          .started;
-                                  ref
-                                      .read(
-                                          deviceDataMap[widget.sc.device.name]!)
-                                      .updateStatus();
-                                  resetGraph();
-                                },
-                          child: const Text(
-                            'Stop',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
-                          ),
+                                          .started
+                                      ? 'Stop'
+                                      : "Close",
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(255, 231, 230, 230),
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     ),
@@ -509,8 +611,14 @@ class _ConfigureRightPanelType03State
                           disabledColor: Colors.grey,
                           color: Colors.green,
                           onPressed: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .saveClickedMode03
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .saveClickedMode03 ||
+                                  ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started ||
+                                  dataSavedSuccess
                               ? null
                               : () {
                                   saveMode();
@@ -543,19 +651,34 @@ class _ConfigureRightPanelType03State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.cyan,
-                          onPressed: () {
-                            if (widget.keyForm.currentState!.validate() &&
-                                _formKey.currentState!.validate()) {
-                              resetGraph();
-                              startMode3();
-                            }
-                          },
-                          child: const Text(
-                            'Start',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
-                          ),
+                          onPressed: ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started &&
+                                  !statusChanged
+                              ? null
+                              : () {
+                                  if (widget.keyForm.currentState!.validate() &&
+                                      _formKey.currentState!.validate()) {
+                                    resetGraph();
+                                    startMode3();
+                                  }
+                                },
+                          child: ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started &&
+                                  !statusChanged
+                              ? const SpinKitWave(
+                                  color: Colors.white,
+                                  size: 20.0,
+                                )
+                              : const Text(
+                                  'Start',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 231, 230, 230),
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     )
@@ -649,8 +772,8 @@ class _ConfigureRightPanelType03State
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
-                    children: [
-                      const Text(
+                    children: const [
+                      Text(
                         "Mode 03",
                         style: TextStyle(
                             fontSize: 30,

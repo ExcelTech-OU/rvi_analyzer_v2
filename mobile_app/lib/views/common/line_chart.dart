@@ -25,8 +25,8 @@ class LineChartSample2 extends StatefulWidget {
 
 class _LineChartSample2State extends State<LineChartSample2> {
   List<Color> gradientColors = [
-    Colors.cyan,
-    Colors.blue,
+    Colors.red,
+    Colors.red,
   ];
 
   bool showAvg = false;
@@ -67,6 +67,21 @@ class _LineChartSample2State extends State<LineChartSample2> {
 
   LineChartData mainData() {
     return LineChartData(
+      lineTouchData: LineTouchData(
+          getTouchLineEnd: (barData, spotIndex) => 0,
+          getTouchLineStart: (barData, spotIndex) => 0,
+          touchTooltipData: LineTouchTooltipData(
+              tooltipBgColor: Colors.cyan,
+              getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                return touchedSpots.map((LineBarSpot touchedSpot) {
+                  const textStyle = TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  );
+                  return LineTooltipItem(touchedSpot.y.toString(), textStyle);
+                }).toList();
+              })),
       gridData: FlGridData(
         show: false,
         drawVerticalLine: true,
