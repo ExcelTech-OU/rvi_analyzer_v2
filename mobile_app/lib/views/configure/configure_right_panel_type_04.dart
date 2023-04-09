@@ -37,78 +37,122 @@ class _ConfigureRightPanelType04State
     extends ConsumerState<ConfigureRightPanelType04> {
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
+  int startTimer = 0;
+  bool statusChanged = false;
+  int currentStatus = 6;
+
+  bool forceStopped = false;
+  bool closed = true;
+  bool dataSavedSuccess = false;
+  bool stopClicked = false;
 
   void setGraphValues() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
+    if (currentStatus == 6 && !statusChanged) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
               .state ==
-          6) {
-        ref.read(deviceDataMap[widget.sc.device.name]!).started = false;
+          3) {
+        setState(() {
+          closed = false;
+          statusChanged = true;
+          currentStatus = 3;
+        });
       } else {
+        setState(() {
+          startTimer++;
+        });
+      }
+    } else {
+      if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
         if (ref
                 .watch(
                     ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-                .currentProtocol ==
-            4) {
-          double currentReadingVoltage = ref
-              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
-              .voltage;
-          double currentReadingCurrent = ref
-              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
-              .current;
-          int currentReadingTem = ref
-              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
-              .temperature;
+                .state ==
+            6) {
+          ref.read(deviceDataMap[widget.sc.device.name]!).started = false;
 
-          //Update when x axis value groth
+          setState(() {
+            currentStatus = 6;
+            statusChanged = false;
+            startTimer = 0;
+          });
+        } else {
+          setState(() {
+            closed = false;
+            currentStatus = 3;
+            statusChanged = true;
+            startTimer = 0;
+            dataSavedSuccess = false;
+          });
           if (ref
-                  .watch(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode04 <
-              currentReadingCurrent) {
+                  .watch(ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .streamData)
+                  .currentProtocol ==
+              4) {
+            double currentReadingVoltage = ref
+                .read(
+                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                .voltage;
+            double currentReadingCurrent = ref
+                .read(
+                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                .current;
+            int currentReadingTem = ref
+                .read(
+                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                .temperature;
+
+            //Update when x axis value groth
             if (ref
                     .watch(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph01Mode04 <
-                currentReadingVoltage) {
+                    .xMaxGraph01Mode04 <
+                currentReadingCurrent) {
               if (ref
                       .watch(deviceDataMap[widget.sc.device.name]!)
-                      .yMaxGraph02Mode04 <
-                  currentReadingTem) {
+                      .yMaxGraph01Mode04 <
+                  currentReadingVoltage) {
+                if (ref
+                        .watch(deviceDataMap[widget.sc.device.name]!)
+                        .yMaxGraph02Mode04 <
+                    currentReadingTem) {
+                  ref
+                      .read(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph02Mode04 = currentReadingTem.toDouble();
+                }
                 ref
                     .read(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph02Mode04 = currentReadingTem.toDouble();
+                    .xMaxGraph01Mode04 = currentReadingCurrent;
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph01Mode04 = currentReadingVoltage;
+              } else {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .xMaxGraph01Mode04 = currentReadingCurrent;
               }
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode04 = currentReadingCurrent;
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .yMaxGraph01Mode04 = currentReadingVoltage;
             } else {
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode04 = currentReadingCurrent;
+              if (ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph01Mode04 <
+                  currentReadingVoltage) {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph01Mode04 = currentReadingVoltage;
+              }
             }
-          } else {
-            if (ref
-                    .watch(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph01Mode04 <
-                currentReadingVoltage) {
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .yMaxGraph01Mode04 = currentReadingVoltage;
-            }
-          }
 
-          ref
-              .watch(deviceDataMap[widget.sc.device.name]!)
-              .spotDataGraph01Mode04
-              .add(FlSpot(currentReadingCurrent, currentReadingVoltage));
-          ref
-              .watch(deviceDataMap[widget.sc.device.name]!)
-              .spotDataGraph02Mode04
-              .add(FlSpot(currentReadingCurrent, currentReadingTem.toDouble()));
+            ref
+                .watch(deviceDataMap[widget.sc.device.name]!)
+                .spotDataGraph01Mode04
+                .add(FlSpot(currentReadingCurrent, currentReadingVoltage));
+            ref
+                .watch(deviceDataMap[widget.sc.device.name]!)
+                .spotDataGraph02Mode04
+                .add(FlSpot(
+                    currentReadingCurrent, currentReadingTem.toDouble()));
+          }
         }
       }
     }
@@ -228,7 +272,7 @@ class _ConfigureRightPanelType04State
         .clear();
 
     ref.read(deviceDataMap[widget.sc.device.name]!).xMaxGraph01Mode04 = 0.0;
-    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph01Mode04 = 0.2;
+    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph01Mode04 = 0.0;
     ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph02Mode04 = 0.0;
     updateSessionID();
     widget.updateTestId();
@@ -399,7 +443,7 @@ class _ConfigureRightPanelType04State
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          !closed
               ? Row(
                   children: [
                     Expanded(
@@ -424,7 +468,7 @@ class _ConfigureRightPanelType04State
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          !closed
               ? Row(
                   children: [
                     Expanded(
@@ -446,7 +490,7 @@ class _ConfigureRightPanelType04State
                   ],
                 )
               : const SizedBox.shrink(),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          !closed
               ? Row(
                   children: [
                     Expanded(
@@ -456,35 +500,87 @@ class _ConfigureRightPanelType04State
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
-                          color: Colors.orange,
+                          color: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .started
+                              ? Colors.orange
+                              : Colors.red,
                           onPressed: ref
                                   .watch(deviceDataMap[widget.sc.device.name]!)
                                   .saveClickedMode04
                               ? null
                               : () {
-                                  blue.stop(widget.sc.device);
-
+                                  if (!ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started) {
+                                    resetGraph();
+                                    setState(() {
+                                      closed = true;
+                                    });
+                                  } else {
+                                    blue
+                                        .stop(widget.sc.device)
+                                        .then((value) => {
+                                              ref
+                                                      .read(deviceDataMap[widget
+                                                          .sc.device.name]!)
+                                                      .started =
+                                                  !ref
+                                                      .watch(deviceDataMap[
+                                                          widget
+                                                              .sc.device.name]!)
+                                                      .started,
+                                              ref
+                                                  .read(deviceDataMap[
+                                                      widget.sc.device.name]!)
+                                                  .updateStatus(),
+                                              setState(() {
+                                                stopClicked = false;
+                                              }),
+                                              ScaffoldMessenger.of(context)
+                                                ..hideCurrentSnackBar()
+                                                ..showSnackBar(getSnackBar(
+                                                    context,
+                                                    Colors.green,
+                                                    "Stopping Success"))
+                                            })
+                                        .onError((error, stackTrace) => {
+                                              ScaffoldMessenger.of(context)
+                                                ..hideCurrentSnackBar()
+                                                ..showSnackBar(getSnackBar(
+                                                    context,
+                                                    Colors.red,
+                                                    "Stop Failed"))
+                                            });
+                                    setState(() {
+                                      currentStatus = 6;
+                                      statusChanged = false;
+                                      startTimer = 0;
+                                      forceStopped = true;
+                                    });
+                                  }
+                                },
+                          child: (ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started &&
+                                  stopClicked)
+                              ? const SpinKitWave(
+                                  color: Colors.white,
+                                  size: 20.0,
+                                )
+                              : Text(
                                   ref
-                                          .read(deviceDataMap[
-                                              widget.sc.device.name]!)
-                                          .started =
-                                      !ref
                                           .watch(deviceDataMap[
                                               widget.sc.device.name]!)
-                                          .started;
-
-                                  ref
-                                      .read(
-                                          deviceDataMap[widget.sc.device.name]!)
-                                      .updateStatus();
-                                  resetGraph();
-                                },
-                          child: const Text(
-                            'Stop',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
-                          ),
+                                          .started
+                                      ? 'Stop'
+                                      : "Close",
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(255, 231, 230, 230),
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     ),
@@ -500,8 +596,14 @@ class _ConfigureRightPanelType04State
                           disabledColor: Colors.grey,
                           color: Colors.green,
                           onPressed: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .saveClickedMode04
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .saveClickedMode04 ||
+                                  ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started ||
+                                  dataSavedSuccess
                               ? null
                               : () {
                                   saveMode();
@@ -534,19 +636,34 @@ class _ConfigureRightPanelType04State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.cyan,
-                          onPressed: () {
-                            if (widget.keyForm.currentState!.validate() &&
-                                _formKey.currentState!.validate()) {
-                              resetGraph();
-                              startMode4();
-                            }
-                          },
-                          child: const Text(
-                            'Start',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
-                          ),
+                          onPressed: ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started &&
+                                  !statusChanged
+                              ? null
+                              : () {
+                                  if (widget.keyForm.currentState!.validate() &&
+                                      _formKey.currentState!.validate()) {
+                                    resetGraph();
+                                    startMode4();
+                                  }
+                                },
+                          child: ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started &&
+                                  !statusChanged
+                              ? const SpinKitWave(
+                                  color: Colors.white,
+                                  size: 20.0,
+                                )
+                              : const Text(
+                                  'Start',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 231, 230, 230),
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     )

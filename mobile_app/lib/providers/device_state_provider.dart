@@ -92,7 +92,7 @@ class DeviceState extends ChangeNotifier {
   // voltage vs current graph
 
   double xMaxGraph01Mode03 = 0.0;
-  double yMaxGraph01Mode03 = 0.2;
+  double yMaxGraph01Mode03 = 0.0;
   List<FlSpot> spotDataGraph01Mode03 = [];
   double lastVoltageMode03 = 0.0;
 
@@ -117,7 +117,7 @@ class DeviceState extends ChangeNotifier {
   bool isNotInitialMode04 = false;
 
   double xMaxGraph01Mode04 = 0.0;
-  double yMaxGraph01Mode04 = 0.2;
+  double yMaxGraph01Mode04 = 0.0;
   List<FlSpot> spotDataGraph01Mode04 = [];
   double lastVoltageMode04 = 0.0;
 
@@ -138,7 +138,7 @@ class DeviceState extends ChangeNotifier {
 
   double timeMode05 = 0;
   double xMaxGraph01Mode05 = 10;
-  double yMaxGraph01Mode05 = 0.2;
+  double yMaxGraph01Mode05 = 0.0;
   List<FlSpot> spotDataGraph01Mode05 = [];
   double lastVoltageMode05 = 0.0;
 
@@ -164,7 +164,7 @@ class DeviceState extends ChangeNotifier {
   bool isNotInitialMode06 = false;
 
   double xMaxGraph01Mode06 = 0.0;
-  double yMaxGraph01Mode06 = 0.2;
+  double yMaxGraph01Mode06 = 0.0;
   List<FlSpot> spotDataGraph01Mode06 = [];
   double lastVoltageMode06 = 0.0;
 

@@ -283,7 +283,7 @@ class _ConfigureRightPanelType03State
         .clear();
 
     ref.read(deviceDataMap[widget.sc.device.name]!).xMaxGraph01Mode03 = 0.0;
-    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph01Mode03 = 0.2;
+    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph01Mode03 = 0.0;
     ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph02Mode03 = 0.0;
     updateSessionID();
     widget.updateTestId();

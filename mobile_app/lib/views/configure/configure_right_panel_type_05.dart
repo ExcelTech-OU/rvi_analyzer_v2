@@ -37,109 +37,152 @@ class _ConfigureRightPanelType05State
     extends ConsumerState<ConfigureRightPanelType05> {
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
+  int startTimer = 0;
+  bool statusChanged = false;
+  int currentStatus = 6;
+
+  bool forceStopped = false;
+  bool closed = true;
+  bool dataSavedSuccess = false;
+  bool stopClicked = false;
 
   void setGraphValues() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
+    if (currentStatus == 6 && !statusChanged) {
       if (ref
               .watch(
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
               .state ==
-          6) {
-        ref.read(deviceDataMap[widget.sc.device.name]!).started = false;
+          3) {
+        setState(() {
+          closed = false;
+
+          statusChanged = true;
+          currentStatus = 3;
+        });
       } else {
+        setState(() {
+          startTimer++;
+        });
+      }
+    } else {
+      if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
         if (ref
                 .watch(
                     ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-                .currentProtocol ==
-            5) {
-          double currentReadingVoltage = ref
-              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
-              .voltage;
-          double currentReadingCurrent = ref
-              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
-              .current;
-
-          double currentReadingRes =
-              currentReadingVoltage / currentReadingCurrent;
-
-          int currentReadingTem = ref
-              .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
-              .temperature;
-
-          ref.read(deviceDataMap[widget.sc.device.name]!).timeMode05 =
-              ref.read(deviceDataMap[widget.sc.device.name]!).timeMode05 + 1;
-
-          double time =
-              ref.read(deviceDataMap[widget.sc.device.name]!).timeMode05;
-
-          //Update when x axis value groth
+                .state ==
+            6) {
+          ref.read(deviceDataMap[widget.sc.device.name]!).started = false;
+          setState(() {
+            currentStatus = 6;
+            statusChanged = false;
+            startTimer = 0;
+          });
+        } else {
+          setState(() {
+            closed = false;
+            currentStatus = 3;
+            statusChanged = true;
+            startTimer = 0;
+            dataSavedSuccess = false;
+          });
           if (ref
-                  .watch(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode05 <
-              time) {
+                  .watch(ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .streamData)
+                  .currentProtocol ==
+              5) {
+            double currentReadingVoltage = ref
+                .read(
+                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                .voltage;
+            double currentReadingCurrent = ref
+                .read(
+                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                .current;
+
+            double currentReadingRes =
+                currentReadingVoltage / currentReadingCurrent;
+
+            int currentReadingTem = ref
+                .read(
+                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                .temperature;
+
+            ref.read(deviceDataMap[widget.sc.device.name]!).timeMode05 =
+                ref.read(deviceDataMap[widget.sc.device.name]!).timeMode05 + 1;
+
+            double time =
+                ref.read(deviceDataMap[widget.sc.device.name]!).timeMode05;
+
+            //Update when x axis value groth
             if (ref
                     .watch(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph01Mode05 <
-                currentReadingCurrent) {
-              //Tem
+                    .xMaxGraph01Mode05 <
+                time) {
               if (ref
                       .watch(deviceDataMap[widget.sc.device.name]!)
-                      .yMaxGraph02Mode05 <
-                  currentReadingTem) {
-                ref
-                    .read(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph02Mode05 = currentReadingTem.toDouble();
-              }
-
-              if (ref
-                      .watch(deviceDataMap[widget.sc.device.name]!)
-                      .yMaxGraph03Mode05 <
-                  currentReadingRes) {
-                ref
-                    .read(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph02Mode05 = currentReadingRes;
-              }
-
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode05 = ref
+                      .yMaxGraph01Mode05 <
+                  currentReadingCurrent) {
+                //Tem
+                if (ref
+                        .watch(deviceDataMap[widget.sc.device.name]!)
+                        .yMaxGraph02Mode05 <
+                    currentReadingTem) {
+                  ref
                       .read(deviceDataMap[widget.sc.device.name]!)
-                      .xMaxGraph01Mode05 +
-                  10;
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .yMaxGraph01Mode05 = currentReadingCurrent;
+                      .yMaxGraph02Mode05 = currentReadingTem.toDouble();
+                }
+
+                if (ref
+                        .watch(deviceDataMap[widget.sc.device.name]!)
+                        .yMaxGraph03Mode05 <
+                    currentReadingRes) {
+                  ref
+                      .read(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph02Mode05 = currentReadingRes;
+                }
+
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .xMaxGraph01Mode05 = ref
+                        .read(deviceDataMap[widget.sc.device.name]!)
+                        .xMaxGraph01Mode05 +
+                    10;
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph01Mode05 = currentReadingCurrent;
+              } else {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .xMaxGraph01Mode05 = ref
+                        .read(deviceDataMap[widget.sc.device.name]!)
+                        .xMaxGraph01Mode05 +
+                    10;
+              }
             } else {
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .xMaxGraph01Mode05 = ref
-                      .read(deviceDataMap[widget.sc.device.name]!)
-                      .xMaxGraph01Mode05 +
-                  10;
+              if (ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph01Mode05 <
+                  currentReadingCurrent) {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph01Mode05 = currentReadingCurrent;
+              }
             }
-          } else {
-            if (ref
-                    .watch(deviceDataMap[widget.sc.device.name]!)
-                    .yMaxGraph01Mode05 <
-                currentReadingCurrent) {
-              ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
-                  .yMaxGraph01Mode05 = currentReadingCurrent;
-            }
-          }
 
-          ref
-              .watch(deviceDataMap[widget.sc.device.name]!)
-              .spotDataGraph01Mode05
-              .add(FlSpot(time, currentReadingCurrent));
-          ref
-              .watch(deviceDataMap[widget.sc.device.name]!)
-              .spotDataGraph02Mode05
-              .add(FlSpot(time, currentReadingTem.toDouble()));
-          ref
-              .watch(deviceDataMap[widget.sc.device.name]!)
-              .spotDataGraph03Mode05
-              .add(FlSpot(time, currentReadingRes));
+            ref
+                .watch(deviceDataMap[widget.sc.device.name]!)
+                .spotDataGraph01Mode05
+                .add(FlSpot(time, currentReadingCurrent));
+            ref
+                .watch(deviceDataMap[widget.sc.device.name]!)
+                .spotDataGraph02Mode05
+                .add(FlSpot(time, currentReadingTem.toDouble()));
+            ref
+                .watch(deviceDataMap[widget.sc.device.name]!)
+                .spotDataGraph03Mode05
+                .add(FlSpot(time, currentReadingRes));
+          }
         }
       }
     }
@@ -255,7 +298,7 @@ class _ConfigureRightPanelType05State
         .clear();
 
     ref.read(deviceDataMap[widget.sc.device.name]!).xMaxGraph01Mode05 = 0.0;
-    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph01Mode05 = 0.2;
+    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph01Mode05 = 0.0;
     ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph02Mode05 = 0.0;
     ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph03Mode05 = 0.0;
 
@@ -365,7 +408,7 @@ class _ConfigureRightPanelType05State
           const SizedBox(
             height: 10.0,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          !closed
               ? Row(
                   children: [
                     Expanded(
@@ -390,7 +433,7 @@ class _ConfigureRightPanelType05State
           const SizedBox(
             height: 20,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          !closed
               ? Row(
                   children: [
                     Expanded(
@@ -415,7 +458,7 @@ class _ConfigureRightPanelType05State
           const SizedBox(
             height: 20,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          !closed
               ? Row(
                   children: [
                     Expanded(
@@ -440,7 +483,7 @@ class _ConfigureRightPanelType05State
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          !closed
               ? Row(
                   children: [
                     Expanded(
@@ -450,35 +493,90 @@ class _ConfigureRightPanelType05State
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
-                          color: Colors.orange,
+                          color: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .started
+                              ? Colors.orange
+                              : Colors.red,
                           onPressed: ref
                                   .watch(deviceDataMap[widget.sc.device.name]!)
                                   .saveClickedMode05
                               ? null
                               : () {
-                                  blue.stop(widget.sc.device);
-
+                                  if (!ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started) {
+                                    resetGraph();
+                                    setState(() {
+                                      closed = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      stopClicked = true;
+                                    });
+                                    blue
+                                        .stop(widget.sc.device)
+                                        .then((value) => {
+                                              ref
+                                                      .read(deviceDataMap[widget
+                                                          .sc.device.name]!)
+                                                      .started =
+                                                  !ref
+                                                      .watch(deviceDataMap[
+                                                          widget
+                                                              .sc.device.name]!)
+                                                      .started,
+                                              ref
+                                                  .read(deviceDataMap[
+                                                      widget.sc.device.name]!)
+                                                  .updateStatus(),
+                                              setState(() {
+                                                stopClicked = false;
+                                              }),
+                                              ScaffoldMessenger.of(context)
+                                                ..hideCurrentSnackBar()
+                                                ..showSnackBar(getSnackBar(
+                                                    context,
+                                                    Colors.green,
+                                                    "Stopping Success"))
+                                            })
+                                        .onError((error, stackTrace) => {
+                                              ScaffoldMessenger.of(context)
+                                                ..hideCurrentSnackBar()
+                                                ..showSnackBar(getSnackBar(
+                                                    context,
+                                                    Colors.red,
+                                                    "Stop Failed"))
+                                            });
+                                  }
+                                  setState(() {
+                                    currentStatus = 6;
+                                    statusChanged = false;
+                                    startTimer = 0;
+                                    forceStopped = true;
+                                  });
+                                },
+                          child: (ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started &&
+                                  stopClicked)
+                              ? const SpinKitWave(
+                                  color: Colors.white,
+                                  size: 20.0,
+                                )
+                              : Text(
                                   ref
-                                          .read(deviceDataMap[
-                                              widget.sc.device.name]!)
-                                          .started =
-                                      !ref
                                           .watch(deviceDataMap[
                                               widget.sc.device.name]!)
-                                          .started;
-
-                                  ref
-                                      .read(
-                                          deviceDataMap[widget.sc.device.name]!)
-                                      .updateStatus();
-                                  resetGraph();
-                                },
-                          child: const Text(
-                            'Stop',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
-                          ),
+                                          .started
+                                      ? 'Stop'
+                                      : "Close",
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(255, 231, 230, 230),
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     ),
@@ -494,8 +592,14 @@ class _ConfigureRightPanelType05State
                           disabledColor: Colors.grey,
                           color: Colors.green,
                           onPressed: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
-                                  .saveClickedMode05
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .saveClickedMode05 ||
+                                  ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started ||
+                                  dataSavedSuccess
                               ? null
                               : () {
                                   saveMode();
@@ -528,19 +632,34 @@ class _ConfigureRightPanelType05State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: Colors.cyan,
-                          onPressed: () {
-                            if (widget.keyForm.currentState!.validate() &&
-                                _formKey.currentState!.validate()) {
-                              resetGraph();
-                              startMode5();
-                            }
-                          },
-                          child: const Text(
-                            'Start',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
-                          ),
+                          onPressed: ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started &&
+                                  !statusChanged
+                              ? null
+                              : () {
+                                  if (widget.keyForm.currentState!.validate() &&
+                                      _formKey.currentState!.validate()) {
+                                    resetGraph();
+                                    startMode5();
+                                  }
+                                },
+                          child: ref
+                                      .watch(
+                                          deviceDataMap[widget.sc.device.name]!)
+                                      .started &&
+                                  !statusChanged
+                              ? const SpinKitWave(
+                                  color: Colors.white,
+                                  size: 20.0,
+                                )
+                              : const Text(
+                                  'Start',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 231, 230, 230),
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     )
@@ -618,16 +737,16 @@ class _ConfigureRightPanelType05State
                             fontWeight: FontWeight.bold,
                             color: Colors.black54),
                       ),
-                      // const SizedBox(
-                      //   width: 50,
-                      // ),
-                      // Text(
-                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
-                      //   style: const TextStyle(
-                      //       fontSize: 15,
-                      //       fontWeight: FontWeight.bold,
-                      //       color: Colors.black54),
-                      // ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Text(
+                        "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
                     ],
                   ),
                   const SizedBox(
