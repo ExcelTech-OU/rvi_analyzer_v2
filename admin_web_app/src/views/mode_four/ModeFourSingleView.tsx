@@ -2,22 +2,21 @@ import { Alert, Box, Button, Container, Dialog, DialogContent, DialogTitle, Divi
 import { Visibility } from '@mui/icons-material';
 import { useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
-import { ModeThreeDto } from "../../services/sessions_service";
+import { ModeFourDto, ModeThreeDto } from "../../services/sessions_service";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 
 
 type SessionDetailsProps = {
-  session: ModeThreeDto;
+  session: ModeFourDto;
 }
 
-export function ModeThreeSingleView({ session }: SessionDetailsProps) {
+export function ModeFourSingleView({ session }: SessionDetailsProps) {
 
   const [open, setOpen] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
-  const [voltageVsCurrent, setA] = useState([{}]);
-  const [voltageVsTemp, setB] = useState([{}]);
-  const [voltageVsResistance, setC] = useState([{}]);
-
+  const [currentVsVoltage, setA] = useState([{}]);
+  const [currentVsTemp, setB] = useState([{}]);
+  const [currentVsResistance, setC] = useState([{}]);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -34,26 +33,24 @@ export function ModeThreeSingleView({ session }: SessionDetailsProps) {
     setOpenSuccess(false);
   };
 
-
   useEffect(() => {
     setA([{}])
     setB([{}])
     setC([{}])
     session.results.readings.forEach(element => {
       setA(prevState => [...prevState, {
-        name: element.voltage,
-        Current: Number.parseFloat(element.current),
+        name: element.current,
+        Voltage: Number.parseFloat(element.voltage),
       }])
       setB(prevState => [...prevState, {
-        name: element.voltage,
+        name: element.current,
         Temperature: Number.parseFloat(element.temperature),
       }])
       setC(prevState => [...prevState, {
-        name: element.voltage,
+        name: element.current,
         Resistance: Number.parseFloat(element.voltage) / Number.parseFloat(element.current),
       }])
     });
-    console.log(voltageVsCurrent)
   }, [session]);
 
   return (
@@ -93,7 +90,7 @@ export function ModeThreeSingleView({ session }: SessionDetailsProps) {
             <LineChart
               width={900}
               height={400}
-              data={voltageVsCurrent}
+              data={currentVsVoltage}
               margin={{
                 top: 5,
                 right: 30,
@@ -106,14 +103,14 @@ export function ModeThreeSingleView({ session }: SessionDetailsProps) {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="Current" strokeWidth={3} stroke="#8884d8" activeDot={{ r: 8 }} />
+              <Line type="monotone" dataKey="Voltage" strokeWidth={3} stroke="#8884d8" activeDot={{ r: 8 }} />
             </LineChart>
           </Box>
           <Box sx={{ my: 2 }}>
             <LineChart
               width={900}
               height={400}
-              data={voltageVsResistance}
+              data={currentVsResistance}
               margin={{
                 top: 5,
                 right: 30,
@@ -133,7 +130,7 @@ export function ModeThreeSingleView({ session }: SessionDetailsProps) {
             <LineChart
               width={900}
               height={400}
-              data={voltageVsTemp}
+              data={currentVsTemp}
               margin={{
                 top: 5,
                 right: 30,

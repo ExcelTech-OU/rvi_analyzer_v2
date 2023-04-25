@@ -15,6 +15,7 @@ import UserList from './views/user/view/UserList'
 import ModeOneList from './views/mode_one/ModeOneList'
 import ModeTwoList from './views/mode_two/ModeTwoList'
 import ModeThreeList from './views/mode_three/ModeThreeList'
+import ModeFourList from './views/mode_four/ModeFourList'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -27,6 +28,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
               <Route path="/mode-one" element={<ModeOneList />} />
               <Route path="/mode-two" element={<ModeTwoList />} />
               <Route path="/mode-three" element={<ModeThreeList />} />
+              <Route path="/mode-four" element={<ModeFourList />} />
               <Route path="/users" element={<UserList />} />
               <Route path="/questions" element={<QuestionList />} />
               <Route path="/login" element={<Login />} />

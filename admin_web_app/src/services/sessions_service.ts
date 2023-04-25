@@ -91,6 +91,68 @@ export interface SessionConfigurationModeThree {
     chargeInTime: string
 }
 
+export interface ModeFourResponse {
+    status: string
+    statusDescription: string
+    sessions: List<ModeFourDto>
+}
+
+export interface ModeFourDto {
+    createdBy: string
+    defaultConfigurations: DefaultConfiguration
+    sessionConfigurationModeFour: SessionConfigurationModeFour
+    status: string
+    results: SessionResult
+}
+
+export interface SessionConfigurationModeFour {
+    startingCurrent: string
+    desiredCurrent: string
+    maxVoltage: string
+    currentResolution: string
+    chargeInTime: string
+}
+
+export interface ModeFiveResponse {
+    status: string
+    statusDescription: string
+    sessions: List<ModeFiveDto>
+}
+
+export interface ModeFiveDto {
+    createdBy: string
+    defaultConfigurations: DefaultConfiguration
+    sessionConfigurationModeFive: SessionConfigurationModeFive
+    status: string
+    results: SessionResult
+}
+
+export interface SessionConfigurationModeFive {
+    fixedVoltage: string
+    maxCurrent: string
+    timeDuration: string
+}
+
+export interface ModeSixResponse {
+    status: string
+    statusDescription: string
+    sessions: List<ModeSixDto>
+}
+
+export interface ModeSixDto {
+    createdBy: string
+    defaultConfigurations: DefaultConfiguration
+    sessionConfigurationModeSix: SessionConfigurationModeSix
+    status: string
+    results: SessionResult
+}
+
+export interface SessionConfigurationModeSix {
+    fixedCurrent: string
+    maxVoltage: string
+    timeDuration: string
+}
+
 
 export interface UserTreatmentSession {
     id: string
@@ -153,6 +215,21 @@ export const sessionApi = createApi({
             providesTags: [{ type: 'sessions', id: "getModeThreeSessions" }]
 
         }),
+        getModeFourSessions: build.query<ModeFourResponse, {}>({
+            query: (data) => `rvi/analyzer/v1/session/get/four`,
+            providesTags: [{ type: 'sessions', id: "getModeFourSessions" }]
+
+        }),
+        getModeFiveSessions: build.query<ModeFiveResponse, {}>({
+            query: (data) => `rvi/analyzer/v1/session/get/five`,
+            providesTags: [{ type: 'sessions', id: "getModeFiveSessions" }]
+
+        }),
+        getModeSixSessions: build.query<ModeSixResponse, {}>({
+            query: (data) => `rvi/analyzer/v1/session/get/six`,
+            providesTags: [{ type: 'sessions', id: "getModeSixSessions" }]
+
+        }),
         getSessionQuestions: build.query<GetSessionQuestionsResponse, {}>({
             query(body) {
                 return {
@@ -169,5 +246,8 @@ export const {
     useGetSessionQuestionsQuery,
     useGetModeTwoSessionsQuery,
     useGetModeThreeSessionsQuery,
+    useGetModeFourSessionsQuery,
+    useGetModeFiveSessionsQuery,
+    useGetModeSixSessionsQuery,
     useGetModeOneSessionsQuery
 } = sessionApi

@@ -1,9 +1,6 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.ModeOnesResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.ModeThreesResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.ModeTwosResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.*;
 import com.rvi.analyzer.rvianalyzerserver.entiy.ModeOne;
 import com.rvi.analyzer.rvianalyzerserver.entiy.ModeTwo;
@@ -322,6 +319,48 @@ public class SessionService {
                         .status("S1000")
                         .statusDescription("Success")
                         .sessions(modeThreeDtos)
+                        .build()));
+    }
+
+    public Mono<ModeFoursResponse> getAllModeFour() {
+        return modeFourRepository.findAll()
+                .flatMap(modeFour -> {
+                    log.info("Mode four found with id [{}]", modeFour.getDefaultConfigurations().getSessionId());
+                    return Mono.just(modeFourMapper.modeFourToModeFourDto(modeFour));
+                })
+                .collectList()
+                .flatMap(modeFourDtos -> Mono.just(ModeFoursResponse.builder()
+                        .status("S1000")
+                        .statusDescription("Success")
+                        .sessions(modeFourDtos)
+                        .build()));
+    }
+
+    public Mono<ModeSixResponse> getAllModeSix() {
+        return modeSixRepository.findAll()
+                .flatMap(modeSix -> {
+                    log.info("Mode six found with id [{}]", modeSix.getDefaultConfigurations().getSessionId());
+                    return Mono.just(modeSixMapper.modeSixToModeSixDto(modeSix));
+                })
+                .collectList()
+                .flatMap(modeFourDtos -> Mono.just(ModeSixResponse.builder()
+                        .status("S1000")
+                        .statusDescription("Success")
+                        .sessions(modeFourDtos)
+                        .build()));
+    }
+
+    public Mono<ModeFiveResponse> getAllModeFive() {
+        return modeFiveRepository.findAll()
+                .flatMap(modeFive -> {
+                    log.info("Mode five found with id [{}]", modeFive.getDefaultConfigurations().getSessionId());
+                    return Mono.just(modeFiveMapper.modeFiveToModeFiveDto(modeFive));
+                })
+                .collectList()
+                .flatMap(modeFiveDtos -> Mono.just(ModeFiveResponse.builder()
+                        .status("S1000")
+                        .statusDescription("Success")
+                        .sessions(modeFiveDtos)
                         .build()));
     }
 }

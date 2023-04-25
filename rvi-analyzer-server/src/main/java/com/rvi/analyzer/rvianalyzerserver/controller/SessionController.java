@@ -1,10 +1,7 @@
 package com.rvi.analyzer.rvianalyzerserver.controller;
 
 
-import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.ModeOnesResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.ModeThreesResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.ModeTwosResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.*;
 import com.rvi.analyzer.rvianalyzerserver.service.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -54,14 +51,29 @@ public class SessionController {
     public Mono<CommonResponse> addModeFour(@RequestBody ModeFourDto modeFourDto){
         return sessionService.addModeFour(modeFourDto);
     }
+
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/four")
+    public Mono<ModeFoursResponse> getModeFour(){
+        return sessionService.getAllModeFour();
+    }
     @PostMapping(path = "/rvi/analyzer/v1/session/add/five")
     public Mono<CommonResponse> addModeFive(@RequestBody ModeFiveDto modeFiveDto){
         return sessionService.addModeFive(modeFiveDto);
     }
 
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/five")
+    public Mono<ModeFiveResponse> getModeFive(){
+        return sessionService.getAllModeFive();
+    }
+
     @PostMapping(path = "/rvi/analyzer/v1/session/add/six")
     public Mono<CommonResponse> addModeFour(@RequestBody ModeSixDto modeSixDto){
         return sessionService.addModeSix(modeSixDto);
+    }
+
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/six")
+    public Mono<ModeSixResponse> getModeSix(){
+        return sessionService.getAllModeSix();
     }
 
 }
