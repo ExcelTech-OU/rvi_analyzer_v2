@@ -1,67 +1,18 @@
-import { Alert, Box, Button, Container, Dialog, DialogContent, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, Snackbar, Tooltip, useMediaQuery, useTheme } from "@mui/material";
+import { Alert, Box, Button, Container, Dialog, DialogContent, DialogTitle, Divider, IconButton, Tooltip as Tooltip1, List, ListItem, ListItemText, Snackbar, useMediaQuery, useTheme } from "@mui/material";
 import { Visibility } from '@mui/icons-material';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { ModeThreeDto } from "../../services/sessions_service";
-import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
-import { blue, green, grey } from "@mui/material/colors";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 
 
 type SessionDetailsProps = {
   session: ModeThreeDto;
 }
 
-const columns: GridColDef[] = [
-  {
-    field: 'testId',
-    headerName: 'Test ID',
-    width: 100,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.testId}`,
-  },
-  {
-    field: 'temperature',
-    headerName: 'Temperature',
-    width: 100,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.readings[0].temperature}`
-  },
-  {
-    field: 'current',
-    headerName: 'Current',
-    width: 100,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.readings[0].current}`
-  },
-  {
-    field: 'voltage',
-    headerName: 'Voltage',
-    width: 100,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.readings[0].voltage}`
-  },
-  {
-    field: 'result',
-    headerName: 'Result',
-    width: 100,
-    renderCell: (params) => (
-      params.row.readings[0].result == 'PASS' ?
-        <Button variant="contained" color="success">
-          {params.row.readings[0].result}
-        </Button> :
-        <Button variant="contained" color="error">
-          {params.row.readings[0].result}
-        </Button>
-    ),
-  },
-  {
-    field: 'readAt',
-    headerName: 'Read Date Time',
-    width: 200,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.readings[0].readAt}`
-  }
-];
+const voltageVsCurrent = [{}];
+const voltageVsTemp = [{}];
+const voltageVsResistance = [{}];
 
 export function ModeThreeSingleView({ session }: SessionDetailsProps) {
 
@@ -83,14 +34,31 @@ export function ModeThreeSingleView({ session }: SessionDetailsProps) {
     setOpenSuccess(false);
   };
 
+  useEffect(() => {
+    session.results.readings.forEach(element => {
+      voltageVsCurrent.push({
+        name: element.voltage,
+        Current: Number.parseFloat(element.current),
+      })
+      voltageVsResistance.push({
+        name: element.voltage,
+        Resistance: Number.parseFloat(element.voltage) / Number.parseFloat(element.current),
+      })
+      voltageVsTemp.push({
+        name: element.voltage,
+        Temperature: Number.parseFloat(element.temperature),
+      })
+    });
+  }, [session]);
+
   return (
     <Box>
-      <Tooltip title="View Feedback">
+      <Tooltip1 title="View Graphs">
         <IconButton onClick={handleClickOpen}
         >
           <Visibility />
         </IconButton>
-      </Tooltip>
+      </Tooltip1>
       <Dialog
         fullScreen={fullScreen}
         fullWidth={true}
@@ -117,47 +85,64 @@ export function ModeThreeSingleView({ session }: SessionDetailsProps) {
             <CloseIcon />
           </IconButton>
           <Box sx={{ my: 2 }}>
-            <Container maxWidth={false}>
-              <>
-                <Box
-                  m="10px 0 0 0"
-                  height="75vh"
-                  sx={{
-                    "& .MuiDataGrid-root": {
-                    },
-                    "& .MuiDataGrid-cell": {
-                    },
-                    "& .name-column--cell": {
-                      color: blue[300],
-                    },
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: '#1999ff',
-                    },
-                    "& .MuiDataGrid-virtualScroller": {
-                      backgroundColor: grey[200],
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                      backgroundColor: '#1999ff',
-                    },
-                    "& .MuiCheckbox-root": {
-                      color: `${green[200]} !important`,
-                    },
-                  }}
-                >
-                  <DataGrid
-                    rows={session.results.readings.map((item, index) => ({ id: index + 1, ...item }))}
-                    columns={columns}
-                    pageSize={100}
-                    rowsPerPageOptions={[100]}
-                    disableSelectionOnClick
-                    experimentalFeatures={{ newEditingApi: true }}
-                    components={{
-                      Toolbar: GridToolbar,
-                    }}
-                  />
-                </Box>
-              </>
-            </Container>
+            <LineChart
+              width={900}
+              height={400}
+              data={voltageVsCurrent}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid horizontal={false} vertical={false} />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="Current" strokeWidth={3} stroke="#8884d8" activeDot={{ r: 8 }} />
+            </LineChart>
+          </Box>
+          <Box sx={{ my: 2 }}>
+            <LineChart
+              width={900}
+              height={400}
+              data={voltageVsResistance}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid horizontal={false} vertical={false} />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="Resistance" strokeWidth={3} stroke="#b6d884" activeDot={{ r: 8 }} />
+            </LineChart>
+          </Box>
+          <Box sx={{ my: 2 }}>
+            <LineChart
+              width={900}
+              height={400}
+              data={voltageVsTemp}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid horizontal={false} vertical={false} />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="Temperature" strokeWidth={3} stroke="#bf6767" activeDot={{ r: 8 }} />
+            </LineChart>
           </Box>
           <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleCloseSuccess} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
             <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
