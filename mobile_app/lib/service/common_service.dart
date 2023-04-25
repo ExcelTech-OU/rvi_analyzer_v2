@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:rvi_analyzer/providers/connected_devices_provider.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/login_service.dart';
-import 'package:rvi_analyzer/views/auth/sign_in/sign_in.dart';
 
 import '../common/config.dart';
 import '../common/key_box.dart';

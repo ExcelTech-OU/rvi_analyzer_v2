@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Base64;
 import java.util.List;
@@ -22,6 +23,14 @@ import java.util.List;
 public class SpringSecurity {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, JwtUtils jwtUtils) {
+
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        corsConfiguration.setAllowedOriginPatterns(List.of("*"));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setExposedHeaders(List.of("Authorization"));
+
         return http
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.POST, "/login/**").permitAll()
@@ -32,6 +41,7 @@ public class SpringSecurity {
                 .csrf().disable()
                 .httpBasic().disable()
                 .formLogin().disable()
+                .cors().configurationSource(request -> corsConfiguration).and()
                 .build();
     }
 

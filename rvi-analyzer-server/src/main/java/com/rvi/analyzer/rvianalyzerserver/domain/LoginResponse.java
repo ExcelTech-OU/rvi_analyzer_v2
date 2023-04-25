@@ -8,5 +8,7 @@ import lombok.Data;
 @Builder
 public class LoginResponse {
     private UserDto user;
+    final String state;
+    final String stateDescription;
     private String jwt;
 }

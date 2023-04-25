@@ -54,7 +54,7 @@ public class UserService {
 
     }
 
-    private Mono<NewUserResponse> addAdminUser(UserDto userDto){
+    private Mono<NewUserResponse> addAdminUser(UserDto userDto) {
         return Mono.just(userDto)
                 .map(userMapper::userDtoToUser)
                 .doOnNext(user -> {
@@ -79,15 +79,14 @@ public class UserService {
                 .flatMap(request -> userRepository.findByUserName(request.getUserName()))
                 .filter(user -> user != null && Objects.equals(encoder.encode(loginRequest.getPassword()), user.getPassword())
                         && user.getType().equals(userType))
-                .map(user -> {
-                    if (user == null) {
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-                    } else {
-                        return
-                                ResponseEntity.ok(LoginResponse.builder()
-                                        .user(userMapper.userToUserDto(user))
-                                        .jwt(jwtUtils.createToken(user)).build());
-                    }
-                });
+                .flatMap(user -> Mono.just(ResponseEntity.ok(LoginResponse.builder()
+                        .user(userMapper.userToUserDto(user))
+                        .jwt(jwtUtils.createToken(user))
+                        .state("S1000")
+                        .stateDescription("Success").build()))
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(LoginResponse.builder()
+                        .state("E1000")
+                        .stateDescription("Login Failed").build())));
     }
 }

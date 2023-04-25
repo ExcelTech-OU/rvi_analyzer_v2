@@ -19,12 +19,10 @@ export const DashboardLayout = (props: any) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const handleOpen = () => {
-    console.log("AAAAAAAA")
     setSidebarOpen(true);
   };
 
   const handleClose = () => {
-    console.log("VVVVVVVV")
     setSidebarOpen(false);
   };
 

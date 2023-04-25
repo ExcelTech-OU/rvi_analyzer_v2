@@ -28,11 +28,11 @@ const Login = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: '',
+      userName: '',
       password: ''
     },
     validationSchema: Yup.object({
-      email: Yup
+      userName: Yup
         .string()
         .email('Must be a valid email')
         .max(255)
@@ -43,12 +43,12 @@ const Login = () => {
         .required('Password is required')
     }),
     onSubmit: (values, actions) => {
-      login({ username: values.email, password: values.password })
+      login({ userName: values.userName, password: values.password })
         .unwrap()
         .then((payload) => {
           if (payload.state == 'S1000') {
             dispatch(loginSuccess(payload))
-            navigate('/devices')
+            navigate('/')
           }
         })
         .catch((error) => {
@@ -84,21 +84,21 @@ const Login = () => {
               gutterBottom
               variant="body2"
             >
-              Sign in to the achilies admin panel
+              Sign in to the RVI Analyzer admin panel
             </Typography>
           </Box>
 
           <TextField
-            error={Boolean(formik.touched.email && formik.errors.email)}
+            error={Boolean(formik.touched.userName && formik.errors.userName)}
             fullWidth
-            helperText={formik.touched.email && formik.errors.email}
+            helperText={formik.touched.userName && formik.errors.userName}
             label="Email Address"
             margin="normal"
-            name="email"
+            name="userName"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             type="email"
-            value={formik.values.email}
+            value={formik.values.userName}
             variant="outlined"
           />
           <TextField

@@ -7,14 +7,15 @@ import { useGetDashboardSummaryQuery } from '../../services/dashboard_service';
 import ForumIcon from '@mui/icons-material/Forum';
 
 export default function Dashboard() {
-    const { data, error, isLoading } = useGetDashboardSummaryQuery("")
+    // const { data, error, isLoading } = useGetDashboardSummaryQuery("")
     return (
-        isLoading ? <></> : <Container maxWidth={false}>
-            <Grid
+        // isLoading ? <></> : 
+        <Container maxWidth={false}>
+            {/* <Grid
                 container
                 spacing={3}
-            >
-                <Grid
+            > */}
+            {/* <Grid
                     item
                     lg={3}
                     sm={6}
@@ -53,7 +54,7 @@ export default function Dashboard() {
 
                 </Grid>
 
-            </Grid>
+            </Grid> */}
         </Container>
     )
 }

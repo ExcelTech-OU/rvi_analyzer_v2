@@ -10,10 +10,11 @@ import { store } from './store/store'
 import { theme } from './theme'
 import Login from './views/auth/login/login'
 import Dashboard from './views/dashboard/dashboard'
-import Devices from './views/device/view/DeviceList'
 import QuestionList from './views/question/QuestionList'
-import SessionList from './views/session/SessionList'
 import UserList from './views/user/view/UserList'
+import ModeOneList from './views/mode_one/ModeOneList'
+import ModeTwoList from './views/mode_two/ModeTwoList'
+import ModeThreeList from './views/mode_three/ModeThreeList'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -23,10 +24,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <BrowserRouter>
           <App>
             <Routes>
-              <Route path="/devices" element={<Devices />} />
+              <Route path="/mode-one" element={<ModeOneList />} />
+              <Route path="/mode-two" element={<ModeTwoList />} />
+              <Route path="/mode-three" element={<ModeThreeList />} />
               <Route path="/users" element={<UserList />} />
               <Route path="/questions" element={<QuestionList />} />
-              <Route path="/sessions/:type?/:id?" element={<SessionList />} />
               <Route path="/login" element={<Login />} />
               <Route path='*' element={<Dashboard />} />
             </Routes>

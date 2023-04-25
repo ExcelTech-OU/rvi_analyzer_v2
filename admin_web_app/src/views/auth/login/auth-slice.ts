@@ -18,7 +18,7 @@ export const loginSlice = createSlice({
     reducers: {
         loginSuccess: (state, loginResponse: PayloadAction<LoginResponse>) => {
             state.jwt = loginResponse.payload.jwt
-            state.simpleUser = loginResponse.payload.simpleUser
+            state.simpleUser = loginResponse.payload.user
             localStorage.setItem("jwt", loginResponse.payload.jwt)
         },
         setJWT: (state, jwt: PayloadAction<string>) => {

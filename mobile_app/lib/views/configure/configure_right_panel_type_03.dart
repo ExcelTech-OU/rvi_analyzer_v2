@@ -260,13 +260,17 @@ class _ConfigureRightPanelType03State
                 },
               ref
                   .read(deviceDataMap[widget.sc.device.name]!)
-                  .saveClickedMode03 = false
+                  .saveClickedMode03 = false,
+              ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus(),
             })
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
-                    getSnackBar(context, Colors.red, "Saving Failed"))
+                    getSnackBar(context, Colors.red, "Saving Failed")),
+              ref
+                  .read(deviceDataMap[widget.sc.device.name]!)
+                  .saveClickedMode03 = false,
             });
     updateSessionID();
     widget.updateTestId();

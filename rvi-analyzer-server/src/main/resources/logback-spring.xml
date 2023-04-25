@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+<!--    <property name="LOGS" value="/rvi/logs/rvi_analyzer" />-->
     <property name="LOGS" value="/Volumes/Beyond/projects/logs/rvi_analyzer" />
 
     <appender name="Console"

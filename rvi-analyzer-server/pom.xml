@@ -20,6 +20,9 @@
 		<org.projectlombok.version>1.18.26</org.projectlombok.version>
 		<lombok.mapstuct.binding.version>0.2.0</lombok.mapstuct.binding.version>
 		<jwt.version>0.11.5</jwt.version>
+		<jsw.assemble.dir>target/generated-resources/appassembler/jsw</jsw.assemble.dir>
+		<appassembler.basedir>target/generated-resources/appassembler/jsw/rvi-analyzer-server</appassembler.basedir>
+		<resource.file.location>.</resource.file.location>
 	</properties>
 
 
@@ -111,12 +114,113 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<mainClass>com.rvi.analyzer.rvianalyzerserver.RviAnalyzerServerApplication</mainClass>
-					<layout>JAR</layout>
-				</configuration>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<id>generate-jsw-scripts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-daemons</goal>
+							<goal>create-repository</goal>
+						</goals>
+						<configuration>
+							<repositoryLayout>flat</repositoryLayout>
+							<configurationDirectory>conf</configurationDirectory>
+							<useWildcardClassPath>true</useWildcardClassPath>
+							<daemons>
+								<daemon>
+									<id>rvi-analyzer-server</id>
+									<wrapperMainClass>org.tanukisoftware.wrapper.WrapperSimpleApp</wrapperMainClass>
+									<mainClass>
+										com.rvi.analyzer.rvianalyzerserver.RviAnalyzerServerApplication
+									</mainClass>
+									<commandLineArguments>
+										<commandLineArgument>start</commandLineArgument>
+									</commandLineArguments>
+									<platforms>
+										<platform>jsw</platform>
+									</platforms>
+									<generatorConfigurations>
+										<generatorConfiguration>
+											<generator>jsw</generator>
+											<configuration>
+												<property>
+													<name>wrapper.java.additional.1</name>
+													<value>-XX:MaxDirectMemorySize=256M</value>
+												</property>
+												<property>
+													<name>configuration.directory.in.classpath.first</name>
+													<value>conf</value>
+												</property>
+												<property>
+													<name>set.default.REPO_DIR</name>
+													<value>lib</value>
+												</property>
+												<property>
+													<name>wrapper.logfile</name>
+													<value>logs/wrapper.log</value>
+												</property>
+												<property>
+													<name>wrapper.startup.timeout</name>
+													<value>0</value>
+												</property>
+												<property>
+													<name>wrapper.ping.timeout</name>
+													<value>60</value>
+												</property>
+											</configuration>
+											<includes>
+												<include>linux-x86-64</include>
+											</includes>
+										</generatorConfiguration>
+									</generatorConfigurations>
+								</daemon>
+							</daemons>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>make-log-dir</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="${appassembler.basedir}/logs"/>
+								<mkdir dir="target/rvi-analyzer-server/logs"/>
+
+								<copy todir="target/rvi-analyzer-server/bin" overwrite="true">
+									<fileset dir="${jsw.assemble.dir}/rvi-analyzer-server/bin"/>
+								</copy>
+								<copy todir="target/rvi-analyzer-server/lib" overwrite="true">
+									<fileset dir="${jsw.assemble.dir}/rvi-analyzer-server/lib"/>
+								</copy>
+								<copy todir="target/rvi-analyzer-server/lib" overwrite="true">
+									<fileset dir="${jsw.assemble.dir}/rvi-analyzer-server/lib"/>
+								</copy>
+								<copy todir="target/rvi-analyzer-server/conf">
+									<fileset dir="${jsw.assemble.dir}/rvi-analyzer-server/conf"/>
+								</copy>
+								<copy todir="target/rvi-analyzer-server/conf" overwrite="true">
+									<fileset dir="src/main/${resource.file.location}/resources"/>
+									<filterset>
+										<filter token="VERSION" value="${project.version}"/>
+									</filterset>
+								</copy>
+								<chmod dir="target/rvi-analyzer-server/bin" perm="777" includes="**/**"/>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

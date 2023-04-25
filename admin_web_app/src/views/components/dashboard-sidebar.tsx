@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Divider, Drawer, useMediaQuery } from '@mui/material';
-import PeopleIcon from '@mui/icons-material/People';
-import AccessibilityIcon from '@mui/icons-material/Accessibility';
-import ForumIcon from '@mui/icons-material/Forum';
-import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
+import LooksOneIcon from '@mui/icons-material/LooksOne';
+import LooksTwoIcon from '@mui/icons-material/LooksTwo';
+import Looks3Icon from '@mui/icons-material/Looks3';
+import Looks4Icon from '@mui/icons-material/Looks4';
+import Looks5Icon from '@mui/icons-material/Looks5';
+import Looks6Icon from '@mui/icons-material/Looks6';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { NavItem } from './nav-item';
 
@@ -12,27 +14,37 @@ const items = [
   {
     href: '/',
     icon: (<DashboardIcon fontSize="small" />),
-    title: 'Dashboard'
+    title: 'Home'
   },
   {
-    href: '/devices',
-    icon: (<DevicesOtherIcon fontSize="small" />),
-    title: 'Device Management'
+    href: '/mode-one',
+    icon: (<LooksOneIcon fontSize="small" />),
+    title: 'Mode One'
   },
   {
-    href: '/users',
-    icon: (<PeopleIcon fontSize="small" />),
-    title: 'User Management'
+    href: '/mode-two',
+    icon: (<LooksTwoIcon fontSize="small" />),
+    title: 'Mode Two'
   },
   {
-    href: '/sessions',
-    icon: (<AccessibilityIcon fontSize="small" />),
-    title: 'Session Management'
+    href: '/mode-three',
+    icon: (<Looks3Icon fontSize="small" />),
+    title: 'Mode Three'
   },
   {
-    href: '/questions',
-    icon: (<ForumIcon fontSize="small" />),
-    title: 'Question Management'
+    href: '/mode-four',
+    icon: (<Looks4Icon fontSize="small" />),
+    title: 'Mode Four'
+  },
+  {
+    href: '/mode-five',
+    icon: (<Looks5Icon fontSize="small" />),
+    title: 'Mode Five'
+  },
+  {
+    href: '/mode-six',
+    icon: (<Looks6Icon fontSize="small" />),
+    title: 'Mode Six'
   }
 ];
 

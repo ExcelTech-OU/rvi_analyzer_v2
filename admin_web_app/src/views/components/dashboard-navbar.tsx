@@ -56,7 +56,7 @@ export const DashboardNavbar = ({ openSideBar }: DashboardNavbarProps) => {
             variant="h5"
             sx={{ ml: 5 }}
           >
-            Achilles Admin Panel
+            RVI Analyzer Admin Panel
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           {/* <Tooltip title="Contacts">  
