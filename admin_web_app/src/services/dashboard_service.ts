@@ -10,7 +10,7 @@ export interface DashBoardSummaryResponse {
 export const dashboardApi = createApi({
     reducerPath: 'dashboardApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://18.136.146.172/achilles-api/',
+        baseUrl: 'http://rvi.analyzer.admin.exceltch.com/rvi-analyzer-api/',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("jwt") as string;
             if (!headers.has("Authorization") && token) {

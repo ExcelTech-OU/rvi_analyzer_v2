@@ -40,7 +40,7 @@ export const AccountPopover = (props: any) => {
           color="text.secondary"
           variant="body2"
         >
-          Achilles Admin
+          RVI Admin
         </Typography>
       </Box>
       <MenuList
