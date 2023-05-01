@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 public class Device {
     private String _id;
+    private String name;
     @Field(name = "created-by")
     private String createdBy;
     @Field(name = "assign-to")

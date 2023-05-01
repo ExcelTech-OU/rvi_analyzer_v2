@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class DeviceDto {
     private String createdBy;
+    private String name;
     private String macAddress;
     private String assignTo;
     private String status;

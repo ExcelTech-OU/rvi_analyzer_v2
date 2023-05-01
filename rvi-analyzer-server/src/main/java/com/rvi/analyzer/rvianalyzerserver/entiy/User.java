@@ -17,8 +17,7 @@ import java.time.LocalDateTime;
 public class User {
 
     private String _id;
-    @Field(name = "user-name")
-    private String userName;
+    private String username;
     private String password;
 
     @Field(name = "password-type")

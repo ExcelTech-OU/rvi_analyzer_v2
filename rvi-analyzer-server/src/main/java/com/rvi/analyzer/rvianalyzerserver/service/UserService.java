@@ -2,6 +2,7 @@ package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
+import com.rvi.analyzer.rvianalyzerserver.entiy.User;
 import com.rvi.analyzer.rvianalyzerserver.mappers.UserMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
 import com.rvi.analyzer.rvianalyzerserver.security.JwtUtils;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Objects;
 
 @Service
@@ -41,7 +41,7 @@ public class UserService {
     public Mono<NewUserResponse> addUser(UserDto userDto, String jwt) {
         return Mono.just(userDto)
                 .doOnNext(userDto1 -> log.info("User add request received [{}]", userDto))
-                .flatMap(request -> userRepository.findByUserName(request.getUserName()))
+                .flatMap(request -> userRepository.findByUserName(request.getUsername()))
                 .flatMap(user -> Mono.just(NewUserResponse.builder()
                         .status("E1002")
                         .statusDescription("User Already exists")
@@ -90,7 +90,7 @@ public class UserService {
                 .map(user -> NewUserResponse.builder()
                         .status("S1000")
                         .statusDescription("Success")
-                        .userName(user.getUserName())
+                        .userName(user.getUsername())
                         .build());
     }
 
@@ -200,5 +200,17 @@ public class UserService {
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
                         .status("E1000")
                         .statusDescription("Failed").build())));
+    }
+
+    public Mono<ResponseEntity<GetUserNamesResponse>> getUserNames(GetUserNamesRequest request) {
+        log.info("Get usernames req received with pattern [{}]", request.getPattern());
+        return userRepository.findByUserNamePattern(request.getPattern())
+                .collectList()
+                .flatMap(users -> Mono.just(ResponseEntity.ok(GetUserNamesResponse.builder()
+                        .status("S1000")
+                        .statusDescription("Success")
+                        .usernames(users.stream().map(User::getUsername).toList())
+                        .build()
+                )));
     }
 }

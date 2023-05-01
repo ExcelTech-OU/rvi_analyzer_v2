@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class UserDto {
-    private String userName;
+    private String username;
     private String group;
     private String status;
     private String createdBy;

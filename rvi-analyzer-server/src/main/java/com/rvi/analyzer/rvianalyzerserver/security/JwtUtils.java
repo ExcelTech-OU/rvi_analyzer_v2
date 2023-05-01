@@ -38,7 +38,7 @@ public class JwtUtils {
 
     public String createToken(com.rvi.analyzer.rvianalyzerserver.entiy.User user) {
 
-        String username = user.getUserName();
+        String username = user.getUsername();
         Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(List.of(user.getGroup()).toString());
 
         Claims claims = Jwts.claims().setSubject(username);

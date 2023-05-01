@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.Base64;
 import java.util.List;
 
 @EnableWebFluxSecurity
@@ -55,7 +54,7 @@ public class SpringSecurity {
     @Bean
     public ReactiveUserDetailsService userDetailsService(UserRepository users) {
         return (username) -> users.findByUserName(username)
-                .map(u -> User.withUsername(u.getUserName())
+                .map(u -> User.withUsername(u.getUsername())
                         .password(u.getPassword())
                         .authorities(List.of(u.getGroup()).toArray(new String[0]))
                         .accountExpired(false)

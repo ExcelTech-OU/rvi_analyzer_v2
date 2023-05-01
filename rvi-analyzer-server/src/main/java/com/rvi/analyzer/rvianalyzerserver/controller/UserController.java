@@ -34,6 +34,11 @@ public class UserController {
         return userService.resetPassword(auth, request);
     }
 
+    @PostMapping(path = "/rvi/analyzer/v1/user/getUserNames")
+    public Mono<ResponseEntity<GetUserNamesResponse>> getUserNames(@RequestBody GetUserNamesRequest request, @RequestHeader("Authorization") String auth) {
+        return userService.getUserNames(request);
+    }
+
     @GetMapping(path = "/rvi/analyzer/v1/user/{userName}")
     public Mono<UserDto> getUserInfo(@PathVariable String userName) {
         return userService.getUserByUsername(userName);

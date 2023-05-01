@@ -26,7 +26,7 @@ class UserMapperTest {
     @DisplayName("User to UserDto")
     void userToUserDto() {
         User user = User.builder()
-                .userName("testUser")
+                .username("testUser")
                 .password("password")
                 .type("ADMIN")
                 .status("ACTIVE")
@@ -36,7 +36,7 @@ class UserMapperTest {
                 .build();
         UserDto userDto = userMapper.userToUserDto(user);
 
-        assertEquals(user.getUserName(), userDto.getUserName());
+        assertEquals(user.getUsername(), userDto.getUsername());
         assertEquals(user.getType(), userDto.getGroup());
     }
 
@@ -44,13 +44,13 @@ class UserMapperTest {
     @DisplayName("UserDto to User")
     void userDtoToUser() {
         UserDto userDto = UserDto.builder()
-                .userName("testUserName")
+                .username("testUserName")
                 .createdBy("helloUser")
                 .build();
 
         User user = userMapper.userDtoToUser(userDto);
 
         assertNull(user.getType());
-        assertEquals(userDto.getUserName(), user.getUserName());
+        assertEquals(userDto.getUsername(), user.getUsername());
     }
 }

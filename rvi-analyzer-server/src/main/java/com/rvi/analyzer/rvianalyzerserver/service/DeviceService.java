@@ -1,9 +1,6 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.DeviceValidateRequestByMac;
-import com.rvi.analyzer.rvianalyzerserver.domain.UpdateDeviceRequestByName;
-import com.rvi.analyzer.rvianalyzerserver.domain.UserRoles;
+import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.DeviceDto;
 import com.rvi.analyzer.rvianalyzerserver.mappers.DeviceMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.DeviceRepository;
@@ -113,6 +110,16 @@ public class DeviceService {
                 .switchIfEmpty(Mono.just(ResponseEntity.ok(CommonResponse.builder()
                         .status("E1016")
                         .statusDescription("Device not active state or Invalid")
+                        .build())));
+    }
+
+    public Mono<ResponseEntity<DeviceListResponse>> getDevices(String page, String status, String name, String auth) {
+        return deviceRepository.findDevicesByNameStatusPageUserName(name, status, String.valueOf(Integer.parseInt(page) * 20), jwtUtils.getUsername(auth))
+                .collectList()
+                .flatMap(devices -> Mono.just(ResponseEntity.ok(DeviceListResponse.builder()
+                        .status("S1000")
+                        .statusDescription("Success")
+                        .devices(devices.stream().map(deviceMapper::deviceToDeviceDto).toList())
                         .build())));
     }
 }
