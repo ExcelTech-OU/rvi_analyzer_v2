@@ -1,9 +1,6 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.LoginRequest;
-import com.rvi.analyzer.rvianalyzerserver.domain.LoginResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.NewUserResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.UserRoles;
+import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.mappers.UserMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Objects;
 
 @Service
@@ -120,12 +118,14 @@ public class UserService {
                                                     return Mono.just(ResponseEntity.ok(LoginResponse.builder()
                                                             .user(userMapper.userToUserDto(user))
                                                             .jwt(jwtUtils.createToken(user))
+                                                            .roles(roles)
                                                             .state("S1000")
                                                             .stateDescription("Success").build()));
                                                 } else if (loginRequest.getSource().equals("MOBILE") && roles.contains(UserRoles.LOGIN_APP)) {
                                                     return Mono.just(ResponseEntity.ok(LoginResponse.builder()
                                                             .user(userMapper.userToUserDto(user))
                                                             .jwt(jwtUtils.createToken(user))
+                                                            .roles(roles)
                                                             .state("S1000")
                                                             .stateDescription("Success").build()));
                                                 } else {
@@ -145,5 +145,36 @@ public class UserService {
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(LoginResponse.builder()
                         .state("E1000")
                         .stateDescription("Login Failed").build())));
+    }
+
+    public Mono<ResponseEntity<CommonResponse>> resetPassword(String userName, String auth) {
+        return userRepository.findByUserName(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.RESET_PASSWORD)) {
+                                return userRepository.findByUserName(userName)
+                                        .flatMap(user -> {
+                                            user.setPasswordType("RESET");
+                                            return userRepository.save(user)
+                                                    .flatMap(user1 -> Mono.just(
+                                                            ResponseEntity.ok(CommonResponse.builder()
+                                                                    .status("S1000")
+                                                                    .statusDescription("Success").build(
+                                                                    )
+                                                            )));
+                                        })
+                                        .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("Failed").build())));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed").build())));
     }
 }

@@ -4,6 +4,8 @@ import com.rvi.analyzer.rvianalyzerserver.dto.*;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class LoginResponse {
@@ -11,4 +13,5 @@ public class LoginResponse {
     final String state;
     final String stateDescription;
     private String jwt;
+    private List<UserRoles> roles;
 }

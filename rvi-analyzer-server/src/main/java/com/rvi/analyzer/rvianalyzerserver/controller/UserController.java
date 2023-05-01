@@ -1,5 +1,6 @@
 package com.rvi.analyzer.rvianalyzerserver.controller;
 
+import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.LoginRequest;
 import com.rvi.analyzer.rvianalyzerserver.domain.LoginResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.NewUserResponse;
@@ -24,6 +25,11 @@ public class UserController {
     @PostMapping(path = "/login/user")
     public Mono<ResponseEntity<LoginResponse>> loginUser(@RequestBody LoginRequest loginRequest){
         return userService.login(loginRequest);
+    }
+
+    @GetMapping(path = "/rvi/analyzer/v1/user/resetPassword/{userName}")
+    public Mono<ResponseEntity<CommonResponse>> resetPassword(@PathVariable String userName, @RequestHeader("Authorization") String auth){
+        return userService.resetPassword(userName, auth);
     }
 
 

@@ -5,5 +5,6 @@ public enum UserRoles {
     LOGIN_APP,
     CREATE_TOP_ADMIN,
     CREATE_ADMIN,
-    CREATE_USER
+    CREATE_USER,
+    RESET_PASSWORD
 }

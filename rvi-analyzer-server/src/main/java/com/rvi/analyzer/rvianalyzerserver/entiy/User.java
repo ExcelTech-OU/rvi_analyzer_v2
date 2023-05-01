@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class User {
+
+    private String _id;
     @Field(name = "user-name")
     private String userName;
     private String password;
