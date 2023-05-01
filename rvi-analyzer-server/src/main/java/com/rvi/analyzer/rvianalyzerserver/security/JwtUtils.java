@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,7 @@ public class JwtUtils {
     @Autowired
     JwtProperties jwtProperties;
     private SecretKey secretKey;
+    public static final String HEADER_PREFIX = "Bearer ";
 
     @PostConstruct
     protected void init() {
@@ -37,7 +39,7 @@ public class JwtUtils {
     public String createToken(com.rvi.analyzer.rvianalyzerserver.entiy.User user) {
 
         String username = user.getUserName();
-        Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(List.of(user.getType()).toString());
+        Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(List.of(user.getGroup()).toString());
 
         Claims claims = Jwts.claims().setSubject(username);
         claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")));
@@ -78,7 +80,23 @@ public class JwtUtils {
         return false;
     }
 
-//    public String getRandomPassword(){
-//        return
-//    }
+    public String getUsername(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build()
+                    .parseClaimsJws(resolveToken(token));
+
+            return claims.getBody().getSubject();
+        } catch (JwtException | IllegalArgumentException e) {
+            log.info("Invalid JWT token.");
+            log.trace("Invalid JWT token trace.", e);
+        }
+        return "";
+    }
+
+    private String resolveToken(String token) {
+        if (StringUtils.hasText(token) && token.startsWith(HEADER_PREFIX)) {
+            return token.substring(7);
+        }
+        return null;
+    }
 }

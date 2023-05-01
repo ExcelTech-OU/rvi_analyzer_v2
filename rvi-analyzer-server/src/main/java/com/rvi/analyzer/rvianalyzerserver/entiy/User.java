@@ -18,7 +18,10 @@ public class User {
     @Field(name = "user-name")
     private String userName;
     private String password;
-    private String type;
+
+    @Field(name = "password-type")
+    private String passwordType;
+    private String group;
     private String status;
     @Field(name = "created-by")
     private String createdBy;

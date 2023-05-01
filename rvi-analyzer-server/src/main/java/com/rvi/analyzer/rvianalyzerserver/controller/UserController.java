@@ -16,18 +16,14 @@ public class UserController {
 
     final private UserService userService;
 
-    @PostMapping(path = "/register/admin")
-    public Mono<NewUserResponse> addAdminUser(@RequestBody UserDto userDto){
-        return userService.addAdmin(userDto);
+    @PostMapping(path = "/register/user")
+    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String auth){
+        return userService.addUser(userDto, auth);
     }
 
     @PostMapping(path = "/login/user")
     public Mono<ResponseEntity<LoginResponse>> loginUser(@RequestBody LoginRequest loginRequest){
-        return userService.login(loginRequest, "ROLE_USER");
-    }
-    @PostMapping(path = "/login/admin")
-    public Mono<ResponseEntity<LoginResponse>> loginAdmin(@RequestBody LoginRequest loginRequest){
-        return userService.login(loginRequest, "ROLE_ADMIN");
+        return userService.login(loginRequest);
     }
 
 

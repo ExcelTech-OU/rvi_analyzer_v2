@@ -34,7 +34,6 @@ public class SpringSecurity {
         return http
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.POST, "/login/**").permitAll()
-                .pathMatchers(HttpMethod.POST, "/register/**").permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .addFilterAt(new JwtAuthenticationFilter(jwtUtils), SecurityWebFiltersOrder.AUTHENTICATION)
@@ -58,7 +57,7 @@ public class SpringSecurity {
         return (username) -> users.findByUserName(username)
                 .map(u -> User.withUsername(u.getUserName())
                         .password(u.getPassword())
-                        .authorities(List.of(u.getType()).toArray(new String[0]))
+                        .authorities(List.of(u.getGroup()).toArray(new String[0]))
                         .accountExpired(false)
                         .credentialsExpired(false)
                         .disabled(!u.getStatus().equals("ACTIVE"))

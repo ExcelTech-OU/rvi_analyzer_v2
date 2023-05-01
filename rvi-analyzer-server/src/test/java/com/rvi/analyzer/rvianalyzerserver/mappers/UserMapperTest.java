@@ -37,7 +37,7 @@ class UserMapperTest {
         UserDto userDto = userMapper.userToUserDto(user);
 
         assertEquals(user.getUserName(), userDto.getUserName());
-        assertEquals(user.getType(), userDto.getType());
+        assertEquals(user.getType(), userDto.getGroup());
     }
 
     @Test

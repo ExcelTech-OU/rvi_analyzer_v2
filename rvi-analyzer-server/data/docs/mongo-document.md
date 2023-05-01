@@ -4,11 +4,42 @@
 {
   "user-name": "username",
   "password": "password",
-  "type": "ADMIN/TOP_ADMIN/USER",
+  "password-type": "DEFAULT/PASSWORD/RESET",
+  "group": "ADMIN/TOP_ADMIN/USER",
   "status": "ACTIVE/TEMPORARY_BLOCKED/DISABLED",
-  "created-by": "top-level-user",
+  "created-by": "user-name-of-created-user",
   "created-date": "date-time",
   "last-updated-date": "some-date"
+}
+```
+
+### GROUP
+
+```json
+{
+  "group-id": "id",
+  "name": "ADMIN/TOP_ADMIN/USER"
+}
+```
+
+### Role
+
+```json
+{
+  "role-id": "id",
+  "name": "CREATE_USER/DELETE_USER"
+}
+```
+
+### GroupRole
+
+```json
+{
+  "group-id": "id",
+  "role-ids": [
+    "id-01",
+    "id-02"
+  ]
 }
 ```
 
@@ -31,6 +62,10 @@
 ```json
 {
   "created-by": "username",
+  "assign-to": [
+    "username",
+    "username-02"
+  ],
   "mac-address": "mac-address-of-device",
   "created-date": "date-time",
   "status": "ACTIVE/TEMPORARY_BLOCKED/DISABLED"
