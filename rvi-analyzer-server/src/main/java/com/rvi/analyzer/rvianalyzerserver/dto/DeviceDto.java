@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class DeviceDto {
     private String createdBy;
     private String macAddress;
+    private String assignTo;
     private String status;
     private LocalDateTime createdDateTime;
 }

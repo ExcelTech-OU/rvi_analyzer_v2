@@ -14,8 +14,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Device {
+    private String _id;
     @Field(name = "created-by")
     private String createdBy;
+    @Field(name = "assign-to")
+    private String assignTo;
     @Field(name = "mac-address")
     private String macAddress;
     private String status;

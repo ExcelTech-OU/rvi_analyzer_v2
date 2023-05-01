@@ -6,5 +6,6 @@ public enum UserRoles {
     CREATE_TOP_ADMIN,
     CREATE_ADMIN,
     CREATE_USER,
-    RESET_PASSWORD
+    RESET_PASSWORD,
+    UPDATE_DEVICE
 }

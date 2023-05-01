@@ -177,4 +177,28 @@ public class UserService {
                         .status("E1000")
                         .statusDescription("Failed").build())));
     }
+
+    public Mono<ResponseEntity<CommonResponse>> resetPassword(String auth, PasswordResetRequest request) {
+        return userRepository.findByUserName(jwtUtils.getUsername(auth))
+                .flatMap(user -> {
+                    if (user.getPasswordType().equals("DEFAULT") || user.getPasswordType().equals("RESET")) {
+                        user.setPasswordType("PASSWORD");
+                        user.setPassword(encoder.encode(request.getPassword()));
+                        return userRepository.save(user)
+                                .flatMap(user1 -> Mono.just(
+                                        ResponseEntity.ok(CommonResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success").build(
+                                                )
+                                        )));
+                    } else {
+                        return Mono.just(ResponseEntity.ok(CommonResponse.builder()
+                                .status("E1030")
+                                .statusDescription("You didn't have requested password reset").build()));
+                    }
+                })
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed").build())));
+    }
 }
