@@ -53,7 +53,7 @@ public class SpringSecurity {
 
     @Bean
     public ReactiveUserDetailsService userDetailsService(UserRepository users) {
-        return (username) -> users.findByUserName(username)
+        return (username) -> users.findByUsername(username)
                 .map(u -> User.withUsername(u.getUsername())
                         .password(u.getPassword())
                         .authorities(List.of(u.getGroup()).toArray(new String[0]))

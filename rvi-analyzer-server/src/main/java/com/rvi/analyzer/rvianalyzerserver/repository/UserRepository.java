@@ -7,7 +7,17 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface UserRepository extends ReactiveMongoRepository<User, String> {
-    Mono<User> findByUserName(String username);
+
+    @Query(
+            value = """
+    {
+        "username" : {
+            $eq: ?0
+        }
+    }
+    """
+    )
+    Mono<User> findByUsername(String username);
 
     @Query(
             value = """

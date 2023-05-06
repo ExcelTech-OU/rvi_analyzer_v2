@@ -5,6 +5,7 @@ import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.*;
 import com.rvi.analyzer.rvianalyzerserver.service.SessionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -15,63 +16,63 @@ public class SessionController {
     final private SessionService sessionService;
 
     @PostMapping(path = "/rvi/analyzer/v1/session/add/one")
-    public Mono<CommonResponse> addModeOne(@RequestBody ModeOneDto modeOneDto) {
-        return sessionService.addModeOne(modeOneDto);
+    public Mono<ResponseEntity<CommonResponse>> addModeOne(@RequestBody ModeOneDto modeOneDto, @RequestHeader("Authorization") String jwt) {
+        return sessionService.addModeOne(modeOneDto, jwt);
     }
 
-    @GetMapping(path = "/rvi/analyzer/v1/session/get/one")
-    public Mono<ModeOnesResponse> getModeOnes(@RequestHeader("Authorization") String auth) {
-        return sessionService.getAllModeOne();
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/one/{pageNo}")
+    public Mono<ResponseEntity<ModeOnesResponse>> getModeOnes(@PathVariable("pageNo") String pageNo, @RequestHeader("Authorization") String auth) {
+        return sessionService.getAllModeOne(pageNo, auth);
     }
 
     @PostMapping(path = "/rvi/analyzer/v1/session/add/two")
-    public Mono<CommonResponse> addModeTwo(@RequestBody ModeTwoDto modeTwoDto) {
-        return sessionService.addModeTwo(modeTwoDto);
+    public Mono<ResponseEntity<CommonResponse>> addModeTwo(@RequestBody ModeTwoDto modeTwoDto, @RequestHeader("Authorization") String jwt) {
+        return sessionService.addModeTwo(modeTwoDto, jwt);
     }
 
-    @GetMapping(path = "/rvi/analyzer/v1/session/get/two")
-    public Mono<ModeTwosResponse> getModeTwos() {
-        return sessionService.getAllModeTwos();
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/two/{pageNo}")
+    public Mono<ResponseEntity<ModeTwosResponse>> getModeTwos(@PathVariable("pageNo") String pageNo, @RequestHeader("Authorization") String jwt) {
+        return sessionService.getAllModeTwos(pageNo, jwt);
     }
 
     @PostMapping(path = "/rvi/analyzer/v1/session/add/three")
-    public Mono<CommonResponse> addModeThree(@RequestBody ModeThreeDto modeThreeDto) {
-        return sessionService.addModeThree(modeThreeDto);
+    public Mono<ResponseEntity<CommonResponse>> addModeThree(@RequestBody ModeThreeDto modeThreeDto, @RequestHeader("Authorization") String jwt) {
+        return sessionService.addModeThree(modeThreeDto, jwt);
     }
 
-    @GetMapping(path = "/rvi/analyzer/v1/session/get/three")
-    public Mono<ModeThreesResponse> getModeThrees() {
-        return sessionService.getAllModeThrees();
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/three/{pageNo}")
+    public Mono<ResponseEntity<ModeThreesResponse>> getModeThrees(@PathVariable("pageNo") String pageNo, @RequestHeader("Authorization") String jwt) {
+        return sessionService.getAllModeThrees(pageNo, jwt);
     }
 
     @PostMapping(path = "/rvi/analyzer/v1/session/add/four")
-    public Mono<CommonResponse> addModeFour(@RequestBody ModeFourDto modeFourDto) {
-        return sessionService.addModeFour(modeFourDto);
+    public Mono<ResponseEntity<CommonResponse>> addModeFour(@RequestBody ModeFourDto modeFourDto, @RequestHeader("Authorization") String jwt) {
+        return sessionService.addModeFour(modeFourDto, jwt);
     }
 
-    @GetMapping(path = "/rvi/analyzer/v1/session/get/four")
-    public Mono<ModeFoursResponse> getModeFour() {
-        return sessionService.getAllModeFour();
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/four/{pageNo}")
+    public Mono<ResponseEntity<ModeFoursResponse>> getModeFour(@PathVariable("pageNo") String pageNo, @RequestHeader("Authorization") String jwt) {
+        return sessionService.getAllModeFour(pageNo, jwt);
     }
 
     @PostMapping(path = "/rvi/analyzer/v1/session/add/five")
-    public Mono<CommonResponse> addModeFive(@RequestBody ModeFiveDto modeFiveDto) {
-        return sessionService.addModeFive(modeFiveDto);
+    public Mono<ResponseEntity<CommonResponse>> addModeFive(@RequestBody ModeFiveDto modeFiveDto, @RequestHeader("Authorization") String jwt) {
+        return sessionService.addModeFive(modeFiveDto, jwt);
     }
 
-    @GetMapping(path = "/rvi/analyzer/v1/session/get/five")
-    public Mono<ModeFiveResponse> getModeFive() {
-        return sessionService.getAllModeFive();
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/five/{pageNo}")
+    public Mono<ResponseEntity<ModeFiveResponse>> getModeFive(@PathVariable("pageNo") String pageNo, @RequestHeader("Authorization") String jwt) {
+        return sessionService.getAllModeFive(pageNo, jwt);
     }
 
     @PostMapping(path = "/rvi/analyzer/v1/session/add/six")
-    public Mono<CommonResponse> addModeFour(@RequestBody ModeSixDto modeSixDto) {
-        return sessionService.addModeSix(modeSixDto);
+    public Mono<ResponseEntity<CommonResponse>> addModeFour(@RequestBody ModeSixDto modeSixDto, @RequestHeader("Authorization") String jwt) {
+        return sessionService.addModeSix(modeSixDto, jwt);
     }
 
-    @GetMapping(path = "/rvi/analyzer/v1/session/get/six")
-    public Mono<ModeSixResponse> getModeSix() {
-        return sessionService.getAllModeSix();
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/six/{pageNo}")
+    public Mono<ResponseEntity<ModeSixResponse>> getModeSix(@PathVariable("pageNo") String pageNo, @RequestHeader("Authorization") String jwt) {
+        return sessionService.getAllModeSix(pageNo, jwt);
     }
 
 }

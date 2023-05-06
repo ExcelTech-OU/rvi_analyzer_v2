@@ -59,7 +59,7 @@ public class DeviceService {
     }
 
     public Mono<ResponseEntity<CommonResponse>> updateDevice(UpdateDeviceRequestByName req, String jwt) {
-        return userRepository.findByUserName(jwtUtils.getUsername(jwt))
+        return userRepository.findByUsername(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.UPDATE_DEVICE)) {
@@ -91,7 +91,7 @@ public class DeviceService {
         log.info("Validate device by mac request received [{}]", dvr.getMac());
 
         return deviceRepository.findByMacAddress(dvr.getMac())
-                .flatMap(device -> userRepository.findByUserName(jwtUtils.getUsername(jwt))
+                .flatMap(device -> userRepository.findByUsername(jwtUtils.getUsername(jwt))
                         .flatMap(user -> {
                             if (user.getCreatedBy().equals(device.getCreatedBy())) {
                                 if (device.getStatus().equals("ACTIVE")) {

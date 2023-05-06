@@ -24,24 +24,27 @@ public class UserService {
 
     final private UserRepository userRepository;
     final private UserMapper userMapper;
-
     final private JwtUtils jwtUtils;
-
     final private PasswordEncoder encoder;
-
     final private UserGroupRoleService userGroupRoleService;
 
     public Mono<UserDto> getUserByUsername(String username) {
         return Mono.just(username)
                 .doOnNext(uName -> log.info("Finding user for username [{}]", uName))
-                .flatMap(userRepository::findByUserName)
+                .flatMap(userRepository::findByUsername)
                 .map(userMapper::userToUserDto);
+    }
+
+    public Mono<User> getUser(String username) {
+        return Mono.just(username)
+                .doOnNext(s -> log.info("Finding user by userName [{}]", s))
+                .flatMap(userRepository::findByUsername);
     }
 
     public Mono<NewUserResponse> addUser(UserDto userDto, String jwt) {
         return Mono.just(userDto)
                 .doOnNext(userDto1 -> log.info("User add request received [{}]", userDto))
-                .flatMap(request -> userRepository.findByUserName(request.getUsername()))
+                .flatMap(request -> userRepository.findByUsername(request.getUsername()))
                 .flatMap(user -> Mono.just(NewUserResponse.builder()
                         .status("E1002")
                         .statusDescription("User Already exists")
@@ -56,9 +59,10 @@ public class UserService {
     }
 
     private Mono<NewUserResponse> createUser(UserDto userDto, String username) {
-        return userRepository.findByUserName(username)
+        return userRepository.findByUsername(username)
                 .flatMap(creatingUser -> userGroupRoleService.getUserRolesByUserGroup(creatingUser.getGroup())
                         .flatMap(userRoles -> {
+                            log.info(userDto.getGroup());
                             if (userDto.getGroup().equals("TOP_ADMIN") && userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
                                 return save(userDto, username);
                             } else if (userDto.getGroup().equals("ADMIN") && userRoles.contains(UserRoles.CREATE_ADMIN)) {
@@ -97,7 +101,7 @@ public class UserService {
     public Mono<ResponseEntity<LoginResponse>> login(LoginRequest loginRequest) {
         return Mono.just(loginRequest)
                 .doOnNext(request -> log.info("Login request received [{}]", request.getUserName()))
-                .flatMap(request -> userRepository.findByUserName(request.getUserName()))
+                .flatMap(request -> userRepository.findByUsername(request.getUserName()))
                 .filter(Objects::nonNull)
                 .flatMap(user ->
                         {
@@ -148,11 +152,11 @@ public class UserService {
     }
 
     public Mono<ResponseEntity<CommonResponse>> resetPassword(String userName, String auth) {
-        return userRepository.findByUserName(jwtUtils.getUsername(auth))
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.RESET_PASSWORD)) {
-                                return userRepository.findByUserName(userName)
+                                return userRepository.findByUsername(userName)
                                         .flatMap(user -> {
                                             user.setPasswordType("RESET");
                                             return userRepository.save(user)
@@ -179,7 +183,7 @@ public class UserService {
     }
 
     public Mono<ResponseEntity<CommonResponse>> resetPassword(String auth, PasswordResetRequest request) {
-        return userRepository.findByUserName(jwtUtils.getUsername(auth))
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(user -> {
                     if (user.getPasswordType().equals("DEFAULT") || user.getPasswordType().equals("RESET")) {
                         user.setPasswordType("PASSWORD");
