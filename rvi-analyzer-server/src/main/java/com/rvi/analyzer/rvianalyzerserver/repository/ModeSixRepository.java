@@ -1,8 +1,10 @@
 package com.rvi.analyzer.rvianalyzerserver.repository;
 
 import com.rvi.analyzer.rvianalyzerserver.entiy.ModeSix;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ModeSixRepository extends ReactiveMongoRepository<ModeSix, String> {
@@ -16,4 +18,7 @@ public interface ModeSixRepository extends ReactiveMongoRepository<ModeSix, Stri
     """
     )
     Mono<ModeSix> findBySessionID(String sessionId);
+
+    @Aggregation("?0")
+    Flux<ModeSix> findByFilters(String filter);
 }

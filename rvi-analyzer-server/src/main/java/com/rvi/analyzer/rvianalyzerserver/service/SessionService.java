@@ -385,40 +385,42 @@ public class SessionService {
     public Mono<ResponseEntity<ModeOnesResponse>> getAllModeOne(String pageNo, SessionSearchRequest request, String jwt) {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
-                        .flatMap(userRoles -> userService.getUsersByAdmin(user.getUsername())
-                                .filter(strings -> !strings.isEmpty())
-                                .flatMap(strings -> {
-                                    if (userRoles.contains(UserRoles.GET_MODE_ONE)) {
-                                        if (getFilters(strings, pageNo, request).isEmpty()) {
-                                            return Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
-                                                    .status("S1000")
-                                                    .statusDescription("Success")
-                                                    .sessions(new ArrayList<>())
-                                                    .build()));
-                                        } else {
-                                            return modeOneRepository.findByFilters(getFilters(strings, pageNo, request))
-                                                    .flatMap(modeOne -> {
-                                                        log.info("Mode one found with id [{}]", modeOne.getDefaultConfigurations().getSessionId());
-                                                        return Mono.just(modeOneMapper.modeOneToModeOneDto(modeOne));
-                                                    })
-                                                    .collectList()
-                                                    .flatMap(modeOneDtos -> Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
-                                                            .status("S1000")
-                                                            .statusDescription("Success")
-                                                            .sessions(modeOneDtos)
-                                                            .build())));
-                                        }
-                                    } else {
-                                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
-                                                .status("E1200")
-                                                .statusDescription("You are not authorized to use this service").build()));
-                                    }
-                                })
-                                .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
-                                        .status("S1000")
-                                        .statusDescription("Success")
-                                        .sessions(new ArrayList<>())
-                                        .build()))))
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.GET_MODE_ONE)) {
+                                return userService.getUsersByAdmin(user.getUsername())
+                                        .filter(strings -> !strings.isEmpty())
+                                        .flatMap(strings -> {
+                                            if (getFilters(strings, pageNo, request).isEmpty()) {
+                                                return Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Success")
+                                                        .sessions(new ArrayList<>())
+                                                        .build()));
+                                            } else {
+                                                return modeOneRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                        .flatMap(modeOne -> {
+                                                            log.info("Mode one found with id [{}]", modeOne.getDefaultConfigurations().getSessionId());
+                                                            return Mono.just(modeOneMapper.modeOneToModeOneDto(modeOne));
+                                                        })
+                                                        .collectList()
+                                                        .flatMap(modeOneDtos -> Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
+                                                                .status("S1000")
+                                                                .statusDescription("Success")
+                                                                .sessions(modeOneDtos)
+                                                                .build())));
+                                            }
+                                        })
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(new ArrayList<>())
+                                                .build())));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
                 )
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
                         .status("E1220")
@@ -426,21 +428,38 @@ public class SessionService {
                         .build())));
     }
 
-    public Mono<ResponseEntity<ModeTwosResponse>> getAllModeTwos(String pageNo, String jwt) {
+    public Mono<ResponseEntity<ModeTwosResponse>> getAllModeTwos(String pageNo, SessionSearchRequest request, String jwt) {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.GET_MODE_TWO)) {
-                                return modeTwoRepository.findAll()
-                                        .flatMap(modeTwo -> {
-                                            log.info("Mode two found with id [{}]", modeTwo.getDefaultConfigurations().getSessionId());
-                                            return Mono.just(modeTwoMapper.modeTwoToModeTwoDto(modeTwo));
+                                return userService.getUsersByAdmin(user.getUsername())
+                                        .filter(strings -> !strings.isEmpty())
+                                        .flatMap(strings -> {
+                                            if (getFilters(strings, pageNo, request).isEmpty()) {
+                                                return Mono.just(ResponseEntity.ok(ModeTwosResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Success")
+                                                        .sessions(new ArrayList<>())
+                                                        .build()));
+                                            } else {
+                                                return modeTwoRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                        .flatMap(modeTwo -> {
+                                                            log.info("Mode two found with id [{}]", modeTwo.getDefaultConfigurations().getSessionId());
+                                                            return Mono.just(modeTwoMapper.modeTwoToModeTwoDto(modeTwo));
+                                                        })
+                                                        .collectList()
+                                                        .flatMap(modeTwoDtos -> Mono.just(ResponseEntity.ok(ModeTwosResponse.builder()
+                                                                .status("S1000")
+                                                                .statusDescription("Success")
+                                                                .sessions(modeTwoDtos)
+                                                                .build())));
+                                            }
                                         })
-                                        .collectList()
-                                        .flatMap(modeTwoDtos -> Mono.just(ResponseEntity.ok(ModeTwosResponse.builder()
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeTwosResponse.builder()
                                                 .status("S1000")
                                                 .statusDescription("Success")
-                                                .sessions(modeTwoDtos)
+                                                .sessions(new ArrayList<>())
                                                 .build())));
                             } else {
                                 return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeTwosResponse.builder()
@@ -455,21 +474,38 @@ public class SessionService {
                         .build())));
     }
 
-    public Mono<ResponseEntity<ModeThreesResponse>> getAllModeThrees(String pageNo, String jwt) {
+    public Mono<ResponseEntity<ModeThreesResponse>> getAllModeThrees(String pageNo, SessionSearchRequest request, String jwt) {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.GET_MODE_THREE)) {
-                                return modeThreeRepository.findAll()
-                                        .flatMap(modeThree -> {
-                                            log.info("Mode three found with id [{}]", modeThree.getDefaultConfigurations().getSessionId());
-                                            return Mono.just(modeThreeMapper.modeThreeToModeThreeDto(modeThree));
+                                return userService.getUsersByAdmin(user.getUsername())
+                                        .filter(strings -> !strings.isEmpty())
+                                        .flatMap(strings -> {
+                                            if (getFilters(strings, pageNo, request).isEmpty()) {
+                                                return Mono.just(ResponseEntity.ok(ModeThreesResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Success")
+                                                        .sessions(new ArrayList<>())
+                                                        .build()));
+                                            } else {
+                                                return modeThreeRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                        .flatMap(modeThree -> {
+                                                            log.info("Mode three found with id [{}]", modeThree.getDefaultConfigurations().getSessionId());
+                                                            return Mono.just(modeThreeMapper.modeThreeToModeThreeDto(modeThree));
+                                                        })
+                                                        .collectList()
+                                                        .flatMap(modeThreeDtos -> Mono.just(ResponseEntity.ok(ModeThreesResponse.builder()
+                                                                .status("S1000")
+                                                                .statusDescription("Success")
+                                                                .sessions(modeThreeDtos)
+                                                                .build())));
+                                            }
                                         })
-                                        .collectList()
-                                        .flatMap(modeThreeDtos -> Mono.just(ResponseEntity.ok(ModeThreesResponse.builder()
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeThreesResponse.builder()
                                                 .status("S1000")
                                                 .statusDescription("Success")
-                                                .sessions(modeThreeDtos)
+                                                .sessions(new ArrayList<>())
                                                 .build())));
                             } else {
                                 return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeThreesResponse.builder()
@@ -484,21 +520,38 @@ public class SessionService {
                         .build())));
     }
 
-    public Mono<ResponseEntity<ModeFoursResponse>> getAllModeFour(String pageNo, String jwt) {
+    public Mono<ResponseEntity<ModeFoursResponse>> getAllModeFour(String pageNo, SessionSearchRequest request, String jwt) {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.GET_MODE_FOUR)) {
-                                return modeFourRepository.findAll()
-                                        .flatMap(modeFour -> {
-                                            log.info("Mode four found with id [{}]", modeFour.getDefaultConfigurations().getSessionId());
-                                            return Mono.just(modeFourMapper.modeFourToModeFourDto(modeFour));
+                                return userService.getUsersByAdmin(user.getUsername())
+                                        .filter(strings -> !strings.isEmpty())
+                                        .flatMap(strings -> {
+                                            if (getFilters(strings, pageNo, request).isEmpty()) {
+                                                return Mono.just(ResponseEntity.ok(ModeFoursResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Success")
+                                                        .sessions(new ArrayList<>())
+                                                        .build()));
+                                            } else {
+                                                return modeFourRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                        .flatMap(modeFour -> {
+                                                            log.info("Mode four found with id [{}]", modeFour.getDefaultConfigurations().getSessionId());
+                                                            return Mono.just(modeFourMapper.modeFourToModeFourDto(modeFour));
+                                                        })
+                                                        .collectList()
+                                                        .flatMap(modeFourDtos -> Mono.just(ResponseEntity.ok(ModeFoursResponse.builder()
+                                                                .status("S1000")
+                                                                .statusDescription("Success")
+                                                                .sessions(modeFourDtos)
+                                                                .build())));
+                                            }
                                         })
-                                        .collectList()
-                                        .flatMap(modeFourDtos -> Mono.just(ResponseEntity.ok(ModeFoursResponse.builder()
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeFoursResponse.builder()
                                                 .status("S1000")
                                                 .statusDescription("Success")
-                                                .sessions(modeFourDtos)
+                                                .sessions(new ArrayList<>())
                                                 .build())));
                             } else {
                                 return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeFoursResponse.builder()
@@ -513,21 +566,38 @@ public class SessionService {
                         .build())));
     }
 
-    public Mono<ResponseEntity<ModeFiveResponse>> getAllModeFive(String pageNo, String jwt) {
+    public Mono<ResponseEntity<ModeFiveResponse>> getAllModeFive(String pageNo, SessionSearchRequest request, String jwt) {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.GET_MODE_FIVE)) {
-                                return modeFiveRepository.findAll()
-                                        .flatMap(modeFive -> {
-                                            log.info("Mode five found with id [{}]", modeFive.getDefaultConfigurations().getSessionId());
-                                            return Mono.just(modeFiveMapper.modeFiveToModeFiveDto(modeFive));
+                                return userService.getUsersByAdmin(user.getUsername())
+                                        .filter(strings -> !strings.isEmpty())
+                                        .flatMap(strings -> {
+                                            if (getFilters(strings, pageNo, request).isEmpty()) {
+                                                return Mono.just(ResponseEntity.ok(ModeFiveResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Success")
+                                                        .sessions(new ArrayList<>())
+                                                        .build()));
+                                            } else {
+                                                return modeFiveRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                        .flatMap(modeFive -> {
+                                                            log.info("Mode five found with id [{}]", modeFive.getDefaultConfigurations().getSessionId());
+                                                            return Mono.just(modeFiveMapper.modeFiveToModeFiveDto(modeFive));
+                                                        })
+                                                        .collectList()
+                                                        .flatMap(modeFiveDtos -> Mono.just(ResponseEntity.ok(ModeFiveResponse.builder()
+                                                                .status("S1000")
+                                                                .statusDescription("Success")
+                                                                .sessions(modeFiveDtos)
+                                                                .build())));
+                                            }
                                         })
-                                        .collectList()
-                                        .flatMap(modeFiveDtos -> Mono.just(ResponseEntity.ok(ModeFiveResponse.builder()
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeFiveResponse.builder()
                                                 .status("S1000")
                                                 .statusDescription("Success")
-                                                .sessions(modeFiveDtos)
+                                                .sessions(new ArrayList<>())
                                                 .build())));
                             } else {
                                 return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeFiveResponse.builder()
@@ -542,21 +612,38 @@ public class SessionService {
                         .build())));
     }
 
-    public Mono<ResponseEntity<ModeSixResponse>> getAllModeSix(String pageNo, String jwt) {
+    public Mono<ResponseEntity<ModeSixResponse>> getAllModeSix(String pageNo, SessionSearchRequest request, String jwt) {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.GET_MODE_SIX)) {
-                                return modeSixRepository.findAll()
-                                        .flatMap(modeSix -> {
-                                            log.info("Mode six found with id [{}]", modeSix.getDefaultConfigurations().getSessionId());
-                                            return Mono.just(modeSixMapper.modeSixToModeSixDto(modeSix));
+                                return userService.getUsersByAdmin(user.getUsername())
+                                        .filter(strings -> !strings.isEmpty())
+                                        .flatMap(strings -> {
+                                            if (getFilters(strings, pageNo, request).isEmpty()) {
+                                                return Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Success")
+                                                        .sessions(new ArrayList<>())
+                                                        .build()));
+                                            } else {
+                                                return modeSixRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                        .flatMap(modeSix -> {
+                                                            log.info("Mode six found with id [{}]", modeSix.getDefaultConfigurations().getSessionId());
+                                                            return Mono.just(modeSixMapper.modeSixToModeSixDto(modeSix));
+                                                        })
+                                                        .collectList()
+                                                        .flatMap(modeFourDtos -> Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
+                                                                .status("S1000")
+                                                                .statusDescription("Success")
+                                                                .sessions(modeFourDtos)
+                                                                .build())));
+                                            }
                                         })
-                                        .collectList()
-                                        .flatMap(modeFourDtos -> Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
                                                 .status("S1000")
                                                 .statusDescription("Success")
-                                                .sessions(modeFourDtos)
+                                                .sessions(new ArrayList<>())
                                                 .build())));
                             } else {
                                 return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeSixResponse.builder()
