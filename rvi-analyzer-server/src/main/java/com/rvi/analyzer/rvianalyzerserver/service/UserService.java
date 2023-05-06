@@ -12,10 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,14 @@ public class UserService {
         return Mono.just(username)
                 .doOnNext(s -> log.info("Finding user by userName [{}]", s))
                 .flatMap(userRepository::findByUsername);
+    }
+
+    public Mono<List<String>> getUsersByAdmin(String username) {
+        return Mono.just(username)
+                .doOnNext(s -> log.info("Finding users by userName [{}]", s))
+                .flatMapMany(userRepository::findByCreatedBy)
+                .collectList()
+                .map(users -> users.stream().map(user -> user.getUsername()).collect(Collectors.toList()));
     }
 
     public Mono<NewUserResponse> addUser(UserDto userDto, String jwt) {

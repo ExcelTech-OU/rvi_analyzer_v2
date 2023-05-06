@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @RequiredArgsConstructor
@@ -379,28 +382,43 @@ public class SessionService {
                         .build()));
     }
 
-    public Mono<ResponseEntity<ModeOnesResponse>> getAllModeOne(String pageNo, String jwt) {
+    public Mono<ResponseEntity<ModeOnesResponse>> getAllModeOne(String pageNo, SessionSearchRequest request, String jwt) {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
-                        .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.GET_MODE_ONE)) {
-                                return modeOneRepository.findAll()
-                                        .flatMap(modeOne -> {
-                                            log.info("Mode one found with id [{}]", modeOne.getDefaultConfigurations().getSessionId());
-                                            return Mono.just(modeOneMapper.modeOneToModeOneDto(modeOne));
-                                        })
-                                        .collectList()
-                                        .flatMap(modeOneDtos -> Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
-                                                .status("S1000")
-                                                .statusDescription("Success")
-                                                .sessions(modeOneDtos)
-                                                .build())));
-                            } else {
-                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
-                                        .status("E1200")
-                                        .statusDescription("You are not authorized to use this service").build()));
-                            }
-                        })
+                        .flatMap(userRoles -> userService.getUsersByAdmin(user.getUsername())
+                                .filter(strings -> !strings.isEmpty())
+                                .flatMap(strings -> {
+                                    if (userRoles.contains(UserRoles.GET_MODE_ONE)) {
+                                        if (getFilters(strings, pageNo, request).isEmpty()) {
+                                            return Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
+                                                    .status("S1000")
+                                                    .statusDescription("Success")
+                                                    .sessions(new ArrayList<>())
+                                                    .build()));
+                                        } else {
+                                            return modeOneRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                    .flatMap(modeOne -> {
+                                                        log.info("Mode one found with id [{}]", modeOne.getDefaultConfigurations().getSessionId());
+                                                        return Mono.just(modeOneMapper.modeOneToModeOneDto(modeOne));
+                                                    })
+                                                    .collectList()
+                                                    .flatMap(modeOneDtos -> Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
+                                                            .status("S1000")
+                                                            .statusDescription("Success")
+                                                            .sessions(modeOneDtos)
+                                                            .build())));
+                                        }
+                                    } else {
+                                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
+                                                .status("E1200")
+                                                .statusDescription("You are not authorized to use this service").build()));
+                                    }
+                                })
+                                .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
+                                        .status("S1000")
+                                        .statusDescription("Success")
+                                        .sessions(new ArrayList<>())
+                                        .build()))))
                 )
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
                         .status("E1220")
@@ -551,5 +569,80 @@ public class SessionService {
                         .status("E1220")
                         .statusDescription("Failed")
                         .build())));
+    }
+
+    private String getFilters(List<String> users, String pageNo, SessionSearchRequest request) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("{'$skip': " + Integer.valueOf(pageNo) * 20 + " }");
+
+        if (!stringBuilder.toString().isEmpty()) {
+            stringBuilder.append(", ");
+        }
+
+        if (request.getFilterType() != null && !request.getFilterValue().isEmpty()) {
+            if (request.getFilterType() != FilterType.CREATED_BY) {
+                if (users.size() > 0) {
+                    stringBuilder.append("{'$match':{")
+                            .append("'created-by': { '$in' : ")
+                            .append(users)
+                            .append("}");
+                }
+
+                switch (request.getFilterType()) {
+                    case BATCH_NO -> stringBuilder.append("'default-configurations.batch-no' : { $regex : '.*")
+                            .append(request.getFilterValue())
+                            .append(".*'}");
+                    case SESSION_ID -> stringBuilder.append("'default-configurations.session-id': { $regex : '.*")
+                            .append(request.getFilterValue())
+                            .append(".*'}");
+                    case OPERATOR_ID -> stringBuilder.append("'default-configurations.operator-id': { $regex : '.*")
+                            .append(request.getFilterValue())
+                            .append(".*'}");
+                    case CUSTOMER_NAME -> stringBuilder.append("'default-configurations.customer-name': { $regex : '.*")
+                            .append(request.getFilterValue())
+                            .append(".*'}");
+                }
+
+            } else if (checkUserRegexMatchWithUsers(users, request.getFilterValue())) {
+                stringBuilder.append("{'$match':{")
+                        .append("'created-by': { $regex : '.*")
+                        .append(request.getFilterValue())
+                        .append(".*'}");
+            } else {
+                if (users.size() > 0) {
+                    stringBuilder.append("{'$match':{")
+                            .append("'created-by': { '$in' : ")
+                            .append(users)
+                            .append("}");
+                }
+            }
+        } else {
+            if (users.size() > 0) {
+                stringBuilder.append("{'$match':{")
+                        .append("'created-by': { '$in' : ")
+                        .append(users)
+                        .append("}");
+            }
+        }
+
+        if (!stringBuilder.toString().isEmpty()) {
+            stringBuilder.append("}} , {'$limit': 20 }");
+        } else {
+            stringBuilder.append(" {'$limit': 20}");
+        }
+
+        log.info("AAAAAAAAAAAA :  {}", stringBuilder.toString());
+        return stringBuilder.toString();
+    }
+
+    private boolean checkUserRegexMatchWithUsers(List<String> users, String pattern) {
+        AtomicBoolean contain = new AtomicBoolean(false);
+        users.forEach(s -> {
+            if (s.contains(pattern)) {
+                contain.set(true);
+            }
+        });
+        return contain.get();
     }
 }

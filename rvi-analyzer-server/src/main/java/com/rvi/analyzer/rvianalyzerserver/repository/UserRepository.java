@@ -29,4 +29,15 @@ public interface UserRepository extends ReactiveMongoRepository<User, String> {
     """
     )
     Flux<User> findByUserNamePattern(String pattern);
+
+    @Query(
+            value = """
+    {
+        "created-by" : {
+            $eq: ?0
+        }
+    }
+    """
+    )
+    Flux<User> findByCreatedBy(String createdBy);
 }

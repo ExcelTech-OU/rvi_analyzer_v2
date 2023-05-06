@@ -20,9 +20,11 @@ public class SessionController {
         return sessionService.addModeOne(modeOneDto, jwt);
     }
 
-    @GetMapping(path = "/rvi/analyzer/v1/session/get/one/{pageNo}")
-    public Mono<ResponseEntity<ModeOnesResponse>> getModeOnes(@PathVariable("pageNo") String pageNo, @RequestHeader("Authorization") String auth) {
-        return sessionService.getAllModeOne(pageNo, auth);
+    @PostMapping(path = "/rvi/analyzer/v1/session/get/one/{pageNo}")
+    public Mono<ResponseEntity<ModeOnesResponse>> getModeOnes(@PathVariable("pageNo") String pageNo,
+                                                              @RequestBody SessionSearchRequest request,
+                                                              @RequestHeader("Authorization") String auth) {
+        return sessionService.getAllModeOne(pageNo, request, auth);
     }
 
     @PostMapping(path = "/rvi/analyzer/v1/session/add/two")
