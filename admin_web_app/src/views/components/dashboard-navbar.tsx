@@ -25,10 +25,10 @@ export const DashboardNavbar = ({ openSideBar }: DashboardNavbarProps) => {
       <DashboardNavbarRoot
         sx={{
           left: {
-            lg: 280
+            lg: 250
           },
           width: {
-            lg: 'calc(100% - 280px)'
+            lg: 'calc(100% - 250px)'
           }
         }}
       >
@@ -59,22 +59,6 @@ export const DashboardNavbar = ({ openSideBar }: DashboardNavbarProps) => {
             RVI Analyzer Admin Panel
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          {/* <Tooltip title="Contacts">  
-            <IconButton sx={{ ml: 1 }}>
-              <AdminPanelSettingsIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Notifications">
-            <IconButton sx={{ ml: 1 }}>
-              <Badge
-                badgeContent={4}
-                color="primary"
-                variant="dot"
-              >
-                <AdminPanelSettingsIcon fontSize="small" />
-              </Badge>
-            </IconButton>
-          </Tooltip> */}
           <Avatar
             onClick={() => setOpenAccountPopover(true)}
             ref={settingsRef}

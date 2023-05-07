@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Divider, Drawer, useMediaQuery } from '@mui/material';
+import { Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader, useMediaQuery } from '@mui/material';
 import LooksOneIcon from '@mui/icons-material/LooksOne';
 import LooksTwoIcon from '@mui/icons-material/LooksTwo';
 import Looks3Icon from '@mui/icons-material/Looks3';
@@ -9,42 +9,95 @@ import Looks5Icon from '@mui/icons-material/Looks5';
 import Looks6Icon from '@mui/icons-material/Looks6';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { NavItem } from './nav-item';
+import { Add, Construction, Devices, Group, ListAlt, People, PersonAddAlt } from '@mui/icons-material';
 
 const items = [
   {
     href: '/',
     icon: (<DashboardIcon fontSize="small" />),
-    title: 'Home'
+    title: 'Dashboard',
+    childs: []
   },
   {
-    href: '/mode-one',
-    icon: (<LooksOneIcon fontSize="small" />),
-    title: 'Mode One'
+    href: '#',
+    icon: (<Construction fontSize="small" />),
+    title: 'Sessions',
+    childs: [
+      {
+        href: '/mode-one',
+        icon: (<LooksOneIcon fontSize="small" />),
+        title: 'Mode One',
+        childs: []
+      },
+      {
+        href: '/mode-two',
+        icon: (<LooksTwoIcon fontSize="small" />),
+        title: 'Mode Two',
+        childs: []
+      },
+      {
+        href: '/mode-three',
+        icon: (<Looks3Icon fontSize="small" />),
+        title: 'Mode Three',
+        childs: []
+      },
+      {
+        href: '/mode-four',
+        icon: (<Looks4Icon fontSize="small" />),
+        title: 'Mode Four',
+        childs: []
+      },
+      {
+        href: '/mode-five',
+        icon: (<Looks5Icon fontSize="small" />),
+        title: 'Mode Five',
+        childs: []
+      },
+      {
+        href: '/mode-six',
+        icon: (<Looks6Icon fontSize="small" />),
+        title: 'Mode Six',
+        childs: []
+      }
+    ]
   },
   {
-    href: '/mode-two',
-    icon: (<LooksTwoIcon fontSize="small" />),
-    title: 'Mode Two'
+    href: '#',
+    icon: (<People fontSize="small" />),
+    title: 'Users',
+    childs: [
+      {
+        href: '/add-user',
+        icon: (<PersonAddAlt fontSize="small" />),
+        title: 'Add',
+        childs: []
+      },
+      {
+        href: '/users',
+        icon: (<ListAlt fontSize="small" />),
+        title: 'List',
+        childs: []
+      }
+    ]
   },
   {
-    href: '/mode-three',
-    icon: (<Looks3Icon fontSize="small" />),
-    title: 'Mode Three'
-  },
-  {
-    href: '/mode-four',
-    icon: (<Looks4Icon fontSize="small" />),
-    title: 'Mode Four'
-  },
-  {
-    href: '/mode-five',
-    icon: (<Looks5Icon fontSize="small" />),
-    title: 'Mode Five'
-  },
-  {
-    href: '/mode-six',
-    icon: (<Looks6Icon fontSize="small" />),
-    title: 'Mode Six'
+    href: '#',
+    icon: (<Devices fontSize="small" />),
+    title: 'Device',
+    childs: [
+      // {
+      //   href: '/add-device',
+      //   icon: (<Add fontSize="small" />),
+      //   title: 'Add',
+      //   childs: []
+      // },
+      {
+        href: '/users',
+        icon: (<ListAlt fontSize="small" />),
+        title: 'List',
+        childs: []
+      }
+    ]
   }
 ];
 
@@ -87,9 +140,11 @@ export const DashboardSidebar = ({ open, closeSideBar }: DashboardSidebarData) =
               icon={item.icon}
               href={item.href}
               title={item.title}
+              childs={item.childs}
             />
           ))}
         </Box>
+
         <Divider sx={{ borderColor: '#2D3748' }} />
       </Box>
     </>
@@ -102,10 +157,10 @@ export const DashboardSidebar = ({ open, closeSideBar }: DashboardSidebarData) =
         open
         PaperProps={{
           sx: {
-            backgroundColor: '#121826',
-            color: '#FFFFFF',
-            width: 280
-          }
+            width: 250,
+            bgcolor: '#24292e',
+            borderRightStyle: 'dashed',
+          },
         }}
         variant="permanent"
       >
@@ -121,10 +176,10 @@ export const DashboardSidebar = ({ open, closeSideBar }: DashboardSidebarData) =
       open={open}
       PaperProps={{
         sx: {
-          backgroundColor: 'black',
-          color: '#FFFFFF',
-          width: 280
-        }
+          width: 250,
+          bgcolor: '#24292e',
+          borderRightStyle: 'dashed',
+        },
       }}
       sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
       variant="temporary"

@@ -4,6 +4,7 @@ import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from '@mui/x
 import { useParams } from "react-router-dom";
 import { GetSessionFilters, ModeOneDto, ModeOnesResponse, useGetModeOneSessionsQuery, UserTreatmentSession } from "../../services/sessions_service";
 import { ModeOneSingleView } from './ModeOneSingleView'
+import SessionTimeoutPopup from "../components/session_logout";
 
 
 
@@ -63,29 +64,6 @@ const columns: GridColDef[] = [
         valueGetter: (params: GridValueGetterParams) =>
             `${params.row.sessionConfigurationModeOne.passMaxCurrent}`
     },
-    // {
-    //     field: 'passMaxCurrent',
-    //     headerName: 'Created Date',
-    //     width: 220,
-    //     valueGetter: (params: GridValueGetterParams) =>
-    //         `${new Date(params.row.createdDate).toLocaleString() || ''}`,
-    // },
-    // {
-    //     field: 'status',
-    //     headerName: 'Status',
-    //     width: 150,
-    //     renderCell: (params) => (
-    //         params.row.status == 'ACTIVE' ?
-    //             <Button variant="contained" color="primary">
-    //                 {params.row.status}
-    //             </Button> : params.row.status == 'DISABLED' ?
-    //                 <Button variant="contained" color="error">
-    //                     {params.row.status}
-    //                 </Button> : <Button variant="contained" color="warning">
-    //                     {params.row.status}
-    //                 </Button>
-    //     ),
-    // },
     {
         field: 'actions',
         headerName: 'Actions',
@@ -101,61 +79,67 @@ export default function ModeOneList() {
 
     var { data, error, isLoading } = useGetModeOneSessionsQuery({})
 
-    return (
-        <>
-            {isLoading ? "Loading" :
-                <Box
-                    component="main"
-                    sx={{
-                        flexGrow: 1,
-                    }}
-                >
+    if (isLoading) {
+        return <div>Loading...</div>
+    }
 
-                    <Container maxWidth={false}>
-                        <>
-                            <Box
-                                m="20px 0 0 0"
-                                height="75vh"
-                                sx={{
-                                    "& .MuiDataGrid-root": {
-                                    },
-                                    "& .MuiDataGrid-cell": {
-                                    },
-                                    "& .name-column--cell": {
-                                        color: blue[300],
-                                    },
-                                    "& .MuiDataGrid-columnHeaders": {
-                                        backgroundColor: '#1999ff',
-                                    },
-                                    "& .MuiDataGrid-virtualScroller": {
-                                        backgroundColor: grey[200],
-                                    },
-                                    "& .MuiDataGrid-footerContainer": {
-                                        backgroundColor: '#1999ff',
-                                    },
-                                    "& .MuiCheckbox-root": {
-                                        color: `${green[200]} !important`,
-                                    },
-                                }}
-                            >
-                                <DataGrid
-                                    rows={data!.sessions.map((item, index) => ({ id: index + 1, ...item }))}
-                                    columns={columns}
-                                    pageSize={100}
-                                    rowsPerPageOptions={[100]}
-                                    disableSelectionOnClick
-                                    experimentalFeatures={{ newEditingApi: true }}
-                                    components={{
-                                        Toolbar: GridToolbar,
-                                    }}
-                                />
-                            </Box>
-                            {console.log(data?.sessions)}
-                        </>
-                    </Container>
-                </Box>
-            }
+    if (error != null && 'status' in error) {
+        if (error.status == 401 && error.data == null) {
+            return <SessionTimeoutPopup />
+        }
+        else {
+            return <></>
+        }
+    } else {
+        return <Box
+            component="main"
+            sx={{
+                flexGrow: 1,
+            }}
+        >
 
-        </>
-    )
+            <Container maxWidth={false}>
+                <>
+                    <Box
+                        m="20px 0 0 0"
+                        height="75vh"
+                        sx={{
+                            "& .MuiDataGrid-root": {
+                            },
+                            "& .MuiDataGrid-cell": {
+                            },
+                            "& .name-column--cell": {
+                                color: blue[300],
+                            },
+                            "& .MuiDataGrid-columnHeaders": {
+                                backgroundColor: '#1999ff',
+                            },
+                            "& .MuiDataGrid-virtualScroller": {
+                                backgroundColor: grey[200],
+                            },
+                            "& .MuiDataGrid-footerContainer": {
+                                backgroundColor: '#1999ff',
+                            },
+                            "& .MuiCheckbox-root": {
+                                color: `${green[200]} !important`,
+                            },
+                        }}
+                    >
+                        <DataGrid
+                            rows={data!.sessions.map((item, index) => ({ id: index + 1, ...item }))}
+                            columns={columns}
+                            pageSize={100}
+                            rowsPerPageOptions={[100]}
+                            disableSelectionOnClick
+                            experimentalFeatures={{ newEditingApi: true }}
+                            components={{
+                                Toolbar: GridToolbar,
+                            }}
+                        />
+                    </Box>
+                    {console.log(data?.sessions)}
+                </>
+            </Container>
+        </Box>
+    }
 }

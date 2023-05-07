@@ -23,7 +23,7 @@ export const AccountPopover = (props: any) => {
       onClose={onClose}
       open={open}
       PaperProps={{
-        sx: { width: '300px' }
+        sx: { width: '150px' }
       }}
       {...other}
     >
