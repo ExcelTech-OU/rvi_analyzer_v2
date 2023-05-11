@@ -9,6 +9,7 @@ import 'package:rvi_analyzer/domain/session_result.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
+import 'package:rvi_analyzer/views/common/form_eliments/dropdown.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
@@ -110,6 +111,15 @@ class _ConfigureRightPanelType02State
         "S_$milliseconds";
   }
 
+  void setDropDownValue(String? val) {
+    if (val != null && val == "Resistance") {
+      ref.read(deviceDataMap[widget.sc.device.name]!).resSelectedMode02 = true;
+    } else {
+      ref.read(deviceDataMap[widget.sc.device.name]!).resSelectedMode02 = false;
+    }
+    ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
+  }
+
   String getVoltage() {
     if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
       if (ref
@@ -178,21 +188,39 @@ class _ConfigureRightPanelType02State
     double voltage = ref
         .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
         .voltage;
+    double resistance = double.parse(getResistance());
     ref.read(deviceDataMap[widget.sc.device.name]!).saveClickedMode02 = true;
 
-    if (double.parse(ref
-                .watch(deviceDataMap[widget.sc.device.name]!)
-                .minVoltageRangeControllerMode02
-                .text) <
-            voltage &&
-        voltage <
-            double.parse(ref
-                .watch(deviceDataMap[widget.sc.device.name]!)
-                .maxVoltageRangeControllerMode02
-                .text)) {
-      ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = true;
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).resSelectedMode02) {
+      if (double.parse(ref
+                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .minResistanceRangeControllerMode02
+                  .text) <
+              resistance &&
+          resistance <
+              double.parse(ref
+                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .maxResistanceRangeControllerMode02
+                  .text)) {
+        ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = true;
+      } else {
+        ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = false;
+      }
     } else {
-      ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = false;
+      if (double.parse(ref
+                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .minVoltageRangeControllerMode02
+                  .text) <
+              voltage &&
+          voltage <
+              double.parse(ref
+                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .maxVoltageRangeControllerMode02
+                  .text)) {
+        ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = true;
+      } else {
+        ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = false;
+      }
     }
 
     setState(() {
@@ -361,67 +389,139 @@ class _ConfigureRightPanelType02State
             height: 10.0,
           ),
           const Text(
-            'Voltage Range : ',
+            'Select type : ',
             style: TextStyle(fontSize: 15, color: Colors.grey),
           ),
           const SizedBox(
             height: 5.0,
           ),
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: TextInput(
-                    data: TestInputData(
-                        controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
-                            .minVoltageRangeControllerMode02,
-                        inputType: TextInputType.number,
-                        validatorFun: (val) {
-                          if (val!.isEmpty) {
-                            return "Min Voltage cannot be empty";
-                          } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
-                              .hasMatch(val)) {
-                            return "Only allowed numbers";
-                          } else if (!RegExp(
-                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1})?$")
-                              .hasMatch(val)) {
-                            return "Max Voltage ONLY allowed one Place Value";
-                          } else {
-                            null;
-                          }
-                        },
-                        labelText: 'Min (V)')),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                flex: 1,
-                child: TextInput(
-                    data: TestInputData(
-                        inputType: TextInputType.number,
-                        controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
-                            .maxVoltageRangeControllerMode02,
-                        validatorFun: (val) {
-                          if (val!.isEmpty) {
-                            return "Max Voltage cannot be empty";
-                          } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
-                              .hasMatch(val)) {
-                            return "Only allowed numbers";
-                          } else if (!RegExp(
-                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1})?$")
-                              .hasMatch(val)) {
-                            return "Max Voltage ONLY allowed one Place Value";
-                          } else {
-                            null;
-                          }
-                        },
-                        labelText: 'Max (V)')),
-              ),
-            ],
+          CustomDropDwn(
+              data: CustomDropDwnData(
+                  inputs: ["Voltage", "Resistance"],
+                  updateSelectedIndex: setDropDownValue)),
+          const SizedBox(
+            height: 10.0,
           ),
+          Text(
+            ref.watch(deviceDataMap[widget.sc.device.name]!).resSelectedMode02
+                ? 'Resistance Range : '
+                : 'Voltage Range : ',
+            style: const TextStyle(fontSize: 15, color: Colors.grey),
+          ),
+          const SizedBox(
+            height: 5.0,
+          ),
+          ref.watch(deviceDataMap[widget.sc.device.name]!).resSelectedMode02
+              ? Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: TextInput(
+                          data: TestInputData(
+                              controller: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .minResistanceRangeControllerMode02,
+                              inputType: TextInputType.number,
+                              validatorFun: (val) {
+                                if (val!.isEmpty) {
+                                  return "Min Resistance cannot be empty";
+                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                                    .hasMatch(val)) {
+                                  return "Only allowed numbers";
+                                } else if (!RegExp(
+                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
+                                    .hasMatch(val)) {
+                                  return "Resistance ONLY allowed two Place Value";
+                                } else {
+                                  null;
+                                }
+                              },
+                              labelText: 'Min \u2126')),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: TextInput(
+                          data: TestInputData(
+                              inputType: TextInputType.number,
+                              controller: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .maxResistanceRangeControllerMode02,
+                              validatorFun: (val) {
+                                if (val!.isEmpty) {
+                                  return "Max resistance cannot be empty";
+                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                                    .hasMatch(val)) {
+                                  return "Only allowed numbers";
+                                } else if (!RegExp(
+                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
+                                    .hasMatch(val)) {
+                                  return "Resistance ONLY allowed two Place Value";
+                                } else {
+                                  null;
+                                }
+                              },
+                              labelText: 'Max \u2126')),
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: TextInput(
+                          data: TestInputData(
+                              controller: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .minVoltageRangeControllerMode02,
+                              inputType: TextInputType.number,
+                              validatorFun: (val) {
+                                if (val!.isEmpty) {
+                                  return "Min Voltage cannot be empty";
+                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                                    .hasMatch(val)) {
+                                  return "Only allowed numbers";
+                                } else if (!RegExp(
+                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1})?$")
+                                    .hasMatch(val)) {
+                                  return "Max Voltage ONLY allowed one Place Value";
+                                } else {
+                                  null;
+                                }
+                              },
+                              labelText: 'Min (V)')),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: TextInput(
+                          data: TestInputData(
+                              inputType: TextInputType.number,
+                              controller: ref
+                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .maxVoltageRangeControllerMode02,
+                              validatorFun: (val) {
+                                if (val!.isEmpty) {
+                                  return "Max Voltage cannot be empty";
+                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                                    .hasMatch(val)) {
+                                  return "Only allowed numbers";
+                                } else if (!RegExp(
+                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1})?$")
+                                    .hasMatch(val)) {
+                                  return "Max Voltage ONLY allowed one Place Value";
+                                } else {
+                                  null;
+                                }
+                              },
+                              labelText: 'Max (V)')),
+                    ),
+                  ],
+                ),
           const SizedBox(
             height: 10.0,
           ),

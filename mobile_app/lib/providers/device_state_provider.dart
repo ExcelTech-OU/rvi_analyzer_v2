@@ -35,6 +35,10 @@ class DeviceState extends ChangeNotifier {
       TextEditingController();
   TextEditingController maxCurrentRangeControllerMode01 =
       TextEditingController();
+  TextEditingController minResistanceRangeControllerMode01 =
+      TextEditingController();
+  TextEditingController maxResistanceRangeControllerMode01 =
+      TextEditingController();
 
   TextEditingController currentReadingVoltageControllerMode01 =
       TextEditingController();
@@ -44,6 +48,7 @@ class DeviceState extends ChangeNotifier {
       TextEditingController();
 
   bool started = false;
+  bool resSelectedMode01 = false;
   bool mode01SaveClicked = false;
   bool mode01Passed = false;
 
@@ -61,6 +66,10 @@ class DeviceState extends ChangeNotifier {
       TextEditingController();
   TextEditingController maxVoltageRangeControllerMode02 =
       TextEditingController();
+  TextEditingController minResistanceRangeControllerMode02 =
+      TextEditingController();
+  TextEditingController maxResistanceRangeControllerMode02 =
+      TextEditingController();
 
   TextEditingController currentReadingCurrentControllerMode02 =
       TextEditingController();
@@ -70,6 +79,7 @@ class DeviceState extends ChangeNotifier {
       TextEditingController();
 
   bool saveClickedMode02 = false;
+  bool resSelectedMode02 = false;
   bool passedMode02 = false;
 
   //===================

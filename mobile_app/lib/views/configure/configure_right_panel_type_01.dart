@@ -9,6 +9,7 @@ import 'package:rvi_analyzer/domain/session_result.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
+import 'package:rvi_analyzer/views/common/form_eliments/dropdown.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
@@ -43,6 +44,15 @@ class _ConfigureRightPanelType01State
         "S_$milliseconds";
   }
 
+  void setDropDownValue(String? val) {
+    if (val != null && val == "Resistance") {
+      ref.read(deviceDataMap[widget.sc.device.name]!).resSelectedMode01 = true;
+    } else {
+      ref.read(deviceDataMap[widget.sc.device.name]!).resSelectedMode01 = false;
+    }
+    ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -73,24 +83,24 @@ class _ConfigureRightPanelType01State
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
-                    children: [
-                      const Text(
+                    children: const [
+                      Text(
                         "Mode 01",
                         style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
                             color: Colors.black54),
                       ),
-                      const SizedBox(
-                        width: 50,
-                      ),
-                      Text(
-                        "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
-                        style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54),
-                      ),
+                      // const SizedBox(
+                      //   width: 50,
+                      // ),
+                      // Text(
+                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
+                      //   style: const TextStyle(
+                      //       fontSize: 15,
+                      //       fontWeight: FontWeight.bold,
+                      //       color: Colors.black54),
+                      // ),
                     ],
                   ),
                   const SizedBox(
@@ -149,9 +159,15 @@ class _ConfigureRightPanelType01State
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
               .currentProtocol ==
           1) {
-        return (ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
-            .resistance
+        return ((ref
+                    .watch(ref
+                        .watch(deviceDataMap[widget.sc.device.name]!)
+                        .streamData)
+                    .current /
+                double.parse(ref
+                    .watch(deviceDataMap[widget.sc.device.name]!)
+                    .voltageControllerMode01
+                    .text))
             .toStringAsFixed(3));
       }
     }
@@ -180,19 +196,38 @@ class _ConfigureRightPanelType01State
         .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
         .current;
 
-    if (double.parse(ref
-                .watch(deviceDataMap[widget.sc.device.name]!)
-                .minCurrentRangeControllerMode01
-                .text) <
-            current &&
-        current <
-            double.parse(ref
-                .watch(deviceDataMap[widget.sc.device.name]!)
-                .maxCurrentRangeControllerMode01
-                .text)) {
-      ref.read(deviceDataMap[widget.sc.device.name]!).mode01Passed = true;
+    double resistance = double.parse(getResistance());
+
+    if (ref.watch(deviceDataMap[widget.sc.device.name]!).resSelectedMode01) {
+      if (double.parse(ref
+                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .minResistanceRangeControllerMode01
+                  .text) <
+              resistance &&
+          resistance <
+              double.parse(ref
+                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .maxResistanceRangeControllerMode01
+                  .text)) {
+        ref.read(deviceDataMap[widget.sc.device.name]!).mode01Passed = true;
+      } else {
+        ref.read(deviceDataMap[widget.sc.device.name]!).mode01Passed = false;
+      }
     } else {
-      ref.read(deviceDataMap[widget.sc.device.name]!).mode01Passed = false;
+      if (double.parse(ref
+                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .minCurrentRangeControllerMode01
+                  .text) <
+              current &&
+          current <
+              double.parse(ref
+                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .maxCurrentRangeControllerMode01
+                  .text)) {
+        ref.read(deviceDataMap[widget.sc.device.name]!).mode01Passed = true;
+      } else {
+        ref.read(deviceDataMap[widget.sc.device.name]!).mode01Passed = false;
+      }
     }
 
     setState(() {
@@ -360,67 +395,139 @@ class _ConfigureRightPanelType01State
             height: 10.0,
           ),
           const Text(
-            'Current Range : ',
+            'Select type : ',
             style: TextStyle(fontSize: 15, color: Colors.grey),
           ),
           const SizedBox(
             height: 5.0,
           ),
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: TextInput(
-                    data: TestInputData(
-                        controller: ref
-                            .read(deviceDataMap[widget.sc.device.name]!)
-                            .minCurrentRangeControllerMode01,
-                        inputType: TextInputType.number,
-                        validatorFun: (val) {
-                          if (val!.isEmpty) {
-                            return "Min current cannot be empty";
-                          } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
-                              .hasMatch(val)) {
-                            return "Only allowed numbers";
-                          } else if (!RegExp(
-                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
-                              .hasMatch(val)) {
-                            return "Current ONLY allowed two Place Value";
-                          } else {
-                            null;
-                          }
-                        },
-                        labelText: 'Min (A)')),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                flex: 1,
-                child: TextInput(
-                    data: TestInputData(
-                        inputType: TextInputType.number,
-                        controller: ref
-                            .read(deviceDataMap[widget.sc.device.name]!)
-                            .maxCurrentRangeControllerMode01,
-                        validatorFun: (val) {
-                          if (val!.isEmpty) {
-                            return "Max current cannot be empty";
-                          } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
-                              .hasMatch(val)) {
-                            return "Only allowed numbers";
-                          } else if (!RegExp(
-                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
-                              .hasMatch(val)) {
-                            return "Current ONLY allowed two Place Value";
-                          } else {
-                            null;
-                          }
-                        },
-                        labelText: 'Max (A)')),
-              ),
-            ],
+          CustomDropDwn(
+              data: CustomDropDwnData(
+                  inputs: ["Current", "Resistance"],
+                  updateSelectedIndex: setDropDownValue)),
+          const SizedBox(
+            height: 10.0,
           ),
+          Text(
+            ref.watch(deviceDataMap[widget.sc.device.name]!).resSelectedMode01
+                ? 'Resistance Range : '
+                : 'Current Range : ',
+            style: const TextStyle(fontSize: 15, color: Colors.grey),
+          ),
+          const SizedBox(
+            height: 5.0,
+          ),
+          ref.watch(deviceDataMap[widget.sc.device.name]!).resSelectedMode01
+              ? Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: TextInput(
+                          data: TestInputData(
+                              controller: ref
+                                  .read(deviceDataMap[widget.sc.device.name]!)
+                                  .minResistanceRangeControllerMode01,
+                              inputType: TextInputType.number,
+                              validatorFun: (val) {
+                                if (val!.isEmpty) {
+                                  return "Min Resistance cannot be empty";
+                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                                    .hasMatch(val)) {
+                                  return "Only allowed numbers";
+                                } else if (!RegExp(
+                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
+                                    .hasMatch(val)) {
+                                  return "Resistance ONLY allowed two Place Value";
+                                } else {
+                                  null;
+                                }
+                              },
+                              labelText: 'Min \u2126')),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: TextInput(
+                          data: TestInputData(
+                              inputType: TextInputType.number,
+                              controller: ref
+                                  .read(deviceDataMap[widget.sc.device.name]!)
+                                  .maxResistanceRangeControllerMode01,
+                              validatorFun: (val) {
+                                if (val!.isEmpty) {
+                                  return "Max resistance cannot be empty";
+                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                                    .hasMatch(val)) {
+                                  return "Only allowed numbers";
+                                } else if (!RegExp(
+                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
+                                    .hasMatch(val)) {
+                                  return "Resistance ONLY allowed two Place Value";
+                                } else {
+                                  null;
+                                }
+                              },
+                              labelText: 'Max \u2126')),
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: TextInput(
+                          data: TestInputData(
+                              controller: ref
+                                  .read(deviceDataMap[widget.sc.device.name]!)
+                                  .minCurrentRangeControllerMode01,
+                              inputType: TextInputType.number,
+                              validatorFun: (val) {
+                                if (val!.isEmpty) {
+                                  return "Min current cannot be empty";
+                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                                    .hasMatch(val)) {
+                                  return "Only allowed numbers";
+                                } else if (!RegExp(
+                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
+                                    .hasMatch(val)) {
+                                  return "Current ONLY allowed two Place Value";
+                                } else {
+                                  null;
+                                }
+                              },
+                              labelText: 'Min (A)')),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: TextInput(
+                          data: TestInputData(
+                              inputType: TextInputType.number,
+                              controller: ref
+                                  .read(deviceDataMap[widget.sc.device.name]!)
+                                  .maxCurrentRangeControllerMode01,
+                              validatorFun: (val) {
+                                if (val!.isEmpty) {
+                                  return "Max current cannot be empty";
+                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
+                                    .hasMatch(val)) {
+                                  return "Only allowed numbers";
+                                } else if (!RegExp(
+                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
+                                    .hasMatch(val)) {
+                                  return "Current ONLY allowed two Place Value";
+                                } else {
+                                  null;
+                                }
+                              },
+                              labelText: 'Max (A)')),
+                    ),
+                  ],
+                ),
           const SizedBox(
             height: 10.0,
           ),
