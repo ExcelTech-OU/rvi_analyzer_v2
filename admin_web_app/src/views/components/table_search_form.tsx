@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, Grid, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material'
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useFormik } from 'formik';
@@ -39,7 +39,7 @@ export default function TableSearchForm() {
             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={4} sm={4} md={6} >
                     <TextField
-                        sx={{ input: { color: 'white' } }}
+                        sx={{ input: { color: 'grey' } }}
                         error={Boolean(formik.touched.searchValue && formik.errors.searchValue)}
                         fullWidth
                         helperText={formik.touched.searchValue && formik.errors.searchValue}
@@ -55,12 +55,28 @@ export default function TableSearchForm() {
                 </Grid>
                 <Grid item xs={4} sm={4} md={2} >
                     <FormControl style={{ minWidth: "100%" }} sx={{ mt: 2 }}>
+                        <InputLabel id="demo-simple-select-label">Filter Type</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={age}
-                            label="Age"
+                            label="Filter Type"
                             onChange={handleChange}
+                            MenuProps={{
+                                PaperProps: {
+                                    sx: {
+                                        "& .MuiMenuItem-root.Mui-selected": {
+                                            backgroundColor: "#e0e0e0"
+                                        },
+                                        "& .MuiMenuItem-root:hover": {
+                                            backgroundColor: "#e0e0e0"
+                                        },
+                                        "& .MuiMenuItem-root.Mui-selected:hover": {
+                                            backgroundColor: "#e0e0e0"
+                                        }
+                                    }
+                                }
+                            }}
 
                         >
                             <MenuItem value={"CREATED_BY"}>CREATED BY</MenuItem>

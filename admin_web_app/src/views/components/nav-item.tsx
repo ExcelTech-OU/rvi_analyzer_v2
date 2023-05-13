@@ -37,9 +37,9 @@ export const NavItem = ({ href, icon, title, childs }: NavItemProps) => {
             startIcon={icon}
             disableRipple
             sx={{
-              backgroundColor: active ? '#2a4d59' : '',
+              backgroundColor: active ? '#dfeff5' : '',
               borderRadius: 1,
-              color: active ? 'secondary.main' : '#D1D5DB',
+              color: active ? 'secondary.main' : 'grey',
               fontWeight: active ? 'fontWeightBold' : '',
               justifyContent: 'flex-start',
               px: 3,
@@ -50,7 +50,7 @@ export const NavItem = ({ href, icon, title, childs }: NavItemProps) => {
                 color: active ? 'secondary.main' : '#9CA3AF'
               },
               '&:hover': {
-                backgroundColor: 'rgba(255,255,255, 0.08)'
+                backgroundColor: active ? '#dfeff5' : '#e3e3e3'
               }
             }}
             endIcon={childs.length != 0 ? (open ? <ExpandLess /> : <ExpandMore />) : ""}

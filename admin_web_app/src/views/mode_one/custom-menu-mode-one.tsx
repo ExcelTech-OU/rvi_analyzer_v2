@@ -1,9 +1,15 @@
-import { Button, Divider, IconButton, Menu, MenuItem, MenuProps, alpha, styled } from "@mui/material";
+import { Divider, IconButton, Menu, MenuItem, MenuProps, alpha, styled, useMediaQuery, useTheme } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/Download';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
-import React from "react";
+import React, { useState } from "react";
+import { ModeOneDto } from "../../services/sessions_service";
+import { ModeOneSingleView } from "./mode-one-single-view";
+
+type CustomMenuProps = {
+    session: ModeOneDto;
+}
 
 const StyledMenu = styled((props: MenuProps) => (
     <Menu
@@ -46,7 +52,7 @@ const StyledMenu = styled((props: MenuProps) => (
     },
 }));
 
-export default function CustomizedMenus() {
+export default function CustomizedMenus({ session }: CustomMenuProps) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -55,6 +61,12 @@ export default function CustomizedMenus() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const [openCloseDetailView, setOpenCloseDetailView] = useState(false);
+    const [openSuccessCloseDetailView, setOpenSuccessCloseDetailView] = useState(false);
+
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
         <div>
@@ -77,7 +89,10 @@ export default function CustomizedMenus() {
                 open={open}
                 onClose={handleClose}
             >
-                <MenuItem onClick={handleClose} disableRipple>
+                <MenuItem onClick={() => {
+                    setOpenCloseDetailView(true);
+                    handleClose();
+                }} disableRipple>
                     <VisibilityIcon />
                     View
                 </MenuItem>
@@ -91,6 +106,7 @@ export default function CustomizedMenus() {
                     Download
                 </MenuItem>
             </StyledMenu>
+            <ModeOneSingleView open={openCloseDetailView} changeOpenStatus={setOpenCloseDetailView} session={session} />
         </div>
     );
 }

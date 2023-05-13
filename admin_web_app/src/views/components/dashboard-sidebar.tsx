@@ -158,8 +158,8 @@ export const DashboardSidebar = ({ open, closeSideBar }: DashboardSidebarData) =
         PaperProps={{
           sx: {
             width: 250,
-            bgcolor: '#24292e',
             borderRightStyle: 'dashed',
+            borderColor: "#9d9e9d"
           },
         }}
         variant="permanent"
@@ -177,8 +177,8 @@ export const DashboardSidebar = ({ open, closeSideBar }: DashboardSidebarData) =
       PaperProps={{
         sx: {
           width: 250,
-          bgcolor: '#24292e',
           borderRightStyle: 'dashed',
+          borderColor: "#9d9e9d"
         },
       }}
       sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}

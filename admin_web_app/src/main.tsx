@@ -17,7 +17,7 @@ import ModeFourList from './views/mode_four/ModeFourList'
 import ModeFiveList from './views/mode_five/ModeFiveList'
 import ModeSixList from './views/mode_six/ModeSixList'
 import { theme } from './theme'
-import ModeOneList from './views/mode_one/ModeOneList'
+import ModeOneList from './views/mode_one/mode-one-list'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
