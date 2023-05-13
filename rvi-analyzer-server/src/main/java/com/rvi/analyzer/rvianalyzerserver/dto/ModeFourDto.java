@@ -15,4 +15,6 @@ public class ModeFourDto {
     private SessionConfigurationModeFour sessionConfigurationModeFour;
     private SessionResult results;
     private String status;
+    private String createdDateTime;
+    private String lastUpdatedDateTime;
 }

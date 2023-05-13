@@ -15,4 +15,6 @@ public class ModeFiveDto {
     private SessionConfigurationModeFive sessionConfigurationModeFive;
     private SessionResult results;
     private String status;
+    private String createdDateTime;
+    private String lastUpdatedDateTime;
 }

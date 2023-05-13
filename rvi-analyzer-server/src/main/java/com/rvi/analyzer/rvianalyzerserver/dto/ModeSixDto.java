@@ -15,4 +15,6 @@ public class ModeSixDto {
     private SessionConfigurationModeSix sessionConfigurationModeSix;
     private SessionResult results;
     private String status;
+    private String createdDateTime;
+    private String lastUpdatedDateTime;
 }

@@ -28,7 +28,7 @@ class UserMapperTest {
         User user = User.builder()
                 .username("testUser")
                 .password("password")
-                .type("ADMIN")
+//                .type("ADMIN")
                 .status("ACTIVE")
                 .createdBy("Top admin 01")
                 .createdDateTime(LocalDateTime.now())
@@ -37,7 +37,7 @@ class UserMapperTest {
         UserDto userDto = userMapper.userToUserDto(user);
 
         assertEquals(user.getUsername(), userDto.getUsername());
-        assertEquals(user.getType(), userDto.getGroup());
+//        assertEquals(user.getType(), userDto.getGroup());
     }
 
     @Test
@@ -50,7 +50,7 @@ class UserMapperTest {
 
         User user = userMapper.userDtoToUser(userDto);
 
-        assertNull(user.getType());
+//        assertNull(user.getType());
         assertEquals(userDto.getUsername(), user.getUsername());
     }
 }

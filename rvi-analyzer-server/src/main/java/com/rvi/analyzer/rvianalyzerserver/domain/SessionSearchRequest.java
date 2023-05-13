@@ -7,6 +7,6 @@ import lombok.Data;
 @Builder
 public class SessionSearchRequest {
     private String date;
-    private FilterType filterType;
+    private String filterType;
     private String filterValue;
 }

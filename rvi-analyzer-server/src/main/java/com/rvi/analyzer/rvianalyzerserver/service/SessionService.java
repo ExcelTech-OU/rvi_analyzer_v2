@@ -9,12 +9,17 @@ import com.rvi.analyzer.rvianalyzerserver.repository.*;
 import com.rvi.analyzer.rvianalyzerserver.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -397,7 +402,10 @@ public class SessionService {
                                                         .sessions(new ArrayList<>())
                                                         .build()));
                                             } else {
-                                                return modeOneRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
+
+                                                return modeOneRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
+                                                        .filter(Objects::nonNull)
                                                         .flatMap(modeOne -> {
                                                             log.info("Mode one found with id [{}]", modeOne.getDefaultConfigurations().getSessionId());
                                                             return Mono.just(modeOneMapper.modeOneToModeOneDto(modeOne));
@@ -443,7 +451,9 @@ public class SessionService {
                                                         .sessions(new ArrayList<>())
                                                         .build()));
                                             } else {
-                                                return modeTwoRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
+
+                                                return modeTwoRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
                                                         .flatMap(modeTwo -> {
                                                             log.info("Mode two found with id [{}]", modeTwo.getDefaultConfigurations().getSessionId());
                                                             return Mono.just(modeTwoMapper.modeTwoToModeTwoDto(modeTwo));
@@ -489,7 +499,9 @@ public class SessionService {
                                                         .sessions(new ArrayList<>())
                                                         .build()));
                                             } else {
-                                                return modeThreeRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
+
+                                                return modeThreeRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
                                                         .flatMap(modeThree -> {
                                                             log.info("Mode three found with id [{}]", modeThree.getDefaultConfigurations().getSessionId());
                                                             return Mono.just(modeThreeMapper.modeThreeToModeThreeDto(modeThree));
@@ -535,7 +547,9 @@ public class SessionService {
                                                         .sessions(new ArrayList<>())
                                                         .build()));
                                             } else {
-                                                return modeFourRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
+
+                                                return modeFourRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
                                                         .flatMap(modeFour -> {
                                                             log.info("Mode four found with id [{}]", modeFour.getDefaultConfigurations().getSessionId());
                                                             return Mono.just(modeFourMapper.modeFourToModeFourDto(modeFour));
@@ -581,7 +595,9 @@ public class SessionService {
                                                         .sessions(new ArrayList<>())
                                                         .build()));
                                             } else {
-                                                return modeFiveRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
+
+                                                return modeFiveRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
                                                         .flatMap(modeFive -> {
                                                             log.info("Mode five found with id [{}]", modeFive.getDefaultConfigurations().getSessionId());
                                                             return Mono.just(modeFiveMapper.modeFiveToModeFiveDto(modeFive));
@@ -627,7 +643,9 @@ public class SessionService {
                                                         .sessions(new ArrayList<>())
                                                         .build()));
                                             } else {
-                                                return modeSixRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
+
+                                                return modeSixRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
                                                         .flatMap(modeSix -> {
                                                             log.info("Mode six found with id [{}]", modeSix.getDefaultConfigurations().getSessionId());
                                                             return Mono.just(modeSixMapper.modeSixToModeSixDto(modeSix));
@@ -661,63 +679,72 @@ public class SessionService {
     private String getFilters(List<String> users, String pageNo, SessionSearchRequest request) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("{'$skip': " + Integer.valueOf(pageNo) * 20 + " }");
-
-        if (!stringBuilder.toString().isEmpty()) {
-            stringBuilder.append(", ");
-        }
-
-        if (request.getFilterType() != null && !request.getFilterValue().isEmpty()) {
-            if (request.getFilterType() != FilterType.CREATED_BY) {
+        if (!request.getFilterType().isEmpty() && !request.getFilterValue().isEmpty()) {
+            if (FilterType.valueOf(request.getFilterType()) != FilterType.CREATED_BY) {
                 if (users.size() > 0) {
-                    stringBuilder.append("{'$match':{")
-                            .append("'created-by': { '$in' : ")
+                    stringBuilder.append("{ '$and': [")
+                            .append("{'created-by': { '$in' : ")
                             .append(users)
-                            .append("}");
+                            .append("}}");
                 }
 
-                switch (request.getFilterType()) {
-                    case BATCH_NO -> stringBuilder.append("'default-configurations.batch-no' : { $regex : '.*")
+                if (!stringBuilder.toString().isEmpty()) {
+                    stringBuilder.append(", ");
+                }
+
+                switch (FilterType.valueOf(request.getFilterType())) {
+                    case BATCH_NO -> stringBuilder.append("{ 'default-configurations.batch-no' : { $regex : '.*")
                             .append(request.getFilterValue())
-                            .append(".*'}");
-                    case SESSION_ID -> stringBuilder.append("'default-configurations.session-id': { $regex : '.*")
+                            .append(".*', $options: 'i'}}");
+                    case SESSION_ID -> stringBuilder.append("{'default-configurations.session-id': { $regex : '.*")
                             .append(request.getFilterValue())
-                            .append(".*'}");
-                    case OPERATOR_ID -> stringBuilder.append("'default-configurations.operator-id': { $regex : '.*")
+                            .append(".*', $options: 'i'}}");
+                    case OPERATOR_ID -> stringBuilder.append("{'default-configurations.operator-id': { $regex : '.*")
                             .append(request.getFilterValue())
-                            .append(".*'}");
-                    case CUSTOMER_NAME -> stringBuilder.append("'default-configurations.customer-name': { $regex : '.*")
-                            .append(request.getFilterValue())
-                            .append(".*'}");
+                            .append(".*', $options: 'i'}}");
+                    case CUSTOMER_NAME ->
+                            stringBuilder.append("{'default-configurations.customer-name': { $regex : '.*")
+                                    .append(request.getFilterValue())
+                                    .append(".*', $options: 'i'}}");
                 }
 
             } else if (checkUserRegexMatchWithUsers(users, request.getFilterValue())) {
-                stringBuilder.append("{'$match':{")
+                stringBuilder.append("{'$and':[{")
                         .append("'created-by': { $regex : '.*")
                         .append(request.getFilterValue())
-                        .append(".*'}");
+                        .append(".*', $options: 'i'}}");
             } else {
                 if (users.size() > 0) {
-                    stringBuilder.append("{'$match':{")
+                    stringBuilder.append("{'$and':[{")
                             .append("'created-by': { '$in' : ")
                             .append(users)
-                            .append("}");
+                            .append("}}");
                 }
             }
         } else {
             if (users.size() > 0) {
-                stringBuilder.append("{'$match':{")
+                stringBuilder.append("{'$and':[{")
                         .append("'created-by': { '$in' : ")
                         .append(users)
-                        .append("}");
+                        .append("}}");
             }
         }
 
-        if (!stringBuilder.toString().isEmpty()) {
-            stringBuilder.append("}} , {'$limit': 20 }");
-        } else {
-            stringBuilder.append(" {'$limit': 20}");
-        }
+//        if (request.getDate() != null && !request.getDate().isEmpty()) {
+//            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+//            LocalDateTime lastDateStart = LocalDateTime.of(LocalDateTime.parse(request.getDate(), formatter).toLocalDate(), LocalTime.MIDNIGHT);
+//            LocalDateTime lastDateEnd = LocalDateTime.of(LocalDateTime.parse(request.getDate(), formatter).toLocalDate(), LocalTime.MAX);
+//            log.info("Finding treatments between [{}] and [{}]", lastDateStart, lastDateEnd);
+//
+//            stringBuilder.append(", { 'created-date' : { $gt : ISODate('")
+//                    .append(lastDateStart)
+////                    .append("', $lt: '")
+////                    .append(lastDateEnd)
+//                    .append("') }}");
+//        }
+
+        stringBuilder.append("]}");
+
 
         log.info("AAAAAAAAAAAA :  {}", stringBuilder.toString());
         return stringBuilder.toString();

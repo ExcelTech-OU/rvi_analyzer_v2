@@ -16,4 +16,6 @@ public class ModeTwoDto {
     private SessionConfigurationModeTwo sessionConfigurationModeTwo;
     private List<SessionResult> results;
     private String status;
+    private String createdDateTime;
+    private String lastUpdatedDateTime;
 }

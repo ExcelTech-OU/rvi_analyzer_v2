@@ -5,6 +5,8 @@ import com.rvi.analyzer.rvianalyzerserver.entiy.SessionConfigurationModeOne;
 import com.rvi.analyzer.rvianalyzerserver.entiy.SessionResult;
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -15,4 +17,6 @@ public class ModeOneDto {
     private SessionConfigurationModeOne sessionConfigurationModeOne;
     private List<SessionResult> results;
     private String status;
+    private String createdDateTime;
+    private String lastUpdatedDateTime;
 }

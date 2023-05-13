@@ -1,6 +1,7 @@
 package com.rvi.analyzer.rvianalyzerserver.repository;
 
 import com.rvi.analyzer.rvianalyzerserver.entiy.ModeThree;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
@@ -19,6 +20,6 @@ public interface ModeThreeRepository extends ReactiveMongoRepository<ModeThree, 
     )
     Mono<ModeThree> findBySessionID(String sessionId);
 
-    @Aggregation("?0")
-    Flux<ModeThree> findByFilters(String filter);
+    @Query(value = "?0")
+    Flux<ModeThree> findByFilters(String filter, Pageable pageable);
 }

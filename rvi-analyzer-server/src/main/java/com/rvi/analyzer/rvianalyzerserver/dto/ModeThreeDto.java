@@ -14,4 +14,6 @@ public class ModeThreeDto {
     private SessionConfigurationModeThree sessionConfigurationModeThree;
     private SessionResult results;
     private String status;
+    private String createdDateTime;
+    private String lastUpdatedDateTime;
 }
