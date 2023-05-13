@@ -5,11 +5,12 @@ export interface LoginResponse {
     stateDescription: string
     user: SimpleUser
     jwt: string
+    roles: string[]
 }
 
 export interface SimpleUser {
-    userName: string
-    type: string
+    username: string
+    group: string
     status: string
     createdBy: string
     createdDateTime: string
@@ -17,13 +18,13 @@ export interface SimpleUser {
 
 export const loginApi = createApi({
     reducerPath: 'loginApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://rvi.analyzer.admin.exceltch.com/rvi-analyzer-api/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://127.0.0.1:7550/' }),
     tagTypes: ['loginRequest'],
     endpoints: (build) => ({
         login: build.mutation<LoginResponse, {}>({
             query(body) {
                 return {
-                    url: `login/admin`,
+                    url: `login/user`,
                     method: 'POST',
                     body,
                 }

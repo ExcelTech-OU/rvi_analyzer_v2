@@ -20,7 +20,7 @@ export interface User {
 export const userApi = createApi({
     reducerPath: 'userApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://rvi.analyzer.admin.exceltch.com/rvi-analyzer-api/',
+        baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("jwt") as string;
             if (!headers.has("Authorization") && token) {

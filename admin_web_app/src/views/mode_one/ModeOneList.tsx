@@ -1,10 +1,11 @@
-import { Box, Button, Container } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Container, Divider, Typography } from "@mui/material";
 import { blue, green, grey } from "@mui/material/colors";
-import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from '@mui/x-data-grid';
-import { useParams } from "react-router-dom";
-import { GetSessionFilters, ModeOneDto, ModeOnesResponse, useGetModeOneSessionsQuery, UserTreatmentSession } from "../../services/sessions_service";
+import { DataGrid, GridColDef, GridPagination, GridToolbar, GridToolbarDensitySelector, GridToolbarExport, GridValueGetterParams } from '@mui/x-data-grid';
+import { ModeOneDto, ModeOnesResponse, useGetModeOneSessionsQuery, UserTreatmentSession } from "../../services/sessions_service";
 import { ModeOneSingleView } from './ModeOneSingleView'
 import SessionTimeoutPopup from "../components/session_logout";
+import TableSearchForm from "../components/table_search_form";
+import CustomizedMenus from "../components/custom-menu";
 
 
 
@@ -70,14 +71,15 @@ const columns: GridColDef[] = [
         type: 'actions',
         width: 100,
         renderCell: (params) => (
-            <ModeOneSingleView session={params.row as ModeOneDto} />
+            <CustomizedMenus />
+            // <ModeOneSingleView session={params.row as ModeOneDto} />
         ),
     },
 ];
 
 export default function ModeOneList() {
 
-    var { data, error, isLoading } = useGetModeOneSessionsQuery({})
+    var { data, error, isLoading } = useGetModeOneSessionsQuery({ date: "", filterType: "CREATED_BY", filterValue: "ruk" })
 
     if (isLoading) {
         return <div>Loading...</div>
@@ -101,43 +103,70 @@ export default function ModeOneList() {
             <Container maxWidth={false}>
                 <>
                     <Box
-                        m="20px 0 0 0"
-                        height="75vh"
+                        m="0px 0 0 0"
+                        height="60vh"
                         sx={{
                             "& .MuiDataGrid-root": {
                             },
                             "& .MuiDataGrid-cell": {
                             },
                             "& .name-column--cell": {
-                                color: blue[300],
+                                color: '#7bcfed',
                             },
                             "& .MuiDataGrid-columnHeaders": {
-                                backgroundColor: '#1999ff',
+                                backgroundColor: '#7bcfed',
                             },
                             "& .MuiDataGrid-virtualScroller": {
-                                backgroundColor: grey[200],
+                                backgroundColor: 'rgba(255,255,255, 0.08)',
                             },
                             "& .MuiDataGrid-footerContainer": {
-                                backgroundColor: '#1999ff',
+                                backgroundColor: '#7bcfed',
                             },
                             "& .MuiCheckbox-root": {
                                 color: `${green[200]} !important`,
                             },
                         }}
                     >
-                        <DataGrid
-                            rows={data!.sessions.map((item, index) => ({ id: index + 1, ...item }))}
-                            columns={columns}
-                            pageSize={100}
-                            rowsPerPageOptions={[100]}
-                            disableSelectionOnClick
-                            experimentalFeatures={{ newEditingApi: true }}
-                            components={{
-                                Toolbar: GridToolbar,
-                            }}
-                        />
+                        <Card sx={{ maxWidth: 1600, height: '80vh' }}>
+                            <CardActionArea>
+
+                                <CardContent sx={{ height: '80vh' }}>
+                                    <Typography gutterBottom variant="h5" component="div" color="grey">
+                                        Mode One
+                                    </Typography>
+                                    <Divider
+                                        sx={{
+                                            borderColor: 'grey',
+                                            my: 1.5,
+                                            borderStyle: 'dashed'
+                                        }}
+                                    />
+                                    <TableSearchForm></TableSearchForm>
+                                    <Divider
+                                        sx={{
+                                            borderColor: 'grey',
+                                            my: 1.5,
+                                            borderStyle: 'dashed'
+                                        }}
+                                    />
+                                    <DataGrid
+                                        sx={{ mt: 2, height: "50vh" }}
+                                        rows={data!.sessions.map((item, index) => ({ id: index + 1, ...item }))}
+                                        columns={columns}
+                                        pageSize={100}
+                                        rowsPerPageOptions={[100]}
+                                        disableSelectionOnClick
+                                        experimentalFeatures={{ newEditingApi: true }}
+                                    // components={{
+                                    //     Toolbar: GridToolbarDensitySelector,
+
+                                    // }}
+                                    />
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+
                     </Box>
-                    {console.log(data?.sessions)}
                 </>
             </Container>
         </Box>

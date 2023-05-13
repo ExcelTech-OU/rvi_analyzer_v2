@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { ModeOneDto, ModeOnesResponse, useGetSessionQuestionsQuery, UserTreatmentSession } from "../../services/sessions_service";
 import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from "@mui/x-data-grid";
 import { blue, green, grey } from "@mui/material/colors";
+import CustomizedMenus from "../components/custom-menu";
 
 
 type SessionDetailsProps = {
@@ -86,10 +87,11 @@ export function ModeOneSingleView({ session }: SessionDetailsProps) {
   return (
     <Box>
       <Tooltip title="View Feedback">
-        <IconButton onClick={handleClickOpen}
+        {/* <IconButton onClick={handleClickOpen}
         >
-          <Visibility />
-        </IconButton>
+          <MoreVertIcon />
+        </IconButton> */}
+        <CustomizedMenus />
       </Tooltip>
       <Dialog
         fullScreen={fullScreen}

@@ -189,7 +189,7 @@ export type GetSessionQuestionsResponse = {
 export const sessionApi = createApi({
     reducerPath: 'sessionApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://rvi.analyzer.admin.exceltch.com/rvi-analyzer-api/',
+        baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("jwt") as string;
             if (!headers.has("Authorization") && token) {
@@ -201,7 +201,13 @@ export const sessionApi = createApi({
     tagTypes: ['sessions'],
     endpoints: (build) => ({
         getModeOneSessions: build.query<ModeOnesResponse, {}>({
-            query: (data) => `rvi/analyzer/v1/session/get/one`,
+            query(data) {
+                return {
+                    url: `rvi/analyzer/v1/session/get/one/0`,
+                    method: 'POST',
+                    body: data,
+                }
+            },
             providesTags: [{ type: 'sessions', id: "getModeOneSessions" }]
 
         }),

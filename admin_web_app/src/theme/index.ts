@@ -135,7 +135,7 @@ export const theme = createTheme({
     action: {
       active: '#6B7280',
       focus: 'rgba(55, 65, 81, 0.12)',
-      hover: 'rgba(55, 65, 81, 0.04)',
+      hover: '#FFFFF',
       selected: 'rgba(55, 65, 81, 0.08)',
       disabledBackground: 'rgba(55, 65, 81, 0.12)',
       disabled: 'rgba(55, 65, 81, 0.26)'
@@ -146,9 +146,9 @@ export const theme = createTheme({
     },
     divider: '#E6E8F0',
     primary: {
-      main: '#655DBB',
+      main: '#7bcfed',
       light: '#69bad6',
-      dark: '#3E54AC',
+      dark: '#2289a8',
       contrastText: '#FFFFFF'
     },
     secondary: {
@@ -182,7 +182,7 @@ export const theme = createTheme({
       contrastText: '#FFFFFF'
     },
     text: {
-      primary: '#121828',
+      primary: '#f5f0ed',
       secondary: '#c9d3d6',
       disabled: 'rgba(55, 65, 81, 0.48)'
     }
