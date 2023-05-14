@@ -77,7 +77,7 @@ const items = [
   {
     href: '#',
     icon: (<Devices fontSize="small" />),
-    title: 'Device',
+    title: 'devices',
     childs: [
       // {
       //   href: '/add-device',

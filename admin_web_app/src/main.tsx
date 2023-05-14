@@ -18,6 +18,7 @@ import ModeFiveList from './views/mode_five/mode-five-list'
 import ModeSixList from './views/mode_six/mode-six-list'
 import { theme } from './theme'
 import ModeOneList from './views/mode_one/mode-one-list'
+import DeviceList from './views/device/view/DeviceList'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -34,6 +35,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
               <Route path="/mode-five" element={<ModeFiveList />} />
               <Route path="/mode-six" element={<ModeSixList />} />
               <Route path="/users" element={<UserList />} />
+              <Route path="/devices" element={<DeviceList />} />
               <Route path="/questions" element={<QuestionList />} />
               <Route path="/login" element={<Login />} />
               <Route path='*' element={<Dashboard />} />

@@ -2,17 +2,17 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { List } from 'reselect/es/types'
 
 export interface DeviceListResponse {
+    status: string
+    statusDescription: string
     devices: List<Device>
 }
 
 export interface Device {
-    id: string
+    createdBy: string
     name: string
     macAddress: string
-    batchNo: string
-    firmwareVersion: string
-    connectedNetworkId: string
-    createdDate: string
+    assignTo: string
+    createdDateTime: string
     status: string
 }
 
@@ -41,7 +41,7 @@ export const deviceApi = createApi({
     tagTypes: ['deviceList'],
     endpoints: (build) => ({
         getDevices: build.query<DeviceListResponse, {}>({
-            query: () => `device/1/ACTIVE`,
+            query: () => `rvi/analyzer/v1/device/search/0/1/2`,
             providesTags: [{ type: 'deviceList', id: "deviceListFetch" }]
 
         }),
