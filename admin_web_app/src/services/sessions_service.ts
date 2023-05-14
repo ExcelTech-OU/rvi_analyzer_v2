@@ -219,27 +219,57 @@ export const sessionApi = createApi({
 
         }),
         getModeTwoSessions: build.query<ModeTwosResponse, {}>({
-            query: (data) => `rvi/analyzer/v1/session/get/two`,
+            query(data) {
+                return {
+                    url: `rvi/analyzer/v1/session/get/two/0`,
+                    method: 'POST',
+                    body: data,
+                }
+            },
             providesTags: [{ type: 'sessions', id: "getModeTwoSessions" }]
 
         }),
         getModeThreeSessions: build.query<ModeThreesResponse, {}>({
-            query: (data) => `rvi/analyzer/v1/session/get/three`,
+            query(data) {
+                return {
+                    url: `rvi/analyzer/v1/session/get/three/0`,
+                    method: 'POST',
+                    body: data,
+                }
+            },
             providesTags: [{ type: 'sessions', id: "getModeThreeSessions" }]
 
         }),
         getModeFourSessions: build.query<ModeFourResponse, {}>({
-            query: (data) => `rvi/analyzer/v1/session/get/four`,
+            query(data) {
+                return {
+                    url: `rvi/analyzer/v1/session/get/four/0`,
+                    method: 'POST',
+                    body: data,
+                }
+            },
             providesTags: [{ type: 'sessions', id: "getModeFourSessions" }]
 
         }),
         getModeFiveSessions: build.query<ModeFiveResponse, {}>({
-            query: (data) => `rvi/analyzer/v1/session/get/five`,
+            query(data) {
+                return {
+                    url: `rvi/analyzer/v1/session/get/five/0`,
+                    method: 'POST',
+                    body: data,
+                }
+            },
             providesTags: [{ type: 'sessions', id: "getModeFiveSessions" }]
 
         }),
         getModeSixSessions: build.query<ModeSixResponse, {}>({
-            query: (data) => `rvi/analyzer/v1/session/get/six`,
+            query(data) {
+                return {
+                    url: `rvi/analyzer/v1/session/get/six/0`,
+                    method: 'POST',
+                    body: data,
+                }
+            },
             providesTags: [{ type: 'sessions', id: "getModeSixSessions" }]
 
         }),

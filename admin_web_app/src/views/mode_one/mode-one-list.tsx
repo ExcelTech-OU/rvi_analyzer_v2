@@ -1,12 +1,9 @@
-import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Container, Divider, Typography } from "@mui/material";
-import { blue, green, grey } from "@mui/material/colors";
+import { Box, Card, CardActionArea, CardContent, Container, Divider, Pagination, Typography } from "@mui/material";
 import { GridColDef } from '@mui/x-data-grid';
-import { ModeOneDto, ModeOnesResponse, useGetModeOneSessionsQuery, UserTreatmentSession } from "../../services/sessions_service";
-import { ModeOneSingleView } from './mode-one-single-view'
+import { ModeOneDto, useGetModeOneSessionsQuery } from "../../services/sessions_service";
 import SessionTimeoutPopup from "../components/session_logout";
 import TableSearchForm from "../components/table_search_form";
 import CustomizedMenus from "./custom-menu-mode-one";
-import StickyHeadTable from "../components/table-test";
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -14,10 +11,8 @@ import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material';
-import { format } from "date-fns";
 
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -92,17 +87,32 @@ export default function ModeOneList() {
     const [date, setDate] = React.useState<Date | null>(null);
     const [filterType, setFilterType] = React.useState("CREATED_BY");
     const [filterValue, setFilterValue] = React.useState("");
+    const [pageCount, setPageCount] = React.useState(1);
+    const [page, setPage] = React.useState(1);
 
     var { data, error, isLoading } = useGetModeOneSessionsQuery({ date: date, filterType: filterType, filterValue: filterValue })
 
-    if (isLoading) {
-        return <div>Loading...</div>
-    }
+    const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };
 
     function setSearchParams(date: Date | null, filterType: string, filterValue: string) {
         setFilterType(filterType);
         setFilterValue(filterValue);
         setDate(date)
+        setPage(1)
+    }
+
+    React.useEffect(() => {
+        if (data?.sessions != null) {
+            setPageCount((data.sessions.length + 20 - 1) / 20)
+        }
+    }, [data])
+
+
+
+    if (isLoading) {
+        return <div>Loading...</div>
     }
 
     if (error != null && 'status' in error) {
@@ -203,16 +213,10 @@ export default function ModeOneList() {
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
-                                        {/* <TablePagination
-                                            rowsPerPageOptions={[10, 25, 100]}
-                                            component="div"
-                                            count={rows.length}
-                                            rowsPerPage={rowsPerPage}
-                                            page={page}
-                                            onPageChange={handleChangePage}
-                                            onRowsPerPageChange={handleChangeRowsPerPage}
-                                        /> */}
                                     </Paper>
+                                    <Box display="flex" justifyContent="flex-end">
+                                        <Pagination count={pageCount} sx={{ mt: 2 }} variant="outlined" shape="rounded" page={page} onChange={handleChange} />
+                                    </Box>
                                 </CardContent>
                             </CardActionArea>
                         </Card>
