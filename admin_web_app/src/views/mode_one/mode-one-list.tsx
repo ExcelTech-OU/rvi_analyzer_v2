@@ -17,6 +17,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material';
+import { format } from "date-fns";
 
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -88,10 +89,20 @@ const columns: GridColDef[] = [
 
 export default function ModeOneList() {
 
-    var { data, error, isLoading } = useGetModeOneSessionsQuery({ date: "", filterType: "CREATED_BY", filterValue: "ruk" })
+    const [date, setDate] = React.useState<Date | null>(null);
+    const [filterType, setFilterType] = React.useState("CREATED_BY");
+    const [filterValue, setFilterValue] = React.useState("");
+
+    var { data, error, isLoading } = useGetModeOneSessionsQuery({ date: date, filterType: filterType, filterValue: filterValue })
 
     if (isLoading) {
         return <div>Loading...</div>
+    }
+
+    function setSearchParams(date: Date | null, filterType: string, filterValue: string) {
+        setFilterType(filterType);
+        setFilterValue(filterValue);
+        setDate(date)
     }
 
     if (error != null && 'status' in error) {
@@ -130,7 +141,7 @@ export default function ModeOneList() {
                                             borderStyle: 'dashed'
                                         }}
                                     />
-                                    <TableSearchForm></TableSearchForm>
+                                    <TableSearchForm searchFun={setSearchParams}></TableSearchForm>
                                     <Divider
                                         sx={{
                                             borderColor: 'grey',
@@ -158,32 +169,32 @@ export default function ModeOneList() {
                                                     {data!.sessions
                                                         .map((item, index) => {
                                                             return (
-                                                                <StyledTableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                                                    <StyledTableCell key={item.defaultConfigurations.sessionId} align={'left'}>
+                                                                <StyledTableRow hover role="checkbox" tabIndex={-1} >
+                                                                    <StyledTableCell align={'left'}>
                                                                         {item.defaultConfigurations.sessionId}
                                                                     </StyledTableCell>
-                                                                    <StyledTableCell key={item.defaultConfigurations.sessionId} align={'left'}>
+                                                                    <StyledTableCell align={'left'}>
                                                                         {item.defaultConfigurations.customerName}
                                                                     </StyledTableCell>
-                                                                    <StyledTableCell key={item.defaultConfigurations.sessionId} align={'left'}>
+                                                                    <StyledTableCell align={'left'}>
                                                                         {item.defaultConfigurations.operatorId}
                                                                     </StyledTableCell>
-                                                                    <StyledTableCell key={item.defaultConfigurations.sessionId} align={'left'}>
+                                                                    <StyledTableCell align={'left'}>
                                                                         {item.defaultConfigurations.batchNo}
                                                                     </StyledTableCell>
-                                                                    <StyledTableCell key={item.defaultConfigurations.sessionId} align={'left'}>
+                                                                    <StyledTableCell align={'left'}>
                                                                         {item.sessionConfigurationModeOne.voltage}
                                                                     </StyledTableCell>
-                                                                    <StyledTableCell key={item.defaultConfigurations.sessionId} align={'left'}>
+                                                                    <StyledTableCell align={'left'}>
                                                                         {item.sessionConfigurationModeOne.maxCurrent}
                                                                     </StyledTableCell>
-                                                                    <StyledTableCell key={item.defaultConfigurations.sessionId} align={'left'}>
+                                                                    <StyledTableCell align={'left'}>
                                                                         {item.sessionConfigurationModeOne.passMinCurrent}
                                                                     </StyledTableCell>
-                                                                    <StyledTableCell key={item.defaultConfigurations.sessionId} align={'left'}>
+                                                                    <StyledTableCell align={'left'}>
                                                                         {item.sessionConfigurationModeOne.passMaxCurrent}
                                                                     </StyledTableCell>
-                                                                    <StyledTableCell key={item.defaultConfigurations.sessionId} align={'right'}>
+                                                                    <StyledTableCell align={'right'}>
                                                                         <CustomizedMenus session={item as ModeOneDto} />
                                                                     </StyledTableCell>
                                                                 </StyledTableRow>

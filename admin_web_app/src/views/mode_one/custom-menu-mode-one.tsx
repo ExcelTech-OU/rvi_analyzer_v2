@@ -6,6 +6,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import React, { useState } from "react";
 import { ModeOneDto } from "../../services/sessions_service";
 import { ModeOneSingleView } from "./mode-one-single-view";
+import ModeOneShareAlertDialog from "./session-one-share-dialog";
 
 type CustomMenuProps = {
     session: ModeOneDto;
@@ -63,6 +64,7 @@ export default function CustomizedMenus({ session }: CustomMenuProps) {
     };
 
     const [openCloseDetailView, setOpenCloseDetailView] = useState(false);
+    const [openCloseLinkView, setOpenCloseLinkView] = useState(false);
     const [openSuccessCloseDetailView, setOpenSuccessCloseDetailView] = useState(false);
 
     const theme = useTheme();
@@ -96,7 +98,10 @@ export default function CustomizedMenus({ session }: CustomMenuProps) {
                     <VisibilityIcon />
                     View
                 </MenuItem>
-                <MenuItem onClick={handleClose} disableRipple>
+                <MenuItem onClick={() => {
+                    setOpenCloseLinkView(true);
+                    handleClose();
+                }} disableRipple>
                     <ShareIcon />
                     Share
                 </MenuItem>
@@ -107,6 +112,7 @@ export default function CustomizedMenus({ session }: CustomMenuProps) {
                 </MenuItem>
             </StyledMenu>
             <ModeOneSingleView open={openCloseDetailView} changeOpenStatus={setOpenCloseDetailView} session={session} />
+            <ModeOneShareAlertDialog open={openCloseLinkView} changeOpenStatus={setOpenCloseLinkView} session={session} />
         </div>
     );
 }

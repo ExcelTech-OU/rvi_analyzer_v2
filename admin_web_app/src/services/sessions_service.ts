@@ -186,6 +186,13 @@ export type GetSessionQuestionsResponse = {
     questionAnswers: Map<string, string>
 }
 
+export type ShareReportResponse = {
+    status: string
+    statusDescription: string
+    url: string
+    password: string
+}
+
 export const sessionApi = createApi({
     reducerPath: 'sessionApi',
     baseQuery: fetchBaseQuery({
@@ -245,6 +252,15 @@ export const sessionApi = createApi({
                 }
             },
         }),
+        shareReport: build.mutation<ShareReportResponse, {}>({
+            query() {
+                return {
+                    url: `rvi/analyzer/v1/session/share/1/12345`,
+                    method: 'GET',
+                }
+            },
+
+        }),
     }),
 })
 
@@ -255,5 +271,6 @@ export const {
     useGetModeFourSessionsQuery,
     useGetModeFiveSessionsQuery,
     useGetModeSixSessionsQuery,
-    useGetModeOneSessionsQuery
+    useGetModeOneSessionsQuery,
+    useShareReportMutation
 } = sessionApi

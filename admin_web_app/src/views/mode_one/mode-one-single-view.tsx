@@ -133,19 +133,19 @@ export function ModeOneSingleView({ session, open, changeOpenStatus }: SessionDe
                           .map((item, index) => {
                             return (
                               <StyledTableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                <StyledTableCell key={item.testId} align={'left'}>
+                                <StyledTableCell align={'left'}>
                                   {item.testId}
                                 </StyledTableCell>
-                                <StyledTableCell key={item.testId} align={'left'}>
+                                <StyledTableCell align={'left'}>
                                   {item.readings[0].temperature}
                                 </StyledTableCell>
-                                <StyledTableCell key={item.testId} align={'left'}>
+                                <StyledTableCell align={'left'}>
                                   {item.readings[0].current}
                                 </StyledTableCell>
-                                <StyledTableCell key={item.testId} align={'left'}>
+                                <StyledTableCell align={'left'}>
                                   {item.readings[0].voltage}
                                 </StyledTableCell>
-                                <StyledTableCell key={item.testId} align={'left'}>
+                                <StyledTableCell align={'left'}>
                                   {item.readings[0].result == 'PASS' ?
                                     <Button variant="contained" color="success" sx={{ minWidth: 100 }}>
                                       {item.readings[0].result}
@@ -154,7 +154,7 @@ export function ModeOneSingleView({ session, open, changeOpenStatus }: SessionDe
                                       {item.readings[0].result}
                                     </Button>}
                                 </StyledTableCell>
-                                <StyledTableCell key={item.testId} align={'left'}>
+                                <StyledTableCell align={'left'}>
                                   {item.readings[0].readAt}
                                 </StyledTableCell>
                               </StyledTableRow>
@@ -170,10 +170,10 @@ export function ModeOneSingleView({ session, open, changeOpenStatus }: SessionDe
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" startIcon={<ShareIcon />}>
+        <Button variant="contained" startIcon={<ShareIcon />}>
           Share
         </Button>
-        <Button variant="outlined" startIcon={<DownloadIcon />}>
+        <Button variant="contained" startIcon={<DownloadIcon />}>
           Download
         </Button>
       </DialogActions>

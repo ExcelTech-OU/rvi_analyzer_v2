@@ -5,9 +5,14 @@ import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 
+type TableSearchProps = {
+    searchFun: (date: Date | null, filterType: string, filterValue: string) => void
+}
 
-export default function TableSearchForm() {
+export default function TableSearchForm({ searchFun }: TableSearchProps) {
 
+    const [age, setFilterType] = React.useState('');
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     const formik = useFormik({
         initialValues: {
@@ -23,14 +28,16 @@ export default function TableSearchForm() {
                 .max(100)
         }),
         onSubmit: (values, actions) => {
-
+            searchFun(selectedDate, age, values.searchValue);
         }
     });
 
-    const [age, setAge] = React.useState('');
+    const handleDateChange = (date: Date | null) => {
+        setSelectedDate(date);
+    };
 
     const handleChange = (event: SelectChangeEvent) => {
-        setAge(event.target.value as string);
+        setFilterType(event.target.value as string);
     };
 
     return (
@@ -90,7 +97,11 @@ export default function TableSearchForm() {
                 <Grid item xs={4} sm={4} md={2}>
                     <FormControl style={{ minWidth: "100%" }} sx={{ mt: 2 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs} >
-                            <DatePicker />
+                            <DatePicker
+                                label="Select Date"
+                                value={selectedDate}
+                                onChange={handleDateChange}
+                            />
                         </LocalizationProvider>
                     </FormControl>
                 </Grid>
@@ -98,7 +109,6 @@ export default function TableSearchForm() {
                     <Box sx={{ mt: 2, height: "500" }}>
                         <Button
                             color="primary"
-                            disabled={formik.isSubmitting}
                             fullWidth
                             size="large"
                             type="submit"
