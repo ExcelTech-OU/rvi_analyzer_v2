@@ -67,12 +67,6 @@ const items = [
     title: 'Users',
     childs: [
       {
-        href: '/add-user',
-        icon: (<PersonAddAlt fontSize="small" />),
-        title: 'Add',
-        childs: []
-      },
-      {
         href: '/users',
         icon: (<ListAlt fontSize="small" />),
         title: 'List',
@@ -92,7 +86,7 @@ const items = [
       //   childs: []
       // },
       {
-        href: '/users',
+        href: '/devices',
         icon: (<ListAlt fontSize="small" />),
         title: 'List',
         childs: []

@@ -3,8 +3,10 @@ import { GridColDef } from '@mui/x-data-grid';
 import { useGetUsersQuery, User } from "../../../services/user_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
 import CustomizedMenusUsers from "./custom-menu-user";
-import React from "react";
+import React, { useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
+import AddIcon from '@mui/icons-material/Add';
+import { AddUserModel } from "./add-user";
 
 const columns: GridColDef[] = [
     { field: 'email', headerName: 'Email', width: 200 },
@@ -49,6 +51,7 @@ export default function UserList() {
         setPage(value);
     };
 
+    const [open, setOpen] = useState(false);
     if (isLoading) {
         return <div>Loading...</div>
     }
@@ -85,6 +88,11 @@ export default function UserList() {
                                                 <Typography gutterBottom variant="h5" component="div" color="grey">
                                                     Users
                                                 </Typography>
+                                                <Box display="flex" justifyContent="flex-end">
+                                                    <Button variant="contained" startIcon={<AddIcon />} color="success" onClick={() => setOpen(true)}>
+                                                        ADD
+                                                    </Button>
+                                                </Box>
                                                 <Divider
                                                     sx={{
                                                         borderColor: 'grey',
@@ -137,7 +145,7 @@ export default function UserList() {
                                                                                     {item.passwordType == "PASSWORD" ? <Button variant="contained" color="success">
                                                                                         ACTIVE
                                                                                     </Button> : item.passwordType == "DEFAULT" ?
-                                                                                        <Button variant="contained" color="primary">
+                                                                                        <Button variant="contained" color="warning">
                                                                                             DEFAULT
                                                                                         </Button>
                                                                                         :
@@ -173,6 +181,7 @@ export default function UserList() {
                                 </Box>
                             </>
                         </Container>
+                        <AddUserModel open={open} changeOpenStatus={setOpen} />
                     </Box>
                 }
 
