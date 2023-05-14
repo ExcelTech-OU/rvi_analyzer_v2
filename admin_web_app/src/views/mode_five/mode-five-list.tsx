@@ -1,7 +1,6 @@
 import { Box, Card, CardActionArea, CardContent, Container, Divider, Pagination, Paper, Table, TableBody, TableContainer, TableHead, Typography } from "@mui/material";
 import { GridColDef } from '@mui/x-data-grid';
 import { ModeFiveDto, useGetModeFiveSessionsQuery } from "../../services/sessions_service";
-import { ModeFiveSingleView } from './mode-five-single-view'
 import React from "react";
 import SessionTimeoutPopup from "../components/session_logout";
 import TableSearchForm from "../components/table_search_form";
