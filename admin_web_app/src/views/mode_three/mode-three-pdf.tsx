@@ -1,5 +1,6 @@
+import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
-import { ModeTwoDto } from '../../services/sessions_service';
+import { ModeOneDto, ModeThreeDto } from '../../services/sessions_service';
 
 // Create styles
 const styles = StyleSheet.create({
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 0
     },
     tableColMax: {
-        width: "20%",
+        width: "25%",
         borderStyle: "solid",
         borderWidth: 1,
         borderLeftWidth: 0,
@@ -117,79 +118,62 @@ const styles = StyleSheet.create({
     },
 });
 
-type ModeTwoPdfDocumentProps = {
-    session: ModeTwoDto;
+type ModeThreePdfDocumentProps = {
+    session: ModeThreeDto;
 }
 
 // Create Document Component
-function ModeTwoPdfDocument({ session }: ModeTwoPdfDocumentProps) {
+function ModeThreePdfDocument({ session }: ModeThreePdfDocumentProps) {
     return (
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.section}>
                     <View style={styles.header}>
                         <Text style={styles.headerText}>Default Configurations</Text>
-                        <Text style={styles.sessionTextPrefix}>Mode   : <Text style={styles.sessionText}>02</Text> </Text>
+                        <Text style={styles.sessionTextPrefix}>Mode   : <Text style={styles.sessionText}>01</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Session Id   : <Text style={styles.sessionText}>{session.defaultConfigurations.sessionId}</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Batch No   : <Text style={styles.sessionText}>{session.defaultConfigurations.batchNo}</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Customer Name   : <Text style={styles.sessionText}>{session.defaultConfigurations.customerName}</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Operator Id   : <Text style={styles.sessionText}>{session.defaultConfigurations.operatorId}</Text> </Text>
+                        <Text style={styles.sessionTextPrefix}>Test ID   : <Text style={styles.sessionText}>{session.results.testId}</Text> </Text>
                     </View>
                     <View>
                         <Text style={styles.headerText}>Session Configurations</Text>
-                        <Text style={styles.sessionTextPrefix}>Max Voltage   : <Text style={styles.sessionText}>{session.sessionConfigurationModeTwo.maxVoltage}</Text> </Text>
-                        <Text style={styles.sessionTextPrefix}>Current  : <Text style={styles.sessionText}>{session.sessionConfigurationModeTwo.current}</Text> </Text>
+                        <Text style={styles.sessionTextPrefix}>Starting Voltage   : <Text style={styles.sessionText}>{session.sessionConfigurationModeThree.startingVoltage}</Text> </Text>
+                        <Text style={styles.sessionTextPrefix}>Desired Voltage  : <Text style={styles.sessionText}>{session.sessionConfigurationModeThree.desiredVoltage}</Text> </Text>
+                        <Text style={styles.sessionTextPrefix}>Max Current   : <Text style={styles.sessionText}>{session.sessionConfigurationModeThree.maxCurrent}</Text> </Text>
+                        <Text style={styles.sessionTextPrefix}>Voltage Resolution  : <Text style={styles.sessionText}>{session.sessionConfigurationModeThree.voltageResolution}</Text> </Text>
+                        <Text style={styles.sessionTextPrefix}>Charge In Time   : <Text style={styles.sessionText}>{session.sessionConfigurationModeThree.chargeInTime} Sec</Text> </Text>
                     </View>
                     <View style={styles.tableContainer}>
                         <View style={styles.tableRowHeader}>
-                            <View style={styles.tableCol}>
-                                <Text style={styles.tableHeaderCell}>TEST ID</Text>
+                            <View style={styles.tableColMax}>
+                                <Text style={styles.tableHeaderCell}>TIME (Sec)</Text>
                             </View>
                             <View style={styles.tableColMax}>
                                 <Text style={styles.tableHeaderCell}>TEMPERATURE</Text>
                             </View>
-                            <View style={styles.tableCol}>
+                            <View style={styles.tableColMax}>
                                 <Text style={styles.tableHeaderCell}>CURRENT</Text>
                             </View>
-                            <View style={styles.tableCol}>
+                            <View style={styles.tableColMax}>
                                 <Text style={styles.tableHeaderCell}>VOLTAGE</Text>
                             </View>
-                            <View style={styles.tableColMax}>
-                                <Text style={styles.tableHeaderCell}>READ DATE TIME</Text>
-                            </View>
-                            <View style={styles.tableCol}>
-                                <Text style={styles.tableHeaderCell}>RESULT</Text>
-                            </View>
                         </View>
-                        {session.results.map((item, index) => {
+                        {session.results.readings.map((item, index) => {
                             return (
                                 <View style={styles.tableRow}>
-                                    <View style={styles.tableCol}>
-                                        <Text style={styles.tableCell}>{item.testId}</Text>
+                                    <View style={styles.tableColMax}>
+                                        <Text style={styles.tableCell}>{parseFloat(session.sessionConfigurationModeThree.chargeInTime) * (index + 1)}</Text>
                                     </View>
                                     <View style={styles.tableColMax}>
-                                        <Text style={styles.tableCell}>{item.readings[0].temperature}</Text>
-                                    </View>
-                                    <View style={styles.tableCol}>
-                                        <Text style={styles.tableCell}>{item.readings[0].current}</Text>
-                                    </View>
-                                    <View style={styles.tableCol}>
-                                        <Text style={styles.tableCell}>{item.readings[0].voltage}</Text>
+                                        <Text style={styles.tableCell}>{item.temperature}</Text>
                                     </View>
                                     <View style={styles.tableColMax}>
-                                        <Text style={styles.tableCell}>{item.readings[0].readAt}</Text>
+                                        <Text style={styles.tableCell}>{item.current}</Text>
                                     </View>
-                                    <View style={styles.tableCol}>
-                                        <Text style={styles.tableCell}>
-                                            {item.readings[0].result == 'PASS' ?
-                                                <View style={styles.label}>
-                                                    <Text style={styles.textSuccess}>{item.readings[0].result}</Text>
-                                                </View> :
-                                                <View style={styles.label}>
-                                                    <Text style={styles.textFail}>{item.readings[0].result}</Text>
-                                                </View>}
-
-                                        </Text>
+                                    <View style={styles.tableColMax}>
+                                        <Text style={styles.tableCell}>{item.voltage}</Text>
                                     </View>
                                 </View>
                             );
@@ -203,4 +187,4 @@ function ModeTwoPdfDocument({ session }: ModeTwoPdfDocumentProps) {
     );
 }
 
-export default ModeTwoPdfDocument;
+export default ModeThreePdfDocument;
