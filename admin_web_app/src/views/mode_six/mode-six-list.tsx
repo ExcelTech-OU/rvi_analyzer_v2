@@ -110,7 +110,7 @@ export default function ModeSixList() {
 
                                             <CardContent sx={{ height: '80vh' }}>
                                                 <Typography gutterBottom variant="h5" component="div" color="grey">
-                                                    Mode Three
+                                                    Mode Six
                                                 </Typography>
                                                 <Divider
                                                     sx={{

@@ -111,7 +111,7 @@ export default function ModeFiveList() {
 
                                             <CardContent sx={{ height: '80vh' }}>
                                                 <Typography gutterBottom variant="h5" component="div" color="grey">
-                                                    Mode Three
+                                                    Mode Five
                                                 </Typography>
                                                 <Divider
                                                     sx={{

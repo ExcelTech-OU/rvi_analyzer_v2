@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { List } from 'reselect/es/types'
-import { RootState } from '../store/store'
 
 export interface DeviceListResponse {
     devices: List<Device>
@@ -22,6 +21,11 @@ export interface GeneralResponse {
     stateDescription: string
 }
 
+export interface CommonResponse {
+    status: string
+    statusDescription: string
+}
+
 export const deviceApi = createApi({
     reducerPath: 'deviceApi',
     baseQuery: fetchBaseQuery({
@@ -41,7 +45,7 @@ export const deviceApi = createApi({
             providesTags: [{ type: 'deviceList', id: "deviceListFetch" }]
 
         }),
-        addDevice: build.mutation<GeneralResponse, {}>({
+        addDevice: build.mutation<CommonResponse, {}>({
             query(body) {
                 return {
                     url: `device/add`,
@@ -51,7 +55,7 @@ export const deviceApi = createApi({
             },
             invalidatesTags: [{ type: "deviceList", id: "deviceListFetch" }]
         }),
-        updateDevice: build.mutation<GeneralResponse, {}>({
+        updateDevice: build.mutation<CommonResponse, {}>({
             query(body) {
                 return {
                     url: `device/update`,

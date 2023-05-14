@@ -1,114 +1,182 @@
-import { Box, Button, Container, gridClasses } from "@mui/material";
-import { blue, green, grey } from "@mui/material/colors";
-import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from '@mui/x-data-grid';
+import { Box, Button, Card, CardActionArea, CardContent, Container, Divider, Pagination, Paper, Table, TableBody, TableContainer, TableHead, Typography } from "@mui/material";
+import { GridColDef } from '@mui/x-data-grid';
 import { useGetUsersQuery, User } from "../../../services/user_service";
-import { UserActions } from "./UserActions";
+import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
+import CustomizedMenusUsers from "./custom-menu-user";
+import React from "react";
+import SessionTimeoutPopup from "../../components/session_logout";
 
 const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', width: 250 },
-    { field: 'email', headerName: 'Email', width: 250 },
+    { field: 'email', headerName: 'Email', width: 200 },
     {
-        field: 'age',
-        headerName: 'Age',
-        width: 180,
-        valueGetter: (params: GridValueGetterParams) =>
-            `${params.row.age || 'N/A'}`,
+        field: 'group',
+        headerName: 'User Group',
+        width: 150,
     },
     {
-        field: 'occupation',
-        headerName: 'Occupation',
+        field: 'createdBy',
+        headerName: 'CreatedBy',
         width: 180,
-        valueGetter: (params: GridValueGetterParams) =>
-            `${params.row.occupation || 'N/A'}`,
     },
     {
-        field: 'condition',
-        headerName: 'Condition',
+        field: 'createdDateTime',
+        headerName: 'Created Date',
         width: 250,
-        valueGetter: (params: GridValueGetterParams) =>
-            `${params.row.condition || 'N/A'}`,
+    },
+    {
+        field: 'passwordType',
+        headerName: 'Password Status',
+        width: 200,
     },
     {
         field: 'enabled',
         headerName: 'Status',
         width: 200,
-        renderCell: (params) => (
-            params.row.enabled ?
-                <Button variant="contained" color="primary">
-                    ACTIVE
-                </Button> :
-                <Button variant="contained" color="error">
-                    TEMPORARY_BLOCKED
-                </Button>
-        ),
     },
     {
         field: 'actions',
         headerName: 'Actions',
         type: 'actions',
         width: 200,
-        renderCell: (params) => (
-            params.row.roleId == 2 ?
-                <UserActions user={params.row as User} /> : <></>
-        ),
     },
 ];
 
 export default function UserList() {
     const { data, error, isLoading } = useGetUsersQuery("")
+    const [pageCount, setPageCount] = React.useState(1);
+    const [page, setPage] = React.useState(1);
+    const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };
 
-    return (
-        <>
-            {isLoading ? isLoading :
-                <Box
-                    component="main"
-                    sx={{
-                        flexGrow: 1,
-                    }}
-                >
+    if (isLoading) {
+        return <div>Loading...</div>
+    }
 
-                    <Container maxWidth={false}>
-                        <Box
-                            m="20px 0 0 0"
-                            height="75vh"
-                            sx={{
-                                "& .MuiDataGrid-root": {
-                                },
-                                "& .MuiDataGrid-cell": {
-                                },
-                                "& .name-column--cell": {
-                                    color: blue[300],
-                                },
-                                "& .MuiDataGrid-columnHeaders": {
-                                    backgroundColor: '#22C55E',
-                                },
-                                "& .MuiDataGrid-virtualScroller": {
-                                    backgroundColor: grey[200],
-                                },
-                                "& .MuiDataGrid-footerContainer": {
-                                    backgroundColor: '#22C55E',
-                                },
-                                "& .MuiCheckbox-root": {
-                                    color: `${green[200]} !important`,
-                                },
-                            }}
-                        >
-                            <DataGrid
-                                rows={data!.users}
-                                columns={columns}
-                                pageSize={100}
-                                rowsPerPageOptions={[100]}
-                                disableSelectionOnClick
-                                experimentalFeatures={{ newEditingApi: true }}
-                                components={{
-                                    Toolbar: GridToolbar,
-                                }}
-                            />
-                        </Box>
-                    </Container>
-                </Box>
-            }
+    if (error != null && 'status' in error) {
+        if (error.status == 401 && error.data == null) {
+            return <SessionTimeoutPopup />
+        }
+        else {
+            return <></>
+        }
+    } else {
+        return (
+            <>
+                {isLoading ? isLoading :
+                    <Box
+                        component="main"
+                        sx={{
+                            flexGrow: 1,
+                        }}
+                    >
 
-        </>
-    )
+                        <Container maxWidth={false}>
+                            <>
+                                <Box
+                                    m="0px 0 0 0"
+                                    height="60vh"
+                                    sx={{}}
+                                >
+                                    <Card sx={{ maxWidth: 1600, height: '80vh', backgroundColor: "#FFFFFF", boxShadow: "1px 1px 10px 10px #e8e8e8" }}>
+                                        <CardActionArea>
+
+                                            <CardContent sx={{ height: '80vh' }}>
+                                                <Typography gutterBottom variant="h5" component="div" color="grey">
+                                                    Users
+                                                </Typography>
+                                                <Divider
+                                                    sx={{
+                                                        borderColor: 'grey',
+                                                        my: 1.5,
+                                                        borderStyle: 'dashed'
+                                                    }}
+                                                />
+                                                {/* <TableSearchForm searchFun={setSearchParams}></TableSearchForm> */}
+                                                <Divider
+                                                    sx={{
+                                                        borderColor: 'grey',
+                                                        my: 1.5,
+                                                        borderStyle: 'dashed'
+                                                    }}
+                                                />
+                                                <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                                                    <TableContainer sx={{ maxHeight: 440 }}>
+                                                        <Table stickyHeader aria-label="sticky table">
+                                                            <TableHead sx={{ backgroundColor: "#9e9e9e" }}>
+                                                                <StyledTableRow>
+                                                                    {columns.map((column) => (
+                                                                        <StyledTableCell
+                                                                            key={column.headerName}
+                                                                            align={column.align}
+                                                                            style={{ maxWidth: column.width }}
+                                                                        >
+                                                                            {column.headerName}
+                                                                        </StyledTableCell>
+                                                                    ))}
+                                                                </StyledTableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                {data!.users
+                                                                    .map((item, index) => {
+                                                                        return (
+                                                                            <StyledTableRow hover role="checkbox" tabIndex={-1} >
+                                                                                <StyledTableCell align={'left'}>
+                                                                                    {item.username}
+                                                                                </StyledTableCell>
+                                                                                <StyledTableCell align={'left'}>
+                                                                                    {item.group}
+                                                                                </StyledTableCell>
+                                                                                <StyledTableCell align={'left'}>
+                                                                                    {item.createdBy}
+                                                                                </StyledTableCell>
+                                                                                <StyledTableCell align={'left'}>
+                                                                                    {item.createdDateTime}
+                                                                                </StyledTableCell>
+                                                                                <StyledTableCell align={'left'}>
+                                                                                    {item.passwordType == "PASSWORD" ? <Button variant="contained" color="success">
+                                                                                        ACTIVE
+                                                                                    </Button> : item.passwordType == "DEFAULT" ?
+                                                                                        <Button variant="contained" color="primary">
+                                                                                            DEFAULT
+                                                                                        </Button>
+                                                                                        :
+                                                                                        <Button variant="contained" color="error">
+                                                                                            RESET
+                                                                                        </Button>}
+                                                                                </StyledTableCell>
+                                                                                <StyledTableCell align={'left'}>
+                                                                                    {item.status == "ACTIVE" ? <Button variant="contained" color="primary">
+                                                                                        ACTIVE
+                                                                                    </Button> :
+                                                                                        <Button variant="contained" color="error">
+                                                                                            TEMPORARY_BLOCKED
+                                                                                        </Button>}
+                                                                                </StyledTableCell>
+                                                                                <StyledTableCell align={'right'}>
+                                                                                    <CustomizedMenusUsers user={item as User} />
+                                                                                </StyledTableCell>
+                                                                            </StyledTableRow>
+                                                                        );
+                                                                    })}
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </Paper>
+                                                <Box display="flex" justifyContent="flex-end">
+                                                    <Pagination count={pageCount} sx={{ mt: 2 }} variant="outlined" shape="rounded" page={page} onChange={handleChange} />
+                                                </Box>
+                                            </CardContent>
+                                        </CardActionArea>
+                                    </Card>
+
+                                </Box>
+                            </>
+                        </Container>
+                    </Box>
+                }
+
+            </>
+        );
+    }
 }

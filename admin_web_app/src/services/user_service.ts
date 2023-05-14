@@ -1,20 +1,21 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { List } from 'reselect/es/types'
-import { GeneralResponse } from './device_service'
+import { CommonResponse, GeneralResponse } from './device_service'
 
 export interface UserListResponse {
+    status: string
+    statusDescription: string
     users: List<User>
 }
 
 export interface User {
-    id: string
-    name: string
     username: string
-    email: string
-    age: string
-    occupation: string
-    condition: string
-    enabled: boolean
+    group: string
+    status: string
+    passwordType: string
+    createdBy: string
+    createdDateTime: string
+    lastUpdatedDateTime: boolean
 }
 
 export const userApi = createApi({
@@ -32,18 +33,22 @@ export const userApi = createApi({
     tagTypes: ['userList'],
     endpoints: (build) => ({
         getUsers: build.query<UserListResponse, {}>({
-            query: () => `users`,
+            query: () => `rvi/analyzer/v1/users`,
             providesTags: [{ type: 'userList', id: "getUsers" }]
 
         }),
-        updateUser: build.mutation<GeneralResponse, {}>({
+        updateUser: build.mutation<CommonResponse, {}>({
             query(body) {
                 return {
-                    url: `user/update`,
+                    url: `rvi/analyzer/v1/user/update`,
                     method: 'POST',
-                    body,
+                    body: body,
                 }
             },
+            invalidatesTags: [{ type: 'userList', id: "getUsers" }]
+        }),
+        resetPassword: build.mutation<UserListResponse, { username: string }>({
+            query: (data) => `rvi/analyzer/v1/user/resetPassword/${data.username}`,
             invalidatesTags: [{ type: 'userList', id: "getUsers" }]
         }),
     }),
@@ -51,5 +56,6 @@ export const userApi = createApi({
 
 export const {
     useGetUsersQuery,
-    useUpdateUserMutation
+    useUpdateUserMutation,
+    useResetPasswordMutation
 } = userApi
