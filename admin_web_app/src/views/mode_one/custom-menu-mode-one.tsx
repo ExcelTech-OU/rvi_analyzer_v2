@@ -7,6 +7,8 @@ import React, { useState } from "react";
 import { ModeOneDto } from "../../services/sessions_service";
 import { ModeOneSingleView } from "./mode-one-single-view";
 import ModeOneShareAlertDialog from "./session-one-share-dialog";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import ModeOnePdfDocument from "./mode-one-pdf";
 
 type CustomMenuProps = {
     session: ModeOneDto;
@@ -108,7 +110,12 @@ export default function CustomizedMenus({ session }: CustomMenuProps) {
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem onClick={handleClose} disableRipple>
                     <DownloadIcon />
-                    Download
+                    <PDFDownloadLink document={<ModeOnePdfDocument session={session} />} fileName={"mode_one_" + session.defaultConfigurations.sessionId + ".pdf"}
+                        style={{ color: "grey", textDecoration: "none" }}>
+                        {({ blob, url, loading, error }) =>
+                            loading ? 'Loading...' : 'Download'
+                        }
+                    </PDFDownloadLink>
                 </MenuItem>
             </StyledMenu>
             <ModeOneSingleView open={openCloseDetailView} changeOpenStatus={setOpenCloseDetailView} session={session} />

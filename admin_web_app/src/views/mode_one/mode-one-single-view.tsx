@@ -5,6 +5,10 @@ import { GridColDef } from "@mui/x-data-grid";
 import { StyledTableCell, StyledTableRow } from "./mode-one-list";
 import ShareIcon from '@mui/icons-material/Share';
 import DownloadIcon from '@mui/icons-material/Download';
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import ModeOnePdfDocument from "./mode-one-pdf";
+import ModeOneShareAlertDialog from "./session-one-share-dialog";
+import { useState } from "react";
 
 
 type SessionDetailsProps = {
@@ -47,6 +51,7 @@ const columns: GridColDef[] = [
 ];
 
 export function ModeOneSingleView({ session, open, changeOpenStatus }: SessionDetailsProps) {
+  const [openCloseLinkView, setOpenCloseLinkView] = useState(false);
 
   return (
     <Dialog
@@ -170,14 +175,19 @@ export function ModeOneSingleView({ session, open, changeOpenStatus }: SessionDe
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" startIcon={<ShareIcon />}>
+        <Button variant="contained" startIcon={<ShareIcon />} onClick={() => setOpenCloseLinkView(true)}>
           Share
         </Button>
         <Button variant="contained" startIcon={<DownloadIcon />}>
-          Download
+          <PDFDownloadLink document={<ModeOnePdfDocument session={session} />} fileName={"mode_one_" + session.defaultConfigurations.sessionId + ".pdf"}
+            style={{ color: "white", textDecoration: "none" }}>
+            {({ blob, url, loading, error }) =>
+              loading ? 'Loading...' : 'Download'
+            }
+          </PDFDownloadLink>
         </Button>
       </DialogActions>
-
+      <ModeOneShareAlertDialog open={openCloseLinkView} changeOpenStatus={setOpenCloseLinkView} session={session} />
     </Dialog>
   );
 };
