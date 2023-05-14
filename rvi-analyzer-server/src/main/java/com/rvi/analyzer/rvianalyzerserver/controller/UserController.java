@@ -43,4 +43,14 @@ public class UserController {
     public Mono<UserDto> getUserInfo(@PathVariable String userName) {
         return userService.getUserByUsername(userName);
     }
+
+    @GetMapping(path = "/rvi/analyzer/v1/users")
+    public Mono<ResponseEntity<UsersResponse>> getUsers(@RequestHeader("Authorization") String auth) {
+        return userService.getUsers(auth);
+    }
+
+    @PostMapping(path = "/rvi/analyzer/v1/user/update")
+    public Mono<ResponseEntity<CommonResponse>> updateUser(@RequestBody UserUpdateRequest request, @RequestHeader("Authorization") String auth) {
+        return userService.updateUser(request, auth);
+    }
 }

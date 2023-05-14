@@ -22,5 +22,5 @@ jwt:
 report:
   server:
     base:
-      url: http://127.0.0.1/rvi/report/viewer/
+      url: http://127.0.0.1:3001/
 

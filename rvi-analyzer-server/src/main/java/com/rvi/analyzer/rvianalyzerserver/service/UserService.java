@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -170,6 +171,7 @@ public class UserService {
                                 return userRepository.findByUsername(userName)
                                         .flatMap(user -> {
                                             user.setPasswordType("RESET");
+                                            user.setPassword(encoder.encode("default@rvi"));
                                             return userRepository.save(user)
                                                     .flatMap(user1 -> Mono.just(
                                                             ResponseEntity.ok(CommonResponse.builder()
@@ -227,5 +229,76 @@ public class UserService {
                         .usernames(users.stream().map(User::getUsername).toList())
                         .build()
                 )));
+    }
+
+    public Mono<ResponseEntity<UsersResponse>> getUsers(String auth) {
+        log.info("get users request received with jwt [{}]", auth);
+
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.GET_USERS)) {
+                                return userRepository.findByCreatedBy(requestedUser.getUsername())
+                                        .map(userMapper::userToUserDto)
+                                        .collectList()
+                                        .flatMap(userDtos -> Mono.just(ResponseEntity.ok(UsersResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .users(userDtos)
+                                                .build()
+                                        )));
+                            } else if (userRoles.contains(UserRoles.GET_ALL_USERS)) {
+                                return userRepository.findAll()
+                                        .map(userMapper::userToUserDto)
+                                        .collectList()
+                                        .flatMap(userDtos -> Mono.just(ResponseEntity.ok(UsersResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .users(userDtos)
+                                                .build()
+                                        )));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UsersResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UsersResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed").build())));
+    }
+
+    public Mono<ResponseEntity<CommonResponse>> updateUser(UserUpdateRequest request, String auth) {
+        log.info("update user request received  [{}] ", request);
+
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> userRepository.findByUsername(request.getUsername())
+                                .flatMap(user -> {
+                                    if (user.getGroup().equals("USER") && userRoles.contains(UserRoles.UPDATE_USER)) {
+                                        user.setStatus(request.getStatus());
+                                        return userRepository.save(user)
+                                                .flatMap(userDtos -> Mono.just(ResponseEntity.ok(CommonResponse.success()
+                                                )))
+                                                .switchIfEmpty(Mono.just(ResponseEntity.ok(CommonResponse.fail())));
+                                    } else if ((user.getGroup().equals("ADMIN") || user.getGroup().equals("TOP_ADMIN"))
+                                            && userRoles.contains(UserRoles.UPDATE_ADMIN_USER)) {
+                                        user.setStatus(request.getStatus());
+                                        return userRepository.save(user)
+                                                .flatMap(userDtos -> Mono.just(ResponseEntity.ok(CommonResponse.success()
+                                                )))
+                                                .switchIfEmpty(Mono.just(ResponseEntity.ok(CommonResponse.fail())));
+                                    } else {
+                                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                                                .status("E1200")
+                                                .statusDescription("You are not authorized to use this service").build()));
+                                    }
+                                })
+                                .switchIfEmpty(Mono.just(ResponseEntity.ok(CommonResponse.fail()))))
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed").build())));
     }
 }

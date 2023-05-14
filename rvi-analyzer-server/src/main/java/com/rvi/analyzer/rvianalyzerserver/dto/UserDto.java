@@ -11,6 +11,7 @@ public class UserDto {
     private String username;
     private String group;
     private String status;
+    private String passwordType;
     private String createdBy;
     private LocalDateTime createdDateTime;
     private LocalDateTime lastUpdatedDateTime;

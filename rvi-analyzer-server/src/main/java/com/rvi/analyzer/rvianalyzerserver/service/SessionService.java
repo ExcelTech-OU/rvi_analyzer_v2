@@ -699,7 +699,7 @@ public class SessionService {
                 if (users.size() > 0) {
                     stringBuilder.append("{ '$and': [")
                             .append("{'created-by': { '$in' : ")
-                            .append(users)
+                            .append(concatenateStrings(users))
                             .append("}}");
                 }
 
@@ -732,7 +732,7 @@ public class SessionService {
                 if (users.size() > 0) {
                     stringBuilder.append("{'$and':[{")
                             .append("'created-by': { '$in' : ")
-                            .append(users)
+                            .append(concatenateStrings(users))
                             .append("}}");
                 }
             }
@@ -740,7 +740,7 @@ public class SessionService {
             if (users.size() > 0) {
                 stringBuilder.append("{'$and':[{")
                         .append("'created-by': { '$in' : ")
-                        .append(users)
+                        .append(concatenateStrings(users))
                         .append("}}");
             }
         }
@@ -763,6 +763,27 @@ public class SessionService {
 
         log.info("AAAAAAAAAAAA :  {}", stringBuilder.toString());
         return stringBuilder.toString();
+    }
+
+    public String concatenateStrings(List<String> list) {
+        if (list == null || list.isEmpty()) {
+            return "[]"; // or throw an exception if desired
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+
+        for (int i = 0; i < list.size(); i++) {
+            sb.append("'").append(list.get(i)).append("'");
+
+            if (i < list.size() - 1) {
+                sb.append(", ");
+            }
+        }
+
+        sb.append("]");
+
+        return sb.toString();
     }
 
     private boolean checkUserRegexMatchWithUsers(List<String> users, String pattern) {

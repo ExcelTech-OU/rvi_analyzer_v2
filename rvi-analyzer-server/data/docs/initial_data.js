@@ -93,6 +93,26 @@ db.role.insertMany([
   {
     'role-id': 'share_report',
     'role-name': 'SHARE_REPORT'
+  },
+  {
+    'role-id': 'get_users',
+    'role-name': 'GET_USERS'
+  },
+  {
+    'role-id': 'update_user',
+    'role-name': 'UPDATE_USER'
+  },
+  {
+    'role-id': 'update_admin_user',
+    'role-name': 'UPDATE_ADMIN_USER'
+  },
+  {
+    'role-id': 'get_all_users',
+    'role-name': 'GET_ALL_USERS'
+  },
+  {
+    'role-id': 'get_devices',
+    'role-name': 'GET_DEVICES'
   }
 ])
 
@@ -101,9 +121,12 @@ db.groupRole.insertMany([
     'group-id': 'top_admin_group',
     'role-ids': [ 'login_web',
     'create_top_admin',
+    'update_admin_user',
+    'get_all_users',
     'create_admin',
     'reset_password',
-    'update_device' ]
+    'update_device',
+    'get_devices']
   },
   {
     'group-id': 'admin_group',
@@ -116,7 +139,10 @@ db.groupRole.insertMany([
      'get_mode_four',
      'get_mode_five',
      'get_mode_six',
-     'share_report']
+     'share_report',
+     'get_users',
+     'update_user',
+     'get_devices']
   },
   {
     'group-id': 'user_group',
