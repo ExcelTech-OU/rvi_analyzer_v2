@@ -33,6 +33,8 @@ public class SpringSecurity {
         return http
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.POST, "/login/**").permitAll()
+                .pathMatchers(HttpMethod.GET, "/report/**").permitAll()
+                .pathMatchers(HttpMethod.POST, "/report/**").permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .addFilterAt(new JwtAuthenticationFilter(jwtUtils), SecurityWebFiltersOrder.AUTHENTICATION)

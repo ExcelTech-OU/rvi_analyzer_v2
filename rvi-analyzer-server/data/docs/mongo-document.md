@@ -49,9 +49,11 @@
 {
   "created-by": "username",
   "password": "password",
+  "mode-type": 1,
   "session-id": "some-session-id",
   "test-id": "some-test-id",
   "url-hash": "some-hash",
+  "access-attempts": 0,
   "created-date": "date-time",
   "status": "ACTIVE/DELETED"
 }

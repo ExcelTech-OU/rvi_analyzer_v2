@@ -4,19 +4,26 @@ import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.*;
 import com.rvi.analyzer.rvianalyzerserver.entiy.ModeOne;
 import com.rvi.analyzer.rvianalyzerserver.entiy.ModeTwo;
+import com.rvi.analyzer.rvianalyzerserver.entiy.Report;
 import com.rvi.analyzer.rvianalyzerserver.mappers.*;
 import com.rvi.analyzer.rvianalyzerserver.repository.*;
 import com.rvi.analyzer.rvianalyzerserver.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import javax.xml.stream.events.Characters;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -45,6 +52,14 @@ public class SessionService {
     final private JwtUtils jwtUtils;
     final private UserService userService;
     final private UserGroupRoleService userGroupRoleService;
+
+    final private ReportRepository repository;
+
+    private final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?";
+
+    @Value("${report.server.base.url}")
+    private String reportUrl;
+
 
     public Mono<ResponseEntity<CommonResponse>> addModeOne(ModeOneDto modeOneDto, String jwt) {
         return userService.getUser(jwtUtils.getUsername(jwt))
@@ -758,5 +773,168 @@ public class SessionService {
             }
         });
         return contain.get();
+    }
+
+    public Mono<ResponseEntity<ShareReportResponse>> shareReport(String mode, String sessionId, String auth) {
+        return userService.getUser(jwtUtils.getUsername(auth))
+                .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.SHARE_REPORT)) {
+                                return Mono.just(mode)
+                                        .doOnNext(modeId -> log.info("Share report request received for mode [{}] and session id [{}]", modeId, sessionId))
+                                        .flatMap(s -> {
+                                            Report report = Report.builder()
+                                                    .sessionId(sessionId)
+                                                    .modeType(Integer.parseInt(mode))
+                                                    .createdBy(user.getUsername())
+                                                    .password(getRandomPassword())
+                                                    .urlHash(getUrlHash())
+                                                    .accessAttempts(0)
+                                                    .createdDateTime(LocalDateTime.now())
+                                                    .status("ACTIVE")
+                                                    .build();
+                                            return repository.save(report)
+                                                    .flatMap(report1 -> Mono.just(ResponseEntity.ok(ShareReportResponse.builder()
+                                                            .status("S1000")
+                                                            .statusDescription("Success")
+                                                            .url(reportUrl + report1.getUrlHash())
+                                                            .password(report1.getPassword())
+                                                            .build())));
+                                        })
+                                        .doOnError(e ->
+                                                ResponseEntity.ok(ShareReportResponse.builder()
+                                                        .status("E1000")
+                                                        .statusDescription("Failed")
+                                                        .build()));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ShareReportResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ShareReportResponse.builder()
+                        .status("E1200")
+                        .statusDescription("Failed")
+                        .build())));
+    }
+
+    public String getRandomPassword() {
+        StringBuilder password = new StringBuilder(10);
+        SecureRandom random = new SecureRandom();
+
+        for (int i = 0; i < 10; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            char randomChar = CHARACTERS.charAt(randomIndex);
+            password.append(randomChar);
+        }
+
+        return password.toString();
+    }
+
+    public static String getUrlHash() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[32];
+        random.nextBytes(salt);
+
+        StringBuilder hashBuilder = new StringBuilder();
+
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = messageDigest.digest(salt);
+
+            for (byte b : hashBytes) {
+                hashBuilder.append(String.format("%02x", b));
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return hashBuilder.toString();
+    }
+
+    public Mono<ResponseEntity<CommonResponse>> checkReportStatus(String hash) {
+        log.info("Report url hash validation request received with hash [{}]", hash);
+        return repository.findByHash(hash)
+                .flatMap(report -> Mono.just(ResponseEntity.ok(CommonResponse.success())))
+                .switchIfEmpty(Mono.just(ResponseEntity.ok(CommonResponse.fail())))
+                .onErrorResume(throwable -> Mono.just(ResponseEntity.ok(CommonResponse.fail())));
+    }
+
+    public Mono<ResponseEntity<PasswordValidationReportResponse>> checkReportPassword(String hash, ReportPasswordValidationRequest request) {
+        return repository.findByHash(hash)
+                .flatMap(report ->
+                {
+                    if (Objects.equals(report.getPassword(), request.getPassword())) {
+                        switch (report.getModeType()) {
+                            case 1:
+                                return modeOneRepository.findBySessionID(report.getSessionId())
+                                        .flatMap(modeOne -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .modeId(1)
+                                                .modeOneDto(modeOneMapper.modeOneToModeOneDto(modeOne))
+                                                .build())));
+                            case 2:
+                                return modeTwoRepository.findBySessionID(report.getSessionId())
+                                        .flatMap(modeTwo -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .modeId(2)
+                                                .modeTwoDto(modeTwoMapper.modeTwoToModeTwoDto(modeTwo))
+                                                .build())));
+                            case 3:
+                                return modeThreeRepository.findBySessionID(report.getSessionId())
+                                        .flatMap(modeThree -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .modeId(3)
+                                                .modeThreeDto(modeThreeMapper.modeThreeToModeThreeDto(modeThree))
+                                                .build())));
+                            case 4:
+                                return modeFourRepository.findBySessionID(report.getSessionId())
+                                        .flatMap(mo -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .modeId(4)
+                                                .modeFourDto(modeFourMapper.modeFourToModeFourDto(mo))
+                                                .build())));
+                            case 5:
+                                return modeFiveRepository.findBySessionID(report.getSessionId())
+                                        .flatMap(modeFive -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .modeId(5)
+                                                .modeFiveDto(modeFiveMapper.modeFiveToModeFiveDto(modeFive))
+                                                .build())));
+                            case 6:
+                                return modeSixRepository.findBySessionID(report.getSessionId())
+                                        .flatMap(modeSix -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .modeId(6)
+                                                .modeSixDto(modeSixMapper.modeSixToModeSixDto(modeSix))
+                                                .build())));
+                            default:
+                                return Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                        .status("E1000")
+                                        .statusDescription("Failed")
+                                        .build()));
+                        }
+                    } else {
+                        return Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                .status("E1000")
+                                .statusDescription("Failed")
+                                .build()));
+                    }
+                })
+                .switchIfEmpty(Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed")
+                        .build())))
+                .onErrorResume(throwable -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed")
+                        .build())));
     }
 }

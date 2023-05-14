@@ -19,5 +19,6 @@ public enum UserRoles {
     GET_MODE_THREE,
     GET_MODE_FOUR,
     GET_MODE_FIVE,
-    GET_MODE_SIX
+    GET_MODE_SIX,
+    SHARE_REPORT
 }

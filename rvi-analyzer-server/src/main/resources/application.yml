@@ -19,3 +19,8 @@ jwt:
       iteration: 33
       key-length: 256
 
+report:
+  server:
+    base:
+      url: http://127.0.0.1/rvi/report/viewer/
+

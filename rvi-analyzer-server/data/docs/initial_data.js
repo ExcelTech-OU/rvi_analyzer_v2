@@ -89,6 +89,10 @@ db.role.insertMany([
   {
     'role-id': 'get_mode_six',
     'role-name': 'GET_MODE_SIX'
+  },
+  {
+    'role-id': 'share_report',
+    'role-name': 'SHARE_REPORT'
   }
 ])
 
@@ -111,7 +115,8 @@ db.groupRole.insertMany([
      'get_mode_three',
      'get_mode_four',
      'get_mode_five',
-     'get_mode_six' ]
+     'get_mode_six',
+     'share_report']
   },
   {
     'group-id': 'user_group',

@@ -19,11 +19,15 @@ public class Report {
     private String password;
     @Field(name = "session-id")
     private String sessionId;
+    @Field("mode-type")
+    private int modeType;
     @Field(name = "test-id")
     private String testId;
     @Field(name = "url-hash")
     private String urlHash;
     private String status;
+    @Field("access-attempts")
+    private int accessAttempts;
     @Field(name = "created-date")
     @CreatedDate
     private LocalDateTime createdDateTime;
