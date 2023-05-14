@@ -5,7 +5,7 @@ import React from "react";
 import SessionTimeoutPopup from "../components/session_logout";
 import TableSearchForm from "../components/table_search_form";
 import { StyledTableCell, StyledTableRow } from "../mode_one/mode-one-list";
-import CustomizedMenusModeThree from "./custom-menu-mode-two";
+import CustomizedMenusModeThree from "./custom-menu-mode-three";
 
 
 
