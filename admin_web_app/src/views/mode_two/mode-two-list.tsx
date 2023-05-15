@@ -110,13 +110,12 @@ export default function ModeTwoList() {
                             <>
                                 <Box
                                     m="0px 0 0 0"
-                                    height="60vh"
                                     sx={{}}
                                 >
-                                    <Card sx={{ maxWidth: 1600, height: '80vh', backgroundColor: "#FFFFFF", boxShadow: "1px 1px 10px 10px #e8e8e8" }}>
+                                    <Card sx={{ maxWidth: 1600, backgroundColor: "#FFFFFF", boxShadow: "1px 1px 10px 10px #e8e8e8" }}>
                                         <CardActionArea>
 
-                                            <CardContent sx={{ height: '80vh' }}>
+                                            <CardContent sx={{}}>
                                                 <Typography gutterBottom variant="h5" component="div" color="grey">
                                                     Mode Two
                                                 </Typography>

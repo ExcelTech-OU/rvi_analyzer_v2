@@ -52,7 +52,7 @@ export const DashboardNavbar = ({ openSideBar }: DashboardNavbarProps) => {
             <MenuIcon fontSize="small" />
           </IconButton>
           <Typography
-            color="textSecondary"
+            color="grey"
             variant="h5"
             sx={{ ml: 5 }}
           >

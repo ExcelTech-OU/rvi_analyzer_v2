@@ -71,7 +71,7 @@ export function AddDevice({ openModel, close }: AddDeviceProps) {
       })
         .unwrap()
         .then((payload) => {
-          if (payload.state == 'S1000') {
+          if (payload.status == 'S1000') {
             setOpenSuccess(true)
             close()
           }

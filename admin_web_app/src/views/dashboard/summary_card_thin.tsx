@@ -10,7 +10,7 @@ type SummaryCardData = {
   color: string
 }
 
-export function SummaryCard({ title, value, icon, path, color }: SummaryCardData) {
+export function SummaryCardThin({ title, value, icon, path, color }: SummaryCardData) {
   const navigate = useNavigate();
 
   return (
@@ -20,49 +20,49 @@ export function SummaryCard({ title, value, icon, path, color }: SummaryCardData
           maxWidth: 1600, backgroundColor: "#FFFFFF", boxShadow: "1px 1px 10px 10px #e8e8e8",
           transition: 'transform 0.3s',
           '&:hover': {
-            transform: 'scale(1.1)', // Adjust the scaling factor as desired
+            transform: 'scale(1.02)', // Adjust the scaling factor as desired
           },
         }}
       // onClick={() => navigate(path)}
       >
-        <CardContent>
+        <CardContent sx={{ m: 0, p: 0 }}>
           <Grid
             container
             sx={{ justifyContent: 'space-between' }}
           >
-            <Grid item>
-              <Typography
-                sx={{ mt: 1 }}
-                color="grey"
-                gutterBottom
-                variant="h6"
-              >
-                {title}
-              </Typography>
-              <Typography
-                sx={{ mt: 2, color: "grey", fontSize: 11 }}
-                color="textPrimary"
-              >
-                Total sessions
-              </Typography>
-              <Typography
-                sx={{ mt: 0.5, fontWeight: "bold", color: "black" }}
-                color="textPrimary"
-                variant="h4"
-              >
-                {value}
-              </Typography>
-            </Grid>
-            <Grid item>
+            <Typography sx={{ p: 4 }}
+              color="grey"
+              gutterBottom
+              variant="h6"
+            >
+              {title}
+            </Typography>
+
+            <Grid item lg={2} sx={{
+              pt: 2,
+              justifyContent: 'right'
+            }}
+              sm={3}
+              xl={1}
+              xs={2}>
               <Avatar
                 sx={{
                   backgroundColor: color,
                   height: 35,
-                  width: 35
+                  width: 35,
+                  m: 0,
                 }}
               >
                 {icon}
               </Avatar>
+
+              <Typography
+                sx={{ mt: 0.5, ml: 1, fontWeight: "bold", color: "black" }}
+                color="textPrimary"
+                variant="h5"
+              >
+                {value}
+              </Typography>
             </Grid>
           </Grid>
 

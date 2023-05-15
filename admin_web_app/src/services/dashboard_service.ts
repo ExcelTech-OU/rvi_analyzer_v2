@@ -1,10 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export interface DashBoardSummaryResponse {
-    numberOfDevices: string
-    numberOfUsers: string
-    numberOfSessions: string
-    numberOfQuestions: string
+    status: string
+    statusDescription: string
+    modeOne: number
+    modeTwo: number
+    modeThree: number
+    modeFour: number
+    modeFive: number
+    modeSix: number
+    devices: number
+    users: number
 }
 
 export const dashboardApi = createApi({
@@ -22,7 +28,7 @@ export const dashboardApi = createApi({
     tagTypes: ['dashboard'],
     endpoints: (build) => ({
         getDashboardSummary: build.query<DashBoardSummaryResponse, {}>({
-            query: () => `device/dashboard`,
+            query: () => `rvi/analyzer/v1/get/dashboard`,
             providesTags: [
                 { type: 'dashboard', id: "getDashboardSummary" }
             ]
