@@ -1,5 +1,4 @@
 import { Divider, IconButton, Menu, MenuItem, MenuProps, alpha, styled, useMediaQuery, useTheme } from "@mui/material";
-import DownloadIcon from '@mui/icons-material/Download';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
@@ -9,6 +8,9 @@ import { ModeOneSingleView } from "./mode-one-single-view";
 import ModeOneShareAlertDialog from "./session-one-share-dialog";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import ModeOnePdfDocument from "./mode-one-pdf";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
+import { handleGenerateExcelModeOne } from "./mode-one-excel";
 
 type CustomMenuProps = {
     session: ModeOneDto;
@@ -109,13 +111,20 @@ export default function CustomizedMenus({ session }: CustomMenuProps) {
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem onClick={handleClose} disableRipple>
-                    <DownloadIcon />
+                    <PictureAsPdfIcon />
                     <PDFDownloadLink document={<ModeOnePdfDocument session={session} />} fileName={"mode_one_" + session.defaultConfigurations.sessionId + ".pdf"}
                         style={{ color: "grey", textDecoration: "none" }}>
                         {({ blob, url, loading, error }) =>
-                            loading ? 'Loading...' : 'Download'
+                            loading ? 'Loading...' : 'Download PDF'
                         }
                     </PDFDownloadLink>
+                </MenuItem>
+                <MenuItem sx={{ color: "grey" }} onClick={() => {
+                    handleGenerateExcelModeOne(session);
+                    handleClose();
+                }} disableRipple>
+                    <GridOnIcon />
+                    Download EXCEL
                 </MenuItem>
             </StyledMenu>
             <ModeOneSingleView open={openCloseDetailView} changeOpenStatus={setOpenCloseDetailView} session={session} />

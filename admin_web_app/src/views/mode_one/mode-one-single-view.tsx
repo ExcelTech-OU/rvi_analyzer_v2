@@ -9,6 +9,9 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import ModeOnePdfDocument from "./mode-one-pdf";
 import ModeOneShareAlertDialog from "./session-one-share-dialog";
 import { useState } from "react";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
+import { handleGenerateExcelModeOne } from "./mode-one-excel";
 
 
 type SessionDetailsProps = {
@@ -173,16 +176,20 @@ export function ModeOneSingleView({ session, open, changeOpenStatus }: SessionDe
             </>
           </Container>
         </Box>
+
       </DialogContent>
       <DialogActions>
         <Button variant="contained" startIcon={<ShareIcon />} onClick={() => setOpenCloseLinkView(true)}>
           Share
         </Button>
-        <Button variant="contained" startIcon={<DownloadIcon />}>
+        <Button variant="contained" startIcon={<GridOnIcon />} onClick={() => handleGenerateExcelModeOne(session)}>
+          Download EXCEL
+        </Button>
+        <Button variant="contained" startIcon={<PictureAsPdfIcon />}>
           <PDFDownloadLink document={<ModeOnePdfDocument session={session} />} fileName={"mode_one_" + session.defaultConfigurations.sessionId + ".pdf"}
             style={{ color: "white", textDecoration: "none" }}>
             {({ blob, url, loading, error }) =>
-              loading ? 'Loading...' : 'Download'
+              loading ? 'Loading...' : 'Download PDF'
             }
           </PDFDownloadLink>
         </Button>
