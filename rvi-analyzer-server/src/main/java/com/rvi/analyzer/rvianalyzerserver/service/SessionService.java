@@ -765,6 +765,26 @@ public class SessionService {
         return stringBuilder.toString();
     }
 
+    public Mono<DashboardResponse> getSessionCounts(String username) {
+        return userService.getUsersByAdmin(username)
+                .flatMap(strings -> modeOneRepository.countSessionsByUsers(strings)
+                        .flatMap(aLong -> modeTwoRepository.countSessionsByUsers(strings)
+                                .flatMap(aLong1 -> modeThreeRepository.countSessionsByUsers(strings)
+                                        .flatMap(aLong2 -> modeFourRepository.countSessionsByUsers(strings)
+                                                .flatMap(aLong3 -> modeFiveRepository.countSessionsByUsers(strings)
+                                                        .flatMap(aLong4 -> modeSixRepository.countSessionsByUsers(strings)
+                                                                .flatMap(aLong5 -> Mono.just(DashboardResponse.builder()
+                                                                        .modeOne(aLong.intValue())
+                                                                        .modeTwo(aLong1.intValue())
+                                                                        .modeThree(aLong2.intValue())
+                                                                        .modeFour(aLong3.intValue())
+                                                                        .modeFive(aLong4.intValue())
+                                                                        .modeSix(aLong5.intValue())
+                                                                        .status("S1000")
+                                                                        .statusDescription("Success")
+                                                                        .build()))))))));
+    }
+
     public String concatenateStrings(List<String> list) {
         if (list == null || list.isEmpty()) {
             return "[]"; // or throw an exception if desired

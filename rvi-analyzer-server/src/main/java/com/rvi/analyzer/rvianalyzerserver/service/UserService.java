@@ -231,6 +231,12 @@ public class UserService {
                 )));
     }
 
+    public Mono<Long> getUserCountByUserName(String username) {
+        return userRepository.findByCreatedBy(username)
+                .collectList()
+                .flatMap(users -> userRepository.countUsersByUsername(username));
+    }
+
     public Mono<ResponseEntity<UsersResponse>> getUsers(String auth) {
         log.info("get users request received with jwt [{}]", auth);
 

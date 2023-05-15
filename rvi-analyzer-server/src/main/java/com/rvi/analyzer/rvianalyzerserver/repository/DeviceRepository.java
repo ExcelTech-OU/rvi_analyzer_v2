@@ -22,6 +22,20 @@ public interface DeviceRepository extends ReactiveMongoRepository<Device, String
     Mono<Device> findByMacAddress(String mac);
 
 
-    @Aggregation("{'status': ?1, 'name': {$regex: .*?0.*}, 'created-by': ?3}, {limit: 20, skip: ?2}")
+//    @Aggregation("{'created-by': ?3}")
+    @Query(
+            value = """
+    {
+        "assign-to" : {
+            "$eq" : ?3
+        }
+    }
+    """
+    )
     Flux<Device> findDevicesByNameStatusPageUserName(String name, String status, String page, String username);
+
+
+    @Query(value = "{ 'assign-to': ?0 }", count = true)
+    Mono<Long> countDevicesByUsername(String username);
+
 }

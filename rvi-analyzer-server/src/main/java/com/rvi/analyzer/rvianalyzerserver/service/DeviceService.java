@@ -22,40 +22,54 @@ public class DeviceService {
 
     final private DeviceRepository deviceRepository;
     final private UserRepository userRepository;
+    final private UserService userService;
+    final private SessionService sessionService;
     final private JwtUtils jwtUtils;
     final private UserGroupRoleService userGroupRoleService;
 
     final private DeviceMapper deviceMapper;
 
-    public Mono<CommonResponse> addDevice(DeviceDto deviceDto) {
-        return Mono.just(deviceDto)
-                .doOnNext(deviceDto1 -> log.info("Device add request received [{}]", deviceDto1))
-                .flatMap(deviceDto1 -> deviceRepository.findByMacAddress(deviceDto1.getMacAddress()))
-                .flatMap(device -> Mono.just(CommonResponse.builder()
-                        .status("E1001")
-                        .statusDescription("Device Already exist with mac")
-                        .build()))
-                .switchIfEmpty(saveDevice(deviceDto))
-                .doOnError(e ->
-                        CommonResponse.builder()
-                                .status("E1000")
-                                .statusDescription("Failed")
-                                .build());
+    public Mono<ResponseEntity<CommonResponse>> addDevice(DeviceDto deviceDto, String auth) {
 
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.UPDATE_DEVICE)) {
+                                return Mono.just(deviceDto)
+                                        .doOnNext(deviceDto1 -> log.info("Device add request received [{}]", deviceDto1))
+                                        .flatMap(deviceDto1 -> deviceRepository.findByMacAddress(deviceDto1.getMacAddress()))
+                                        .flatMap(device -> Mono.just(ResponseEntity.ok(CommonResponse.builder()
+                                                .status("E1001")
+                                                .statusDescription("Device Already exist with mac")
+                                                .build())))
+                                        .switchIfEmpty(saveDevice(deviceDto, requestedUser.getUsername()))
+                                        .onErrorResume(e -> Mono.just(e)
+                                                .flatMap(t -> Mono.just(ResponseEntity.ok(CommonResponse.fail()))));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed").build())));
     }
 
-    Mono<CommonResponse> saveDevice(DeviceDto deviceDto) {
+    Mono<ResponseEntity<CommonResponse>> saveDevice(DeviceDto deviceDto, String username) {
         return Mono.just(deviceMapper.deviceDtoToDevice(deviceDto))
                 .doOnNext(device -> {
                     device.setStatus("ACTIVE");
+                    device.setCreatedBy(username);
                     device.setCreatedDateTime(LocalDateTime.now());
                 })
                 .flatMap(deviceRepository::insert)
                 .doOnSuccess(device -> log.info("Successfully saved the device [{}]", device))
-                .map(device -> CommonResponse.builder()
+                .map(device -> ResponseEntity.ok(CommonResponse.builder()
                         .status("S1000")
                         .statusDescription("Success")
-                        .build());
+                        .build()));
     }
 
     public Mono<ResponseEntity<CommonResponse>> updateDevice(UpdateDeviceRequestByName req, String jwt) {
@@ -120,6 +134,31 @@ public class DeviceService {
                         .status("S1000")
                         .statusDescription("Success")
                         .devices(devices.stream().map(deviceMapper::deviceToDeviceDto).toList())
+                        .build())));
+    }
+
+    public Mono<ResponseEntity<DashboardResponse>> getDashboard(String auth) {
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(user -> {
+                    return deviceRepository.countDevicesByUsername(user.getUsername())
+                            .flatMap(aLong ->
+                                    userService.getUserCountByUserName(user.getUsername())
+                                            .flatMap(aLong1 -> sessionService.getSessionCounts(user.getUsername())
+                                                    .flatMap(dashboardResponse -> {
+                                                        dashboardResponse.setUsers(aLong1.intValue());
+                                                        dashboardResponse.setDevices(aLong.intValue());
+                                                        return Mono.just(ResponseEntity.ok(dashboardResponse));
+                                                    }))
+
+                            )
+                            .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DashboardResponse.builder()
+                                    .status("E1000")
+                                    .statusDescription("Failed")
+                                    .build())));
+                })
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DashboardResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed")
                         .build())));
     }
 }

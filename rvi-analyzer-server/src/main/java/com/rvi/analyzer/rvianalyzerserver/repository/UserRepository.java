@@ -40,4 +40,7 @@ public interface UserRepository extends ReactiveMongoRepository<User, String> {
     """
     )
     Flux<User> findByCreatedBy(String createdBy);
+
+    @Query(value = "{ 'created-by': ?0 }", count = true)
+    Mono<Long> countUsersByUsername(String username);
 }

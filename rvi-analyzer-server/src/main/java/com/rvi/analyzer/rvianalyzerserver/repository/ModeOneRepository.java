@@ -26,4 +26,7 @@ public interface ModeOneRepository extends ReactiveMongoRepository<ModeOne, Stri
 
     @Query(value = "?0")
     Flux<ModeOne> findByFilters(String filter, Pageable pageable);
+
+    @Query(value = "{ 'created-by': {'$in' : ?0} }", count = true)
+    Mono<Long> countSessionsByUsers(List<String> users);
 }
