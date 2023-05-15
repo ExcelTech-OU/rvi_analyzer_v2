@@ -13,4 +13,6 @@ public class ModeFoursResponse {
     private String status;
     private String statusDescription;
     private List<ModeFourDto> sessions;
+    private int total;
+
 }

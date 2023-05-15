@@ -12,4 +12,6 @@ public class ModeSixResponse {
     private String status;
     private String statusDescription;
     private List<ModeSixDto> sessions;
+    private int total;
+
 }

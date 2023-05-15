@@ -20,6 +20,10 @@ public class ModeOneRepository {
         return template.find(query, ModeOne.class);
     }
 
+    public Mono<Long> countByFilters(Query query) {
+        return template.count(query, ModeOne.class);
+    }
+
     public Mono<ModeOne> findBySessionID(String sessionId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("default-configurations.session-id").is(sessionId));

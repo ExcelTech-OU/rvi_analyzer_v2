@@ -1,5 +1,6 @@
 package com.rvi.analyzer.rvianalyzerserver.repository;
 
+import com.rvi.analyzer.rvianalyzerserver.entiy.ModeOne;
 import com.rvi.analyzer.rvianalyzerserver.entiy.ModeSix;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -19,6 +20,10 @@ public class ModeSixRepository {
     public Flux<ModeSix> findByFilters(Query query) {
         return template.find(query, ModeSix.class);
     }
+    public Mono<Long> countByFilters(Query query) {
+        return template.count(query, ModeSix.class);
+    }
+
 
     public Mono<ModeSix> findBySessionID(String sessionId) {
         Query query = new Query();

@@ -12,4 +12,6 @@ public class ModeTwosResponse {
     private String status;
     private String statusDescription;
     private List<ModeTwoDto> sessions;
+    private int total;
+
 }

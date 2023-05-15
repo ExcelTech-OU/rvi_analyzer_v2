@@ -12,4 +12,6 @@ public class ModeThreesResponse {
     private String status;
     private String statusDescription;
     private List<ModeThreeDto> sessions;
+    private int total;
+
 }
