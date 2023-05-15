@@ -10,17 +10,18 @@ import com.rvi.analyzer.rvianalyzerserver.repository.*;
 import com.rvi.analyzer.rvianalyzerserver.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import javax.xml.stream.events.Characters;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -43,7 +44,6 @@ public class SessionService {
     final private ModeFourMapper modeFourMapper;
     final private ModeFiveMapper modeFiveMapper;
     final private ModeSixMapper modeSixMapper;
-    final private ModeOneRepository modeOneRepository;
     final private ModeTwoRepository modeTwoRepository;
     final private ModeThreeRepository modeThreeRepository;
     final private ModeFourRepository modeFourRepository;
@@ -54,6 +54,8 @@ public class SessionService {
     final private UserGroupRoleService userGroupRoleService;
 
     final private ReportRepository repository;
+
+    final private ModeOneRepository modeOneRepository;
 
     private final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?";
 
@@ -405,45 +407,35 @@ public class SessionService {
     public Mono<ResponseEntity<ModeOnesResponse>> getAllModeOne(String pageNo, SessionSearchRequest request, String jwt) {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
-                        .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.GET_MODE_ONE)) {
-                                return userService.getUsersByAdmin(user.getUsername())
-                                        .filter(strings -> !strings.isEmpty())
-                                        .flatMap(strings -> {
-                                            if (getFilters(strings, pageNo, request).isEmpty()) {
-                                                return Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
+                                .flatMap(userRoles -> {
+                                    if (userRoles.contains(UserRoles.GET_MODE_ONE)) {
+                                        return userService.getUsersByAdmin(user.getUsername())
+                                                .filter(strings -> !strings.isEmpty())
+                                                .flatMap(strings -> {
+                                                        return modeOneRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                                .filter(Objects::nonNull)
+                                                                .flatMap(modeOne -> {
+                                                                    log.info("Mode one found with id [{}]", modeOne.getDefaultConfigurations().getSessionId());
+                                                                    return Mono.just(modeOneMapper.modeOneToModeOneDto(modeOne));
+                                                                })
+                                                                .collectList()
+                                                                .flatMap(modeOneDtos -> Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
+                                                                        .status("S1000")
+                                                                        .statusDescription("Success")
+                                                                        .sessions(modeOneDtos)
+                                                                        .build())));
+                                                })
+                                                .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
                                                         .status("S1000")
                                                         .statusDescription("Success")
                                                         .sessions(new ArrayList<>())
-                                                        .build()));
-                                            } else {
-                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
-
-                                                return modeOneRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
-                                                        .filter(Objects::nonNull)
-                                                        .flatMap(modeOne -> {
-                                                            log.info("Mode one found with id [{}]", modeOne.getDefaultConfigurations().getSessionId());
-                                                            return Mono.just(modeOneMapper.modeOneToModeOneDto(modeOne));
-                                                        })
-                                                        .collectList()
-                                                        .flatMap(modeOneDtos -> Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
-                                                                .status("S1000")
-                                                                .statusDescription("Success")
-                                                                .sessions(modeOneDtos)
-                                                                .build())));
-                                            }
-                                        })
-                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
-                                                .status("S1000")
-                                                .statusDescription("Success")
-                                                .sessions(new ArrayList<>())
-                                                .build())));
-                            } else {
-                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
-                                        .status("E1200")
-                                        .statusDescription("You are not authorized to use this service").build()));
-                            }
-                        })
+                                                        .build())));
+                                    } else {
+                                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
+                                                .status("E1200")
+                                                .statusDescription("You are not authorized to use this service").build()));
+                                    }
+                                })
                 )
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
                         .status("E1220")
@@ -458,29 +450,17 @@ public class SessionService {
                             if (userRoles.contains(UserRoles.GET_MODE_TWO)) {
                                 return userService.getUsersByAdmin(user.getUsername())
                                         .filter(strings -> !strings.isEmpty())
-                                        .flatMap(strings -> {
-                                            if (getFilters(strings, pageNo, request).isEmpty()) {
-                                                return Mono.just(ResponseEntity.ok(ModeTwosResponse.builder()
+                                        .flatMap(strings -> modeTwoRepository.findByFilters(getFilters(strings, pageNo, request))
+                                                .flatMap(modeTwo -> {
+                                                    log.info("Mode two found with id [{}]", modeTwo.getDefaultConfigurations().getSessionId());
+                                                    return Mono.just(modeTwoMapper.modeTwoToModeTwoDto(modeTwo));
+                                                })
+                                                .collectList()
+                                                .flatMap(modeTwoDtos -> Mono.just(ResponseEntity.ok(ModeTwosResponse.builder()
                                                         .status("S1000")
                                                         .statusDescription("Success")
-                                                        .sessions(new ArrayList<>())
-                                                        .build()));
-                                            } else {
-                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
-
-                                                return modeTwoRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
-                                                        .flatMap(modeTwo -> {
-                                                            log.info("Mode two found with id [{}]", modeTwo.getDefaultConfigurations().getSessionId());
-                                                            return Mono.just(modeTwoMapper.modeTwoToModeTwoDto(modeTwo));
-                                                        })
-                                                        .collectList()
-                                                        .flatMap(modeTwoDtos -> Mono.just(ResponseEntity.ok(ModeTwosResponse.builder()
-                                                                .status("S1000")
-                                                                .statusDescription("Success")
-                                                                .sessions(modeTwoDtos)
-                                                                .build())));
-                                            }
-                                        })
+                                                        .sessions(modeTwoDtos)
+                                                        .build()))))
                                         .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeTwosResponse.builder()
                                                 .status("S1000")
                                                 .statusDescription("Success")
@@ -507,16 +487,7 @@ public class SessionService {
                                 return userService.getUsersByAdmin(user.getUsername())
                                         .filter(strings -> !strings.isEmpty())
                                         .flatMap(strings -> {
-                                            if (getFilters(strings, pageNo, request).isEmpty()) {
-                                                return Mono.just(ResponseEntity.ok(ModeThreesResponse.builder()
-                                                        .status("S1000")
-                                                        .statusDescription("Success")
-                                                        .sessions(new ArrayList<>())
-                                                        .build()));
-                                            } else {
-                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
-
-                                                return modeThreeRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
+                                                return modeThreeRepository.findByFilters(getFilters(strings, pageNo, request))
                                                         .flatMap(modeThree -> {
                                                             log.info("Mode three found with id [{}]", modeThree.getDefaultConfigurations().getSessionId());
                                                             return Mono.just(modeThreeMapper.modeThreeToModeThreeDto(modeThree));
@@ -527,7 +498,6 @@ public class SessionService {
                                                                 .statusDescription("Success")
                                                                 .sessions(modeThreeDtos)
                                                                 .build())));
-                                            }
                                         })
                                         .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeThreesResponse.builder()
                                                 .status("S1000")
@@ -555,16 +525,7 @@ public class SessionService {
                                 return userService.getUsersByAdmin(user.getUsername())
                                         .filter(strings -> !strings.isEmpty())
                                         .flatMap(strings -> {
-                                            if (getFilters(strings, pageNo, request).isEmpty()) {
-                                                return Mono.just(ResponseEntity.ok(ModeFoursResponse.builder()
-                                                        .status("S1000")
-                                                        .statusDescription("Success")
-                                                        .sessions(new ArrayList<>())
-                                                        .build()));
-                                            } else {
-                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
-
-                                                return modeFourRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
+                                                return modeFourRepository.findByFilters(getFilters(strings, pageNo, request))
                                                         .flatMap(modeFour -> {
                                                             log.info("Mode four found with id [{}]", modeFour.getDefaultConfigurations().getSessionId());
                                                             return Mono.just(modeFourMapper.modeFourToModeFourDto(modeFour));
@@ -575,7 +536,6 @@ public class SessionService {
                                                                 .statusDescription("Success")
                                                                 .sessions(modeFourDtos)
                                                                 .build())));
-                                            }
                                         })
                                         .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeFoursResponse.builder()
                                                 .status("S1000")
@@ -603,16 +563,7 @@ public class SessionService {
                                 return userService.getUsersByAdmin(user.getUsername())
                                         .filter(strings -> !strings.isEmpty())
                                         .flatMap(strings -> {
-                                            if (getFilters(strings, pageNo, request).isEmpty()) {
-                                                return Mono.just(ResponseEntity.ok(ModeFiveResponse.builder()
-                                                        .status("S1000")
-                                                        .statusDescription("Success")
-                                                        .sessions(new ArrayList<>())
-                                                        .build()));
-                                            } else {
-                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
-
-                                                return modeFiveRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
+                                                return modeFiveRepository.findByFilters(getFilters(strings, pageNo, request))
                                                         .flatMap(modeFive -> {
                                                             log.info("Mode five found with id [{}]", modeFive.getDefaultConfigurations().getSessionId());
                                                             return Mono.just(modeFiveMapper.modeFiveToModeFiveDto(modeFive));
@@ -623,7 +574,6 @@ public class SessionService {
                                                                 .statusDescription("Success")
                                                                 .sessions(modeFiveDtos)
                                                                 .build())));
-                                            }
                                         })
                                         .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeFiveResponse.builder()
                                                 .status("S1000")
@@ -651,16 +601,7 @@ public class SessionService {
                                 return userService.getUsersByAdmin(user.getUsername())
                                         .filter(strings -> !strings.isEmpty())
                                         .flatMap(strings -> {
-                                            if (getFilters(strings, pageNo, request).isEmpty()) {
-                                                return Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
-                                                        .status("S1000")
-                                                        .statusDescription("Success")
-                                                        .sessions(new ArrayList<>())
-                                                        .build()));
-                                            } else {
-                                                Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), 20);
-
-                                                return modeSixRepository.findByFilters(getFilters(strings, pageNo, request), pageable)
+                                                return modeSixRepository.findByFilters(getFilters(strings, pageNo, request))
                                                         .flatMap(modeSix -> {
                                                             log.info("Mode six found with id [{}]", modeSix.getDefaultConfigurations().getSessionId());
                                                             return Mono.just(modeSixMapper.modeSixToModeSixDto(modeSix));
@@ -671,7 +612,6 @@ public class SessionService {
                                                                 .statusDescription("Success")
                                                                 .sessions(modeFourDtos)
                                                                 .build())));
-                                            }
                                         })
                                         .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
                                                 .status("S1000")
@@ -691,78 +631,53 @@ public class SessionService {
                         .build())));
     }
 
-    private String getFilters(List<String> users, String pageNo, SessionSearchRequest request) {
-        StringBuilder stringBuilder = new StringBuilder();
+    private Query getFilters(List<String> users, String pageNo, SessionSearchRequest request) {
+        Query query = new Query();
 
         if (!request.getFilterType().isEmpty() && !request.getFilterValue().isEmpty()) {
             if (FilterType.valueOf(request.getFilterType()) != FilterType.CREATED_BY) {
                 if (users.size() > 0) {
-                    stringBuilder.append("{ '$and': [")
-                            .append("{'created-by': { '$in' : ")
-                            .append(concatenateStrings(users))
-                            .append("}}");
-                }
-
-                if (!stringBuilder.toString().isEmpty()) {
-                    stringBuilder.append(", ");
+                    query.addCriteria(Criteria.where("created-by").in(users));
                 }
 
                 switch (FilterType.valueOf(request.getFilterType())) {
-                    case BATCH_NO -> stringBuilder.append("{ 'default-configurations.batch-no' : { $regex : '.*")
-                            .append(request.getFilterValue())
-                            .append(".*', $options: 'i'}}");
-                    case SESSION_ID -> stringBuilder.append("{'default-configurations.session-id': { $regex : '.*")
-                            .append(request.getFilterValue())
-                            .append(".*', $options: 'i'}}");
-                    case OPERATOR_ID -> stringBuilder.append("{'default-configurations.operator-id': { $regex : '.*")
-                            .append(request.getFilterValue())
-                            .append(".*', $options: 'i'}}");
-                    case CUSTOMER_NAME ->
-                            stringBuilder.append("{'default-configurations.customer-name': { $regex : '.*")
-                                    .append(request.getFilterValue())
-                                    .append(".*', $options: 'i'}}");
+                    case BATCH_NO -> query.addCriteria(Criteria.where("default-configurations.batch-no")
+                            .regex(".*" + request.getFilterValue() + ".*", "i"));
+
+                    case SESSION_ID -> query.addCriteria(Criteria.where("default-configurations.session-id")
+                            .regex(".*" + request.getFilterValue() + ".*", "i"));
+
+                    case OPERATOR_ID -> query.addCriteria(Criteria.where("default-configurations.operator-id")
+                            .regex(".*" + request.getFilterValue() + ".*", "i"));
+
+                    case CUSTOMER_NAME -> query.addCriteria(Criteria.where("default-configurations.customer-name")
+                            .regex(".*" + request.getFilterValue() + ".*", "i"));
                 }
 
             } else if (checkUserRegexMatchWithUsers(users, request.getFilterValue())) {
-                stringBuilder.append("{'$and':[{")
-                        .append("'created-by': { $regex : '.*")
-                        .append(request.getFilterValue())
-                        .append(".*', $options: 'i'}}");
+                query.addCriteria(Criteria.where("created-by")
+                        .regex(".*" + request.getFilterValue() + ".*", "i"));
             } else {
                 if (users.size() > 0) {
-                    stringBuilder.append("{'$and':[{")
-                            .append("'created-by': { '$in' : ")
-                            .append(concatenateStrings(users))
-                            .append("}}");
+                    query.addCriteria(Criteria.where("created-by").in(users));
                 }
             }
         } else {
             if (users.size() > 0) {
-                stringBuilder.append("{'$and':[{")
-                        .append("'created-by': { '$in' : ")
-                        .append(concatenateStrings(users))
-                        .append("}}");
+                query.addCriteria(Criteria.where("created-by").in(users));
             }
         }
 
-//        if (request.getDate() != null && !request.getDate().isEmpty()) {
-//            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-//            LocalDateTime lastDateStart = LocalDateTime.of(LocalDateTime.parse(request.getDate(), formatter).toLocalDate(), LocalTime.MIDNIGHT);
-//            LocalDateTime lastDateEnd = LocalDateTime.of(LocalDateTime.parse(request.getDate(), formatter).toLocalDate(), LocalTime.MAX);
-//            log.info("Finding treatments between [{}] and [{}]", lastDateStart, lastDateEnd);
-//
-//            stringBuilder.append(", { 'created-date' : { $gt : ISODate('")
-//                    .append(lastDateStart)
-////                    .append("', $lt: '")
-////                    .append(lastDateEnd)
-//                    .append("') }}");
-//        }
+        if (request.getDate() != null && !request.getDate().isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+            LocalDateTime lastDateStart = LocalDateTime.of(LocalDateTime.parse(request.getDate(), formatter).toLocalDate(), LocalTime.MIDNIGHT);
+            LocalDateTime lastDateEnd = LocalDateTime.of(LocalDateTime.parse(request.getDate(), formatter).toLocalDate(), LocalTime.MAX);
+            log.info("Finding treatments between [{}] and [{}]", lastDateStart, lastDateEnd);
 
-        stringBuilder.append("]}");
+            query.addCriteria(Criteria.where("created-date").gt(lastDateStart).lt(lastDateEnd));
+        }
 
-
-        log.info("AAAAAAAAAAAA :  {}", stringBuilder.toString());
-        return stringBuilder.toString();
+        return query;
     }
 
     public Mono<DashboardResponse> getSessionCounts(String username) {
