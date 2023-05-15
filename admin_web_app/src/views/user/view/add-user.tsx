@@ -2,6 +2,8 @@ import { Alert, Box, Button, Dialog, DialogContent, IconButton, MenuItem, Select
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import { User, useAddUserMutation, useUpdateUserMutation } from "../../../services/user_service";
+import * as Yup from 'yup';
+
 import CloseIcon from '@mui/icons-material/Close';
 
 
@@ -31,15 +33,21 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
 
   const formik = useFormik({
     initialValues: {
-      username: "",
+      email: "",
       group: "USER",
       status: "ACTIVE"
 
     },
+    validationSchema: Yup.object({
+      email: Yup
+        .string()
+        .email('Must be a valid email')
+        .max(255)
+        .required('Email is required')
+    }),
     onSubmit: (values, actions) => {
-
       addUser({
-        username: values.username,
+        username: values.email,
         group: values.group,
         status: values.status
       })
@@ -93,11 +101,14 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
             fullWidth
             label="Email"
             margin="normal"
-            name="username"
+            name="email"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.username}
+            value={formik.values.email}
             variant="outlined"
+            error={Boolean(formik.touched.email && formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
+
           />
           <TextField
             fullWidth
