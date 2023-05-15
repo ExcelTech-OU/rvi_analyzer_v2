@@ -58,7 +58,7 @@ export default function ModeFiveList() {
     const [pageCount, setPageCount] = React.useState(1);
     const [page, setPage] = React.useState(1);
 
-    var { data, error, isLoading } = useGetModeFiveSessionsQuery({ date: date, filterType: filterType, filterValue: filterValue })
+    var { data, error, isLoading } = useGetModeFiveSessionsQuery({ data: { date: date, filterType: filterType, filterValue: filterValue }, page: page })
 
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
@@ -73,7 +73,7 @@ export default function ModeFiveList() {
 
     React.useEffect(() => {
         if (data?.sessions != null) {
-            setPageCount((data.sessions.length + 20 - 1) / 20)
+            setPageCount(Math.trunc((data.total + 15 - 1) / 15))
         }
     }, [data])
 
@@ -143,7 +143,7 @@ export default function ModeFiveList() {
                                                                     ))}
                                                                 </StyledTableRow>
                                                             </TableHead>
-                                                            <TableBody>
+                                                            {<TableBody>
                                                                 {data!.sessions
                                                                     .map((item, index) => {
                                                                         return (
@@ -175,13 +175,16 @@ export default function ModeFiveList() {
                                                                             </StyledTableRow>
                                                                         );
                                                                     })}
-                                                            </TableBody>
+                                                            </TableBody>}
                                                         </Table>
                                                     </TableContainer>
                                                 </Paper>
-                                                <Box display="flex" justifyContent="flex-end">
-                                                    <Pagination count={pageCount} sx={{ mt: 2 }} variant="outlined" shape="rounded" page={page} onChange={handleChange} />
-                                                </Box>
+                                                {pageCount != 0 ?
+                                                    <Box display="flex" justifyContent="flex-end">
+                                                        <Pagination count={pageCount} sx={{ mt: 2 }} variant="outlined" shape="rounded" page={page} onChange={handleChange} />
+                                                    </Box>
+                                                    : <></>
+                                                }
                                             </CardContent>
                                         </CardActionArea>
                                     </Card>

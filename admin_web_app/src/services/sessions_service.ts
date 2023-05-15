@@ -11,6 +11,7 @@ export interface ModeOnesResponse {
     status: string
     statusDescription: string
     sessions: List<ModeOneDto>
+    total: number
 }
 
 export interface ModeOneDto {
@@ -52,6 +53,7 @@ export interface ModeTwosResponse {
     status: string
     statusDescription: string
     sessions: List<ModeTwoDto>
+    total: number
 }
 
 export interface ModeTwoDto {
@@ -73,6 +75,8 @@ export interface ModeThreesResponse {
     status: string
     statusDescription: string
     sessions: List<ModeThreeDto>
+    total: number
+
 }
 
 export interface ModeThreeDto {
@@ -95,6 +99,7 @@ export interface ModeFourResponse {
     status: string
     statusDescription: string
     sessions: List<ModeFourDto>
+    total: number
 }
 
 export interface ModeFourDto {
@@ -117,6 +122,7 @@ export interface ModeFiveResponse {
     status: string
     statusDescription: string
     sessions: List<ModeFiveDto>
+    total: number
 }
 
 export interface ModeFiveDto {
@@ -137,6 +143,7 @@ export interface ModeSixResponse {
     status: string
     statusDescription: string
     sessions: List<ModeSixDto>
+    total: number
 }
 
 export interface ModeSixDto {
@@ -207,67 +214,67 @@ export const sessionApi = createApi({
     }),
     tagTypes: ['sessions'],
     endpoints: (build) => ({
-        getModeOneSessions: build.query<ModeOnesResponse, {}>({
+        getModeOneSessions: build.query<ModeOnesResponse, { data: {}, page: number }>({
             query(data) {
                 return {
-                    url: `rvi/analyzer/v1/session/get/one/0`,
+                    url: `rvi/analyzer/v1/session/get/one/${data.page}`,
                     method: 'POST',
-                    body: data,
+                    body: data.data,
                 }
             },
             providesTags: [{ type: 'sessions', id: "getModeOneSessions" }]
 
         }),
-        getModeTwoSessions: build.query<ModeTwosResponse, {}>({
+        getModeTwoSessions: build.query<ModeTwosResponse, { data: {}, page: number }>({
             query(data) {
                 return {
-                    url: `rvi/analyzer/v1/session/get/two/0`,
+                    url: `rvi/analyzer/v1/session/get/two/${data.page}`,
                     method: 'POST',
-                    body: data,
+                    body: data.data,
                 }
             },
             providesTags: [{ type: 'sessions', id: "getModeTwoSessions" }]
 
         }),
-        getModeThreeSessions: build.query<ModeThreesResponse, {}>({
+        getModeThreeSessions: build.query<ModeThreesResponse, { data: {}, page: number }>({
             query(data) {
                 return {
-                    url: `rvi/analyzer/v1/session/get/three/0`,
+                    url: `rvi/analyzer/v1/session/get/three/${data.page}`,
                     method: 'POST',
-                    body: data,
+                    body: data.data,
                 }
             },
             providesTags: [{ type: 'sessions', id: "getModeThreeSessions" }]
 
         }),
-        getModeFourSessions: build.query<ModeFourResponse, {}>({
+        getModeFourSessions: build.query<ModeFourResponse, { data: {}, page: number }>({
             query(data) {
                 return {
-                    url: `rvi/analyzer/v1/session/get/four/0`,
+                    url: `rvi/analyzer/v1/session/get/four/${data.page}`,
                     method: 'POST',
-                    body: data,
+                    body: data.data,
                 }
             },
             providesTags: [{ type: 'sessions', id: "getModeFourSessions" }]
 
         }),
-        getModeFiveSessions: build.query<ModeFiveResponse, {}>({
+        getModeFiveSessions: build.query<ModeFiveResponse, { data: {}, page: number }>({
             query(data) {
                 return {
-                    url: `rvi/analyzer/v1/session/get/five/0`,
+                    url: `rvi/analyzer/v1/session/get/five/${data.page}`,
                     method: 'POST',
-                    body: data,
+                    body: data.data,
                 }
             },
             providesTags: [{ type: 'sessions', id: "getModeFiveSessions" }]
 
         }),
-        getModeSixSessions: build.query<ModeSixResponse, {}>({
+        getModeSixSessions: build.query<ModeSixResponse, { data: {}, page: number }>({
             query(data) {
                 return {
-                    url: `rvi/analyzer/v1/session/get/six/0`,
+                    url: `rvi/analyzer/v1/session/get/six/${data.page}`,
                     method: 'POST',
-                    body: data,
+                    body: data.data,
                 }
             },
             providesTags: [{ type: 'sessions', id: "getModeSixSessions" }]
