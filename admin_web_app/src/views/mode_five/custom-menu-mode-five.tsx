@@ -9,6 +9,9 @@ import ModeFiveShareAlertDialog from "./session-five-share-dialog";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import ModeFivePdfDocument from "./mode-five-pdf";
 import { ModeFiveSingleView } from "./mode-five-single-view";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
+import { handleGenerateExcelModeFive } from "./mode-five-excel";
 
 type CustomMenuModeFiveProps = {
     session: ModeFiveDto;
@@ -109,13 +112,20 @@ export default function CustomizedMenusModeFive({ session }: CustomMenuModeFiveP
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem onClick={handleClose} disableRipple>
-                    <DownloadIcon />
+                    <PictureAsPdfIcon />
                     <PDFDownloadLink document={<ModeFivePdfDocument session={session} />} fileName={"mode_five_" + session.defaultConfigurations.sessionId + ".pdf"}
                         style={{ color: "grey", textDecoration: "none" }}>
                         {({ blob, url, loading, error }) =>
-                            loading ? 'Loading...' : 'Download'
+                            loading ? 'Loading...' : 'Download PDF'
                         }
                     </PDFDownloadLink>
+                </MenuItem>
+                <MenuItem sx={{ color: "grey" }} onClick={() => {
+                    handleGenerateExcelModeFive(session);
+                    handleClose();
+                }} disableRipple>
+                    <GridOnIcon />
+                    Download EXCEL
                 </MenuItem>
             </StyledMenu>
             <ModeFiveSingleView open={openCloseDetailView} changeOpenStatus={setOpenCloseDetailView} session={session} />

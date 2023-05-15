@@ -9,6 +9,9 @@ import ModeSixShareAlertDialog from "./session-six-share-dialog";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import ModeSixPdfDocument from "./mode-six-pdf";
 import { ModeSixSingleView } from "./mode-six-single-view";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
+import { handleGenerateExcelModeSix } from "./mode-six-excel";
 
 type CustomMenuModeSixProps = {
     session: ModeSixDto;
@@ -109,13 +112,20 @@ export default function CustomizedMenusModeSix({ session }: CustomMenuModeSixPro
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem onClick={handleClose} disableRipple>
-                    <DownloadIcon />
+                    <PictureAsPdfIcon />
                     <PDFDownloadLink document={<ModeSixPdfDocument session={session} />} fileName={"mode_six_" + session.defaultConfigurations.sessionId + ".pdf"}
                         style={{ color: "grey", textDecoration: "none" }}>
                         {({ blob, url, loading, error }) =>
-                            loading ? 'Loading...' : 'Download'
+                            loading ? 'Loading...' : 'Download PDF'
                         }
                     </PDFDownloadLink>
+                </MenuItem>
+                <MenuItem sx={{ color: "grey" }} onClick={() => {
+                    handleGenerateExcelModeSix(session);
+                    handleClose();
+                }} disableRipple>
+                    <GridOnIcon />
+                    Download EXCEL
                 </MenuItem>
             </StyledMenu>
             <ModeSixSingleView open={openCloseDetailView} changeOpenStatus={setOpenCloseDetailView} session={session} />

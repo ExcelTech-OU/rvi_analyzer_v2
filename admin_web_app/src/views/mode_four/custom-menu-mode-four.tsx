@@ -9,6 +9,9 @@ import ModeFourShareAlertDialog from "./session-four-share-dialog";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import ModeFourPdfDocument from "./mode-four-pdf";
 import { ModeFourSingleView } from "./mode-four-single-view";
+import { handleGenerateExcelModeFour } from "./mode-four-excel";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
 
 type CustomMenuModeFourProps = {
     session: ModeFourDto;
@@ -109,13 +112,20 @@ export default function CustomizedMenusModeFour({ session }: CustomMenuModeFourP
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem onClick={handleClose} disableRipple>
-                    <DownloadIcon />
+                    <PictureAsPdfIcon />
                     <PDFDownloadLink document={<ModeFourPdfDocument session={session} />} fileName={"mode_four_" + session.defaultConfigurations.sessionId + ".pdf"}
                         style={{ color: "grey", textDecoration: "none" }}>
                         {({ blob, url, loading, error }) =>
                             loading ? 'Loading...' : 'Download'
                         }
                     </PDFDownloadLink>
+                </MenuItem>
+                <MenuItem sx={{ color: "grey" }} onClick={() => {
+                    handleGenerateExcelModeFour(session);
+                    handleClose();
+                }} disableRipple>
+                    <GridOnIcon />
+                    Download EXCEL
                 </MenuItem>
             </StyledMenu>
             <ModeFourSingleView open={openCloseDetailView} changeOpenStatus={setOpenCloseDetailView} session={session} />

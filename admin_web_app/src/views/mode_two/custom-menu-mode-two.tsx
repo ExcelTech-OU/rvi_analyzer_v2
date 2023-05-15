@@ -9,6 +9,9 @@ import ModeTwoShareAlertDialog from "./session-two-share-dialog";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import ModeTwoPdfDocument from "./mode-two-pdf";
 import { ModeTwoSingleView } from "./mode-two-single-view";
+import { handleGenerateExcelModeTwo } from "./mode-two-excel";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
 
 type CustomMenuPropsModeTwo = {
     session: ModeTwoDto;
@@ -109,13 +112,20 @@ export default function CustomizedMenusModeTwo({ session }: CustomMenuPropsModeT
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem onClick={handleClose} disableRipple>
-                    <DownloadIcon />
+                    <PictureAsPdfIcon />
                     <PDFDownloadLink document={<ModeTwoPdfDocument session={session} />} fileName={"mode_two_" + session.defaultConfigurations.sessionId + ".pdf"}
                         style={{ color: "grey", textDecoration: "none" }}>
                         {({ blob, url, loading, error }) =>
-                            loading ? 'Loading...' : 'Download'
+                            loading ? 'Loading...' : 'Download PDF'
                         }
                     </PDFDownloadLink>
+                </MenuItem>
+                <MenuItem sx={{ color: "grey" }} onClick={() => {
+                    handleGenerateExcelModeTwo(session);
+                    handleClose();
+                }} disableRipple>
+                    <GridOnIcon />
+                    Download EXCEL
                 </MenuItem>
             </StyledMenu>
             <ModeTwoSingleView open={openCloseDetailView} changeOpenStatus={setOpenCloseDetailView} session={session} />

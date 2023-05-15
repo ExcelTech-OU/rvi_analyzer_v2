@@ -9,6 +9,9 @@ import ModeThreeShareAlertDialog from "./session-three-share-dialog";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import ModeThreePdfDocument from "./mode-three-pdf";
 import { ModeThreeSingleView } from "./mode-three-single-view";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
+import { handleGenerateExcelModeThree } from "./mode-three-excel";
 
 type CustomMenuModeThreeProps = {
     session: ModeThreeDto;
@@ -109,13 +112,20 @@ export default function CustomizedMenusModeThree({ session }: CustomMenuModeThre
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem onClick={handleClose} disableRipple>
-                    <DownloadIcon />
+                    <PictureAsPdfIcon />
                     <PDFDownloadLink document={<ModeThreePdfDocument session={session} />} fileName={"mode_three_" + session.defaultConfigurations.sessionId + ".pdf"}
                         style={{ color: "grey", textDecoration: "none" }}>
                         {({ blob, url, loading, error }) =>
-                            loading ? 'Loading...' : 'Download'
+                            loading ? 'Loading...' : 'Download PDF'
                         }
                     </PDFDownloadLink>
+                </MenuItem>
+                <MenuItem sx={{ color: "grey" }} onClick={() => {
+                    handleGenerateExcelModeThree(session);
+                    handleClose();
+                }} disableRipple>
+                    <GridOnIcon />
+                    Download EXCEL
                 </MenuItem>
             </StyledMenu>
             <ModeThreeSingleView open={openCloseDetailView} changeOpenStatus={setOpenCloseDetailView} session={session} />

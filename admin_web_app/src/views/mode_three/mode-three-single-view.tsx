@@ -8,6 +8,9 @@ import ModeThreeShareAlertDialog from "./session-three-share-dialog";
 import ModeThreePdfDocument from "./mode-three-pdf";
 import ShareIcon from '@mui/icons-material/Share';
 import DownloadIcon from '@mui/icons-material/Download';
+import { handleGenerateExcelModeThree } from "./mode-three-excel";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
 
 
 type SessionDetailsProps = {
@@ -183,11 +186,14 @@ export function ModeThreeSingleView({ session, open, changeOpenStatus }: Session
         <Button variant="contained" startIcon={<ShareIcon />} onClick={() => setOpenCloseLinkView(true)}>
           Share
         </Button>
-        <Button variant="contained" startIcon={<DownloadIcon />}>
+        <Button variant="contained" startIcon={<GridOnIcon />} onClick={() => handleGenerateExcelModeThree(session)}>
+          Download EXCEL
+        </Button>
+        <Button variant="contained" startIcon={<PictureAsPdfIcon />}>
           <PDFDownloadLink document={<ModeThreePdfDocument session={session} />} fileName={"mode_three_" + session.defaultConfigurations.sessionId + ".pdf"}
             style={{ color: "white", textDecoration: "none" }}>
             {({ blob, url, loading, error }) =>
-              loading ? 'Loading...' : 'Download'
+              loading ? 'Loading...' : 'Download PDF'
             }
           </PDFDownloadLink>
         </Button>

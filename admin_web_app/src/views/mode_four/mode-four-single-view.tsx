@@ -8,6 +8,9 @@ import ModeFourPdfDocument from "./mode-four-pdf";
 import ModeFourShareAlertDialog from "./session-four-share-dialog";
 import ShareIcon from '@mui/icons-material/Share';
 import DownloadIcon from '@mui/icons-material/Download';
+import { handleGenerateExcelModeFour } from "./mode-four-excel";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
 
 
 type SessionDetailsProps = {
@@ -184,7 +187,10 @@ export function ModeFourSingleView({ session, open, changeOpenStatus }: SessionD
         <Button variant="contained" startIcon={<ShareIcon />} onClick={() => setOpenCloseLinkView(true)}>
           Share
         </Button>
-        <Button variant="contained" startIcon={<DownloadIcon />}>
+        <Button variant="contained" startIcon={<GridOnIcon />} onClick={() => handleGenerateExcelModeFour(session)}>
+          Download EXCEL
+        </Button>
+        <Button variant="contained" startIcon={<PictureAsPdfIcon />}>
           <PDFDownloadLink document={<ModeFourPdfDocument session={session} />} fileName={"mode_four_" + session.defaultConfigurations.sessionId + ".pdf"}
             style={{ color: "white", textDecoration: "none" }}>
             {({ blob, url, loading, error }) =>

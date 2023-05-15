@@ -8,6 +8,9 @@ import ModeSixShareAlertDialog from "./session-six-share-dialog";
 import ModeSixPdfDocument from "./mode-six-pdf";
 import ShareIcon from '@mui/icons-material/Share';
 import DownloadIcon from '@mui/icons-material/Download';
+import { handleGenerateExcelModeSix } from "./mode-six-excel";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
 
 
 type SessionDetailsProps = {
@@ -205,11 +208,14 @@ export function ModeSixSingleView({ session, open, changeOpenStatus }: SessionDe
         <Button variant="contained" startIcon={<ShareIcon />} onClick={() => setOpenCloseLinkView(true)}>
           Share
         </Button>
-        <Button variant="contained" startIcon={<DownloadIcon />}>
+        <Button variant="contained" startIcon={<GridOnIcon />} onClick={() => handleGenerateExcelModeSix(session)}>
+          Download EXCEL
+        </Button>
+        <Button variant="contained" startIcon={<PictureAsPdfIcon />}>
           <PDFDownloadLink document={<ModeSixPdfDocument session={session} />} fileName={"mode_six_" + session.defaultConfigurations.sessionId + ".pdf"}
             style={{ color: "white", textDecoration: "none" }}>
             {({ blob, url, loading, error }) =>
-              loading ? 'Loading...' : 'Download'
+              loading ? 'Loading...' : 'Download PDF'
             }
           </PDFDownloadLink>
         </Button>

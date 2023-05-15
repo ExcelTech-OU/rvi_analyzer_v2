@@ -9,6 +9,9 @@ import ModeTwoShareAlertDialog from "./session-two-share-dialog";
 import ModeTwoPdfDocument from "./mode-two-pdf";
 import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
+import { handleGenerateExcelModeTwo } from "./mode-two-excel";
 
 
 type SessionDetailsProps = {
@@ -198,11 +201,14 @@ export function ModeTwoSingleView({ session, open, changeOpenStatus }: SessionDe
         <Button variant="contained" startIcon={<ShareIcon />} onClick={() => setOpenCloseLinkView(true)}>
           Share
         </Button>
-        <Button variant="contained" startIcon={<DownloadIcon />}>
+        <Button variant="contained" startIcon={<GridOnIcon />} onClick={() => handleGenerateExcelModeTwo(session)}>
+          Download EXCEL
+        </Button>
+        <Button variant="contained" startIcon={<PictureAsPdfIcon />}>
           <PDFDownloadLink document={<ModeTwoPdfDocument session={session} />} fileName={"mode_two_" + session.defaultConfigurations.sessionId + ".pdf"}
             style={{ color: "white", textDecoration: "none" }}>
             {({ blob, url, loading, error }) =>
-              loading ? 'Loading...' : 'Download'
+              loading ? 'Loading...' : 'Download PDF'
             }
           </PDFDownloadLink>
         </Button>

@@ -8,6 +8,9 @@ import ModeFiveShareAlertDialog from "./session-five-share-dialog";
 import ModeFivePdfDocument from "./mode-five-pdf";
 import ShareIcon from '@mui/icons-material/Share';
 import DownloadIcon from '@mui/icons-material/Download';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import GridOnIcon from '@mui/icons-material/GridOn';
+import { handleGenerateExcelModeFive } from "./mode-five-excel";
 
 
 type SessionDetailsProps = {
@@ -206,11 +209,14 @@ export function ModeFiveSingleView({ session, open, changeOpenStatus }: SessionD
         <Button variant="contained" startIcon={<ShareIcon />} onClick={() => setOpenCloseLinkView(true)}>
           Share
         </Button>
-        <Button variant="contained" startIcon={<DownloadIcon />}>
+        <Button variant="contained" startIcon={<GridOnIcon />} onClick={() => handleGenerateExcelModeFive(session)}>
+          Download EXCEL
+        </Button>
+        <Button variant="contained" startIcon={<PictureAsPdfIcon />}>
           <PDFDownloadLink document={<ModeFivePdfDocument session={session} />} fileName={"mode_five_" + session.defaultConfigurations.sessionId + ".pdf"}
             style={{ color: "white", textDecoration: "none" }}>
             {({ blob, url, loading, error }) =>
-              loading ? 'Loading...' : 'Download'
+              loading ? 'Loading...' : 'Download PDF'
             }
           </PDFDownloadLink>
         </Button>
