@@ -5,6 +5,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { PasswordValidationReportResponse, useCheckPasswordMutation, useCheckSessionQuery } from '../../../services/login_service';
 import { ModeOneSingleView } from '../../mode_one/mode-one-single-view';
+import { ModeTwoSingleView } from '../../mode_two/mode-two-single-view';
+import { ModeThreeSingleView } from '../../mode_three/mode-three-single-view';
+import { ModeFourSingleView } from '../../mode_four/mode-four-single-view';
+import { ModeFiveSingleView } from '../../mode_five/mode-five-single-view';
+import { ModeSixSingleView } from '../../mode_six/mode-six-single-view';
 
 
 export default function login() {
@@ -126,19 +131,71 @@ export default function login() {
         alignItems: 'center',
         display: 'flex',
         flexGrow: 1,
-        minHeight: '100%'
+        minHeight: '100%',
+        my: 5
       }}
-      style={{ minHeight: '100vh' }}
+      style={{ minHeight: '95vh' }}
     >
       {dataState != null ?
-        <Container sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-        }}>
-          <ModeOneSingleView session={dataState.modeOneDto!} />
-        </Container>
+        dataState.modeId == 1
+          ? <Container sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mt: 5
+
+          }}>
+            <ModeOneSingleView session={dataState.modeOneDto!} />
+          </Container>
+          : dataState.modeId == 2
+            ? <Container sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              mt: 10
+            }}>
+              <ModeTwoSingleView session={dataState.modeTwoDto!} />
+            </Container>
+            : dataState.modeId == 3
+              ? <Container sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                mt: 5
+              }}>
+                <ModeThreeSingleView session={dataState.modeThreeDto!} />
+              </Container>
+              : dataState.modeId == 4
+                ? <Container sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  mt: 5
+
+                }}>
+                  <ModeFourSingleView session={dataState.modeFourDto!} />
+                </Container>
+                : dataState.modeId == 5
+                  ? <Container sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mt: 5
+
+                  }}>
+                    <ModeFiveSingleView session={dataState.modeFiveDto!} />
+                  </Container>
+                  :
+                  <Container sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mt: 5
+
+                  }}>
+                    <ModeSixSingleView session={dataState.modeSixDto!} />
+                  </Container>
+
         :
         <Container maxWidth="sm">
           {data && data.status == "S1000" ? <form onSubmit={formik.handleSubmit}>

@@ -7,7 +7,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../auth/login/auth-slice';
 
 export default function SessionTimeoutPopup() {
     const [open, setOpen] = React.useState(false);
@@ -24,7 +23,6 @@ export default function SessionTimeoutPopup() {
     const navigate = useNavigate();
 
     const logoutUser = () => {
-        dispatch(logout());
         navigate('/login');
     }
 

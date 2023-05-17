@@ -1,7 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { List } from 'reselect/es/types'
-import { Device } from './device_service'
-import { User } from './user_service'
 
 export interface UserTreatmentSessionListResponse {
     sessions: List<UserTreatmentSession>
@@ -168,8 +166,6 @@ export interface UserTreatmentSession {
     endBatteryLevel: string
     feedbackPainLevel: string
     createdDate: string
-    user: User
-    device: Device
 }
 
 export interface GeneralResponse {
