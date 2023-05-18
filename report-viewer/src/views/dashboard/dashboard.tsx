@@ -3,7 +3,6 @@ import { SummaryCard } from './summary_card'
 import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
 import PeopleIcon from '@mui/icons-material/People';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
-import { useGetDashboardSummaryQuery } from '../../services/dashboard_service';
 import ForumIcon from '@mui/icons-material/Forum';
 
 export default function Dashboard() {

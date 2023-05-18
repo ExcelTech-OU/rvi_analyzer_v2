@@ -848,61 +848,55 @@ public class SessionService {
                 .flatMap(report ->
                 {
                     if (Objects.equals(report.getPassword(), request.getPassword())) {
-                        switch (report.getModeType()) {
-                            case 1:
-                                return modeOneRepository.findBySessionID(report.getSessionId())
-                                        .flatMap(modeOne -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
-                                                .status("S1000")
-                                                .statusDescription("Success")
-                                                .modeId(1)
-                                                .modeOneDto(modeOneMapper.modeOneToModeOneDto(modeOne))
-                                                .build())));
-                            case 2:
-                                return modeTwoRepository.findBySessionID(report.getSessionId())
-                                        .flatMap(modeTwo -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
-                                                .status("S1000")
-                                                .statusDescription("Success")
-                                                .modeId(2)
-                                                .modeTwoDto(modeTwoMapper.modeTwoToModeTwoDto(modeTwo))
-                                                .build())));
-                            case 3:
-                                return modeThreeRepository.findBySessionID(report.getSessionId())
-                                        .flatMap(modeThree -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
-                                                .status("S1000")
-                                                .statusDescription("Success")
-                                                .modeId(3)
-                                                .modeThreeDto(modeThreeMapper.modeThreeToModeThreeDto(modeThree))
-                                                .build())));
-                            case 4:
-                                return modeFourRepository.findBySessionID(report.getSessionId())
-                                        .flatMap(mo -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
-                                                .status("S1000")
-                                                .statusDescription("Success")
-                                                .modeId(4)
-                                                .modeFourDto(modeFourMapper.modeFourToModeFourDto(mo))
-                                                .build())));
-                            case 5:
-                                return modeFiveRepository.findBySessionID(report.getSessionId())
-                                        .flatMap(modeFive -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
-                                                .status("S1000")
-                                                .statusDescription("Success")
-                                                .modeId(5)
-                                                .modeFiveDto(modeFiveMapper.modeFiveToModeFiveDto(modeFive))
-                                                .build())));
-                            case 6:
-                                return modeSixRepository.findBySessionID(report.getSessionId())
-                                        .flatMap(modeSix -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
-                                                .status("S1000")
-                                                .statusDescription("Success")
-                                                .modeId(6)
-                                                .modeSixDto(modeSixMapper.modeSixToModeSixDto(modeSix))
-                                                .build())));
-                            default:
-                                return Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
-                                        .status("E1000")
-                                        .statusDescription("Failed")
-                                        .build()));
-                        }
+                        log.info("password match and found the report with mode id [{}] and hash [{}]", report.getModeType(), hash);
+                        return switch (report.getModeType()) {
+                            case 1 -> modeOneRepository.findBySessionID(report.getSessionId())
+                                    .flatMap(modeOne -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                            .status("S1000")
+                                            .statusDescription("Success")
+                                            .modeId(1)
+                                            .modeOneDto(modeOneMapper.modeOneToModeOneDto(modeOne))
+                                            .build())));
+                            case 2 -> modeTwoRepository.findBySessionID(report.getSessionId())
+                                    .flatMap(modeTwo -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                            .status("S1000")
+                                            .statusDescription("Success")
+                                            .modeId(2)
+                                            .modeTwoDto(modeTwoMapper.modeTwoToModeTwoDto(modeTwo))
+                                            .build())));
+                            case 3 -> modeThreeRepository.findBySessionID(report.getSessionId())
+                                    .flatMap(modeThree -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                            .status("S1000")
+                                            .statusDescription("Success")
+                                            .modeId(3)
+                                            .modeThreeDto(modeThreeMapper.modeThreeToModeThreeDto(modeThree))
+                                            .build())));
+                            case 4 -> modeFourRepository.findBySessionID(report.getSessionId())
+                                    .flatMap(mo -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                            .status("S1000")
+                                            .statusDescription("Success")
+                                            .modeId(4)
+                                            .modeFourDto(modeFourMapper.modeFourToModeFourDto(mo))
+                                            .build())));
+                            case 5 -> modeFiveRepository.findBySessionID(report.getSessionId())
+                                    .flatMap(modeFive -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                            .status("S1000")
+                                            .statusDescription("Success")
+                                            .modeId(5)
+                                            .modeFiveDto(modeFiveMapper.modeFiveToModeFiveDto(modeFive))
+                                            .build())));
+                            case 6 -> modeSixRepository.findBySessionID(report.getSessionId())
+                                    .flatMap(modeSix -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                            .status("S1000")
+                                            .statusDescription("Success")
+                                            .modeId(6)
+                                            .modeSixDto(modeSixMapper.modeSixToModeSixDto(modeSix))
+                                            .build())));
+                            default -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
+                                    .status("E1000")
+                                    .statusDescription("Failed")
+                                    .build()));
+                        };
                     } else {
                         return Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
                                 .status("E1000")
@@ -911,11 +905,11 @@ public class SessionService {
                     }
                 })
                 .switchIfEmpty(Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
-                        .status("E1000")
+                        .status("E1012")
                         .statusDescription("Failed")
                         .build())))
                 .onErrorResume(throwable -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
-                        .status("E1000")
+                        .status("E1011")
                         .statusDescription("Failed")
                         .build())));
     }

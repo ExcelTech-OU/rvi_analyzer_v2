@@ -157,7 +157,7 @@ export function ModeTwoSingleView({ session }: SessionDetailsProps) {
                                 </Button>}
                             </StyledTableCell>
                             <StyledTableCell align={'left'}>
-                              {item.readings[0].readAt}
+                              {new Date(item.readings[0].readAt).toLocaleDateString() + " " + new Date(item.readings[0].readAt).toLocaleTimeString()}
                             </StyledTableCell>
                           </StyledTableRow>
                         );

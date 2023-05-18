@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { AppBar, Avatar, Badge, Box, IconButton, styled, Toolbar, Tooltip, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { AccountPopover } from './account-popover';
 
 
@@ -66,10 +66,11 @@ export const DashboardNavbar = ({ openSideBar }: DashboardNavbarProps) => {
               cursor: 'pointer',
               height: 40,
               width: 40,
-              ml: 1
+              ml: 1,
+              mr: 1
             }}
           >
-            <AdminPanelSettingsIcon fontSize="small" />
+            <ManageAccountsIcon fontSize="small" />
           </Avatar>
         </Toolbar>
       </DashboardNavbarRoot>

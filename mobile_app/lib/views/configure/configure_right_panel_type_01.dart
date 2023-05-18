@@ -159,15 +159,15 @@ class _ConfigureRightPanelType01State
                   ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
               .currentProtocol ==
           1) {
-        return ((ref
+        return ((double.parse(ref
+                    .watch(deviceDataMap[widget.sc.device.name]!)
+                    .voltageControllerMode01
+                    .text) /
+                ref
                     .watch(ref
                         .watch(deviceDataMap[widget.sc.device.name]!)
                         .streamData)
-                    .current /
-                double.parse(ref
-                    .watch(deviceDataMap[widget.sc.device.name]!)
-                    .voltageControllerMode01
-                    .text))
+                    .current)
             .toStringAsFixed(3));
       }
     }

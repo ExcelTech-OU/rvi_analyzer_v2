@@ -18,7 +18,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <BrowserRouter>
           <App>
             <Routes>
-              <Route path="/report/:hash?" element={<Login />} />
+              <Route path="/" element={<Login />} />
             </Routes>
           </App>
         </BrowserRouter>

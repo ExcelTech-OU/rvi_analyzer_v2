@@ -94,7 +94,7 @@ function App({ children }: AppProps) {
         <Login />
         <Box sx={footerStyles}>
           <span style={copyrightStyles}>
-            &copy; {currentYear} Company Name. All rights reserved.
+            &copy; {currentYear} RVI. All rights reserved.
           </span>
         </Box>
       </>

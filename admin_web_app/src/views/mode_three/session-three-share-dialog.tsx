@@ -24,7 +24,7 @@ export default function ModeThreeShareAlertDialog({ open, session, changeOpenSta
 
     function share() {
         setShareClicked(true)
-        shareReport({})
+        shareReport({ modeId: "3", sessionId: session.defaultConfigurations.sessionId })
             .unwrap()
             .then((payload) => {
                 if (payload.status == 'S1000') {
@@ -81,7 +81,7 @@ export default function ModeThreeShareAlertDialog({ open, session, changeOpenSta
                                     </Link>
                                 </Typography>
 
-                                <Typography variant="button" sx={{ mt: 5 }} >
+                                <Typography sx={{ mt: 5 }} >
                                     PASSWORD : <IconButton aria-label="fingerprint" color="secondary" >
                                         <ContentCopyIcon />
                                     </IconButton><Typography variant="subtitle1" gutterBottom color="black">{password}</Typography>

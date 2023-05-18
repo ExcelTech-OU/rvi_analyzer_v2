@@ -203,7 +203,7 @@ export type ShareReportResponse = {
 export const sessionApi = createApi({
     reducerPath: 'sessionApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://127.0.0.1:7550/',
+        baseUrl: 'http://54.251.199.35/rvi-analyzer-api/',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("jwt") as string;
             if (!headers.has("Authorization") && token) {
@@ -289,10 +289,10 @@ export const sessionApi = createApi({
                 }
             },
         }),
-        shareReport: build.mutation<ShareReportResponse, {}>({
-            query() {
+        shareReport: build.mutation<ShareReportResponse, { modeId: string, sessionId: string }>({
+            query(data) {
                 return {
-                    url: `rvi/analyzer/v1/session/share/1/12345`,
+                    url: `rvi/analyzer/v1/session/share/${data.modeId}/${data.sessionId}`,
                     method: 'GET',
                 }
             },

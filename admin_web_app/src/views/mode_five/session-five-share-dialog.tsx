@@ -24,7 +24,7 @@ export default function ModeFiveShareAlertDialog({ open, session, changeOpenStat
 
     function share() {
         setShareClicked(true)
-        shareReport({})
+        shareReport({ modeId: "5", sessionId: session.defaultConfigurations.sessionId })
             .unwrap()
             .then((payload) => {
                 if (payload.status == 'S1000') {
@@ -41,6 +41,14 @@ export default function ModeFiveShareAlertDialog({ open, session, changeOpenStat
 
 
     }
+
+    const handleCopy = async (text: string) => {
+        try {
+            await navigator.clipboard.writeText('Text to be copied');
+        } catch (error) {
+            console.error('Failed to copy:', error);
+        }
+    };
 
     return (
         <div>
@@ -81,8 +89,8 @@ export default function ModeFiveShareAlertDialog({ open, session, changeOpenStat
                                     </Link>
                                 </Typography>
 
-                                <Typography variant="button" sx={{ mt: 5 }} >
-                                    PASSWORD : <IconButton aria-label="fingerprint" color="secondary" >
+                                <Typography sx={{ mt: 5 }} >
+                                    PASSWORD : <IconButton aria-label="fingerprint" color="secondary" onClick={() => handleCopy(password)}>
                                         <ContentCopyIcon />
                                     </IconButton><Typography variant="subtitle1" gutterBottom color="black">{password}</Typography>
                                 </Typography>

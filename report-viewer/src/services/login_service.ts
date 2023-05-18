@@ -36,7 +36,7 @@ export type PasswordValidationReportResponse = {
 
 export const loginApi = createApi({
     reducerPath: 'loginApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://127.0.0.1:7550/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://54.251.199.35/rvi-analyzer-api/' }),
     tagTypes: ['loginRequest'],
     endpoints: (build) => ({
         checkSession: build.query<CommonResponse, { hash: string }>({

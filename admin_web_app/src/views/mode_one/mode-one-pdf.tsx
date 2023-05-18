@@ -7,7 +7,9 @@ const styles = StyleSheet.create({
     page: {
         flexDirection: 'row',
         backgroundColor: '#E4E4E4',
-        padding: 20 // Add padding to the page
+        paddingTop: 35,
+        paddingBottom: 125,
+        paddingHorizontal: 35,
     },
     section: {
         margin: 10,
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
     tableCell: {
         margin: "auto",
         marginTop: 5,
-        fontSize: 10,
+        fontSize: 8,
         height: 20,
         color: '#888'
     },
@@ -115,6 +117,25 @@ const styles = StyleSheet.create({
         color: 'red',
         fontWeight: 'bold',
         fontSize: '10px',
+    },
+    pageNumber: {
+        position: 'absolute',
+        fontSize: 12,
+        bottom: 30,
+        left: 0,
+        right: 0,
+        textAlign: 'center',
+        color: 'grey',
+    },
+    copyright: {
+        position: 'absolute',
+        fontSize: 12,
+        bottom: 30,
+        left: 0,
+        right: 0,
+        textAlign: 'center',
+        color: 'grey',
+        paddingBottom: 20,
     },
 });
 
@@ -178,7 +199,7 @@ function ModeOnePdfDocument({ session }: ModeOnePdfDocumentProps) {
                                         <Text style={styles.tableCell}>{item.readings[0].voltage}</Text>
                                     </View>
                                     <View style={styles.tableColMax}>
-                                        <Text style={styles.tableCell}>{item.readings[0].readAt}</Text>
+                                        <Text style={styles.tableCell}>{new Date(item.readings[0].readAt).toLocaleDateString() + " " + new Date(item.readings[0].readAt).toLocaleTimeString()}</Text>
                                     </View>
                                     <View style={styles.tableCol}>
                                         <Text style={styles.tableCell}>
@@ -198,7 +219,10 @@ function ModeOnePdfDocument({ session }: ModeOnePdfDocumentProps) {
 
                     </View>
                 </View>
-
+                <Text style={styles.copyright} fixed> &copy; 2023 RVi. All rights reserved.</Text>
+                <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => (
+                    ` ${pageNumber} / ${totalPages} `
+                )} fixed />
             </Page>
         </Document >
     );

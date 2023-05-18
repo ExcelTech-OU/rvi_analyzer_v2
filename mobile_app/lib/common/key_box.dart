@@ -1,4 +1,5 @@
 const String jwtK = 'jwt';
+const String rolesK = 'roles';
 const String userK = "user";
 const String contentTypeK = 'Content-Type';
 const String authorizationK = 'Authorization';
@@ -7,6 +8,7 @@ const String bearerK = 'Bearer';
 const String statusK = 'status';
 const String createdByK = 'createdBy';
 const String typeK = 'type';
+const String groupK = 'group';
 const String statusDescriptionK = 'statusDescription';
 const String heaterK = 'heater';
 const String stateK = 'state';
@@ -19,6 +21,7 @@ const String lastLoginK = 'lastLogin';
 const String usernameK = 'username';
 const String userNameK = 'userName';
 const String passwordK = 'password';
+const String sourceK = 'source';
 
 //registration
 const String nameK = 'name';

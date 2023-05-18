@@ -7,7 +7,9 @@ const styles = StyleSheet.create({
     page: {
         flexDirection: 'row',
         backgroundColor: '#E4E4E4',
-        padding: 20 // Add padding to the page
+        paddingTop: 35,
+        paddingBottom: 125,
+        paddingHorizontal: 35,
     },
     section: {
         margin: 10,
@@ -116,6 +118,25 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: '10px',
     },
+    pageNumber: {
+        position: 'absolute',
+        fontSize: 12,
+        bottom: 30,
+        left: 0,
+        right: 0,
+        textAlign: 'center',
+        color: 'grey',
+    },
+    copyright: {
+        position: 'absolute',
+        fontSize: 12,
+        bottom: 30,
+        left: 0,
+        right: 0,
+        textAlign: 'center',
+        color: 'grey',
+        paddingBottom: 20,
+    },
 });
 
 type ModeThreePdfDocumentProps = {
@@ -181,7 +202,10 @@ function ModeThreePdfDocument({ session }: ModeThreePdfDocumentProps) {
 
                     </View>
                 </View>
-
+                <Text style={styles.copyright} fixed> &copy; 2023 RVi. All rights reserved.</Text>
+                <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => (
+                    ` ${pageNumber} / ${totalPages} `
+                )} fixed />
             </Page>
         </Document >
     );

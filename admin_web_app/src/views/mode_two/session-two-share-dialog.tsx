@@ -24,7 +24,7 @@ export default function ModeTwoShareAlertDialog({ open, session, changeOpenStatu
 
     function share() {
         setShareClicked(true)
-        shareReport({})
+        shareReport({ modeId: "2", sessionId: session.defaultConfigurations.sessionId })
             .unwrap()
             .then((payload) => {
                 if (payload.status == 'S1000') {
@@ -81,7 +81,7 @@ export default function ModeTwoShareAlertDialog({ open, session, changeOpenStatu
                                     </Link>
                                 </Typography>
 
-                                <Typography variant="button" sx={{ mt: 5 }} >
+                                <Typography sx={{ mt: 5 }} >
                                     PASSWORD : <IconButton aria-label="fingerprint" color="secondary" >
                                         <ContentCopyIcon />
                                     </IconButton><Typography variant="subtitle1" gutterBottom color="black">{password}</Typography>

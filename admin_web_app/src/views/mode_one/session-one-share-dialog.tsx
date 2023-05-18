@@ -22,10 +22,24 @@ export default function ModeOneShareAlertDialog({ open, session, changeOpenStatu
 
     const [shareReport] = useShareReportMutation({});
 
+    React.useEffect(() => {
+        setShareCompleted(false)
+    }, [])
+
+
+    const handleCopy = async (text: string) => {
+        console.log(text)
+        try {
+            await navigator.clipboard.writeText('Text to be copied');
+        } catch (error) {
+            console.error('Failed to copy:', error);
+        }
+    };
+
 
     function share() {
         setShareClicked(true)
-        shareReport({})
+        shareReport({ modeId: "1", sessionId: session.defaultConfigurations.sessionId })
             .unwrap()
             .then((payload) => {
                 if (payload.status == 'S1000') {
@@ -82,11 +96,12 @@ export default function ModeOneShareAlertDialog({ open, session, changeOpenStatu
                                     </Link>
                                 </Typography>
 
-                                <Typography variant="button" sx={{ mt: 5 }} >
-                                    PASSWORD : <IconButton aria-label="fingerprint" color="secondary" >
+                                <Typography sx={{ mt: 5 }} >
+                                    PASSWORD : <IconButton aria-label="fingerprint" color="secondary" onClick={() => handleCopy(password)}>
                                         <ContentCopyIcon />
-                                    </IconButton><Typography variant="subtitle1" gutterBottom color="black">{password}</Typography>
+                                    </IconButton>
                                 </Typography>
+                                <Typography gutterBottom color="black">{password}</Typography>
 
                             </Grid>
                         </Grid>
