@@ -22,6 +22,7 @@ Future<LoginResponse> login(String userName, String password) async {
       sourceK: "MOBILE"
     }),
   );
+  print(response.body);
   await Future.delayed(const Duration(seconds: 3));
   if (response.statusCode == 200) {
     LoginResponse loginResponse =
@@ -30,6 +31,14 @@ Future<LoginResponse> login(String userName, String password) async {
       await storage.write(key: jwtK, value: loginResponse.jwt);
     }
     return loginResponse;
+  } else if (response.statusCode == 401) {
+    LoginResponse loginResponse =
+        LoginResponse.fromJson(jsonDecode(response.body));
+    if (loginResponse.state == "E1200") {
+      return LoginResponse.fromDetails("E1200",
+          "You are not authorized to use this service", "Hello error", null);
+    }
+    return LoginResponse.fromDetails("E1000", "Error", "Hello error", null);
   } else {
     return LoginResponse.fromDetails("E1000", "Error", "Hello error", null);
   }

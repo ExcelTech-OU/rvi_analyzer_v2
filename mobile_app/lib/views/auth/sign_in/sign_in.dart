@@ -439,6 +439,13 @@ class _SignInState extends State<SignIn> {
                               jwt: value.jwt,
                             )))
               }
+            else if (value.state == "E1200")
+              {
+                setState(() {
+                  signInPressed = false;
+                }),
+                showErrorDialog(context, value.stateDescription)
+              }
             else if (value.state == "E1005")
               {
                 setState(() {

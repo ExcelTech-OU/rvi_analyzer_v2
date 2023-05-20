@@ -19,11 +19,11 @@ class LoginResponse {
     return LoginResponse(
         state: json[stateK],
         stateDescription: json[stateDescriptionK],
-        jwt: json[jwtK],
+        jwt: json[jwtK] ?? "",
         roles: json[rolesK] == null
             ? List.empty()
             : List<String>.from(json[rolesK]),
-        user: User.fromJson(json[userK]));
+        user: json[userK] == null ? null : User.fromJson(json[userK]));
   }
 
   factory LoginResponse.fromDetails(
