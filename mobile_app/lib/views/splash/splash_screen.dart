@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
   _SplashScreenState() {
     Timer(const Duration(milliseconds: 1500), () {
       setState(() {
-        loginCheck().then((value) => value
+        loginCheck().then((value) => !value
             ? Navigator.of(context)
                 .pushNamedAndRemoveUntil('/login', (route) => false)
             : Navigator.pushReplacementNamed(context, "/home"));

@@ -1,31 +1,29 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class LineChartDataCustom {
+class LineChartDataCustom2 {
   String yAxisName;
   String xAxisName;
   double xMax;
-  double xMin = 0;
   double yMax;
   List<FlSpot> spotData;
-  LineChartDataCustom(
+  LineChartDataCustom2(
       {required this.xAxisName,
       required this.spotData,
       required this.xMax,
       required this.yAxisName,
-      required this.yMax,
-      this.xMin = 0});
+      required this.yMax});
 }
 
-class LineChartSample2 extends StatefulWidget {
-  LineChartDataCustom data;
-  LineChartSample2({Key? key, required this.data}) : super(key: key);
+class LineChartSampleTemp extends StatefulWidget {
+  LineChartDataCustom2 data;
+  LineChartSampleTemp({Key? key, required this.data}) : super(key: key);
 
   @override
-  State<LineChartSample2> createState() => _LineChartSample2State();
+  State<LineChartSampleTemp> createState() => _LineChartSampleTempState();
 }
 
-class _LineChartSample2State extends State<LineChartSample2> {
+class _LineChartSampleTempState extends State<LineChartSampleTemp> {
   List<Color> gradientColors = [
     Colors.red,
     Colors.red,
@@ -139,6 +137,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
       ),
       maxX: widget.data.xMax,
       maxY: widget.data.yMax,
+      minY: 0,
       lineBarsData: [
         LineChartBarData(
           spots: widget.data.spotData,

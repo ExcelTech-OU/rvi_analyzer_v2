@@ -20,7 +20,9 @@ class LoginResponse {
         state: json[stateK],
         stateDescription: json[stateDescriptionK],
         jwt: json[jwtK],
-        roles: List<String>.from(json[rolesK]),
+        roles: json[rolesK] == null
+            ? List.empty()
+            : List<String>.from(json[rolesK]),
         user: User.fromJson(json[userK]));
   }
 

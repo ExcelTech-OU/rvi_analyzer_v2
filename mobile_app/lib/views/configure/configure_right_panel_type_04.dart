@@ -14,6 +14,7 @@ import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:rvi_analyzer/views/common/line_chart.dart';
+import 'package:rvi_analyzer/views/common/line_chart_temp.dart';
 import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
 
@@ -100,8 +101,8 @@ class _ConfigureRightPanelType04State
                     ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
                 .current;
             int currentReadingTem = ref
-                .read(
-                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                .watch(
+                    ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
                 .temperature;
 
             //Update when x axis value groth
@@ -113,14 +114,6 @@ class _ConfigureRightPanelType04State
                       .watch(deviceDataMap[widget.sc.device.name]!)
                       .yMaxGraph01Mode04 <
                   currentReadingVoltage) {
-                if (ref
-                        .watch(deviceDataMap[widget.sc.device.name]!)
-                        .yMaxGraph02Mode04 <
-                    currentReadingTem) {
-                  ref
-                      .read(deviceDataMap[widget.sc.device.name]!)
-                      .yMaxGraph02Mode04 = currentReadingTem.toDouble();
-                }
                 ref
                     .read(deviceDataMap[widget.sc.device.name]!)
                     .xMaxGraph01Mode04 = currentReadingCurrent;
@@ -132,6 +125,14 @@ class _ConfigureRightPanelType04State
                     .read(deviceDataMap[widget.sc.device.name]!)
                     .xMaxGraph01Mode04 = currentReadingCurrent;
               }
+              if (ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph02Mode04 <
+                  currentReadingTem.toDouble()) {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph02Mode04 = currentReadingTem.toDouble();
+              }
             } else {
               if (ref
                       .watch(deviceDataMap[widget.sc.device.name]!)
@@ -140,6 +141,14 @@ class _ConfigureRightPanelType04State
                 ref
                     .read(deviceDataMap[widget.sc.device.name]!)
                     .yMaxGraph01Mode04 = currentReadingVoltage;
+              }
+              if (ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph02Mode04 <
+                  currentReadingTem.toDouble()) {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph02Mode04 = currentReadingTem.toDouble();
               }
             }
 
@@ -476,8 +485,8 @@ class _ConfigureRightPanelType04State
                   children: [
                     Expanded(
                         flex: 1,
-                        child: LineChartSample2(
-                          data: LineChartDataCustom(
+                        child: LineChartSampleTemp(
+                          data: LineChartDataCustom2(
                               xAxisName: "Current",
                               spotData: ref
                                   .watch(deviceDataMap[widget.sc.device.name]!)

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:rvi_analyzer/domain/common_response.dart';
 
 import '../common/key_box.dart';
 import '../common/config.dart';
@@ -25,10 +26,31 @@ Future<LoginResponse> login(String userName, String password) async {
   if (response.statusCode == 200) {
     LoginResponse loginResponse =
         LoginResponse.fromJson(jsonDecode(response.body));
-    await storage.write(key: jwtK, value: loginResponse.jwt);
+    if (loginResponse.state == "S1000") {
+      await storage.write(key: jwtK, value: loginResponse.jwt);
+    }
     return loginResponse;
   } else {
     return LoginResponse.fromDetails("E1000", "Error", "Hello error", null);
+  }
+}
+
+Future<CommonResponse> resetPassword(String jwt, String password) async {
+  final response = await http.post(
+    Uri.parse('$baseUrl$resetPasswordPath'),
+    headers: <String, String>{
+      contentTypeK: contentTypeJsonK,
+      authorizationK: '$bearerK $jwt',
+    },
+    body: jsonEncode(<String, String>{passwordK: password}),
+  );
+  await Future.delayed(const Duration(seconds: 2));
+  if (response.statusCode == 200) {
+    CommonResponse loginResponse =
+        CommonResponse.fromJson(jsonDecode(response.body));
+    return loginResponse;
+  } else {
+    return CommonResponse.fromDetails("E1000", "Error");
   }
 }
 
@@ -56,6 +78,14 @@ Future<void> logout() async {
 
 Future<bool> loginCheck() async {
   const storage = FlutterSecureStorage();
-  String? value = await storage.read(key: "jwt");
+  String? value;
+  if (await storage.containsKey(key: "jwt")) {
+    try {
+      value = await storage.read(key: "jwt");
+    } catch (e) {
+      return false;
+    }
+  }
+
   return value == null;
 }

@@ -1,37 +1,32 @@
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:rvi_analyzer/views/auth/sign_in/reset_password.dart';
-import 'package:rvi_analyzer/views/common/form_eliments/check_box_with_label.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rvi_analyzer/service/common_service.dart';
-import 'package:rvi_analyzer/views/dashboard/dashboard.dart';
+import 'package:rvi_analyzer/views/common/success_popup_reset_password.dart';
 import 'package:rvi_analyzer/service/login_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({Key? key}) : super(key: key);
+class ResetPassword extends StatefulWidget {
+  final String jwt;
+  const ResetPassword({Key? key, required this.jwt}) : super(key: key);
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<ResetPassword> createState() => _ResetPasswordState();
 }
 
-class _SignInState extends State<SignIn> {
+class _ResetPasswordState extends State<ResetPassword> {
   final _formKey = GlobalKey<FormState>();
-  final usernameController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   final passwordController = TextEditingController();
   bool signInPressed = false;
-  bool termsAndConditionValue = false;
-  bool privacyPolicyValue = false;
   int selectedId = 0;
 
   var isValid = false;
 
   void checkValues() {
-    if (usernameController.text.isNotEmpty &&
-        passwordController.text.isNotEmpty &&
-        termsAndConditionValue &&
-        privacyPolicyValue) {
+    if (confirmPasswordController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty) {
       setState(() {
         isValid = true;
       });
@@ -91,7 +86,7 @@ class _SignInState extends State<SignIn> {
                                     ],
                                   ),
                                   child: const Padding(
-                                    padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
+                                    padding: EdgeInsets.all(30.0),
                                     child: Image(
                                         image: AssetImage(
                                             'assets/images/logo.png')),
@@ -107,11 +102,11 @@ class _SignInState extends State<SignIn> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SizedBox(
-                                  height: height / 10,
+                                const SizedBox(
+                                  height: 10,
                                 ),
                                 const Text(
-                                  'Login',
+                                  'Setup new password ',
                                   style: TextStyle(
                                       fontSize: 35,
                                       fontWeight: FontWeight.bold,
@@ -121,7 +116,7 @@ class _SignInState extends State<SignIn> {
                                   height: 10.0,
                                 ),
                                 const Text(
-                                  'Please sign in to continue',
+                                  'Please create new password to sign in',
                                   style: TextStyle(
                                       color:
                                           Color.fromARGB(255, 122, 122, 122)),
@@ -134,76 +129,57 @@ class _SignInState extends State<SignIn> {
                                     children: [
                                       TextInput(
                                           data: TestInputData(
-                                              controller: usernameController,
+                                              controller: passwordController,
                                               validatorFun: (val) {
                                                 if (val!.isEmpty) {
-                                                  return "Email cannot be empty";
+                                                  return "password cannot be empty";
+                                                } else if (confirmPasswordController
+                                                        .text.isNotEmpty &&
+                                                    val.isNotEmpty) {
+                                                  if (passwordController.text ==
+                                                      confirmPasswordController
+                                                          .text) {
+                                                    null;
+                                                  } else {
+                                                    return "Passwords didn't match";
+                                                  }
                                                 } else {
                                                   null;
                                                 }
                                               },
-                                              labelText: 'Email')),
+                                              labelText: 'New Password',
+                                              textInputAction:
+                                                  TextInputAction.done,
+                                              obscureText: true)),
                                       const SizedBox(
                                         height: 10,
                                       ),
                                       TextInput(
                                           data: TestInputData(
-                                              controller: passwordController,
+                                              controller:
+                                                  confirmPasswordController,
                                               validatorFun: (val) {
                                                 if (val!.isEmpty) {
                                                   return "password cannot be empty";
+                                                } else if (passwordController
+                                                        .text.isNotEmpty &&
+                                                    val.isNotEmpty) {
+                                                  if (passwordController.text ==
+                                                      confirmPasswordController
+                                                          .text) {
+                                                    null;
+                                                  } else {
+                                                    return "Passwords didn't match";
+                                                  }
                                                 } else {
                                                   null;
                                                 }
                                               },
-                                              labelText: 'Password',
+                                              labelText: 'Re Enter Password',
                                               textInputAction:
                                                   TextInputAction.done,
                                               obscureText: true)),
                                       const SizedBox(height: 20.0),
-                                      CheckBoxWithLabel(
-                                          data: CheckBoxWithLabelData(
-                                              headingText:
-                                                  "By continuing you accept our ",
-                                              linkText: "Privacy Policy",
-                                              additionalFun: (p0) {
-                                                setState(() {
-                                                  privacyPolicyValue =
-                                                      p0 ?? false;
-                                                });
-                                                checkValues();
-                                              },
-                                              validatorFun: (selectValue) {
-                                                if (selectValue != null &&
-                                                    selectValue == false) {
-                                                  return 'You need to accept privacy policy';
-                                                } else {
-                                                  return null;
-                                                }
-                                              })),
-                                      CheckBoxWithLabel(
-                                          data: CheckBoxWithLabelData(
-                                              headingText:
-                                                  "By continuing you accept our ",
-                                              linkText: "Terms & Conditions",
-                                              additionalFun: (p0) {
-                                                setState(() {
-                                                  termsAndConditionValue =
-                                                      p0 ?? false;
-                                                });
-                                                checkValues();
-                                              },
-                                              validatorFun: (selectValue) {
-                                                if (selectValue != null &&
-                                                    selectValue == false) {
-                                                  return 'You need to accept terms and conditions';
-                                                } else {
-                                                  return null;
-                                                }
-                                              })),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
                                       Row(
                                         children: [
                                           Expanded(
@@ -218,7 +194,7 @@ class _SignInState extends State<SignIn> {
                                                         if (_formKey
                                                             .currentState!
                                                             .validate()) {
-                                                          nativeLogin(context);
+                                                          resetPass(context);
                                                         }
                                                       }
                                                     : null,
@@ -228,7 +204,7 @@ class _SignInState extends State<SignIn> {
                                                         size: 20.0,
                                                       )
                                                     : const Text(
-                                                        'LOGIN',
+                                                        'SET NEW PASSWORD',
                                                         style: TextStyle(
                                                             color:
                                                                 Color.fromARGB(
@@ -266,7 +242,7 @@ class _SignInState extends State<SignIn> {
                                   height: height / 5,
                                 ),
                                 const Text(
-                                  'Login',
+                                  'Setup new password ',
                                   style: TextStyle(
                                       fontSize: 35,
                                       fontWeight: FontWeight.bold,
@@ -276,7 +252,7 @@ class _SignInState extends State<SignIn> {
                                   height: 10.0,
                                 ),
                                 const Text(
-                                  'Please sign in to continue',
+                                  'Please create new password to sign in',
                                   style: TextStyle(
                                       color:
                                           Color.fromARGB(255, 122, 122, 122)),
@@ -289,24 +265,20 @@ class _SignInState extends State<SignIn> {
                                     children: [
                                       TextInput(
                                           data: TestInputData(
-                                              controller: usernameController,
-                                              validatorFun: (val) {
-                                                if (val!.isEmpty) {
-                                                  return "Email cannot be empty";
-                                                } else {
-                                                  null;
-                                                }
-                                              },
-                                              labelText: 'Email')),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      TextInput(
-                                          data: TestInputData(
                                               controller: passwordController,
                                               validatorFun: (val) {
                                                 if (val!.isEmpty) {
                                                   return "password cannot be empty";
+                                                } else if (passwordController
+                                                        .text.isNotEmpty &&
+                                                    val.isNotEmpty) {
+                                                  if (passwordController.text ==
+                                                      confirmPasswordController
+                                                          .text) {
+                                                    null;
+                                                  } else {
+                                                    return "Passwords didn't match";
+                                                  }
                                                 } else {
                                                   null;
                                                 }
@@ -315,50 +287,35 @@ class _SignInState extends State<SignIn> {
                                               textInputAction:
                                                   TextInputAction.done,
                                               obscureText: true)),
-                                      const SizedBox(height: 20.0),
-                                      CheckBoxWithLabel(
-                                          data: CheckBoxWithLabelData(
-                                              headingText:
-                                                  "By continuing you accept our ",
-                                              linkText: "Privacy Policy",
-                                              additionalFun: (p0) {
-                                                setState(() {
-                                                  privacyPolicyValue =
-                                                      p0 ?? false;
-                                                });
-                                                checkValues();
-                                              },
-                                              validatorFun: (selectValue) {
-                                                if (selectValue != null &&
-                                                    selectValue == false) {
-                                                  return 'You need to accept privacy policy';
-                                                } else {
-                                                  return null;
-                                                }
-                                              })),
-                                      CheckBoxWithLabel(
-                                          data: CheckBoxWithLabelData(
-                                              headingText:
-                                                  "By continuing you accept our ",
-                                              linkText: "Terms & Conditions",
-                                              additionalFun: (p0) {
-                                                setState(() {
-                                                  termsAndConditionValue =
-                                                      p0 ?? false;
-                                                });
-                                                checkValues();
-                                              },
-                                              validatorFun: (selectValue) {
-                                                if (selectValue != null &&
-                                                    selectValue == false) {
-                                                  return 'You need to accept terms and conditions';
-                                                } else {
-                                                  return null;
-                                                }
-                                              })),
                                       const SizedBox(
                                         height: 10,
                                       ),
+                                      TextInput(
+                                          data: TestInputData(
+                                              controller:
+                                                  confirmPasswordController,
+                                              validatorFun: (val) {
+                                                if (val!.isEmpty) {
+                                                  return "password cannot be empty";
+                                                } else if (passwordController
+                                                        .text.isNotEmpty &&
+                                                    val.isNotEmpty) {
+                                                  if (passwordController.text ==
+                                                      confirmPasswordController
+                                                          .text) {
+                                                    null;
+                                                  } else {
+                                                    return "Passwords didn't match";
+                                                  }
+                                                } else {
+                                                  null;
+                                                }
+                                              },
+                                              labelText: 'Re Enter Password',
+                                              textInputAction:
+                                                  TextInputAction.done,
+                                              obscureText: true)),
+                                      const SizedBox(height: 20.0),
                                       Row(
                                         children: [
                                           Expanded(
@@ -373,7 +330,7 @@ class _SignInState extends State<SignIn> {
                                                         if (_formKey
                                                             .currentState!
                                                             .validate()) {
-                                                          nativeLogin(context);
+                                                          resetPass(context);
                                                         }
                                                       }
                                                     : null,
@@ -383,7 +340,7 @@ class _SignInState extends State<SignIn> {
                                                         size: 20.0,
                                                       )
                                                     : const Text(
-                                                        'LOGIN',
+                                                        'SET NEW PASSWORD',
                                                         style: TextStyle(
                                                             color:
                                                                 Color.fromARGB(
@@ -414,45 +371,25 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  void nativeLogin(BuildContext context) {
+  void resetPass(BuildContext context) {
     if (true) {
       setState(() {
         signInPressed = true;
       });
       //After successful login we will redirect to profile page. Let's create profile page now
-      login(usernameController.text, passwordController.text).then((value) => {
-            if (value.state == "S1000")
+      resetPassword(widget.jwt, passwordController.text).then((value) => {
+            if (value.status == "S1000")
               {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DashboardPage(
-                              initialIndex: 0,
-                            )))
-              }
-            else if (value.state == "S1010")
-              {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ResetPassword(
-                              jwt: value.jwt,
-                            )))
-              }
-            else if (value.state == "E1005")
-              {
-                setState(() {
-                  signInPressed = false;
-                }),
-                showErrorDialog(context,
-                    "You account temporally disabled. Please contact Administrator")
+                showSuccessCommonDialogPR(
+                    context, "Password reset successful. Please login again")
               }
             else
               {
                 setState(() {
                   signInPressed = false;
                 }),
-                showErrorDialog(context, "Username or Password Invalid")
+                showErrorDialog(
+                    context, "Something went wrong. Please try again later")
               }
           });
     }

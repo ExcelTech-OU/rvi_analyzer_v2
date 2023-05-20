@@ -43,7 +43,7 @@ dependencies:
       url: https://github.com/espresso3389/flutter_blue
       ref: 9758034dc41956d7edd3b6917f3ed3dd9eab5ef1
   flutter_riverpod: ^2.0.2
-  flutter_secure_storage: ^7.0.1
+  flutter_secure_storage: ^8.0.0
   roundcheckbox: ^2.0.5
   animations: ^2.0.7
   intl: ^0.18.0

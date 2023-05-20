@@ -1,5 +1,6 @@
 const String baseUrl = "http://54.251.199.35/rvi-analyzer-api/";
 const String loginPath = "login/user";
+const String resetPasswordPath = "rvi/analyzer/v1/user/resetPassword";
 const String saveModeOnePath = "rvi/analyzer/v1/session/add/one";
 const String saveModeTwoPath = "rvi/analyzer/v1/session/add/two";
 const String saveModeThreePath = "rvi/analyzer/v1/session/add/three";
