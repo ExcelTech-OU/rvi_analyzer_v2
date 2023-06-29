@@ -249,6 +249,10 @@ class _ConfigureRightPanelType01State
                 .read(deviceDataMap[widget.sc.device.name]!)
                 .batchNoController
                 .text,
+            serialNo: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .serialNoController
+                .text,
             sessionId: ref
                 .read(deviceDataMap[widget.sc.device.name]!)
                 .sessionIdController

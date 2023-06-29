@@ -238,6 +238,10 @@ class _ConfigureRightPanelType02State
                 .read(deviceDataMap[widget.sc.device.name]!)
                 .operatorIdController
                 .text,
+            serialNo: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .serialNoController
+                .text,
             batchNo: ref
                 .read(deviceDataMap[widget.sc.device.name]!)
                 .batchNoController

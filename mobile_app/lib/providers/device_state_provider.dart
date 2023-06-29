@@ -18,6 +18,7 @@ class DeviceState extends ChangeNotifier {
   // Left pannel date
 
   TextEditingController customerNameController = TextEditingController();
+  TextEditingController serialNoController = TextEditingController();
   TextEditingController batchNoController = TextEditingController();
   TextEditingController operatorIdController = TextEditingController();
   TextEditingController sessionIdController = TextEditingController();

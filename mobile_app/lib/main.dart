@@ -25,7 +25,7 @@ class AchillesUIApp extends StatelessWidget {
       title: 'RVI Analyzer',
       theme: customDarkTheme(),
       routes: {
-        '/': (BuildContext context) => const SplashScreen(),
+        '/': (BuildContext context) => SplashScreen(),
         '/login': (BuildContext context) => const SignIn(),
         '/home': (BuildContext context) => DashboardPage(
               initialIndex: 0,

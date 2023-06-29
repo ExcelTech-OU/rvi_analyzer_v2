@@ -1,25 +1,36 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rvi_analyzer/service/login_service.dart';
 import 'package:flutter/material.dart';
+import 'package:rvi_analyzer/service/common_service.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+class SplashScreen extends ConsumerStatefulWidget {
+  SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   bool _isVisible = false;
 
   _SplashScreenState() {
     Timer(const Duration(milliseconds: 1500), () {
       setState(() {
-        loginCheck().then((value) => !value
-            ? Navigator.of(context)
-                .pushNamedAndRemoveUntil('/login', (route) => false)
-            : Navigator.pushReplacementNamed(context, "/home"));
+        isLogout().then((isLogout) => isLogout
+            ? {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/login', (route) => false)
+              }
+            : {
+                checkJwt().then((value) => {
+                      if (value.status == "S1000")
+                        {Navigator.pushReplacementNamed(context, "/home")}
+                      else
+                        {showLogoutPopup(context, ref)}
+                    })
+              });
       });
     });
 

@@ -22,14 +22,12 @@ Future<LoginResponse> login(String userName, String password) async {
       sourceK: "MOBILE"
     }),
   );
-  print(response.body);
+
   await Future.delayed(const Duration(seconds: 3));
   if (response.statusCode == 200) {
     LoginResponse loginResponse =
         LoginResponse.fromJson(jsonDecode(response.body));
-    if (loginResponse.state == "S1000") {
-      await storage.write(key: jwtK, value: loginResponse.jwt);
-    }
+    await storage.write(key: jwtK, value: loginResponse.jwt);
     return loginResponse;
   } else if (response.statusCode == 401) {
     LoginResponse loginResponse =
@@ -80,21 +78,40 @@ Future<SimpleUser> userDetails() async {
   }
 }
 
+Future<CommonResponse> checkJwt() async {
+  const storage = FlutterSecureStorage();
+  String? jwt = await storage.read(key: jwtK);
+  final response = await http.get(
+    Uri.parse('$baseUrl$jwtCheckPath'),
+    headers: <String, String>{
+      contentTypeK: contentTypeJsonK,
+      authorizationK: '$bearerK $jwt',
+    },
+  );
+  if (response.statusCode == 200) {
+    return CommonResponse.fromJson(jsonDecode(response.body));
+  } else if (response.statusCode == 401) {
+    return CommonResponse.fromDetails("E2000", "Session Expired");
+  } else {
+    return CommonResponse.fromDetails(
+        "E1000", "Cannot update the data. Please try again");
+  }
+}
+
 Future<void> logout() async {
   const storage = FlutterSecureStorage();
   await storage.delete(key: jwtK);
 }
 
-Future<bool> loginCheck() async {
+Future<bool> isLogout() async {
   const storage = FlutterSecureStorage();
-  String? value;
-  if (await storage.containsKey(key: "jwt")) {
-    try {
-      value = await storage.read(key: "jwt");
-    } catch (e) {
-      return false;
-    }
+  try {
+    String? jwt = await storage.read(key: "jwt");
+    print("BBBBBBBB");
+    print(jwt);
+    return jwt == null;
+  } catch (e) {
+    print("AAAAAAAAA");
+    return true;
   }
-
-  return value == null;
 }

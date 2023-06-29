@@ -40,7 +40,7 @@ class _QRScannerState extends State<QRScanner> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
                       child: Text(
-                        'Batch No : ${result!.code}',
+                        'Serial No : ${result!.code}',
                         style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

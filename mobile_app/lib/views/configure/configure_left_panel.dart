@@ -43,7 +43,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
       if (qrCode != null) {
         ref
             .watch(deviceDataMap[widget.sc.device.name]!)
-            .batchNoController
+            .serialNoController
             .text = qrCode;
       }
     });
@@ -213,15 +213,15 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                         data: TestInputData(
                             controller: ref
                                 .watch(deviceDataMap[widget.sc.device.name]!)
-                                .batchNoController,
+                                .serialNoController,
                             validatorFun: (val) {
                               if (val!.isEmpty) {
-                                return "Batch No cannot be empty";
+                                return "Serial No cannot be empty";
                               } else {
                                 null;
                               }
                             },
-                            labelText: 'Batch No',
+                            labelText: 'Serial No',
                             textInputAction: TextInputAction.done,
                             obscureText: false,
                             enabled: !ref
@@ -255,6 +255,25 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                   ),
                 ],
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextInput(
+                  data: TestInputData(
+                      controller: ref
+                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .operatorIdController,
+                      validatorFun: (val) {
+                        if (val!.isEmpty) {
+                          return "Batch No cannot be empty";
+                        } else {
+                          null;
+                        }
+                      },
+                      labelText: 'Batch No',
+                      enabled: !ref
+                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .started)),
               const SizedBox(
                 height: 10,
               ),

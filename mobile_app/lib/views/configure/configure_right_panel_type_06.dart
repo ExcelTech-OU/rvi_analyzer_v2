@@ -14,6 +14,7 @@ import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:rvi_analyzer/views/common/line_chart.dart';
+import 'package:rvi_analyzer/views/common/line_chart_temp.dart';
 import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
 
@@ -100,8 +101,19 @@ class _ConfigureRightPanelType06State
                     ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
                 .current;
 
-            double currentReadingRes =
-                currentReadingVoltage / currentReadingCurrent;
+            double currentReadingRes = currentReadingVoltage == 0
+                ? 0.001 / currentReadingCurrent == 0
+                    ? 0.001
+                    : double.parse(ref
+                        .read(deviceDataMap[widget.sc.device.name]!)
+                        .fixedCurrentControllerMode06
+                        .text)
+                : currentReadingVoltage / currentReadingCurrent == 0
+                    ? 0.001
+                    : double.parse(ref
+                        .read(deviceDataMap[widget.sc.device.name]!)
+                        .fixedCurrentControllerMode06
+                        .text);
             int currentReadingTem = ref
                 .read(
                     ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
@@ -167,6 +179,23 @@ class _ConfigureRightPanelType06State
                     .read(deviceDataMap[widget.sc.device.name]!)
                     .yMaxGraph01Mode06 = currentReadingVoltage;
               }
+              if (ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph02Mode06 <
+                  currentReadingTem) {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph02Mode06 = currentReadingTem.toDouble();
+              }
+
+              if (ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph03Mode06 <
+                  currentReadingRes) {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph02Mode06 = currentReadingRes;
+              }
             }
 
             ref
@@ -227,6 +256,10 @@ class _ConfigureRightPanelType06State
             operatorId: ref
                 .read(deviceDataMap[widget.sc.device.name]!)
                 .operatorIdController
+                .text,
+            serialNo: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .serialNoController
                 .text,
             batchNo: ref
                 .read(deviceDataMap[widget.sc.device.name]!)
@@ -467,8 +500,8 @@ class _ConfigureRightPanelType06State
                   children: [
                     Expanded(
                         flex: 1,
-                        child: LineChartSample2(
-                          data: LineChartDataCustom(
+                        child: LineChartSampleTemp(
+                          data: LineChartDataCustom2(
                               xAxisName: "Time (Sec)",
                               spotData: ref
                                   .watch(deviceDataMap[widget.sc.device.name]!)

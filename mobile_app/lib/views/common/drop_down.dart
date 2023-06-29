@@ -67,7 +67,7 @@ class _DropDownCustomState extends State<DropDownCustom> {
             height: 20,
           ),
           SizedBox(
-            height: height / 3,
+            height: (height / 3) - 4,
             child: Scrollbar(
               thumbVisibility: false,
               child: ListView.builder(

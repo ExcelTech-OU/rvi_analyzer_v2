@@ -7,6 +7,7 @@ const String saveModeThreePath = "rvi/analyzer/v1/session/add/three";
 const String saveModeFourPath = "rvi/analyzer/v1/session/add/four";
 const String saveModeFivePath = "rvi/analyzer/v1/session/add/five";
 const String saveModeSixPath = "rvi/analyzer/v1/session/add/six";
+const String jwtCheckPath = "rvi/analyzer/v1/user/jwt/validate";
 
 const String loginPathWithGoogle = "user/login/google";
 const String registerPath = "user/register";

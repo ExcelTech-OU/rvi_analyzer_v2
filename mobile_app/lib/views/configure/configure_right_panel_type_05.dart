@@ -14,6 +14,7 @@ import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:rvi_analyzer/views/common/line_chart.dart';
+import 'package:rvi_analyzer/views/common/line_chart_temp.dart';
 import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
 
@@ -100,8 +101,18 @@ class _ConfigureRightPanelType05State
                     ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
                 .current;
 
-            double currentReadingRes =
-                currentReadingVoltage / currentReadingCurrent;
+            double currentReadingRes = currentReadingVoltage == 0
+                ? double.parse(ref
+                                .read(deviceDataMap[widget.sc.device.name]!)
+                                .fixedVoltageControllerMode05
+                                .text) /
+                            currentReadingCurrent ==
+                        0
+                    ? 0.001
+                    : currentReadingCurrent
+                : currentReadingVoltage / currentReadingCurrent == 0
+                    ? 0.001
+                    : currentReadingCurrent;
 
             int currentReadingTem = ref
                 .read(
@@ -168,6 +179,23 @@ class _ConfigureRightPanelType05State
                     .read(deviceDataMap[widget.sc.device.name]!)
                     .yMaxGraph01Mode05 = currentReadingCurrent;
               }
+              if (ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph02Mode05 <
+                  currentReadingTem) {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph02Mode05 = currentReadingTem.toDouble();
+              }
+
+              if (ref
+                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .yMaxGraph03Mode05 <
+                  currentReadingRes) {
+                ref
+                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .yMaxGraph02Mode05 = currentReadingRes;
+              }
             }
 
             ref
@@ -229,6 +257,10 @@ class _ConfigureRightPanelType05State
             operatorId: ref
                 .read(deviceDataMap[widget.sc.device.name]!)
                 .operatorIdController
+                .text,
+            serialNo: ref
+                .read(deviceDataMap[widget.sc.device.name]!)
+                .serialNoController
                 .text,
             batchNo: ref
                 .read(deviceDataMap[widget.sc.device.name]!)
@@ -409,7 +441,7 @@ class _ConfigureRightPanelType05State
             ],
           ),
           const SizedBox(
-            height: 10.0,
+            height: 20.0,
           ),
           !closed
               ? Row(
@@ -470,8 +502,8 @@ class _ConfigureRightPanelType05State
                   children: [
                     Expanded(
                         flex: 1,
-                        child: LineChartSample2(
-                          data: LineChartDataCustom(
+                        child: LineChartSampleTemp(
+                          data: LineChartDataCustom2(
                               xAxisName: "Time (Sec)",
                               spotData: ref
                                   .watch(deviceDataMap[widget.sc.device.name]!)
@@ -750,16 +782,16 @@ class _ConfigureRightPanelType05State
                             fontWeight: FontWeight.bold,
                             color: Colors.black54),
                       ),
-                      // const SizedBox(
-                      //   width: 50,
-                      // ),
-                      // Text(
-                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
-                      //   style: const TextStyle(
-                      //       fontSize: 15,
-                      //       fontWeight: FontWeight.bold,
-                      //       color: Colors.black54),
-                      // ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Text(
+                        "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
                     ],
                   ),
                   const SizedBox(
