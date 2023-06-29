@@ -8,6 +8,7 @@ import lombok.Data;
 public class DefaultConfigurationDto {
     private String customerName;
     private String operatorId;
+    private String serialNo;
     private String batchNo;
     private String sessionId;
 }

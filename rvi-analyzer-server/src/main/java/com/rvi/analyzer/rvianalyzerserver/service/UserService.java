@@ -307,4 +307,58 @@ public class UserService {
                         .status("E1000")
                         .statusDescription("Failed").build())));
     }
+
+    public Mono<ResponseEntity<UserRolesResponse>> getUserRoles(String auth) {
+        return Mono.just(jwtUtils.getUsername(auth))
+                .doOnNext(request -> log.info("User Roles request received for user [{}]", request))
+                .flatMap(userRepository::findByUsername)
+                .filter(Objects::nonNull)
+                .flatMap(user ->
+                        {
+                            if (user.getPasswordType().equals("DEFAULT") || user.getPasswordType().equals("RESET")) {
+                                return Mono.just(
+                                        ResponseEntity.ok(UserRolesResponse.builder()
+                                                .user(userMapper.userToUserDto(user))
+                                                .status("S1010")
+                                                .statusDescription("Password Reset Needed").build())
+                                );
+                            } else {
+                                return userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+                                        .flatMap(roles -> {
+                                            log.info("user roles [{}] user group [{}]", roles, user.getGroup());
+                                            return Mono.just(ResponseEntity.ok(UserRolesResponse.builder()
+                                                    .user(userMapper.userToUserDto(user))
+                                                    .roles(roles)
+                                                    .status("S1000")
+                                                    .statusDescription("Success").build()));
+
+                                        });
+                            }
+                        }
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UserRolesResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Login Failed").build())));
+    }
+
+    public Mono<ResponseEntity<CommonResponse>> checkJwt(String auth) {
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(user -> {
+                    if (user.getPasswordType().equals("DEFAULT") || user.getPasswordType().equals("RESET")) {
+                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                                .status("E1000")
+                                .statusDescription("Failed").build()));
+                    } else {
+                        return Mono.just(
+                                ResponseEntity.ok(CommonResponse.builder()
+                                        .status("S1000")
+                                        .statusDescription("Success").build(
+                                        )
+                                ));
+                    }
+                })
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed").build())));
+    }
 }

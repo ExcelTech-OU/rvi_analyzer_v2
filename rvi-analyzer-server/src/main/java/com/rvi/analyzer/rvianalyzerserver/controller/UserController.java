@@ -29,6 +29,16 @@ public class UserController {
         return userService.resetPassword(userName, auth);
     }
 
+    @GetMapping(path = "/rvi/analyzer/v1/user/roles")
+    public Mono<ResponseEntity<UserRolesResponse>> getUserRoles(@RequestHeader("Authorization") String auth) {
+        return userService.getUserRoles(auth);
+    }
+
+    @GetMapping(path = "/rvi/analyzer/v1/user/jwt/validate")
+    public Mono<ResponseEntity<CommonResponse>> checkJwt(@RequestHeader("Authorization") String auth) {
+        return userService.checkJwt(auth);
+    }
+
     @PostMapping(path = "/rvi/analyzer/v1/user/resetPassword")
     public Mono<ResponseEntity<CommonResponse>> resetPasswordUser(@RequestBody PasswordResetRequest request, @RequestHeader("Authorization") String auth) {
         return userService.resetPassword(auth, request);

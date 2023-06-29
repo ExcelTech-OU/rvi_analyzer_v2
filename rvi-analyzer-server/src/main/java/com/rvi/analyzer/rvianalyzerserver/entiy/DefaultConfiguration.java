@@ -13,6 +13,8 @@ public class DefaultConfiguration {
     private String customerName;
     @Field(name = "operator-id")
     private String operatorId;
+    @Field(name = "serial-no")
+    private String serialNo;
     @Field(name = "batch-no")
     private String batchNo;
     @Field(name = "session-id")
