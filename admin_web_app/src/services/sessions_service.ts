@@ -25,6 +25,7 @@ export interface ModeOneDto {
 export interface DefaultConfiguration {
     customerName: string
     operatorId: string
+    serialNo: string
     batchNo: string
     sessionId: string
 }
@@ -203,7 +204,7 @@ export type ShareReportResponse = {
 export const sessionApi = createApi({
     reducerPath: 'sessionApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://54.251.199.35/rvi-analyzer-api/',
+        baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("jwt") as string;
             if (!headers.has("Authorization") && token) {

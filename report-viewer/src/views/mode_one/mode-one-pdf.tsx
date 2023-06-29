@@ -196,7 +196,7 @@ function ModeOnePdfDocument({ session }: ModeOnePdfDocumentProps) {
                                         <Text style={styles.tableCell}>{item.readings[0].current}</Text>
                                     </View>
                                     <View style={styles.tableCol}>
-                                        <Text style={styles.tableCell}>{item.readings[0].voltage}</Text>
+                                        <Text style={styles.tableCell}>{session.sessionConfigurationModeOne.voltage}</Text>
                                     </View>
                                     <View style={styles.tableColMax}>
                                         <Text style={styles.tableCell}>{new Date(item.readings[0].readAt).toLocaleDateString() + " " + new Date(item.readings[0].readAt).toLocaleTimeString()}</Text>

@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "./store/hooks";
 import Login from "./views/auth/login/login";
 import { DashboardLayout } from "./views/components/dashboard-layout";
+import { useGetRolesMutation, useGetRolesQuery } from "./services/user_service";
+import { useDispatch } from "react-redux";
+import { logout, rolesGetSuccess } from "./views/auth/login/auth-slice";
 
 type AppProps = {
   children: ReactNode;
@@ -34,12 +37,26 @@ function App({ children }: AppProps) {
   const stateLogin = useAppSelector((state) => state.loginStatus.jwt)
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
+  const [roles] = useGetRolesMutation();
+  const dispatch = useDispatch()
 
   console.log(isLogin)
 
   useEffect(() => {
     if (isLogin) {
-      navigate("/");
+      roles({})
+        .unwrap()
+        .then((payload) => {
+          console.log(payload)
+          dispatch(rolesGetSuccess(payload))
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log(error)
+
+          dispatch(logout())
+          navigate("/login");
+        })
     } else {
       navigate("/login");
     }

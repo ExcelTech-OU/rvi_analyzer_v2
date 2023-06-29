@@ -153,6 +153,7 @@ function ModeOnePdfDocument({ session }: ModeOnePdfDocumentProps) {
                         <Text style={styles.headerText}>Default Configurations</Text>
                         <Text style={styles.sessionTextPrefix}>Mode   : <Text style={styles.sessionText}>01</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Session Id   : <Text style={styles.sessionText}>{session.defaultConfigurations.sessionId}</Text> </Text>
+                        <Text style={styles.sessionTextPrefix}>Serial No   : <Text style={styles.sessionText}>{session.defaultConfigurations.serialNo}</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Batch No   : <Text style={styles.sessionText}>{session.defaultConfigurations.batchNo}</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Customer Name   : <Text style={styles.sessionText}>{session.defaultConfigurations.customerName}</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Operator Id   : <Text style={styles.sessionText}>{session.defaultConfigurations.operatorId}</Text> </Text>
@@ -196,7 +197,7 @@ function ModeOnePdfDocument({ session }: ModeOnePdfDocumentProps) {
                                         <Text style={styles.tableCell}>{item.readings[0].current}</Text>
                                     </View>
                                     <View style={styles.tableCol}>
-                                        <Text style={styles.tableCell}>{item.readings[0].voltage}</Text>
+                                        <Text style={styles.tableCell}>{session.sessionConfigurationModeOne.voltage}</Text>
                                     </View>
                                     <View style={styles.tableColMax}>
                                         <Text style={styles.tableCell}>{new Date(item.readings[0].readAt).toLocaleDateString() + " " + new Date(item.readings[0].readAt).toLocaleTimeString()}</Text>

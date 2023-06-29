@@ -152,6 +152,7 @@ function ModeSixPdfDocument({ session }: ModeSixPdfDocumentProps) {
                         <Text style={styles.headerText}>Default Configurations</Text>
                         <Text style={styles.sessionTextPrefix}>Mode   : <Text style={styles.sessionText}>01</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Session Id   : <Text style={styles.sessionText}>{session.defaultConfigurations.sessionId}</Text> </Text>
+                        <Text style={styles.sessionTextPrefix}>Serial No   : <Text style={styles.sessionText}>{session.defaultConfigurations.serialNo}</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Batch No   : <Text style={styles.sessionText}>{session.defaultConfigurations.batchNo}</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Customer Name   : <Text style={styles.sessionText}>{session.defaultConfigurations.customerName}</Text> </Text>
                         <Text style={styles.sessionTextPrefix}>Operator Id   : <Text style={styles.sessionText}>{session.defaultConfigurations.operatorId}</Text> </Text>

@@ -143,7 +143,7 @@ export function ModeOneSingleView({ session }: SessionDetailsProps) {
                               {item.readings[0].current}
                             </StyledTableCell>
                             <StyledTableCell align={'left'}>
-                              {item.readings[0].voltage}
+                              {session.sessionConfigurationModeOne.voltage}
                             </StyledTableCell>
                             <StyledTableCell align={'left'}>
                               {item.readings[0].result == 'PASS' ?

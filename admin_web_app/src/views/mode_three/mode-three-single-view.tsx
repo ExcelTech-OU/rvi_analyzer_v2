@@ -89,6 +89,9 @@ export function ModeThreeSingleView({ session, open, changeOpenStatus }: Session
                   Session Id : <Typography variant="subtitle2" gutterBottom display="inline" color="black">{session.defaultConfigurations.sessionId}</Typography>
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom >
+                  Serial No : <Typography variant="subtitle2" gutterBottom display="inline" color="black">{session.defaultConfigurations.serialNo}</Typography>
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom >
                   Batch No : <Typography variant="subtitle2" gutterBottom display="inline" color="black">{session.defaultConfigurations.batchNo}</Typography>
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom >

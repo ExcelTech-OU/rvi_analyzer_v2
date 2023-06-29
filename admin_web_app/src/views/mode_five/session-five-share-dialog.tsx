@@ -97,7 +97,7 @@ export default function ModeFiveShareAlertDialog({ open, session, changeOpenStat
 
                             </Grid>
                         </Grid>
-                        : <Button variant="contained" sx={{ minWidth: 250 }} onClick={share}>
+                        : <Button variant="contained" sx={{ minWidth: 250, my: 2.5, minHeight: 50 }} onClick={share}>
                             {shareClicked ? <CircularProgress color="inherit" /> : "Generate Link"}
                         </Button>}
                 </DialogContent>

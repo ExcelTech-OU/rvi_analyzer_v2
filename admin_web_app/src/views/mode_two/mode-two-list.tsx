@@ -23,8 +23,11 @@ const columns: GridColDef[] = [
         headerName: 'Operator ID',
         width: 100,
     },
-
-
+    {
+        field: 'serialNo',
+        headerName: 'Serial NO',
+        width: 100,
+    },
     {
         field: 'batchNo',
         headerName: 'Batch NO',
@@ -163,6 +166,9 @@ export default function ModeTwoList() {
                                                                                 </StyledTableCell>
                                                                                 <StyledTableCell align={'left'}>
                                                                                     {item.defaultConfigurations.operatorId}
+                                                                                </StyledTableCell>
+                                                                                <StyledTableCell align={'left'}>
+                                                                                    {item.defaultConfigurations.serialNo}
                                                                                 </StyledTableCell>
                                                                                 <StyledTableCell align={'left'}>
                                                                                     {item.defaultConfigurations.batchNo}

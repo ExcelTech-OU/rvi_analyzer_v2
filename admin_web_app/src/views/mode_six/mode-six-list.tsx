@@ -23,6 +23,11 @@ const columns: GridColDef[] = [
         width: 100,
     },
     {
+        field: 'serialNo',
+        headerName: 'Serial NO',
+        width: 100,
+    },
+    {
         field: 'batchNo',
         headerName: 'Batch NO',
         width: 100,
@@ -155,6 +160,9 @@ export default function ModeSixList() {
                                                                                 </StyledTableCell>
                                                                                 <StyledTableCell align={'left'}>
                                                                                     {item.defaultConfigurations.operatorId}
+                                                                                </StyledTableCell>
+                                                                                <StyledTableCell align={'left'}>
+                                                                                    {item.defaultConfigurations.serialNo}
                                                                                 </StyledTableCell>
                                                                                 <StyledTableCell align={'left'}>
                                                                                     {item.defaultConfigurations.batchNo}

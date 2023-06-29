@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { List } from 'reselect/es/types'
 import { CommonResponse, GeneralResponse } from './device_service'
+import { RolesResponse } from './login_service'
 
 export interface UserListResponse {
     status: string
@@ -21,7 +22,7 @@ export interface User {
 export const userApi = createApi({
     reducerPath: 'userApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://54.251.199.35/rvi-analyzer-api/',
+        baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("jwt") as string;
             if (!headers.has("Authorization") && token) {
@@ -61,6 +62,14 @@ export const userApi = createApi({
             },
             invalidatesTags: [{ type: 'userList', id: "getUsers" }]
         }),
+        getRoles: build.mutation<RolesResponse, {}>({
+            query() {
+                return {
+                    url: `login/user`,
+                    method: 'GET'
+                }
+            },
+        }),
     }),
 })
 
@@ -68,5 +77,6 @@ export const {
     useGetUsersQuery,
     useUpdateUserMutation,
     useResetPasswordMutation,
-    useAddUserMutation
+    useAddUserMutation,
+    useGetRolesMutation
 } = userApi

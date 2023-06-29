@@ -91,6 +91,9 @@ export function ModeOneSingleView({ session, open, changeOpenStatus }: SessionDe
                   Session Id : <Typography variant="subtitle2" gutterBottom display="inline" color="black">{session.defaultConfigurations.sessionId}</Typography>
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom >
+                  Serial No : <Typography variant="subtitle2" gutterBottom display="inline" color="black">{session.defaultConfigurations.serialNo}</Typography>
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom >
                   Batch No : <Typography variant="subtitle2" gutterBottom display="inline" color="black">{session.defaultConfigurations.batchNo}</Typography>
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom >
@@ -151,7 +154,7 @@ export function ModeOneSingleView({ session, open, changeOpenStatus }: SessionDe
                                   {item.readings[0].current}
                                 </StyledTableCell>
                                 <StyledTableCell align={'left'}>
-                                  {item.readings[0].voltage}
+                                  {session.sessionConfigurationModeOne.voltage}
                                 </StyledTableCell>
                                 <StyledTableCell align={'left'}>
                                   {item.readings[0].result == 'PASS' ?

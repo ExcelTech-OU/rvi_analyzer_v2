@@ -15,7 +15,7 @@ export function handleGenerateExcelModeOne(session: ModeOneDto) {
             reading.testId,
             reading.readings[0].temperature,
             reading.readings[0].current,
-            reading.readings[0].voltage,
+            session.sessionConfigurationModeOne.voltage,
             reading.readings[0].readAt,
             reading.readings[0].result,
         ]),
