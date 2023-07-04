@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:rvi_analyzer/domain/common_response.dart';
+import 'package:rvi_analyzer/repository/entity/login_info.dart';
+import 'package:rvi_analyzer/repository/login_repo.dart';
 
 import '../common/key_box.dart';
 import '../common/config.dart';
@@ -10,6 +12,7 @@ import '../domain/login_response.dart';
 import '../domain/simple_user.dart';
 
 Future<LoginResponse> login(String userName, String password) async {
+  final loginInfoRepo = LoginInfoRepository();
   const storage = FlutterSecureStorage();
   final response = await http.post(
     Uri.parse('$baseUrl$loginPath'),
@@ -28,6 +31,7 @@ Future<LoginResponse> login(String userName, String password) async {
     LoginResponse loginResponse =
         LoginResponse.fromJson(jsonDecode(response.body));
     await storage.write(key: jwtK, value: loginResponse.jwt);
+    loginInfoRepo.addLoginInfo(LoginInfo(userName, loginResponse.jwt));
     return loginResponse;
   } else if (response.statusCode == 401) {
     LoginResponse loginResponse =

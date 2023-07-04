@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rvi_analyzer/views/dashboard/connect_device_dashboard/device_card.dart';
+import 'package:rvi_analyzer/views/history/history_summary.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   int initialIndex = 0;
@@ -285,10 +286,14 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                           height: 52,
                                           child: ElevatedButton(
                                             onPressed: () {
-                                              print('Button pressed!');
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          HistorySummary()));
                                             },
                                             child: const Icon(
-                                              Icons.history,
+                                              Icons.settings,
                                               color: Colors.white,
                                             ),
                                           ),

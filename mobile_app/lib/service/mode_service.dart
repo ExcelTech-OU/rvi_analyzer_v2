@@ -11,9 +11,12 @@ import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_six_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_three_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_two_entity.dart';
+import 'package:rvi_analyzer/repository/modes_info_repo.dart';
 
-Future<CommonResponse> saveModeOne(ModeOne modeOne) async {
+Future<CommonResponse> saveModeOne(ModeOne modeOne, String username) async {
+  final repo = ModeInfoRepository();
   const storage = FlutterSecureStorage();
+
   try {
     String? jwt = await storage.read(key: jwtK);
     final response = await http.post(
@@ -29,10 +32,14 @@ Future<CommonResponse> saveModeOne(ModeOne modeOne) async {
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
+      await repo.saveOrUpdateModeOne(username, modeOne);
+
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
+    await repo.saveOrUpdateModeOne(username, modeOne);
+
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
