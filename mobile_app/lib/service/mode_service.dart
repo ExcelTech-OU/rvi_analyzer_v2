@@ -5,12 +5,12 @@ import 'package:rvi_analyzer/common/key_box.dart';
 import 'package:rvi_analyzer/domain/common_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:rvi_analyzer/domain/mode_five.dart';
-import 'package:rvi_analyzer/domain/mode_four.dart';
-import 'package:rvi_analyzer/domain/mode_one.dart';
-import 'package:rvi_analyzer/domain/mode_six.dart';
-import 'package:rvi_analyzer/domain/mode_three.dart';
-import 'package:rvi_analyzer/domain/mode_two.dart';
+import 'package:rvi_analyzer/repository/entity/mode_five_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_four_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_six_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_three_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_two_entity.dart';
 
 Future<CommonResponse> saveModeOne(ModeOne modeOne) async {
   const storage = FlutterSecureStorage();

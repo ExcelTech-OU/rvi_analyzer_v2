@@ -2,6 +2,15 @@ import 'package:flutter/services.dart';
 import 'package:rvi_analyzer/common/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:rvi_analyzer/repository/adapter/common_adapter.dart';
+import 'package:rvi_analyzer/repository/adapter/mode_five_adapter.dart';
+import 'package:rvi_analyzer/repository/adapter/mode_four_adapter.dart';
+import 'package:rvi_analyzer/repository/adapter/mode_info_adapter.dart';
+import 'package:rvi_analyzer/repository/adapter/mode_one_adapter.dart';
+import 'package:rvi_analyzer/repository/adapter/mode_six_adapter.dart';
+import 'package:rvi_analyzer/repository/adapter/mode_three_adapter.dart';
+import 'package:rvi_analyzer/repository/adapter/mode_two_adapter.dart';
 
 import 'package:rvi_analyzer/views/auth/sign_in/sign_in.dart';
 import 'package:rvi_analyzer/views/dashboard/dashboard.dart';
@@ -10,7 +19,27 @@ import 'package:rvi_analyzer/views/splash/splash_screen.dart';
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
+  registerAdapters();
   runApp(const ProviderScope(child: AchillesUIApp()));
+}
+
+void registerAdapters() {
+  Hive.registerAdapter(ModeOneAdapter());
+  Hive.registerAdapter(SessionConfigurationModeOneAdapter());
+  Hive.registerAdapter(SessionResultAdapter());
+  Hive.registerAdapter(ReadingAdapter());
+  Hive.registerAdapter(ModeTwoAdapter());
+  Hive.registerAdapter(SessionConfigurationModeTwoAdapter());
+  Hive.registerAdapter(ModeThreeAdapter());
+  Hive.registerAdapter(SessionConfigurationModeThreeAdapter());
+  Hive.registerAdapter(ModeFourAdapter());
+  Hive.registerAdapter(SessionConfigurationModeFourAdapter());
+  Hive.registerAdapter(ModeFiveAdapter());
+  Hive.registerAdapter(SessionConfigurationModeFiveAdapter());
+  Hive.registerAdapter(ModeSixAdapter());
+  Hive.registerAdapter(SessionConfigurationModeSixAdapter());
+  Hive.registerAdapter(DefaultConfigurationAdapter());
+  Hive.registerAdapter(ModeInfoAdapter());
 }
 
 class AchillesUIApp extends StatelessWidget {

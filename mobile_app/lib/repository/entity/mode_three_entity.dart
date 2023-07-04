@@ -1,19 +1,30 @@
-import 'package:rvi_analyzer/domain/default_configuration.dart';
-import 'package:rvi_analyzer/domain/session_result.dart';
+import 'package:hive/hive.dart';
+import 'package:rvi_analyzer/repository/entity/common_entity.dart';
 
-class ModeThree {
+@HiveType(typeId: 9)
+class ModeThree extends HiveObject {
+  @HiveField(0)
   final String createdBy;
+
+  @HiveField(1)
   final DefaultConfiguration defaultConfigurations;
+
+  @HiveField(2)
   final SessionConfigurationModeThree sessionConfigurationModeThree;
+
+  @HiveField(3)
   final SessionResult results;
+
+  @HiveField(4)
   final String status;
 
-  ModeThree(
-      {required this.createdBy,
-      required this.defaultConfigurations,
-      required this.sessionConfigurationModeThree,
-      required this.results,
-      required this.status});
+  ModeThree({
+    required this.createdBy,
+    required this.defaultConfigurations,
+    required this.sessionConfigurationModeThree,
+    required this.results,
+    required this.status,
+  });
 
   Map toJson() => {
         'createdBy': createdBy,
@@ -24,19 +35,30 @@ class ModeThree {
       };
 }
 
-class SessionConfigurationModeThree {
+@HiveType(typeId: 10)
+class SessionConfigurationModeThree extends HiveObject {
+  @HiveField(0)
   final String startingVoltage;
+
+  @HiveField(1)
   final String desiredVoltage;
+
+  @HiveField(2)
   final String maxCurrent;
+
+  @HiveField(3)
   final String voltageResolution;
+
+  @HiveField(4)
   final String chargeInTime;
 
-  SessionConfigurationModeThree(
-      {required this.startingVoltage,
-      required this.desiredVoltage,
-      required this.maxCurrent,
-      required this.voltageResolution,
-      required this.chargeInTime});
+  SessionConfigurationModeThree({
+    required this.startingVoltage,
+    required this.desiredVoltage,
+    required this.maxCurrent,
+    required this.voltageResolution,
+    required this.chargeInTime,
+  });
 
   Map toJson() => {
         'startingVoltage': startingVoltage,

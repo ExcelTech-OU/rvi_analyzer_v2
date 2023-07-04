@@ -69,7 +69,7 @@ class _DeviceTileCardModelState extends State<DeviceTileCardModel> {
                   if (value.status == "S1000")
                     {
                       scanResult.device
-                          .connect()
+                          .connect(autoConnect: false)
                           .then((value) => {
                                 ref
                                     .read(deviceManagementState)

@@ -45,7 +45,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
               //         {
               print(scanResult.device);
               scanResult.device
-                  .connect()
+                  .connect(autoConnect: false)
                   .then((value) => {
                         ref.read(deviceManagementState).addDevice(scanResult),
                         deviceDataMap.putIfAbsent(
