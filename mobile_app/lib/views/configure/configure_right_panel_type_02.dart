@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/repository/entity/common_entity.dart';
+import 'package:rvi_analyzer/repository/entity/login_info.dart';
 import 'package:rvi_analyzer/repository/entity/mode_two_entity.dart';
+import 'package:rvi_analyzer/repository/login_repo.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/dropdown.dart';
@@ -184,7 +186,7 @@ class _ConfigureRightPanelType02State
     return "00";
   }
 
-  void saveMode() {
+  Future<void> saveMode() async {
     double voltage = ref
         .read(ref.read(deviceDataMap[widget.sc.device.id.id]!).streamData)
         .voltage;
@@ -227,8 +229,12 @@ class _ConfigureRightPanelType02State
       showResult = true;
     });
 
+    final loginInfoRepo = LoginInfoRepository();
+
+    List<LoginInfo> infos = await loginInfoRepo.getAllLoginInfos();
+
     ModeTwo modeTwo = ModeTwo(
-        createdBy: "rukshan",
+        createdBy: infos.first.username,
         defaultConfigurations: DefaultConfiguration(
             customerName: ref
                 .read(deviceDataMap[widget.sc.device.id.id]!)
@@ -289,7 +295,7 @@ class _ConfigureRightPanelType02State
         ],
         status: "ACTIVE");
 
-    saveModeTwo(modeTwo)
+    saveModeTwo(modeTwo, infos.first.username)
         .then((value) => {
               if (value.status == "S1000")
                 {
@@ -304,8 +310,8 @@ class _ConfigureRightPanelType02State
                 {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                        getSnackBar(context, Colors.red, "Saving Failed"))
+                    ..showSnackBar(getSnackBar(context, Colors.red,
+                        "Remote submit failed & Saved for later submit"))
                 },
               ref
                   .read(deviceDataMap[widget.sc.device.id.id]!)
@@ -314,8 +320,11 @@ class _ConfigureRightPanelType02State
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
-                ..showSnackBar(
-                    getSnackBar(context, Colors.red, "Saving Failed"))
+                ..showSnackBar(getSnackBar(context, Colors.red,
+                    "Remote submit failed & Saved for later submit")),
+              ref
+                  .read(deviceDataMap[widget.sc.device.id.id]!)
+                  .saveClickedMode02 = false
             });
 
     widget.updateTestId();

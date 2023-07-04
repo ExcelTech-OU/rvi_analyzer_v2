@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_two_entity.dart';
 import 'package:rvi_analyzer/repository/modes_info_repo.dart';
 import 'package:rvi_analyzer/views/history/modes/default_configurations.dart';
 
-class ModeOneView extends StatelessWidget {
+class ModeTwoView extends StatelessWidget {
   final String username;
-  ModeOneView({Key? key, required this.username}) : super(key: key);
+  ModeTwoView({Key? key, required this.username}) : super(key: key);
   final ModeInfoRepository repo = ModeInfoRepository();
 
   @override
@@ -13,8 +13,8 @@ class ModeOneView extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             body: SingleChildScrollView(
-      child: FutureBuilder<ModeOne?>(
-          future: repo.getLastModeOne(username),
+      child: FutureBuilder<ModeTwo?>(
+          future: repo.getLastModeTwo(username),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -49,7 +49,7 @@ class ModeOneView extends StatelessWidget {
                         const Padding(
                           padding: EdgeInsets.fromLTRB(16.0, 16, 16, 0),
                           child: Text(
-                            'Mode One',
+                            'Mode Two',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 24.0,
@@ -81,14 +81,14 @@ class ModeOneView extends StatelessWidget {
                                     Row(
                                       children: [
                                         const Text(
-                                          'Max Current : ',
+                                          'Max Voltage : ',
                                           style: TextStyle(fontSize: 16.0),
                                         ),
                                         Text(
                                           snapshot
                                               .data!
-                                              .sessionConfigurationModeOne
-                                              .maxCurrent,
+                                              .sessionConfigurationModeTwo
+                                              .maxVoltage,
                                           style: const TextStyle(
                                               fontSize: 14.0,
                                               color: Colors.grey),
@@ -99,14 +99,14 @@ class ModeOneView extends StatelessWidget {
                                     Row(
                                       children: [
                                         const Text(
-                                          'Voltage : ',
+                                          'Current : ',
                                           style: TextStyle(fontSize: 16.0),
                                         ),
                                         Text(
                                           snapshot
                                               .data!
-                                              .sessionConfigurationModeOne
-                                              .voltage,
+                                              .sessionConfigurationModeTwo
+                                              .current,
                                           style: const TextStyle(
                                               fontSize: 14.0,
                                               color: Colors.grey),
@@ -175,44 +175,32 @@ class ModeOneView extends StatelessWidget {
                                   return TableRow(
                                     children: [
                                       TableCell(
-                                        child: Container(
-                                          child: Center(child: Text(e.testId)),
-                                        ),
+                                        child: Center(child: Text(e.testId)),
                                       ),
                                       TableCell(
-                                        child: Container(
-                                          child: Center(
-                                              child: Text(e
-                                                  .readings.first.temperature)),
-                                        ),
+                                        child: Center(
+                                            child: Text(
+                                                e.readings.first.temperature)),
                                       ),
                                       TableCell(
-                                        child: Container(
-                                          child: Center(
-                                              child: Text(
-                                                  e.readings.first.current)),
-                                        ),
+                                        child: Center(
+                                            child:
+                                                Text(e.readings.first.current)),
                                       ),
                                       TableCell(
-                                        child: Container(
-                                          child: Center(
-                                              child: Text(
-                                                  e.readings.first.voltage)),
-                                        ),
+                                        child: Center(
+                                            child:
+                                                Text(e.readings.first.voltage)),
                                       ),
                                       TableCell(
-                                        child: Container(
-                                          child: Center(
-                                              child: Text(
-                                                  e.readings.first.result!)),
-                                        ),
+                                        child: Center(
+                                            child:
+                                                Text(e.readings.first.result!)),
                                       ),
                                       TableCell(
-                                        child: Container(
-                                          child: Center(
-                                              child: Text(
-                                                  e.readings.first.readAt!)),
-                                        ),
+                                        child: Center(
+                                            child:
+                                                Text(e.readings.first.readAt!)),
                                       ),
                                     ],
                                   );

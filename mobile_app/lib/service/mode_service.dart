@@ -45,7 +45,8 @@ Future<CommonResponse> saveModeOne(ModeOne modeOne, String username) async {
   }
 }
 
-Future<CommonResponse> saveModeTwo(ModeTwo modeTwo) async {
+Future<CommonResponse> saveModeTwo(ModeTwo modeTwo, String username) async {
+  final repo = ModeInfoRepository();
   const storage = FlutterSecureStorage();
   try {
     String? jwt = await storage.read(key: jwtK);
@@ -62,10 +63,14 @@ Future<CommonResponse> saveModeTwo(ModeTwo modeTwo) async {
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
+      await repo.saveOrUpdateModeTwo(username, modeTwo);
+
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
+    await repo.saveOrUpdateModeTwo(username, modeTwo);
+
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
