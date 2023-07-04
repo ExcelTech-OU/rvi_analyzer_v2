@@ -21,14 +21,14 @@ class ConnectedDevicesProvider extends ChangeNotifier {
   void addDevice(ScanResult scanResult) {
     print(connectedBlueDeviceList);
     connectedBlueDeviceList.putIfAbsent(
-        scanResult.device.name, () => scanResult);
+        scanResult.device.id.id, () => scanResult);
     availableDeviceList.clear();
     notifyListeners();
   }
 
   void updateAvailable(ScanResult scanResult) {
-    if (availableDeviceList.containsKey(scanResult.device.name)) {
-      availableDeviceList.remove(scanResult.device.name);
+    if (availableDeviceList.containsKey(scanResult.device.id.id)) {
+      availableDeviceList.remove(scanResult.device.id.id);
     }
     notifyListeners();
   }
@@ -39,7 +39,7 @@ class ConnectedDevicesProvider extends ChangeNotifier {
   }
 
   void removeDevice(ScanResult scanResult) {
-    connectedBlueDeviceList.remove(scanResult.device.name);
+    connectedBlueDeviceList.remove(scanResult.device.id.id);
     notifyListeners();
   }
 

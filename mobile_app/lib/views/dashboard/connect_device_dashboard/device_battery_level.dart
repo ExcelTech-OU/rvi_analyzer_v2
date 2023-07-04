@@ -26,13 +26,13 @@ class _BatteryLevelTextState extends State<BatteryLevelText> {
       return Row(
         children: [
           Text(
-            "${ref.watch(ref.watch(deviceDataMap[scanResult.device.name]!).streamData).batteryLevel.toString()}%",
+            "${ref.watch(ref.watch(deviceDataMap[scanResult.device.id.id]!).streamData).batteryLevel.toString()}%",
             style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
                 color: getBatteryColor(ref
                     .watch(ref
-                        .watch(deviceDataMap[scanResult.device.name]!)
+                        .watch(deviceDataMap[scanResult.device.id.id]!)
                         .streamData)
                     .batteryLevel)),
           ),
@@ -44,12 +44,12 @@ class _BatteryLevelTextState extends State<BatteryLevelText> {
             child: Icon(
                 getBatteryIcon(ref
                     .watch(ref
-                        .watch(deviceDataMap[scanResult.device.name]!)
+                        .watch(deviceDataMap[scanResult.device.id.id]!)
                         .streamData)
                     .batteryLevel),
                 color: getBatteryColor(ref
                     .watch(ref
-                        .watch(deviceDataMap[scanResult.device.name]!)
+                        .watch(deviceDataMap[scanResult.device.id.id]!)
                         .streamData)
                     .batteryLevel)),
           ),

@@ -65,7 +65,7 @@ class _DeviceTileCardModelState extends State<DeviceTileCardModel> {
             setState(() {
               buttonEnabled = true;
             });
-            validateDeviceByName(scanResult.device.name).then((value) => {
+            validateDeviceByName(scanResult.device.id.id).then((value) => {
                   if (value.status == "S1000")
                     {
                       scanResult.device
@@ -75,17 +75,18 @@ class _DeviceTileCardModelState extends State<DeviceTileCardModel> {
                                     .read(deviceManagementState)
                                     .addDevice(scanResult),
                                 deviceDataMap.putIfAbsent(
-                                    scanResult.device.name,
+                                    scanResult.device.id.id,
                                     () => ChangeNotifierProvider(
                                         (ref) => DeviceState())),
                                 ref
-                                    .read(deviceDataMap[scanResult.device.name]!
-                                        .notifier)
+                                    .read(
+                                        deviceDataMap[scanResult.device.id.id]!
+                                            .notifier)
                                     .isConnected = true,
                                 ref
                                     .read(ref
                                         .read(deviceDataMap[
-                                            scanResult.device.name]!)
+                                            scanResult.device.id.id]!)
                                         .streamData)
                                     .runNotify(scanResult),
                                 Navigator.pop(context, 'OK')

@@ -78,7 +78,7 @@ class _ConfigureRightPanelType02State
                       //   width: 50,
                       // ),
                       // Text(
-                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
+                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData).notifyData}]",
                       //   style: const TextStyle(
                       //       fontSize: 15,
                       //       fontWeight: FontWeight.bold,
@@ -107,28 +107,29 @@ class _ConfigureRightPanelType02State
     DateTime now = DateTime.now();
     int milliseconds = now.millisecondsSinceEpoch;
 
-    ref.watch(deviceDataMap[widget.sc.device.name]!).sessionIdController.text =
+    ref.watch(deviceDataMap[widget.sc.device.id.id]!).sessionIdController.text =
         "S_$milliseconds";
   }
 
   void setDropDownValue(String? val) {
     if (val != null && val == "Resistance") {
-      ref.read(deviceDataMap[widget.sc.device.name]!).resSelectedMode02 = true;
+      ref.read(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode02 = true;
     } else {
-      ref.read(deviceDataMap[widget.sc.device.name]!).resSelectedMode02 = false;
+      ref.read(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode02 =
+          false;
     }
-    ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).updateStatus();
   }
 
   String getVoltage() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).started) {
       if (ref
               .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+                  ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
               .currentProtocol ==
           2) {
         return (ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+            .watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
             .voltage
             .toString());
       }
@@ -137,14 +138,14 @@ class _ConfigureRightPanelType02State
   }
 
   String getResistance() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).started) {
       if (ref
               .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+                  ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
               .currentProtocol ==
           2) {
         return (ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+            .watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
             .resistance
             .toStringAsFixed(3));
       }
@@ -153,14 +154,14 @@ class _ConfigureRightPanelType02State
   }
 
   String getCurrent() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).started) {
       if (ref
               .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+                  ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
               .currentProtocol ==
           1) {
         return (ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+            .watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
             .current
             .toString());
       }
@@ -169,14 +170,14 @@ class _ConfigureRightPanelType02State
   }
 
   String getTemp() {
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
+    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).started) {
       if (ref
               .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+                  ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
               .currentProtocol ==
           2) {
         return (ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+            .watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
             .temperature
             .toString());
       }
@@ -186,40 +187,40 @@ class _ConfigureRightPanelType02State
 
   void saveMode() {
     double voltage = ref
-        .read(ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+        .read(ref.read(deviceDataMap[widget.sc.device.id.id]!).streamData)
         .voltage;
     double resistance = double.parse(getResistance());
-    ref.read(deviceDataMap[widget.sc.device.name]!).saveClickedMode02 = true;
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).saveClickedMode02 = true;
 
-    if (ref.watch(deviceDataMap[widget.sc.device.name]!).resSelectedMode02) {
+    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode02) {
       if (double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                   .minResistanceRangeControllerMode02
                   .text) <
               resistance &&
           resistance <
               double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                   .maxResistanceRangeControllerMode02
                   .text)) {
-        ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = true;
+        ref.read(deviceDataMap[widget.sc.device.id.id]!).passedMode02 = true;
       } else {
-        ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = false;
+        ref.read(deviceDataMap[widget.sc.device.id.id]!).passedMode02 = false;
       }
     } else {
       if (double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                   .minVoltageRangeControllerMode02
                   .text) <
               voltage &&
           voltage <
               double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.name]!)
+                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                   .maxVoltageRangeControllerMode02
                   .text)) {
-        ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = true;
+        ref.read(deviceDataMap[widget.sc.device.id.id]!).passedMode02 = true;
       } else {
-        ref.read(deviceDataMap[widget.sc.device.name]!).passedMode02 = false;
+        ref.read(deviceDataMap[widget.sc.device.id.id]!).passedMode02 = false;
       }
     }
 
@@ -231,46 +232,46 @@ class _ConfigureRightPanelType02State
         createdBy: "rukshan",
         defaultConfigurations: DefaultConfiguration(
             customerName: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .customerNameController
                 .text,
             operatorId: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .operatorIdController
                 .text,
             serialNo: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .serialNoController
                 .text,
             batchNo: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .batchNoController
                 .text,
             sessionId: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .sessionIdController
                 .text),
         sessionConfigurationModeTwo: SessionConfigurationModeTwo(
             current: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .currentControllerMode02
                 .text,
             maxVoltage: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .maxVoltageControllerMode02
                 .text,
             passMaxVoltage: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .maxVoltageRangeControllerMode02
                 .text,
             passMinVoltage: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .minVoltageRangeControllerMode02
                 .text),
         results: [
           SessionResult(
               testId: ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
+                  .read(deviceDataMap[widget.sc.device.id.id]!)
                   .testIdController
                   .text,
               readings: [
@@ -279,7 +280,7 @@ class _ConfigureRightPanelType02State
                     current: getCurrent(),
                     voltage: getVoltage(),
                     result: ref
-                            .read(deviceDataMap[widget.sc.device.name]!)
+                            .read(deviceDataMap[widget.sc.device.id.id]!)
                             .passedMode02
                         ? "PASS"
                         : "FAIL",
@@ -308,7 +309,7 @@ class _ConfigureRightPanelType02State
                         getSnackBar(context, Colors.red, "Saving Failed"))
                 },
               ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
+                  .read(deviceDataMap[widget.sc.device.id.id]!)
                   .saveClickedMode02 = false
             })
         .onError((error, stackTrace) => {
@@ -336,7 +337,7 @@ class _ConfigureRightPanelType02State
                     data: TestInputData(
                         inputType: TextInputType.number,
                         controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .currentControllerMode02,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
@@ -354,7 +355,7 @@ class _ConfigureRightPanelType02State
                         },
                         labelText: 'Current (A)',
                         enabled: !ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .started)),
               ),
               const SizedBox(
@@ -366,7 +367,7 @@ class _ConfigureRightPanelType02State
                     data: TestInputData(
                         inputType: TextInputType.number,
                         controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .maxVoltageControllerMode02,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
@@ -384,7 +385,7 @@ class _ConfigureRightPanelType02State
                         },
                         labelText: 'Max voltage (V)',
                         enabled: !ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .started)),
               ),
             ],
@@ -407,7 +408,7 @@ class _ConfigureRightPanelType02State
             height: 10.0,
           ),
           Text(
-            ref.watch(deviceDataMap[widget.sc.device.name]!).resSelectedMode02
+            ref.watch(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode02
                 ? 'Resistance Range : '
                 : 'Voltage Range : ',
             style: const TextStyle(fontSize: 15, color: Colors.grey),
@@ -415,7 +416,7 @@ class _ConfigureRightPanelType02State
           const SizedBox(
             height: 5.0,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).resSelectedMode02
+          ref.watch(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode02
               ? Row(
                   children: [
                     Expanded(
@@ -423,7 +424,7 @@ class _ConfigureRightPanelType02State
                       child: TextInput(
                           data: TestInputData(
                               controller: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .minResistanceRangeControllerMode02,
                               inputType: TextInputType.number,
                               validatorFun: (val) {
@@ -451,7 +452,7 @@ class _ConfigureRightPanelType02State
                           data: TestInputData(
                               inputType: TextInputType.number,
                               controller: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .maxResistanceRangeControllerMode02,
                               validatorFun: (val) {
                                 if (val!.isEmpty) {
@@ -478,7 +479,7 @@ class _ConfigureRightPanelType02State
                       child: TextInput(
                           data: TestInputData(
                               controller: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .minVoltageRangeControllerMode02,
                               inputType: TextInputType.number,
                               validatorFun: (val) {
@@ -506,7 +507,7 @@ class _ConfigureRightPanelType02State
                           data: TestInputData(
                               inputType: TextInputType.number,
                               controller: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .maxVoltageRangeControllerMode02,
                               validatorFun: (val) {
                                 if (val!.isEmpty) {
@@ -543,7 +544,7 @@ class _ConfigureRightPanelType02State
                 child: TextInput(
                     data: TestInputData(
                         controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .currentReadingCurrentControllerMode02,
                         inputType: TextInputType.number,
                         enabled: false,
@@ -561,7 +562,7 @@ class _ConfigureRightPanelType02State
                     data: TestInputData(
                         inputType: TextInputType.number,
                         controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .currentReadingTemControllerMode02,
                         enabled: false,
                         validatorFun: (val) {
@@ -577,7 +578,7 @@ class _ConfigureRightPanelType02State
           TextInput(
               data: TestInputData(
                   controller: ref
-                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .watch(deviceDataMap[widget.sc.device.id.id]!)
                       .currentReadingResistanceControllerMode02,
                   enabled: false,
                   validatorFun: (val) {
@@ -587,7 +588,8 @@ class _ConfigureRightPanelType02State
           const SizedBox(
             height: 10,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started && showResult
+          ref.watch(deviceDataMap[widget.sc.device.id.id]!).started &&
+                  showResult
               ? Row(
                   children: [
                     Expanded(
@@ -596,7 +598,7 @@ class _ConfigureRightPanelType02State
                         height: 55,
                         child: CupertinoButton(
                           disabledColor: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .passedMode02
                               ? Colors.green
                               : Colors.red,
@@ -605,7 +607,7 @@ class _ConfigureRightPanelType02State
                           child: Text(
                             ref
                                     .watch(
-                                        deviceDataMap[widget.sc.device.name]!)
+                                        deviceDataMap[widget.sc.device.id.id]!)
                                     .passedMode02
                                 ? 'PASS'
                                 : 'FAIL',
@@ -622,7 +624,7 @@ class _ConfigureRightPanelType02State
           const SizedBox(
             height: 15,
           ),
-          ref.watch(deviceDataMap[widget.sc.device.name]!).started
+          ref.watch(deviceDataMap[widget.sc.device.id.id]!).started
               ? Row(
                   children: [
                     Expanded(
@@ -634,22 +636,22 @@ class _ConfigureRightPanelType02State
                           disabledColor: Colors.grey,
                           color: Colors.orange,
                           onPressed: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .saveClickedMode02
                               ? null
                               : () {
                                   blue.stop(widget.sc.device);
                                   ref
                                           .read(deviceDataMap[
-                                              widget.sc.device.name]!)
+                                              widget.sc.device.id.id]!)
                                           .started =
                                       !ref
                                           .watch(deviceDataMap[
-                                              widget.sc.device.name]!)
+                                              widget.sc.device.id.id]!)
                                           .started;
                                   ref
-                                      .read(
-                                          deviceDataMap[widget.sc.device.name]!)
+                                      .read(deviceDataMap[
+                                          widget.sc.device.id.id]!)
                                       .updateStatus();
                                   updateSessionID();
                                   setState(() {
@@ -677,14 +679,14 @@ class _ConfigureRightPanelType02State
                           disabledColor: Colors.grey,
                           color: Colors.green,
                           onPressed: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .saveClickedMode02
                               ? null
                               : () {
                                   saveMode();
                                 },
                           child: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .saveClickedMode02
                               ? const SpinKitWave(
                                   color: Colors.white,
@@ -718,27 +720,27 @@ class _ConfigureRightPanelType02State
                                   widget.sc.device,
                                   (double.parse(ref
                                               .watch(deviceDataMap[
-                                                  widget.sc.device.name]!)
+                                                  widget.sc.device.id.id]!)
                                               .currentControllerMode02
                                               .text) *
                                           100)
                                       .toInt(),
                                   (double.parse(ref
                                               .watch(deviceDataMap[
-                                                  widget.sc.device.name]!)
+                                                  widget.sc.device.id.id]!)
                                               .maxVoltageControllerMode02
                                               .text) *
                                           10)
                                       .toInt());
                               ref
-                                      .read(deviceDataMap[widget.sc.device.name]!)
+                                      .read(deviceDataMap[widget.sc.device.id.id]!)
                                       .started =
                                   !ref
-                                      .watch(
-                                          deviceDataMap[widget.sc.device.name]!)
+                                      .watch(deviceDataMap[
+                                          widget.sc.device.id.id]!)
                                       .started;
                               ref
-                                  .read(deviceDataMap[widget.sc.device.name]!)
+                                  .read(deviceDataMap[widget.sc.device.id.id]!)
                                   .updateStatus();
                             }
                           },

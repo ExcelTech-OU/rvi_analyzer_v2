@@ -55,7 +55,7 @@ class _ConfigureRightPanelType03State
     if (currentStatus == 6 && !statusChanged) {
       if (ref
               .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+                  ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
               .state ==
           3) {
         setState(() {
@@ -70,13 +70,14 @@ class _ConfigureRightPanelType03State
         });
       }
     } else {
-      if (ref.watch(deviceDataMap[widget.sc.device.name]!).started) {
+      if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).started) {
         if (ref
-                .watch(
-                    ref.watch(deviceDataMap[widget.sc.device.name]!).streamData)
+                .watch(ref
+                    .watch(deviceDataMap[widget.sc.device.id.id]!)
+                    .streamData)
                 .state ==
             6) {
-          ref.read(deviceDataMap[widget.sc.device.name]!).started = false;
+          ref.read(deviceDataMap[widget.sc.device.id.id]!).started = false;
           setState(() {
             currentStatus = 6;
             statusChanged = false;
@@ -92,76 +93,76 @@ class _ConfigureRightPanelType03State
           });
           if (ref
                   .watch(ref
-                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .watch(deviceDataMap[widget.sc.device.id.id]!)
                       .streamData)
                   .currentProtocol ==
               3) {
             double currentReadingVoltage = ref
                 .read(
-                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                    ref.read(deviceDataMap[widget.sc.device.id.id]!).streamData)
                 .voltage;
             double currentReadingCurrent = ref
                 .read(
-                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                    ref.read(deviceDataMap[widget.sc.device.id.id]!).streamData)
                 .current;
             int currentReadingTem = ref
                 .read(
-                    ref.read(deviceDataMap[widget.sc.device.name]!).streamData)
+                    ref.read(deviceDataMap[widget.sc.device.id.id]!).streamData)
                 .temperature;
 
             //Update when x axis value groth
             if (ref
-                    .watch(deviceDataMap[widget.sc.device.name]!)
+                    .watch(deviceDataMap[widget.sc.device.id.id]!)
                     .xMaxGraph01Mode03 <
                 currentReadingVoltage) {
               if (ref
-                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .watch(deviceDataMap[widget.sc.device.id.id]!)
                       .yMaxGraph01Mode03 <
                   currentReadingCurrent) {
                 ref
-                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .read(deviceDataMap[widget.sc.device.id.id]!)
                     .xMaxGraph01Mode03 = currentReadingVoltage;
                 ref
-                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .read(deviceDataMap[widget.sc.device.id.id]!)
                     .yMaxGraph01Mode03 = currentReadingCurrent;
               } else {
                 ref
-                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .read(deviceDataMap[widget.sc.device.id.id]!)
                     .xMaxGraph01Mode03 = currentReadingVoltage;
               }
               if (ref
-                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .watch(deviceDataMap[widget.sc.device.id.id]!)
                       .yMaxGraph02Mode03 <
                   currentReadingTem) {
                 ref
-                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .read(deviceDataMap[widget.sc.device.id.id]!)
                     .yMaxGraph02Mode03 = currentReadingTem.toDouble();
               }
             } else {
               if (ref
-                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .watch(deviceDataMap[widget.sc.device.id.id]!)
                       .yMaxGraph01Mode03 <
                   currentReadingCurrent) {
                 ref
-                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .read(deviceDataMap[widget.sc.device.id.id]!)
                     .yMaxGraph01Mode03 = currentReadingCurrent;
               }
               if (ref
-                      .watch(deviceDataMap[widget.sc.device.name]!)
+                      .watch(deviceDataMap[widget.sc.device.id.id]!)
                       .yMaxGraph02Mode03 <
                   currentReadingTem) {
                 ref
-                    .read(deviceDataMap[widget.sc.device.name]!)
+                    .read(deviceDataMap[widget.sc.device.id.id]!)
                     .yMaxGraph02Mode03 = currentReadingTem.toDouble();
               }
             }
 
             ref
-                .watch(deviceDataMap[widget.sc.device.name]!)
+                .watch(deviceDataMap[widget.sc.device.id.id]!)
                 .spotDataGraph01Mode03
                 .add(FlSpot(currentReadingVoltage, currentReadingCurrent));
             ref
-                .watch(deviceDataMap[widget.sc.device.name]!)
+                .watch(deviceDataMap[widget.sc.device.id.id]!)
                 .spotDataGraph02Mode03
                 .add(FlSpot(
                     currentReadingVoltage, currentReadingTem.toDouble()));
@@ -175,21 +176,21 @@ class _ConfigureRightPanelType03State
     DateTime now = DateTime.now();
     int milliseconds = now.millisecondsSinceEpoch;
 
-    ref.watch(deviceDataMap[widget.sc.device.name]!).sessionIdController.text =
+    ref.watch(deviceDataMap[widget.sc.device.id.id]!).sessionIdController.text =
         "S_$milliseconds";
   }
 
   void saveMode() {
-    ref.read(deviceDataMap[widget.sc.device.name]!).saveClickedMode03 = true;
-    ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).saveClickedMode03 = true;
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).updateStatus();
 
     List<Reading> readings = [];
 
     List<FlSpot> currentVoltageReadings =
-        ref.read(deviceDataMap[widget.sc.device.name]!).spotDataGraph01Mode03;
+        ref.read(deviceDataMap[widget.sc.device.id.id]!).spotDataGraph01Mode03;
 
     List<FlSpot> temVoltageReadings =
-        ref.read(deviceDataMap[widget.sc.device.name]!).spotDataGraph02Mode03;
+        ref.read(deviceDataMap[widget.sc.device.id.id]!).spotDataGraph02Mode03;
 
     for (var i = 0; i < currentVoltageReadings.length; i++) {
       readings.add(Reading(
@@ -202,49 +203,49 @@ class _ConfigureRightPanelType03State
         createdBy: "rukshan",
         defaultConfigurations: DefaultConfiguration(
             customerName: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .customerNameController
                 .text,
             operatorId: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .operatorIdController
                 .text,
             serialNo: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .serialNoController
                 .text,
             batchNo: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .batchNoController
                 .text,
             sessionId: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .sessionIdController
                 .text),
         sessionConfigurationModeThree: SessionConfigurationModeThree(
             startingVoltage: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .startingVoltageControllerMode03
                 .text,
             desiredVoltage: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .desiredVoltageControllerMode03
                 .text,
             maxCurrent: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .maxCurrentControllerMode03
                 .text,
             voltageResolution: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .voltageResolutionControllerMode03
                 .text,
             chargeInTime: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .changeInTimeControllerMode03
                 .text),
         results: SessionResult(
             testId: ref
-                .read(deviceDataMap[widget.sc.device.name]!)
+                .read(deviceDataMap[widget.sc.device.id.id]!)
                 .testIdController
                 .text,
             readings: readings),
@@ -272,9 +273,9 @@ class _ConfigureRightPanelType03State
                         getSnackBar(context, Colors.red, "Saving Failed"))
                 },
               ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
+                  .read(deviceDataMap[widget.sc.device.id.id]!)
                   .saveClickedMode03 = false,
-              ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus(),
+              ref.read(deviceDataMap[widget.sc.device.id.id]!).updateStatus(),
             })
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
@@ -282,7 +283,7 @@ class _ConfigureRightPanelType03State
                 ..showSnackBar(
                     getSnackBar(context, Colors.red, "Saving Failed")),
               ref
-                  .read(deviceDataMap[widget.sc.device.name]!)
+                  .read(deviceDataMap[widget.sc.device.id.id]!)
                   .saveClickedMode03 = false,
             });
     updateSessionID();
@@ -291,17 +292,17 @@ class _ConfigureRightPanelType03State
 
   void resetGraph() {
     ref
-        .watch(deviceDataMap[widget.sc.device.name]!)
+        .watch(deviceDataMap[widget.sc.device.id.id]!)
         .spotDataGraph01Mode03
         .clear();
     ref
-        .watch(deviceDataMap[widget.sc.device.name]!)
+        .watch(deviceDataMap[widget.sc.device.id.id]!)
         .spotDataGraph02Mode03
         .clear();
 
-    ref.read(deviceDataMap[widget.sc.device.name]!).xMaxGraph01Mode03 = 0.0;
-    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph01Mode03 = 0.0;
-    ref.read(deviceDataMap[widget.sc.device.name]!).yMaxGraph02Mode03 = 0.0;
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).xMaxGraph01Mode03 = 0.0;
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).yMaxGraph01Mode03 = 0.0;
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).yMaxGraph02Mode03 = 0.0;
     updateSessionID();
     widget.updateTestId();
   }
@@ -321,7 +322,7 @@ class _ConfigureRightPanelType03State
                     data: TestInputData(
                         inputType: TextInputType.number,
                         controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .startingVoltageControllerMode03,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
@@ -339,7 +340,7 @@ class _ConfigureRightPanelType03State
                         },
                         labelText: 'Starting voltage (V)',
                         enabled: !ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .started)),
               ),
               const SizedBox(
@@ -351,7 +352,7 @@ class _ConfigureRightPanelType03State
                     data: TestInputData(
                         inputType: TextInputType.number,
                         controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .desiredVoltageControllerMode03,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
@@ -369,7 +370,7 @@ class _ConfigureRightPanelType03State
                         },
                         labelText: 'Desired Voltage (V)',
                         enabled: !ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .started)),
               ),
             ],
@@ -385,7 +386,7 @@ class _ConfigureRightPanelType03State
                     data: TestInputData(
                         inputType: TextInputType.number,
                         controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .maxCurrentControllerMode03,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
@@ -403,7 +404,7 @@ class _ConfigureRightPanelType03State
                         },
                         labelText: 'Max Current (A)',
                         enabled: !ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .started)),
               ),
             ],
@@ -418,7 +419,7 @@ class _ConfigureRightPanelType03State
                 child: TextInput(
                     data: TestInputData(
                         controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .voltageResolutionControllerMode03,
                         inputType: TextInputType.number,
                         validatorFun: (val) {
@@ -437,7 +438,7 @@ class _ConfigureRightPanelType03State
                         },
                         labelText: 'Voltage resolution',
                         enabled: !ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .started)),
               ),
               const SizedBox(
@@ -449,7 +450,7 @@ class _ConfigureRightPanelType03State
                     data: TestInputData(
                         inputType: TextInputType.number,
                         controller: ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .changeInTimeControllerMode03,
                         validatorFun: (val) {
                           if (val!.isEmpty) {
@@ -463,7 +464,7 @@ class _ConfigureRightPanelType03State
                         },
                         labelText: 'Change in time (Sec)',
                         enabled: !ref
-                            .watch(deviceDataMap[widget.sc.device.name]!)
+                            .watch(deviceDataMap[widget.sc.device.id.id]!)
                             .started)),
               ),
             ],
@@ -480,14 +481,14 @@ class _ConfigureRightPanelType03State
                           data: LineChartDataCustom(
                               xAxisName: "Voltage",
                               spotData: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .spotDataGraph01Mode03,
                               xMax: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .xMaxGraph01Mode03,
                               yAxisName: "Current",
                               yMax: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .yMaxGraph01Mode03),
                         )),
                   ],
@@ -505,14 +506,14 @@ class _ConfigureRightPanelType03State
                           data: LineChartDataCustom2(
                               xAxisName: "Voltage",
                               spotData: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .spotDataGraph02Mode03,
                               xMax: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .xMaxGraph01Mode03,
                               yAxisName: "Temperature",
                               yMax: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .yMaxGraph02Mode03),
                         )),
                   ],
@@ -529,18 +530,18 @@ class _ConfigureRightPanelType03State
                           padding: const EdgeInsets.all(0),
                           disabledColor: Colors.grey,
                           color: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .started
                               ? Colors.orange
                               : Colors.red,
                           onPressed: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .saveClickedMode03
                               ? null
                               : () {
                                   if (!ref
-                                      .watch(
-                                          deviceDataMap[widget.sc.device.name]!)
+                                      .watch(deviceDataMap[
+                                          widget.sc.device.id.id]!)
                                       .started) {
                                     resetGraph();
                                     setState(() {
@@ -555,16 +556,16 @@ class _ConfigureRightPanelType03State
                                         .then((value) => {
                                               ref
                                                       .read(deviceDataMap[widget
-                                                          .sc.device.name]!)
+                                                          .sc.device.id.id]!)
                                                       .started =
                                                   !ref
                                                       .watch(deviceDataMap[
-                                                          widget
-                                                              .sc.device.name]!)
+                                                          widget.sc.device.id
+                                                              .id]!)
                                                       .started,
                                               ref
                                                   .read(deviceDataMap[
-                                                      widget.sc.device.name]!)
+                                                      widget.sc.device.id.id]!)
                                                   .updateStatus(),
                                               setState(() {
                                                 stopClicked = false;
@@ -594,8 +595,8 @@ class _ConfigureRightPanelType03State
                                   });
                                 },
                           child: (ref
-                                      .watch(
-                                          deviceDataMap[widget.sc.device.name]!)
+                                      .watch(deviceDataMap[
+                                          widget.sc.device.id.id]!)
                                       .started &&
                                   stopClicked)
                               ? const SpinKitWave(
@@ -605,7 +606,7 @@ class _ConfigureRightPanelType03State
                               : Text(
                                   ref
                                           .watch(deviceDataMap[
-                                              widget.sc.device.name]!)
+                                              widget.sc.device.id.id]!)
                                           .started
                                       ? 'Stop'
                                       : "Close",
@@ -628,12 +629,12 @@ class _ConfigureRightPanelType03State
                           disabledColor: Colors.grey,
                           color: Colors.green,
                           onPressed: ref
-                                      .watch(
-                                          deviceDataMap[widget.sc.device.name]!)
+                                      .watch(deviceDataMap[
+                                          widget.sc.device.id.id]!)
                                       .saveClickedMode03 ||
                                   ref
-                                      .watch(
-                                          deviceDataMap[widget.sc.device.name]!)
+                                      .watch(deviceDataMap[
+                                          widget.sc.device.id.id]!)
                                       .started ||
                                   dataSavedSuccess
                               ? null
@@ -641,7 +642,7 @@ class _ConfigureRightPanelType03State
                                   saveMode();
                                 },
                           child: ref
-                                  .watch(deviceDataMap[widget.sc.device.name]!)
+                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
                                   .saveClickedMode03
                               ? const SpinKitWave(
                                   color: Colors.white,
@@ -669,8 +670,8 @@ class _ConfigureRightPanelType03State
                           disabledColor: Colors.grey,
                           color: Colors.cyan,
                           onPressed: ref
-                                      .watch(
-                                          deviceDataMap[widget.sc.device.name]!)
+                                      .watch(deviceDataMap[
+                                          widget.sc.device.id.id]!)
                                       .started &&
                                   !statusChanged
                               ? null
@@ -682,8 +683,8 @@ class _ConfigureRightPanelType03State
                                   }
                                 },
                           child: ref
-                                      .watch(
-                                          deviceDataMap[widget.sc.device.name]!)
+                                      .watch(deviceDataMap[
+                                          widget.sc.device.id.id]!)
                                       .started &&
                                   !statusChanged
                               ? const SpinKitWave(
@@ -708,11 +709,11 @@ class _ConfigureRightPanelType03State
 
   void startMode3() {
     double startingVoltage = double.parse(ref
-        .watch(deviceDataMap[widget.sc.device.name]!)
+        .watch(deviceDataMap[widget.sc.device.id.id]!)
         .startingVoltageControllerMode03
         .text);
     double pointSize = double.parse(ref
-        .watch(deviceDataMap[widget.sc.device.name]!)
+        .watch(deviceDataMap[widget.sc.device.id.id]!)
         .voltageResolutionControllerMode03
         .text);
 
@@ -720,41 +721,41 @@ class _ConfigureRightPanelType03State
         widget.sc.device,
         (startingVoltage * 10).toInt(),
         (double.parse(ref
-                    .watch(deviceDataMap[widget.sc.device.name]!)
+                    .watch(deviceDataMap[widget.sc.device.id.id]!)
                     .desiredVoltageControllerMode03
                     .text) *
                 10)
             .toInt(),
         (double.parse(ref
-                    .watch(deviceDataMap[widget.sc.device.name]!)
+                    .watch(deviceDataMap[widget.sc.device.id.id]!)
                     .maxCurrentControllerMode03
                     .text) *
                 100)
             .toInt(),
         (pointSize * 10).toInt(),
         (int.parse(ref
-            .watch(deviceDataMap[widget.sc.device.name]!)
+            .watch(deviceDataMap[widget.sc.device.id.id]!)
             .changeInTimeControllerMode03
             .text)));
 
-    ref.read(deviceDataMap[widget.sc.device.name]!).xMaxGraph01Mode03 =
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).xMaxGraph01Mode03 =
         double.parse(ref
-            .watch(deviceDataMap[widget.sc.device.name]!)
+            .watch(deviceDataMap[widget.sc.device.id.id]!)
             .desiredVoltageControllerMode03
             .text);
-    ref.read(deviceDataMap[widget.sc.device.name]!).started =
-        !ref.watch(deviceDataMap[widget.sc.device.name]!).started;
-    ref.read(deviceDataMap[widget.sc.device.name]!).updateStatus();
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).started =
+        !ref.watch(deviceDataMap[widget.sc.device.id.id]!).started;
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).updateStatus();
 
     Timer.periodic(
         Duration(
             seconds: int.parse(ref
-                .watch(deviceDataMap[widget.sc.device.name]!)
+                .watch(deviceDataMap[widget.sc.device.id.id]!)
                 .changeInTimeControllerMode03
                 .text)),
         (Timer t) => {
               setGraphValues(),
-              if (!ref.watch(deviceDataMap[widget.sc.device.name]!).started)
+              if (!ref.watch(deviceDataMap[widget.sc.device.id.id]!).started)
                 {t.cancel()}
             });
   }
@@ -801,7 +802,7 @@ class _ConfigureRightPanelType03State
                       //   width: 50,
                       // ),
                       // Text(
-                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.name]!).streamData).notifyData}]",
+                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData).notifyData}]",
                       //   style: const TextStyle(
                       //       fontSize: 15,
                       //       fontWeight: FontWeight.bold,

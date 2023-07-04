@@ -19,7 +19,7 @@ class DeviceStatusText extends StatelessWidget {
         return Text(
             getStatusText(ref
                 .watch(ref
-                    .watch(deviceDataMap[scanResult.device.name]!)
+                    .watch(deviceDataMap[scanResult.device.id.id]!)
                     .streamData)
                 .state),
             style: TextStyle(
@@ -27,7 +27,7 @@ class DeviceStatusText extends StatelessWidget {
                 fontSize: 11,
                 color: getStatusColor(ref
                     .watch(ref
-                        .watch(deviceDataMap[scanResult.device.name]!)
+                        .watch(deviceDataMap[scanResult.device.id.id]!)
                         .streamData)
                     .state)));
       },

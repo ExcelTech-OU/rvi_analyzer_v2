@@ -39,20 +39,20 @@ class BluetoothDeviceDisconnectedPopup {
                 scanResult.device.disconnect();
                 ref.read(deviceManagementState).removeDevice(scanResult);
                 ref
-                    .read(deviceDataMap[scanResult.device.name]!.notifier)
+                    .read(deviceDataMap[scanResult.device.id.id]!.notifier)
                     .setTreatmentConfig(null);
-                deviceDataMap.remove(scanResult.device.name);
+                deviceDataMap.remove(scanResult.device.id.id);
                 if (deviceConnectionStatusMap
-                    .containsKey(scanResult.device.name)) {
+                    .containsKey(scanResult.device.id.id)) {
                   ref
-                      .read(deviceConnectionStatusMap[scanResult.device.name]!
+                      .read(deviceConnectionStatusMap[scanResult.device.id.id]!
                           .notifier)
                       .alreadyListening = false;
                   ref
-                      .read(deviceConnectionStatusMap[scanResult.device.name]!
+                      .read(deviceConnectionStatusMap[scanResult.device.id.id]!
                           .notifier)
                       .cancelSubscription();
-                  deviceConnectionStatusMap.remove(scanResult.device.name);
+                  deviceConnectionStatusMap.remove(scanResult.device.id.id);
                 }
                 Navigator.pop(context);
                 Navigator.pushReplacement(

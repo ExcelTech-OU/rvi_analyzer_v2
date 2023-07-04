@@ -42,7 +42,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
     setState(() {
       if (qrCode != null) {
         ref
-            .watch(deviceDataMap[widget.sc.device.name]!)
+            .watch(deviceDataMap[widget.sc.device.id.id]!)
             .serialNoController
             .text = qrCode;
       }
@@ -61,12 +61,12 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
     DateTime now = DateTime.now();
     var formatter = DateFormat('yyyy-MM-dd');
     String date = formatter.format(now);
-    ref.read(deviceDataMap[widget.sc.device.name]!).dateController.text = date;
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).dateController.text = date;
 
     int milliseconds = now.millisecondsSinceEpoch;
-    ref.read(deviceDataMap[widget.sc.device.name]!).testIdController.text =
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).testIdController.text =
         milliseconds.toString();
-    ref.read(deviceDataMap[widget.sc.device.name]!).sessionIdController.text =
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).sessionIdController.text =
         "S_$milliseconds";
   }
 
@@ -144,7 +144,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                   color: Colors.cyan,
                   padding: const EdgeInsets.all(0),
                   onPressed: ref
-                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .watch(deviceDataMap[widget.sc.device.id.id]!)
                           .started
                       ? null
                       : () {
@@ -189,7 +189,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
               TextInput(
                   data: TestInputData(
                       controller: ref
-                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .watch(deviceDataMap[widget.sc.device.id.id]!)
                           .customerNameController,
                       validatorFun: (val) {
                         if (val!.isEmpty) {
@@ -200,7 +200,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                       },
                       labelText: 'Customer Name',
                       enabled: !(ref
-                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .watch(deviceDataMap[widget.sc.device.id.id]!)
                           .started))),
               const SizedBox(
                 height: 10,
@@ -212,7 +212,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                     child: TextInput(
                         data: TestInputData(
                             controller: ref
-                                .watch(deviceDataMap[widget.sc.device.name]!)
+                                .watch(deviceDataMap[widget.sc.device.id.id]!)
                                 .serialNoController,
                             validatorFun: (val) {
                               if (val!.isEmpty) {
@@ -225,7 +225,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                             textInputAction: TextInputAction.done,
                             obscureText: false,
                             enabled: !ref
-                                .watch(deviceDataMap[widget.sc.device.name]!)
+                                .watch(deviceDataMap[widget.sc.device.id.id]!)
                                 .started)),
                   ),
                   const SizedBox(width: 10),
@@ -236,7 +236,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                       color: Colors.cyan,
                       padding: const EdgeInsets.all(0),
                       onPressed: ref
-                              .watch(deviceDataMap[widget.sc.device.name]!)
+                              .watch(deviceDataMap[widget.sc.device.id.id]!)
                               .started
                           ? null
                           : () {
@@ -261,8 +261,8 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
               TextInput(
                   data: TestInputData(
                       controller: ref
-                          .watch(deviceDataMap[widget.sc.device.name]!)
-                          .operatorIdController,
+                          .watch(deviceDataMap[widget.sc.device.id.id]!)
+                          .batchNoController,
                       validatorFun: (val) {
                         if (val!.isEmpty) {
                           return "Batch No cannot be empty";
@@ -272,7 +272,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                       },
                       labelText: 'Batch No',
                       enabled: !ref
-                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .watch(deviceDataMap[widget.sc.device.id.id]!)
                           .started)),
               const SizedBox(
                 height: 10,
@@ -280,7 +280,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
               TextInput(
                   data: TestInputData(
                       controller: ref
-                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .watch(deviceDataMap[widget.sc.device.id.id]!)
                           .operatorIdController,
                       validatorFun: (val) {
                         if (val!.isEmpty) {
@@ -291,7 +291,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                       },
                       labelText: 'Operator ID',
                       enabled: !ref
-                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .watch(deviceDataMap[widget.sc.device.id.id]!)
                           .started)),
               const SizedBox(
                 height: 10,
@@ -299,7 +299,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
               TextInput(
                   data: TestInputData(
                       controller: ref
-                          .watch(deviceDataMap[widget.sc.device.name]!)
+                          .watch(deviceDataMap[widget.sc.device.id.id]!)
                           .sessionIdController,
                       validatorFun: (val) {
                         if (val!.isEmpty) {
@@ -320,7 +320,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                     child: TextInput(
                         data: TestInputData(
                             controller: ref
-                                .watch(deviceDataMap[widget.sc.device.name]!)
+                                .watch(deviceDataMap[widget.sc.device.id.id]!)
                                 .testIdController,
                             enabled: false,
                             validatorFun: (val) {
@@ -336,7 +336,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                     child: TextInput(
                         data: TestInputData(
                             controller: ref
-                                .watch(deviceDataMap[widget.sc.device.name]!)
+                                .watch(deviceDataMap[widget.sc.device.id.id]!)
                                 .dateController,
                             enabled: false,
                             validatorFun: (val) {

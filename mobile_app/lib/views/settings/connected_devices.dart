@@ -53,13 +53,13 @@ class _ConnectedDevicesState extends State<ConnectedDevices> {
                                 .then((value) => {
                                       ref
                                           .read(deviceDataMap[
-                                                  scanResult.device.name]!
+                                                  scanResult.device.id.id]!
                                               .notifier)
                                           .isConnected = false,
                                       ref
                                           .read(ref
                                               .read(deviceDataMap[
-                                                  scanResult.device.name]!)
+                                                  scanResult.device.id.id]!)
                                               .streamData
                                               .notifier)
                                           .subscription

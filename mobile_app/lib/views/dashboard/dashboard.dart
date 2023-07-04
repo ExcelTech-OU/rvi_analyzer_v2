@@ -103,7 +103,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                           height: height - 65,
                           child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.grey[300],
+                                color: const Color.fromARGB(250, 8, 41, 59),
                                 borderRadius: BorderRadius.circular(10.0),
                                 boxShadow: [
                                   BoxShadow(
@@ -256,18 +256,45 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                             })),
                                   ),
                                   const Spacer(),
-                                  RoundedLoadingButton(
-                                    height: 55,
+                                  SizedBox(
                                     width: (width / 2) - 30,
-                                    borderRadius: 12,
-                                    loaderStrokeWidth: 4,
-                                    controller: _btnController,
-                                    onPressed: _doSomething,
-                                    child: const Text('Scan',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 25)),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: (width / 2) - 105,
+                                          child: RoundedLoadingButton(
+                                            // color:
+                                            //     Color.fromARGB(250, 8, 41, 59),
+                                            height: 55,
+                                            width: (width / 2) - 80,
+                                            borderRadius: 8,
+                                            loaderStrokeWidth: 4,
+                                            controller: _btnController,
+                                            onPressed: _doSomething,
+                                            child: const Text('Scan',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 25)),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        SizedBox(
+                                          height: 52,
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              print('Button pressed!');
+                                            },
+                                            child: const Icon(
+                                              Icons.history,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   )
                                 ],
                               )),

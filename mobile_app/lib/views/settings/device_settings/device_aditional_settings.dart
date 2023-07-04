@@ -106,11 +106,11 @@ class _DeviceAdditionalSettingsState extends State<DeviceAdditionalSettings> {
                                 .then((value) => {
                                       ref
                                           .read(deviceDataMap[widget
-                                                  .scanResult.device.name]!
+                                                  .scanResult.device.id.id]!
                                               .notifier)
                                           .isConnected = false,
                                       if (deviceConnectionStatusMap.containsKey(
-                                          widget.scanResult.device.name))
+                                          widget.scanResult.device.id.id))
                                         {
                                           ref
                                               .read(deviceConnectionStatusMap[
@@ -125,12 +125,12 @@ class _DeviceAdditionalSettingsState extends State<DeviceAdditionalSettings> {
                                                   .notifier)
                                               .cancelSubscription(),
                                           deviceConnectionStatusMap.remove(
-                                              widget.scanResult.device.name),
+                                              widget.scanResult.device.id.id),
                                         },
                                       ref
                                           .read(ref
                                               .read(deviceDataMap[widget
-                                                  .scanResult.device.name]!)
+                                                  .scanResult.device.id.id]!)
                                               .streamData
                                               .notifier)
                                           .subscription

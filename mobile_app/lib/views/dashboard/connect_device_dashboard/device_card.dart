@@ -39,7 +39,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
               setState(() {
                 isClicked = true;
               });
-              // await validateDeviceByName(scanResult.device.name).then((value) =>
+              // await validateDeviceByName(scanResult.device.id.id).then((value) =>
               //     {
               //       if (value.status == "S1000")
               //         {
@@ -49,25 +49,25 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                   .then((value) => {
                         ref.read(deviceManagementState).addDevice(scanResult),
                         deviceDataMap.putIfAbsent(
-                            scanResult.device.name,
+                            scanResult.device.id.id,
                             () =>
                                 ChangeNotifierProvider((ref) => DeviceState())),
                         deviceConnectionStatusMap.putIfAbsent(
-                            scanResult.device.name,
+                            scanResult.device.id.id,
                             () => ChangeNotifierProvider(
                                 (ref) => BluetoothDeviceStatus(scanResult))),
                         ref
                             .read(deviceConnectionStatusMap[
-                                    scanResult.device.name]!
+                                    scanResult.device.id.id]!
                                 .notifier)
                             .activeNotifyStreamListener(),
                         ref
-                            .read(
-                                deviceDataMap[scanResult.device.name]!.notifier)
+                            .read(deviceDataMap[scanResult.device.id.id]!
+                                .notifier)
                             .isConnected = true,
                         ref
                             .read(ref
-                                .read(deviceDataMap[scanResult.device.name]!)
+                                .read(deviceDataMap[scanResult.device.id.id]!)
                                 .streamData)
                             .runNotify(scanResult),
                       })
@@ -97,29 +97,29 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                     .then((value) => {
                           ref
                               .read(
-                                  deviceDataMap[widget.scanResult.device.name]!
+                                  deviceDataMap[widget.scanResult.device.id.id]!
                                       .notifier)
                               .isConnected = false,
                           if (deviceConnectionStatusMap
-                              .containsKey(widget.scanResult.device.name))
+                              .containsKey(widget.scanResult.device.id.id))
                             {
                               ref
                                   .read(deviceConnectionStatusMap[
-                                          widget.scanResult.device.name]!
+                                          widget.scanResult.device.id.id]!
                                       .notifier)
                                   .alreadyListening = false,
                               ref
                                   .read(deviceConnectionStatusMap[
-                                          widget.scanResult.device.name]!
+                                          widget.scanResult.device.id.id]!
                                       .notifier)
                                   .cancelSubscription(),
                               deviceConnectionStatusMap
-                                  .remove(widget.scanResult.device.name),
+                                  .remove(widget.scanResult.device.id.id),
                             },
                           ref
                               .read(ref
                                   .read(deviceDataMap[
-                                      widget.scanResult.device.name]!)
+                                      widget.scanResult.device.id.id]!)
                                   .streamData
                                   .notifier)
                               .subscription
@@ -167,30 +167,35 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
                                   color: Colors.black)),
-                          deviceDataMap.containsKey(scanResult.device.name)
+                          Text(scanResult.device.id.id,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                  color: Colors.grey)),
+                          deviceDataMap.containsKey(scanResult.device.id.id)
                               ? DeviceStatusText(scanResult)
                               : const SizedBox.shrink()
                         ],
                       ),
                     ),
                     deviceConnectionStatusMap
-                                .containsKey(scanResult.device.name) &&
+                                .containsKey(scanResult.device.id.id) &&
                             (ref
                                         .read(deviceConnectionStatusMap[
-                                                scanResult.device.name]!
+                                                scanResult.device.id.id]!
                                             .notifier)
                                         .state ==
                                     "connected" ||
                                 ref
                                         .read(deviceConnectionStatusMap[
-                                                scanResult.device.name]!
+                                                scanResult.device.id.id]!
                                             .notifier)
                                         .state ==
                                     "")
                         ? Row(
                             children: [
                               SizedBox(
-                                height: 35,
+                                height: 45,
                                 width: 90,
                                 child: CupertinoButton(
                                   color: Colors.red,
@@ -218,7 +223,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                                 width: 5,
                               ),
                               SizedBox(
-                                height: 35,
+                                height: 45,
                                 width: 80,
                                 child: CupertinoButton(
                                   color: Colors.green,
@@ -246,7 +251,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                         : Row(
                             children: [
                               SizedBox(
-                                height: 35,
+                                height: 45,
                                 width: 80,
                                 child: CupertinoButton.filled(
                                   padding: const EdgeInsets.all(0),
@@ -274,14 +279,14 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                 ),
                 tileColor: const Color.fromARGB(255, 255, 255, 255),
                 onTap: () => {
-                  // if (ref.watch(deviceDataMap[scanResult.device.name]!).config !=
+                  // if (ref.watch(deviceDataMap[scanResult.device.id.id]!).config !=
                   //     null)
                   //   {
                   //     PersistentNavBarNavigator.pushNewScreen(
                   //       context,
                   //       screen: TreatmentRunning(RunningTreatmentData(
                   //           config: ref
-                  //               .watch(deviceDataMap[scanResult.device.name]!)
+                  //               .watch(deviceDataMap[scanResult.device.id.id]!)
                   //               .config!,
                   //           scanResult: scanResult,
                   //           userName: "")),
@@ -294,7 +299,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                   //   {
                   //     if ([3].contains(ref
                   //         .watch(ref
-                  //             .watch(deviceDataMap[scanResult.device.name]!)
+                  //             .watch(deviceDataMap[scanResult.device.id.id]!)
                   //             .streamData)
                   //         .state))
                   //       {
@@ -303,7 +308,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                   //       }
                   //     else if ([6].contains(ref
                   //         .watch(ref
-                  //             .watch(deviceDataMap[scanResult.device.name]!)
+                  //             .watch(deviceDataMap[scanResult.device.id.id]!)
                   //             .streamData)
                   //         .state))
                   //       {
@@ -312,7 +317,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                   //       }
                   //     else if (ref
                   //             .watch(ref
-                  //                 .watch(deviceDataMap[scanResult.device.name]!)
+                  //                 .watch(deviceDataMap[scanResult.device.id.id]!)
                   //                 .streamData)
                   //             .state ==
                   //         9)

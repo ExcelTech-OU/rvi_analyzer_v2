@@ -56,7 +56,7 @@ class _ConfigureLayoutState extends ConsumerState<ConfigureLayout> {
       }
     });
 
-    // ref.read(deviceDataMap[widget.sc.device.name]!).dropDownIndex =
+    // ref.read(deviceDataMap[widget.sc.device.id.id]!).dropDownIndex =
     //     dropDownItem.index;
   }
 
@@ -85,9 +85,9 @@ class _ConfigureLayoutState extends ConsumerState<ConfigureLayout> {
   // @override
   // void initState() {
   //   super.initState();
-  //   if (ref.read(deviceDataMap[widget.sc.device.name]!).dropDownIndex != -1) {
+  //   if (ref.read(deviceDataMap[widget.sc.device.id.id]!).dropDownIndex != -1) {
   //     updateSecondWidget(
-  //         ref.read(deviceDataMap[widget.sc.device.name]!).dropDownIndex);
+  //         ref.read(deviceDataMap[widget.sc.device.id.id]!).dropDownIndex);
   //   }
   // }
 
@@ -95,12 +95,13 @@ class _ConfigureLayoutState extends ConsumerState<ConfigureLayout> {
     DateTime now = DateTime.now();
     var formatter = DateFormat('yyyy-MM-dd');
     String date = formatter.format(now);
-    ref.watch(deviceDataMap[widget.sc.device.name]!).dateController.text = date;
+    ref.watch(deviceDataMap[widget.sc.device.id.id]!).dateController.text =
+        date;
 
     int milliseconds = now.millisecondsSinceEpoch;
-    ref.watch(deviceDataMap[widget.sc.device.name]!).testIdController.text =
+    ref.watch(deviceDataMap[widget.sc.device.id.id]!).testIdController.text =
         milliseconds.toString();
-    ref.watch(deviceDataMap[widget.sc.device.name]!).sessionIdController.text =
+    ref.watch(deviceDataMap[widget.sc.device.id.id]!).sessionIdController.text =
         "S_$milliseconds";
   }
 
@@ -108,7 +109,7 @@ class _ConfigureLayoutState extends ConsumerState<ConfigureLayout> {
     DateTime now = DateTime.now();
     int milliseconds = now.millisecondsSinceEpoch;
 
-    ref.watch(deviceDataMap[widget.sc.device.name]!).testIdController.text =
+    ref.watch(deviceDataMap[widget.sc.device.id.id]!).testIdController.text =
         milliseconds.toString();
   }
 
