@@ -6,9 +6,9 @@ import 'package:rvi_analyzer/repository/modes_info_repo.dart';
 import 'package:rvi_analyzer/views/common/line_chart_for_history_view.dart';
 import 'package:rvi_analyzer/views/history/modes/default_configurations.dart';
 
-class ModeTwoView extends StatelessWidget {
+class ModeFourView extends StatelessWidget {
   final String username;
-  ModeTwoView({Key? key, required this.username}) : super(key: key);
+  ModeFourView({Key? key, required this.username}) : super(key: key);
   final ModeInfoRepository repo = ModeInfoRepository();
 
   List<FlSpot> getGraph01data(List<Reading> readings) {
@@ -209,7 +209,7 @@ class ModeTwoView extends StatelessWidget {
                           child: LineChartHistory(
                             data: LineChartHistoryData(
                                 xAxisName: "Current",
-                                spotData: getGraph01data(
+                                spotData: getGraph02data(
                                     snapshot.data!.results.readings),
                                 yAxisName: "Resistance"),
                           ),

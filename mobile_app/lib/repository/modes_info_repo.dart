@@ -211,6 +211,18 @@ class ModeInfoRepository {
     await box.add(modeInfo);
   }
 
+  Future<ModeFive?> getLastModeFive(String username) async {
+    final box = await _openBox();
+
+    final modeInfo = box.values.firstWhere((info) => info.username == username,
+        orElse: () => ModeInfo(username, [], [], [], [], [], []));
+    if (modeInfo.modeFives.isEmpty) {
+      return null;
+    } else {
+      return modeInfo.modeFives.last;
+    }
+  }
+
   Future<void> removeModeFive(String username, String sessionId) async {
     final box = await _openBox();
 
@@ -239,6 +251,18 @@ class ModeInfoRepository {
       modeInfo.modeSixs.add(modeSix);
     }
     await box.add(modeInfo);
+  }
+
+  Future<ModeSix?> getLastModeSIX(String username) async {
+    final box = await _openBox();
+
+    final modeInfo = box.values.firstWhere((info) => info.username == username,
+        orElse: () => ModeInfo(username, [], [], [], [], [], []));
+    if (modeInfo.modeSixs.isEmpty) {
+      return null;
+    } else {
+      return modeInfo.modeSixs.last;
+    }
   }
 
   Future<void> removeModeSix(String username, String sessionId) async {

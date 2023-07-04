@@ -1,29 +1,39 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:rvi_analyzer/repository/entity/common_entity.dart';
-import 'package:rvi_analyzer/repository/entity/mode_three_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_five_entity.dart';
 import 'package:rvi_analyzer/repository/modes_info_repo.dart';
 import 'package:rvi_analyzer/views/common/line_chart_for_history_view.dart';
 import 'package:rvi_analyzer/views/history/modes/default_configurations.dart';
 
-class ModeThreeView extends StatelessWidget {
+class ModeFiveView extends StatelessWidget {
   final String username;
-  ModeThreeView({Key? key, required this.username}) : super(key: key);
+  ModeFiveView({Key? key, required this.username}) : super(key: key);
   final ModeInfoRepository repo = ModeInfoRepository();
 
   List<FlSpot> getGraph01data(List<Reading> readings) {
     List<FlSpot> spotData = [];
-    for (var element in readings) {
-      spotData.add(
-          FlSpot(double.parse(element.voltage), double.parse(element.current)));
+    for (int i = 0; i < readings.length; i++) {
+      var element = readings[i];
+      spotData.add(FlSpot(i.toDouble(), double.parse(element.current)));
     }
     return spotData;
   }
 
   List<FlSpot> getGraph02data(List<Reading> readings) {
     List<FlSpot> spotData = [];
-    for (var element in readings) {
-      spotData.add(FlSpot(double.parse(element.voltage),
+    for (int i = 0; i < readings.length; i++) {
+      var element = readings[i];
+      spotData.add(FlSpot(i.toDouble(), double.parse(element.voltage)));
+    }
+    return spotData;
+  }
+
+  List<FlSpot> getGraph03data(List<Reading> readings) {
+    List<FlSpot> spotData = [];
+    for (int i = 0; i < readings.length; i++) {
+      var element = readings[i];
+      spotData.add(FlSpot(i.toDouble(),
           double.parse(element.voltage) / double.parse(element.current)));
     }
     return spotData;
@@ -34,8 +44,8 @@ class ModeThreeView extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             body: SingleChildScrollView(
-      child: FutureBuilder<ModeThree?>(
-          future: repo.getLastModeThree(username),
+      child: FutureBuilder<ModeFive?>(
+          future: repo.getLastModeFive(username),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -70,7 +80,7 @@ class ModeThreeView extends StatelessWidget {
                         const Padding(
                           padding: EdgeInsets.fromLTRB(16.0, 16, 16, 0),
                           child: Text(
-                            'Mode Three',
+                            'Mode Five',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 24.0,
@@ -102,32 +112,14 @@ class ModeThreeView extends StatelessWidget {
                                     Row(
                                       children: [
                                         const Text(
-                                          'Starting Voltage : ',
+                                          'Fixed Voltage : ',
                                           style: TextStyle(fontSize: 16.0),
                                         ),
                                         Text(
                                           snapshot
                                               .data!
-                                              .sessionConfigurationModeThree
-                                              .startingVoltage,
-                                          style: const TextStyle(
-                                              fontSize: 14.0,
-                                              color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    Row(
-                                      children: [
-                                        const Text(
-                                          'Desired Voltage : ',
-                                          style: TextStyle(fontSize: 16.0),
-                                        ),
-                                        Text(
-                                          snapshot
-                                              .data!
-                                              .sessionConfigurationModeThree
-                                              .desiredVoltage,
+                                              .sessionConfigurationModeFive
+                                              .fixedVoltage,
                                           style: const TextStyle(
                                               fontSize: 14.0,
                                               color: Colors.grey),
@@ -144,7 +136,7 @@ class ModeThreeView extends StatelessWidget {
                                         Text(
                                           snapshot
                                               .data!
-                                              .sessionConfigurationModeThree
+                                              .sessionConfigurationModeFive
                                               .maxCurrent,
                                           style: const TextStyle(
                                               fontSize: 14.0,
@@ -156,32 +148,14 @@ class ModeThreeView extends StatelessWidget {
                                     Row(
                                       children: [
                                         const Text(
-                                          'Voltage Resolution : ',
+                                          'Time Duration : ',
                                           style: TextStyle(fontSize: 16.0),
                                         ),
                                         Text(
                                           snapshot
                                               .data!
-                                              .sessionConfigurationModeThree
-                                              .voltageResolution,
-                                          style: const TextStyle(
-                                              fontSize: 14.0,
-                                              color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    Row(
-                                      children: [
-                                        const Text(
-                                          'Charge In Time : ',
-                                          style: TextStyle(fontSize: 16.0),
-                                        ),
-                                        Text(
-                                          snapshot
-                                              .data!
-                                              .sessionConfigurationModeThree
-                                              .chargeInTime,
+                                              .sessionConfigurationModeFive
+                                              .timeDuration,
                                           style: const TextStyle(
                                               fontSize: 14.0,
                                               color: Colors.grey),
@@ -198,7 +172,7 @@ class ModeThreeView extends StatelessWidget {
                           padding: const EdgeInsets.all(16.0),
                           child: LineChartHistory(
                             data: LineChartHistoryData(
-                                xAxisName: "Voltage",
+                                xAxisName: "Time",
                                 spotData: getGraph01data(
                                     snapshot.data!.results.readings),
                                 yAxisName: "Current"),
@@ -208,8 +182,18 @@ class ModeThreeView extends StatelessWidget {
                           padding: const EdgeInsets.all(16.0),
                           child: LineChartHistory(
                             data: LineChartHistoryData(
-                                xAxisName: "Voltage",
+                                xAxisName: "Time",
                                 spotData: getGraph02data(
+                                    snapshot.data!.results.readings),
+                                yAxisName: "Voltage"),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: LineChartHistory(
+                            data: LineChartHistoryData(
+                                xAxisName: "Time",
+                                spotData: getGraph03data(
                                     snapshot.data!.results.readings),
                                 yAxisName: "Resistance"),
                           ),
