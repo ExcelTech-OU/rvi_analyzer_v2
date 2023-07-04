@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rvi_analyzer/views/dashboard/connect_device_dashboard/device_card.dart';
 import 'package:rvi_analyzer/views/history/history_summary.dart';
+import 'package:rvi_analyzer/views/history/modes/mode_one_view.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   int initialIndex = 0;
@@ -290,7 +291,10 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          HistorySummary()));
+                                                          ModeOneView(
+                                                            username:
+                                                                "rukM@gmail.com",
+                                                          )));
                                             },
                                             child: const Icon(
                                               Icons.settings,

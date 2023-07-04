@@ -6,6 +6,8 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 import 'package:rvi_analyzer/repository/adapter/common_adapter.dart';
+import 'package:rvi_analyzer/repository/adapter/connected_devices_info_adapter.dart';
+import 'package:rvi_analyzer/repository/adapter/login_info_adapter.dart';
 import 'package:rvi_analyzer/repository/adapter/mode_five_adapter.dart';
 import 'package:rvi_analyzer/repository/adapter/mode_four_adapter.dart';
 import 'package:rvi_analyzer/repository/adapter/mode_info_adapter.dart';
@@ -45,6 +47,8 @@ void registerAdapters() {
   Hive.registerAdapter(SessionConfigurationModeSixAdapter());
   Hive.registerAdapter(DefaultConfigurationAdapter());
   Hive.registerAdapter(ModeInfoAdapter());
+  Hive.registerAdapter(LoginInfoAdapter());
+  Hive.registerAdapter(ConnectedDevicesInfoAdapter());
 }
 
 class AchillesUIApp extends StatelessWidget {

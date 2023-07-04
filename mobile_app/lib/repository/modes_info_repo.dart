@@ -39,6 +39,18 @@ class ModeInfoRepository {
     await box.add(modeInfo);
   }
 
+  Future<ModeOne?> getLastModeOne(String username) async {
+    final box = await _openBox();
+
+    final modeInfo = box.values.firstWhere((info) => info.username == username,
+        orElse: () => ModeInfo(username, [], [], [], [], [], []));
+    if (modeInfo.modeOnes.isEmpty) {
+      return null;
+    } else {
+      return modeInfo.modeOnes.last;
+    }
+  }
+
   Future<void> removeModeOne(String username, String sessionId) async {
     final box = await _openBox();
 
