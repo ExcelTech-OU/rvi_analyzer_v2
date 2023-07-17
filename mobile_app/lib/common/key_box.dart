@@ -16,6 +16,7 @@ const String stateDescriptionK = 'stateDescription';
 const String questionK = 'question';
 const String devicesK = 'devices';
 const String lastLoginK = 'lastLogin';
+const String sessionsK = 'sessions';
 
 //login
 const String usernameK = 'username';

@@ -9,15 +9,22 @@ class ModeOneAdapter extends TypeAdapter<ModeOne> {
 
   @override
   ModeOne read(BinaryReader reader) {
+    final createdBy = reader.readString();
+    final defaultConfigurations = reader
+        .read(DefaultConfigurationAdapter().typeId) as DefaultConfiguration;
+    final sessionConfigurationModeOne =
+        reader.read(SessionConfigurationModeOneAdapter().typeId)
+            as SessionConfigurationModeOne;
+    final results =
+        reader.readList(reader.readByteList().length).cast<SessionResult>();
+    final status = reader.readString();
+
     return ModeOne(
-      createdBy: reader.readString(),
-      defaultConfigurations: reader.read(DefaultConfigurationAdapter().typeId)
-          as DefaultConfiguration,
-      sessionConfigurationModeOne:
-          reader.read(SessionConfigurationModeOneAdapter().typeId)
-              as SessionConfigurationModeOne,
-      results: reader.readList().cast<SessionResult>(),
-      status: reader.readString(),
+      createdBy: createdBy,
+      defaultConfigurations: defaultConfigurations,
+      sessionConfigurationModeOne: sessionConfigurationModeOne,
+      results: results,
+      status: status,
     );
   }
 

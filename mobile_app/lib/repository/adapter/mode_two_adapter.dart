@@ -16,7 +16,8 @@ class ModeTwoAdapter extends TypeAdapter<ModeTwo> {
       sessionConfigurationModeTwo:
           reader.read(SessionConfigurationModeTwoAdapter().typeId)
               as SessionConfigurationModeTwo,
-      results: reader.readList().cast<SessionResult>(),
+      results:
+          reader.readList(reader.readByteList().length).cast<SessionResult>(),
       status: reader.readString(),
     );
   }
@@ -26,7 +27,7 @@ class ModeTwoAdapter extends TypeAdapter<ModeTwo> {
     writer.writeString(obj.createdBy);
     writer.write(obj.defaultConfigurations);
     writer.write(obj.sessionConfigurationModeTwo);
-    writer.writeList(obj.results);
+    writer.writeList(obj.results, writeLength: true);
     writer.writeString(obj.status);
   }
 }

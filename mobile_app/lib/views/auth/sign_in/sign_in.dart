@@ -420,48 +420,56 @@ class _SignInState extends State<SignIn> {
         signInPressed = true;
       });
       //After successful login we will redirect to profile page. Let's create profile page now
-      login(usernameController.text, passwordController.text).then((value) => {
-            if (value.state == "S1000")
-              {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DashboardPage(
-                              initialIndex: 0,
-                            )))
-              }
-            else if (value.state == "S1010")
-              {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ResetPassword(
-                              jwt: value.jwt,
-                            )))
-              }
-            else if (value.state == "E1200")
-              {
-                setState(() {
-                  signInPressed = false;
-                }),
-                showErrorDialog(context, value.stateDescription)
-              }
-            else if (value.state == "E1005")
-              {
-                setState(() {
-                  signInPressed = false;
-                }),
-                showErrorDialog(context,
-                    "You account temporally disabled. Please contact Administrator")
-              }
-            else
-              {
-                setState(() {
-                  signInPressed = false;
-                }),
-                showErrorDialog(context, "Username or Password Invalid")
-              }
-          });
+      login(usernameController.text, passwordController.text)
+          .then((value) => {
+                if (value.state == "S1000")
+                  {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DashboardPage(
+                                  initialIndex: 0,
+                                )))
+                  }
+                else if (value.state == "S1010")
+                  {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ResetPassword(
+                                  jwt: value.jwt,
+                                )))
+                  }
+                else if (value.state == "E1200")
+                  {
+                    setState(() {
+                      signInPressed = false;
+                    }),
+                    showErrorDialog(context, value.stateDescription)
+                  }
+                else if (value.state == "E1005")
+                  {
+                    setState(() {
+                      signInPressed = false;
+                    }),
+                    showErrorDialog(context,
+                        "You account temporally disabled. Please contact Administrator")
+                  }
+                else
+                  {
+                    setState(() {
+                      signInPressed = false;
+                    }),
+                    showErrorDialog(context, "Username or Password Invalid")
+                  }
+              })
+          .onError((error, stackTrace) {
+        showErrorDialog(context, "Something went wrong. Please try again");
+        setState(() {
+          signInPressed = false;
+        });
+        return <Set<void>>{};
+      });
     }
   }
 }

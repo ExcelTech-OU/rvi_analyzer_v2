@@ -111,11 +111,8 @@ Future<bool> isLogout() async {
   const storage = FlutterSecureStorage();
   try {
     String? jwt = await storage.read(key: "jwt");
-    print("BBBBBBBB");
-    print(jwt);
     return jwt == null;
   } catch (e) {
-    print("AAAAAAAAA");
     return true;
   }
 }

@@ -311,7 +311,7 @@ class _ConfigureRightPanelType02State
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
                     ..showSnackBar(getSnackBar(context, Colors.red,
-                        "Remote submit failed & Saved for later submit"))
+                        "Remote submit failed. Check internet connection"))
                 },
               ref
                   .read(deviceDataMap[widget.sc.device.id.id]!)
@@ -321,7 +321,7 @@ class _ConfigureRightPanelType02State
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(getSnackBar(context, Colors.red,
-                    "Remote submit failed & Saved for later submit")),
+                    "Remote submit failed. Check internet connection")),
               ref
                   .read(deviceDataMap[widget.sc.device.id.id]!)
                   .saveClickedMode02 = false

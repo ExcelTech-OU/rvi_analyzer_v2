@@ -1,20 +1,14 @@
 import 'package:hive/hive.dart';
 
-@HiveType(typeId: 4)
-class DefaultConfiguration extends HiveObject {
-  @HiveField(0)
+class DefaultConfiguration {
   final String customerName;
 
-  @HiveField(1)
   final String operatorId;
 
-  @HiveField(2)
   final String batchNo;
 
-  @HiveField(3)
   final String serialNo;
 
-  @HiveField(4)
   final String sessionId;
 
   DefaultConfiguration({
@@ -32,14 +26,21 @@ class DefaultConfiguration extends HiveObject {
         'serialNo': serialNo,
         'sessionId': sessionId,
       };
+
+  factory DefaultConfiguration.fromJson(Map<String, dynamic> json) {
+    return DefaultConfiguration(
+      customerName: json['customerName'] as String,
+      operatorId: json['operatorId'] as String,
+      batchNo: json['batchNo'] as String,
+      serialNo: json['serialNo'] as String,
+      sessionId: json['sessionId'] as String,
+    );
+  }
 }
 
-@HiveType(typeId: 5)
-class SessionResult extends HiveObject {
-  @HiveField(0)
+class SessionResult {
   final String testId;
 
-  @HiveField(1)
   final List<Reading> readings;
 
   SessionResult({
@@ -48,23 +49,29 @@ class SessionResult extends HiveObject {
   });
 
   Map toJson() => {'testId': testId, 'readings': readings};
+
+  factory SessionResult.fromJson(Map<String, dynamic> json) {
+    List<dynamic> readingsList = json['readings'] as List<dynamic>;
+    List<Reading> readings = readingsList
+        .map((readingJson) => Reading.fromJson(readingJson))
+        .toList();
+
+    return SessionResult(
+      testId: json['testId'] as String,
+      readings: readings,
+    );
+  }
 }
 
-@HiveType(typeId: 6)
-class Reading extends HiveObject {
-  @HiveField(0)
+class Reading {
   final String temperature;
 
-  @HiveField(1)
   final String current;
 
-  @HiveField(2)
   final String voltage;
 
-  @HiveField(3)
   final String? result;
 
-  @HiveField(4)
   final String? readAt;
 
   Reading({
@@ -82,4 +89,14 @@ class Reading extends HiveObject {
         'result': result,
         'readAt': readAt,
       };
+
+  factory Reading.fromJson(Map<String, dynamic> json) {
+    return Reading(
+      temperature: json['temperature'] as String,
+      current: json['current'] as String,
+      voltage: json['voltage'] as String,
+      result: json['result'] as String?,
+      readAt: json['readAt'] as String?,
+    );
+  }
 }

@@ -5,6 +5,8 @@ import 'package:rvi_analyzer/common/key_box.dart';
 import 'package:rvi_analyzer/providers/bluetooth_status_provider.dart';
 import 'package:rvi_analyzer/providers/connected_devices_provider.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
+import 'package:rvi_analyzer/repository/entity/login_info.dart';
+import 'package:rvi_analyzer/repository/login_repo.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/views/common/bluetooth_device_disconnected_popup.dart';
 import 'package:rvi_analyzer/views/common/bluetooth_disconnected_popup.dart';
@@ -12,9 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rvi_analyzer/views/dashboard/connect_device_dashboard/device_card.dart';
-import 'package:rvi_analyzer/views/history/history_summary.dart';
 import 'package:rvi_analyzer/views/history/modes/mode_one_view.dart';
+import 'package:rvi_analyzer/views/history/modes/mode_three_view.dart';
 import 'package:rvi_analyzer/views/history/modes/mode_two_view.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   int initialIndex = 0;
@@ -54,6 +57,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     double width = MediaQuery.of(context).size.width;
     var isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final loginInfoRepo = LoginInfoRepository();
 
     ref.listen<BluetoothStatus>(deviceBluetoothState, ((previous, next) {
       getJwt().then((value) => {
@@ -286,22 +291,144 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                         ),
                                         SizedBox(
                                           height: 52,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ModeTwoView(
-                                                            username:
-                                                                "rukM@gmail.com",
-                                                          )));
-                                            },
-                                            child: const Icon(
-                                              Icons.settings,
-                                              color: Colors.white,
-                                            ),
+                                          child: SpeedDial(
+                                            animatedIcon:
+                                                AnimatedIcons.menu_close,
+                                            animatedIconTheme:
+                                                const IconThemeData(size: 22.0),
+                                            visible: true,
+                                            curve: Curves.bounceIn,
+                                            children: [
+                                              SpeedDialChild(
+                                                  child: const Text(
+                                                    "One",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  backgroundColor: Colors.cyan,
+                                                  onTap: () async {
+                                                    List<LoginInfo> infos =
+                                                        await loginInfoRepo
+                                                            .getAllLoginInfos();
+
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    ModeOneView(
+                                                                      username: infos
+                                                                          .first
+                                                                          .username,
+                                                                    )));
+                                                  }),
+                                              SpeedDialChild(
+                                                  child: const Text(
+                                                    "Two",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  backgroundColor: Colors.cyan,
+                                                  onTap: () async {
+                                                    List<LoginInfo> infos =
+                                                        await loginInfoRepo
+                                                            .getAllLoginInfos();
+
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    ModeTwoView(
+                                                                      username: infos
+                                                                          .first
+                                                                          .username,
+                                                                    )));
+                                                  }),
+                                              SpeedDialChild(
+                                                  child: const Text(
+                                                    "Three",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  backgroundColor: Colors.cyan,
+                                                  onTap: () async {
+                                                    List<LoginInfo> infos =
+                                                        await loginInfoRepo
+                                                            .getAllLoginInfos();
+
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ModeThreeView(
+                                                                  username: infos
+                                                                      .first
+                                                                      .username,
+                                                                )));
+                                                  }),
+                                              // SpeedDialChild(
+                                              //   child: const Text(
+                                              //     "Four",
+                                              //     style: TextStyle(
+                                              //         color: Colors.white,
+                                              //         fontWeight:
+                                              //             FontWeight.bold),
+                                              //   ),
+                                              //   backgroundColor: Colors.cyan,
+                                              //   onTap: () =>
+                                              //       print('Edit Action'),
+                                              // ),
+                                              // SpeedDialChild(
+                                              //   child: const Text(
+                                              //     "Five",
+                                              //     style: TextStyle(
+                                              //         color: Colors.white,
+                                              //         fontWeight:
+                                              //             FontWeight.bold),
+                                              //   ),
+                                              //   backgroundColor: Colors.cyan,
+                                              //   onTap: () =>
+                                              //       print('Edit Action'),
+                                              // ),
+                                              // SpeedDialChild(
+                                              //   child: const Text(
+                                              //     "Six",
+                                              //     style: TextStyle(
+                                              //         color: Colors.white,
+                                              //         fontWeight:
+                                              //             FontWeight.bold),
+                                              //   ),
+                                              //   backgroundColor: Colors.cyan,
+                                              //   onTap: () =>
+                                              //       print('Edit Action'),
+                                              // ),
+                                            ],
+                                            // direction: SpeedDialDirection.left,
                                           ),
+
+                                          // ElevatedButton(
+                                          //   onPressed: () {
+                                          //     // Navigator.push(
+                                          //     //     context,
+                                          //     //     MaterialPageRoute(
+                                          //     //         builder: (context) =>
+                                          //     //             ModeTwoView(
+                                          //     //               username:
+                                          //     //                   "rukM@gmail.com",
+                                          //     //             )));
+                                          //   },
+                                          //   child: const Icon(
+                                          //     Icons.settings,
+                                          //     color: Colors.white,
+                                          //   ),
+                                          // ),
                                         )
                                       ],
                                     ),

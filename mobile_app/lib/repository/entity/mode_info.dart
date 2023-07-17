@@ -9,25 +9,25 @@ import 'package:rvi_analyzer/repository/entity/mode_two_entity.dart';
 @HiveType(typeId: 17)
 class ModeInfo extends HiveObject {
   @HiveField(0)
-  String username;
+  late String username;
 
   @HiveField(1)
   final List<ModeOne> modeOnes;
 
-  @HiveField(1)
+  @HiveField(2)
   final List<ModeTwo> modeTwos;
 
-  @HiveField(1)
-  final List<ModeThree> modeThrees;
+  @HiveField(3)
+  late List<ModeThree> modeThrees;
 
-  @HiveField(1)
-  final List<ModeFour> modeFours;
+  @HiveField(4)
+  late List<ModeFour> modeFours;
 
-  @HiveField(1)
-  final List<ModeFive> modeFives;
+  @HiveField(5)
+  late List<ModeFive> modeFives;
 
-  @HiveField(1)
-  final List<ModeSix> modeSixs;
+  @HiveField(6)
+  late List<ModeSix> modeSixs;
 
   ModeInfo(this.username, this.modeOnes, this.modeTwos, this.modeThrees,
       this.modeFours, this.modeFives, this.modeSixs);

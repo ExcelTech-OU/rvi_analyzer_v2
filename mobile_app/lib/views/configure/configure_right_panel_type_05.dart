@@ -306,8 +306,8 @@ class _ConfigureRightPanelType05State
                 {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                        getSnackBar(context, Colors.red, "Saving Failed"))
+                    ..showSnackBar(getSnackBar(context, Colors.red,
+                        "Remote submit failed. Check internet connection"))
                 },
               ref
                   .read(deviceDataMap[widget.sc.device.id.id]!)
@@ -316,8 +316,11 @@ class _ConfigureRightPanelType05State
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
-                ..showSnackBar(
-                    getSnackBar(context, Colors.red, "Saving Failed"))
+                ..showSnackBar(getSnackBar(context, Colors.red,
+                    "Remote submit failed. Check internet connection")),
+              ref
+                  .read(deviceDataMap[widget.sc.device.id.id]!)
+                  .saveClickedMode05 = false
             });
     widget.updateTestId();
   }

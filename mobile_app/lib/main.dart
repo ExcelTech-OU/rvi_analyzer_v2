@@ -15,6 +15,14 @@ import 'package:rvi_analyzer/repository/adapter/mode_one_adapter.dart';
 import 'package:rvi_analyzer/repository/adapter/mode_six_adapter.dart';
 import 'package:rvi_analyzer/repository/adapter/mode_three_adapter.dart';
 import 'package:rvi_analyzer/repository/adapter/mode_two_adapter.dart';
+import 'package:rvi_analyzer/repository/entity/common_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_five_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_four_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_info.dart';
+import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_six_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_three_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_two_entity.dart';
 
 import 'package:rvi_analyzer/views/auth/sign_in/sign_in.dart';
 import 'package:rvi_analyzer/views/dashboard/dashboard.dart';
@@ -31,22 +39,35 @@ Future<void> main() async {
 }
 
 void registerAdapters() {
-  Hive.registerAdapter(ModeOneAdapter());
-  Hive.registerAdapter(SessionConfigurationModeOneAdapter());
-  Hive.registerAdapter(SessionResultAdapter());
-  Hive.registerAdapter(ReadingAdapter());
-  Hive.registerAdapter(ModeTwoAdapter());
-  Hive.registerAdapter(SessionConfigurationModeTwoAdapter());
-  Hive.registerAdapter(ModeThreeAdapter());
-  Hive.registerAdapter(SessionConfigurationModeThreeAdapter());
-  Hive.registerAdapter(ModeFourAdapter());
-  Hive.registerAdapter(SessionConfigurationModeFourAdapter());
-  Hive.registerAdapter(ModeFiveAdapter());
-  Hive.registerAdapter(SessionConfigurationModeFiveAdapter());
-  Hive.registerAdapter(ModeSixAdapter());
-  Hive.registerAdapter(SessionConfigurationModeSixAdapter());
-  Hive.registerAdapter(DefaultConfigurationAdapter());
-  Hive.registerAdapter(ModeInfoAdapter());
+  Hive.registerAdapter<DefaultConfiguration>(DefaultConfigurationAdapter());
+  Hive.registerAdapter<Reading>(ReadingAdapter());
+  Hive.registerAdapter<SessionResult>(SessionResultAdapter());
+  Hive.registerAdapter<SessionConfigurationModeOne>(
+      SessionConfigurationModeOneAdapter());
+  Hive.registerAdapter<ModeOne>(ModeOneAdapter());
+
+  Hive.registerAdapter<SessionConfigurationModeTwo>(
+      SessionConfigurationModeTwoAdapter());
+  Hive.registerAdapter<ModeTwo>(ModeTwoAdapter());
+
+  Hive.registerAdapter<SessionConfigurationModeThree>(
+      SessionConfigurationModeThreeAdapter());
+  Hive.registerAdapter<ModeThree>(ModeThreeAdapter());
+
+  Hive.registerAdapter<SessionConfigurationModeFour>(
+      SessionConfigurationModeFourAdapter());
+  Hive.registerAdapter<ModeFour>(ModeFourAdapter());
+
+  Hive.registerAdapter<SessionConfigurationModeFive>(
+      SessionConfigurationModeFiveAdapter());
+  Hive.registerAdapter<ModeFive>(ModeFiveAdapter());
+
+  Hive.registerAdapter<SessionConfigurationModeSix>(
+      SessionConfigurationModeSixAdapter());
+  Hive.registerAdapter<ModeSix>(ModeSixAdapter());
+
+  Hive.registerAdapter<ModeInfo>(ModeInfoAdapter());
+
   Hive.registerAdapter(LoginInfoAdapter());
   Hive.registerAdapter(ConnectedDevicesInfoAdapter());
 }

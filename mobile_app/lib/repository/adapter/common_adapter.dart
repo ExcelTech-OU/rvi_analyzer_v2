@@ -41,7 +41,7 @@ class SessionResultAdapter extends TypeAdapter<SessionResult> {
   @override
   void write(BinaryWriter writer, SessionResult obj) {
     writer.writeString(obj.testId);
-    writer.writeList(obj.readings);
+    writer.writeList(obj.readings, writeLength: true);
   }
 }
 

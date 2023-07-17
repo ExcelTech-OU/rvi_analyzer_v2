@@ -1,21 +1,15 @@
 import 'package:hive/hive.dart';
 import 'package:rvi_analyzer/repository/entity/common_entity.dart';
 
-@HiveType(typeId: 2)
-class ModeOne extends HiveObject {
-  @HiveField(0)
+class ModeOne {
   final String createdBy;
 
-  @HiveField(1)
   final DefaultConfiguration defaultConfigurations;
 
-  @HiveField(2)
   final SessionConfigurationModeOne sessionConfigurationModeOne;
 
-  @HiveField(3)
   final List<SessionResult> results;
 
-  @HiveField(4)
   final String status;
 
   ModeOne({
@@ -33,20 +27,32 @@ class ModeOne extends HiveObject {
         'results': results,
         'status': status,
       };
+
+  factory ModeOne.fromJson(Map<String, dynamic> json) {
+    List<dynamic> resultsList = json['results'] as List<dynamic>;
+    List<SessionResult> results = resultsList
+        .map((resultJson) => SessionResult.fromJson(resultJson))
+        .toList();
+
+    return ModeOne(
+      createdBy: json['createdBy'] as String,
+      defaultConfigurations:
+          DefaultConfiguration.fromJson(json['defaultConfigurations']),
+      sessionConfigurationModeOne: SessionConfigurationModeOne.fromJson(
+          json['sessionConfigurationModeOne']),
+      results: results,
+      status: json['status'] as String,
+    );
+  }
 }
 
-@HiveType(typeId: 3)
-class SessionConfigurationModeOne extends HiveObject {
-  @HiveField(0)
+class SessionConfigurationModeOne {
   final String voltage;
 
-  @HiveField(1)
   final String maxCurrent;
 
-  @HiveField(2)
   final String passMinCurrent;
 
-  @HiveField(3)
   final String passMaxCurrent;
 
   SessionConfigurationModeOne({
@@ -62,4 +68,13 @@ class SessionConfigurationModeOne extends HiveObject {
         'passMinCurrent': passMinCurrent,
         'passMaxCurrent': passMaxCurrent
       };
+
+  factory SessionConfigurationModeOne.fromJson(Map<String, dynamic> json) {
+    return SessionConfigurationModeOne(
+      voltage: json['voltage'] as String,
+      maxCurrent: json['maxCurrent'] as String,
+      passMinCurrent: json['passMinCurrent'] as String,
+      passMaxCurrent: json['passMaxCurrent'] as String,
+    );
+  }
 }
