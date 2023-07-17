@@ -33,6 +33,18 @@ class ModeThree extends HiveObject {
         'results': results,
         'status': status,
       };
+
+  factory ModeThree.fromJson(Map<String, dynamic> json) {
+    return ModeThree(
+      createdBy: json['createdBy'] as String,
+      defaultConfigurations:
+          DefaultConfiguration.fromJson(json['defaultConfigurations']),
+      sessionConfigurationModeThree: SessionConfigurationModeThree.fromJson(
+          json['sessionConfigurationModeThree']),
+      results: SessionResult.fromJson(json['results']),
+      status: json['status'] as String,
+    );
+  }
 }
 
 @HiveType(typeId: 10)
@@ -67,4 +79,14 @@ class SessionConfigurationModeThree extends HiveObject {
         'voltageResolution': voltageResolution,
         'chargeInTime': chargeInTime
       };
+
+  factory SessionConfigurationModeThree.fromJson(Map<String, dynamic> json) {
+    return SessionConfigurationModeThree(
+      startingVoltage: json['startingVoltage'] as String,
+      desiredVoltage: json['desiredVoltage'] as String,
+      maxCurrent: json['maxCurrent'] as String,
+      voltageResolution: json['voltageResolution'] as String,
+      chargeInTime: json['chargeInTime'] as String,
+    );
+  }
 }

@@ -26,7 +26,7 @@ class ModeOneView extends StatelessWidget {
                 child: Text('Error occurred while loading data.'),
               );
             } else {
-              if (snapshot.data != null) {
+              if (snapshot.data != null && snapshot.data!.sessions.isNotEmpty) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Container(

@@ -3,7 +3,11 @@ const String loginPath = "login/user";
 const String resetPasswordPath = "rvi/analyzer/v1/user/resetPassword";
 const String saveModeOnePath = "rvi/analyzer/v1/session/add/one";
 const String getLastModeOnePath = "rvi/analyzer/v1/session/get/last/one";
-
+const String getLastModeTwoPath = "rvi/analyzer/v1/session/get/last/two";
+const String getLastModeThreePath = "rvi/analyzer/v1/session/get/last/three";
+const String getLastModeFourPath = "rvi/analyzer/v1/session/get/last/four";
+const String getLastModeFivePath = "rvi/analyzer/v1/session/get/last/five";
+const String getLastModeSixPath = "rvi/analyzer/v1/session/get/last/six";
 const String saveModeTwoPath = "rvi/analyzer/v1/session/add/two";
 const String saveModeThreePath = "rvi/analyzer/v1/session/add/three";
 const String saveModeFourPath = "rvi/analyzer/v1/session/add/four";

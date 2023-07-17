@@ -33,6 +33,18 @@ class ModeFive extends HiveObject {
         'results': results,
         'status': status,
       };
+
+  factory ModeFive.fromJson(Map<String, dynamic> json) {
+    return ModeFive(
+      createdBy: json['createdBy'] as String,
+      defaultConfigurations:
+          DefaultConfiguration.fromJson(json['defaultConfigurations']),
+      sessionConfigurationModeFive: SessionConfigurationModeFive.fromJson(
+          json['sessionConfigurationModeFive']),
+      results: SessionResult.fromJson(json['results']),
+      status: json['status'] as String,
+    );
+  }
 }
 
 @HiveType(typeId: 14)
@@ -57,4 +69,12 @@ class SessionConfigurationModeFive extends HiveObject {
         'maxCurrent': maxCurrent,
         'timeDuration': timeDuration
       };
+
+  factory SessionConfigurationModeFive.fromJson(Map<String, dynamic> json) {
+    return SessionConfigurationModeFive(
+      fixedVoltage: json['fixedVoltage'] as String,
+      maxCurrent: json['maxCurrent'] as String,
+      timeDuration: json['timeDuration'] as String,
+    );
+  }
 }

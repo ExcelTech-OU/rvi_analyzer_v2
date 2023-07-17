@@ -33,6 +33,23 @@ class ModeTwo extends HiveObject {
         'results': results,
         'status': status,
       };
+
+  factory ModeTwo.fromJson(Map<String, dynamic> json) {
+    List<dynamic> resultsList = json['results'] as List<dynamic>;
+    List<SessionResult> results = resultsList
+        .map((resultJson) => SessionResult.fromJson(resultJson))
+        .toList();
+
+    return ModeTwo(
+      createdBy: json['createdBy'] as String,
+      defaultConfigurations:
+          DefaultConfiguration.fromJson(json['defaultConfigurations']),
+      sessionConfigurationModeTwo: SessionConfigurationModeTwo.fromJson(
+          json['sessionConfigurationModeTwo']),
+      results: results,
+      status: json['status'] as String,
+    );
+  }
 }
 
 @HiveType(typeId: 8)
@@ -62,4 +79,13 @@ class SessionConfigurationModeTwo extends HiveObject {
         'passMinVoltage': passMinVoltage,
         'passMaxVoltage': passMaxVoltage
       };
+
+  factory SessionConfigurationModeTwo.fromJson(Map<String, dynamic> json) {
+    return SessionConfigurationModeTwo(
+      current: json['current'] as String,
+      maxVoltage: json['maxVoltage'] as String,
+      passMinVoltage: json['passMinVoltage'] as String,
+      passMaxVoltage: json['passMaxVoltage'] as String,
+    );
+  }
 }

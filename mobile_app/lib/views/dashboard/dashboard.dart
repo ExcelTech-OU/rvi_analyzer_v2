@@ -14,7 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rvi_analyzer/views/dashboard/connect_device_dashboard/device_card.dart';
+import 'package:rvi_analyzer/views/history/modes/mode_five_view.dart';
+import 'package:rvi_analyzer/views/history/modes/mode_four_view.dart';
 import 'package:rvi_analyzer/views/history/modes/mode_one_view.dart';
+import 'package:rvi_analyzer/views/history/modes/mode_six_view.dart';
 import 'package:rvi_analyzer/views/history/modes/mode_three_view.dart';
 import 'package:rvi_analyzer/views/history/modes/mode_two_view.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -373,44 +376,81 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                                                       .username,
                                                                 )));
                                                   }),
-                                              // SpeedDialChild(
-                                              //   child: const Text(
-                                              //     "Four",
-                                              //     style: TextStyle(
-                                              //         color: Colors.white,
-                                              //         fontWeight:
-                                              //             FontWeight.bold),
-                                              //   ),
-                                              //   backgroundColor: Colors.cyan,
-                                              //   onTap: () =>
-                                              //       print('Edit Action'),
-                                              // ),
-                                              // SpeedDialChild(
-                                              //   child: const Text(
-                                              //     "Five",
-                                              //     style: TextStyle(
-                                              //         color: Colors.white,
-                                              //         fontWeight:
-                                              //             FontWeight.bold),
-                                              //   ),
-                                              //   backgroundColor: Colors.cyan,
-                                              //   onTap: () =>
-                                              //       print('Edit Action'),
-                                              // ),
-                                              // SpeedDialChild(
-                                              //   child: const Text(
-                                              //     "Six",
-                                              //     style: TextStyle(
-                                              //         color: Colors.white,
-                                              //         fontWeight:
-                                              //             FontWeight.bold),
-                                              //   ),
-                                              //   backgroundColor: Colors.cyan,
-                                              //   onTap: () =>
-                                              //       print('Edit Action'),
-                                              // ),
+                                              SpeedDialChild(
+                                                  child: const Text(
+                                                    "Four",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  backgroundColor: Colors.cyan,
+                                                  onTap: () async {
+                                                    List<LoginInfo> infos =
+                                                        await loginInfoRepo
+                                                            .getAllLoginInfos();
+
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ModeFourView(
+                                                                  username: infos
+                                                                      .first
+                                                                      .username,
+                                                                )));
+                                                  }),
+                                              SpeedDialChild(
+                                                  child: const Text(
+                                                    "Five",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  backgroundColor: Colors.cyan,
+                                                  onTap: () async {
+                                                    List<LoginInfo> infos =
+                                                        await loginInfoRepo
+                                                            .getAllLoginInfos();
+
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ModeFiveView(
+                                                                  username: infos
+                                                                      .first
+                                                                      .username,
+                                                                )));
+                                                  }),
+                                              SpeedDialChild(
+                                                  child: const Text(
+                                                    "Six",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  backgroundColor: Colors.cyan,
+                                                  onTap: () async {
+                                                    List<LoginInfo> infos =
+                                                        await loginInfoRepo
+                                                            .getAllLoginInfos();
+
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    ModeSixView(
+                                                                      username: infos
+                                                                          .first
+                                                                          .username,
+                                                                    )));
+                                                  }),
                                             ],
-                                            // direction: SpeedDialDirection.left,
+                                            direction: SpeedDialDirection.left,
                                           ),
 
                                           // ElevatedButton(
