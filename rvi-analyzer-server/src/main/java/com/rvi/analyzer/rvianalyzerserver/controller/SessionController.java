@@ -28,6 +28,11 @@ public class SessionController {
         return sessionService.getAllModeOne(pageNo, request, auth);
     }
 
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/last/one")
+    public Mono<ResponseEntity<ModeOnesResponse>> getLastModeOne(@RequestHeader("Authorization") String auth) {
+        return sessionService.getLastModeOne(auth);
+    }
+
     @GetMapping(path = "/rvi/analyzer/v1/session/share/{mode}/{sessionId}")
     public Mono<ResponseEntity<ShareReportResponse>> shareReport(@PathVariable("mode") String mode,
                                                                  @PathVariable("sessionId") String sessionId,
@@ -48,6 +53,11 @@ public class SessionController {
         return sessionService.getAllModeTwos(pageNo, request, jwt);
     }
 
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/last/two")
+    public Mono<ResponseEntity<ModeTwosResponse>> getModeTwos(@RequestHeader("Authorization") String jwt) {
+        return sessionService.getLastModeTwo(jwt);
+    }
+
     @PostMapping(path = "/rvi/analyzer/v1/session/add/three")
     public Mono<ResponseEntity<CommonResponse>> addModeThree(@RequestBody ModeThreeDto modeThreeDto,
                                                              @RequestHeader("Authorization") String jwt) {
@@ -59,6 +69,11 @@ public class SessionController {
                                                                   @RequestBody SessionSearchRequest request,
                                                                   @RequestHeader("Authorization") String jwt) {
         return sessionService.getAllModeThrees(pageNo, request, jwt);
+    }
+
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/last/three")
+    public Mono<ResponseEntity<ModeThreesResponse>> getLastModeThree(@RequestHeader("Authorization") String jwt) {
+        return sessionService.getLastModeThree(jwt);
     }
 
     @PostMapping(path = "/rvi/analyzer/v1/session/add/four")
@@ -74,6 +89,11 @@ public class SessionController {
         return sessionService.getAllModeFour(pageNo, request, jwt);
     }
 
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/last/four")
+    public Mono<ResponseEntity<ModeFoursResponse>> getLastModeFour(@RequestHeader("Authorization") String jwt) {
+        return sessionService.getLastModeFour(jwt);
+    }
+
     @PostMapping(path = "/rvi/analyzer/v1/session/add/five")
     public Mono<ResponseEntity<CommonResponse>> addModeFive(@RequestBody ModeFiveDto modeFiveDto,
                                                             @RequestHeader("Authorization") String jwt) {
@@ -87,6 +107,11 @@ public class SessionController {
         return sessionService.getAllModeFive(pageNo, request, jwt);
     }
 
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/last/five")
+    public Mono<ResponseEntity<ModeFiveResponse>> getLastModeFive(@RequestHeader("Authorization") String jwt) {
+        return sessionService.getLastModeFive(jwt);
+    }
+
     @PostMapping(path = "/rvi/analyzer/v1/session/add/six")
     public Mono<ResponseEntity<CommonResponse>> addModeFour(@RequestBody ModeSixDto modeSixDto,
                                                             @RequestHeader("Authorization") String jwt) {
@@ -98,6 +123,11 @@ public class SessionController {
                                                             @RequestBody SessionSearchRequest request,
                                                             @RequestHeader("Authorization") String jwt) {
         return sessionService.getAllModeSix(pageNo, request, jwt);
+    }
+
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/last/six")
+    public Mono<ResponseEntity<ModeSixResponse>> getLastModeSix(@RequestHeader("Authorization") String jwt) {
+        return sessionService.getLastModeSix(jwt);
     }
 
     @GetMapping(path = "/report/status/{hash}")

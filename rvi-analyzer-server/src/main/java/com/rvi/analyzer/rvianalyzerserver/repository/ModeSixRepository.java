@@ -20,6 +20,11 @@ public class ModeSixRepository {
     public Flux<ModeSix> findByFilters(Query query) {
         return template.find(query, ModeSix.class);
     }
+
+    public Mono<ModeSix> findLatest(Query query) {
+        return template.findOne(query, ModeSix.class);
+    }
+
     public Mono<Long> countByFilters(Query query) {
         return template.count(query, ModeSix.class);
     }

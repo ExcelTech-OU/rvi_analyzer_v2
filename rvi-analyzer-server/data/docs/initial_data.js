@@ -113,7 +113,36 @@ db.role.insertMany([
   {
     'role-id': 'get_devices',
     'role-name': 'GET_DEVICES'
-  }
+  },
+    {
+      'role-id': 'get_last_mode_one',
+      'role-name': 'GET_LAST_MODE_ONE'
+    }
+ ,
+     {
+       'role-id': 'get_last_mode_two',
+       'role-name': 'GET_LAST_MODE_TWO'
+     }
+  ,
+      {
+        'role-id': 'get_last_mode_three',
+        'role-name': 'GET_LAST_MODE_THREE'
+      }
+  ,
+      {
+        'role-id': 'get_last_mode_four',
+        'role-name': 'GET_LAST_MODE_FOUR'
+      }
+  ,
+      {
+        'role-id': 'get_last_mode_five',
+        'role-name': 'GET_LAST_MODE_FIVE'
+      }
+  ,
+      {
+        'role-id': 'get_last_mode_six',
+        'role-name': 'GET_LAST_MODE_SIX'
+      }
 ])
 
 db.groupRole.insertMany([
@@ -152,6 +181,12 @@ db.groupRole.insertMany([
     's_mode_three',
     's_mode_four',
     's_mode_five',
-    's_mode_six']
+    's_mode_six',
+    'get_last_mode_one',
+    'get_last_mode_two',
+    'get_last_mode_three',
+    'get_last_mode_four',
+    'get_last_mode_five',
+    'get_last_mode_six']
   }
 ])

@@ -15,6 +15,7 @@ import org.bson.BasicBSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
@@ -625,18 +626,18 @@ public class SessionService {
                                         .flatMap(strings -> {
                                             Query query = getFilters(strings, pageNo, request);
                                             return modeSixRepository.countByFilters(query)
-                                                    .flatMap(aLong ->  modeSixRepository.findByFilters(query.skip((Integer.parseInt(pageNo) - 1) * 15L).limit(15))
-                                                    .flatMap(modeSix -> {
-                                                        log.info("Mode six found with id [{}]", modeSix.getDefaultConfigurations().getSessionId());
-                                                        return Mono.just(modeSixMapper.modeSixToModeSixDto(modeSix));
-                                                    })
-                                                    .collectList()
-                                                    .flatMap(modeFourDtos -> Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
-                                                            .status("S1000")
-                                                            .statusDescription("Success")
-                                                            .sessions(modeFourDtos)
-                                                            .total(aLong.intValue())
-                                                            .build()))));
+                                                    .flatMap(aLong -> modeSixRepository.findByFilters(query.skip((Integer.parseInt(pageNo) - 1) * 15L).limit(15))
+                                                            .flatMap(modeSix -> {
+                                                                log.info("Mode six found with id [{}]", modeSix.getDefaultConfigurations().getSessionId());
+                                                                return Mono.just(modeSixMapper.modeSixToModeSixDto(modeSix));
+                                                            })
+                                                            .collectList()
+                                                            .flatMap(modeFourDtos -> Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
+                                                                    .status("S1000")
+                                                                    .statusDescription("Success")
+                                                                    .sessions(modeFourDtos)
+                                                                    .total(aLong.intValue())
+                                                                    .build()))));
                                         })
                                         .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
                                                 .status("S1000")
@@ -910,6 +911,210 @@ public class SessionService {
                         .build())))
                 .onErrorResume(throwable -> Mono.just(ResponseEntity.ok(PasswordValidationReportResponse.builder()
                         .status("E1011")
+                        .statusDescription("Failed")
+                        .build())));
+    }
+
+    public Mono<ResponseEntity<ModeOnesResponse>> getLastModeOne(String auth) {
+        return userService.getUser(jwtUtils.getUsername(auth))
+                .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.GET_LAST_MODE_ONE)) {
+                                Query query = new Query();
+                                query.addCriteria(Criteria.where("created-by").is(user.getUsername()));
+                                query.with(Sort.by(Sort.Direction.DESC, "created-date"));
+                                return modeOneRepository.findLatest(query)
+                                        .flatMap(modeOne -> Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(List.of(modeOneMapper.modeOneToModeOneDto(modeOne)))
+                                                .total(0)
+                                                .build())))
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeOnesResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(new ArrayList<>())
+                                                .total(0)
+                                                .build())));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeOnesResponse.builder()
+                        .status("E1220")
+                        .statusDescription("Failed")
+                        .build())));
+    }
+
+    public Mono<ResponseEntity<ModeTwosResponse>> getLastModeTwo(String jwt) {
+        return userService.getUser(jwtUtils.getUsername(jwt))
+                .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.GET_LAST_MODE_TWO)) {
+                                Query query = new Query();
+                                query.addCriteria(Criteria.where("created-by").is(user.getUsername()));
+                                query.with(Sort.by(Sort.Direction.DESC, "created-date"));
+                                return modeTwoRepository.findLatest(query)
+                                        .flatMap(modeTwo -> Mono.just(ResponseEntity.ok(ModeTwosResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(List.of(modeTwoMapper.modeTwoToModeTwoDto(modeTwo)))
+                                                .total(0)
+                                                .build())))
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeTwosResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(new ArrayList<>())
+                                                .total(0)
+                                                .build())));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeTwosResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeTwosResponse.builder()
+                        .status("E1220")
+                        .statusDescription("Failed")
+                        .build())));
+    }
+
+    public Mono<ResponseEntity<ModeThreesResponse>> getLastModeThree(String jwt) {
+        return userService.getUser(jwtUtils.getUsername(jwt))
+                .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.GET_LAST_MODE_THREE)) {
+                                Query query = new Query();
+                                query.addCriteria(Criteria.where("created-by").is(user.getUsername()));
+                                query.with(Sort.by(Sort.Direction.DESC, "created-date"));
+                                return modeThreeRepository.findLatest(query)
+                                        .flatMap(modeThree -> Mono.just(ResponseEntity.ok(ModeThreesResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(List.of(modeThreeMapper.modeThreeToModeThreeDto(modeThree)))
+                                                .total(0)
+                                                .build())))
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeThreesResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(new ArrayList<>())
+                                                .total(0)
+                                                .build())));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeThreesResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeThreesResponse.builder()
+                        .status("E1220")
+                        .statusDescription("Failed")
+                        .build())));
+    }
+
+    public Mono<ResponseEntity<ModeFoursResponse>> getLastModeFour(String jwt) {
+        return userService.getUser(jwtUtils.getUsername(jwt))
+                .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.GET_LAST_MODE_FOUR)) {
+                                Query query = new Query();
+                                query.addCriteria(Criteria.where("created-by").is(user.getUsername()));
+                                query.with(Sort.by(Sort.Direction.DESC, "created-date"));
+                                return modeFourRepository.findLatest(query)
+                                        .flatMap(modeFour -> Mono.just(ResponseEntity.ok(ModeFoursResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(List.of(modeFourMapper.modeFourToModeFourDto(modeFour)))
+                                                .total(0)
+                                                .build())))
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeFoursResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(new ArrayList<>())
+                                                .total(0)
+                                                .build())));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeFoursResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeFoursResponse.builder()
+                        .status("E1220")
+                        .statusDescription("Failed")
+                        .build())));
+    }
+
+    public Mono<ResponseEntity<ModeFiveResponse>> getLastModeFive(String jwt) {
+        return userService.getUser(jwtUtils.getUsername(jwt))
+                .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.GET_LAST_MODE_FIVE)) {
+                                Query query = new Query();
+                                query.addCriteria(Criteria.where("created-by").is(user.getUsername()));
+                                query.with(Sort.by(Sort.Direction.DESC, "created-date"));
+                                return modeFiveRepository.findLatest(query)
+                                        .flatMap(modeFive -> Mono.just(ResponseEntity.ok(ModeFiveResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(List.of(modeFiveMapper.modeFiveToModeFiveDto(modeFive)))
+                                                .total(0)
+                                                .build())))
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeFiveResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(new ArrayList<>())
+                                                .total(0)
+                                                .build())));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeFiveResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeFiveResponse.builder()
+                        .status("E1220")
+                        .statusDescription("Failed")
+                        .build())));
+    }
+
+    public Mono<ResponseEntity<ModeSixResponse>> getLastModeSix(String jwt) {
+        return userService.getUser(jwtUtils.getUsername(jwt))
+                .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.GET_LAST_MODE_SIX)) {
+                                Query query = new Query();
+                                query.addCriteria(Criteria.where("created-by").is(user.getUsername()));
+                                query.with(Sort.by(Sort.Direction.DESC, "created-date"));
+                                return modeSixRepository.findLatest(query)
+                                        .flatMap(modeSix -> Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(List.of(modeSixMapper.modeSixToModeSixDto(modeSix)))
+                                                .total(0)
+                                                .build())))
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(new ArrayList<>())
+                                                .total(0)
+                                                .build())));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeSixResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeSixResponse.builder()
+                        .status("E1220")
                         .statusDescription("Failed")
                         .build())));
     }

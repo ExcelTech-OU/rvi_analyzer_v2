@@ -21,6 +21,11 @@ public class ModeFiveRepository {
         return template.find(query, ModeFive.class);
     }
 
+    public Mono<ModeFive> findLatest(Query query) {
+        return template.findOne(query, ModeFive.class);
+    }
+
+
     public Mono<Long> countByFilters(Query query) {
         return template.count(query, ModeFive.class);
     }

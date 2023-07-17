@@ -21,6 +21,10 @@ public class ModeTwoRepository {
         return template.find(query, ModeTwo.class);
     }
 
+    public Mono<ModeTwo> findLatest(Query query) {
+        return template.findOne(query, ModeTwo.class);
+    }
+
     public Mono<Long> countByFilters(Query query) {
         return template.count(query, ModeTwo.class);
     }
