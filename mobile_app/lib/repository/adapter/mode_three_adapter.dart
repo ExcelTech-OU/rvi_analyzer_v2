@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:rvi_analyzer/repository/adapter/common_adapter.dart';
 import 'package:rvi_analyzer/repository/entity/common_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_three_entity.dart';
 
@@ -9,23 +8,51 @@ class ModeThreeAdapter extends TypeAdapter<ModeThree> {
 
   @override
   ModeThree read(BinaryReader reader) {
+    final createdBy = reader.readString();
+    final defaultConfigurations = DefaultConfiguration(
+      customerName: reader.readString(),
+      operatorId: reader.readString(),
+      batchNo: reader.readString(),
+      serialNo: reader.readString(),
+      sessionId: reader.readString(),
+    );
+    final sessionConfigurationModeThree = SessionConfigurationModeThree(
+      startingVoltage: reader.readString(),
+      desiredVoltage: reader.readString(),
+      maxCurrent: reader.readString(),
+      voltageResolution: reader.readString(),
+      chargeInTime: reader.readString(),
+    );
+
+    final results = List<SessionResult>.generate(1, (_) => reader.read());
+
+    final status = reader.readString();
+
     return ModeThree(
-      createdBy: reader.readString(),
-      defaultConfigurations: reader.read(DefaultConfigurationAdapter().typeId)
-          as DefaultConfiguration,
-      sessionConfigurationModeThree:
-          reader.read(SessionConfigurationModeThreeAdapter().typeId)
-              as SessionConfigurationModeThree,
-      results: reader.read(SessionResultAdapter().typeId) as SessionResult,
-      status: reader.readString(),
+      createdBy: createdBy,
+      defaultConfigurations: defaultConfigurations,
+      sessionConfigurationModeThree: sessionConfigurationModeThree,
+      results: results.first,
+      status: status,
     );
   }
 
   @override
   void write(BinaryWriter writer, ModeThree obj) {
     writer.writeString(obj.createdBy);
-    writer.write(obj.defaultConfigurations);
-    writer.write(obj.sessionConfigurationModeThree);
+
+    writer.writeString(obj.defaultConfigurations.customerName);
+    writer.writeString(obj.defaultConfigurations.operatorId);
+    writer.writeString(obj.defaultConfigurations.batchNo);
+    writer.writeString(obj.defaultConfigurations.serialNo);
+    writer.writeString(obj.defaultConfigurations.sessionId);
+
+    writer.writeString(obj.sessionConfigurationModeThree.startingVoltage);
+    writer.writeString(obj.sessionConfigurationModeThree.desiredVoltage);
+    writer.writeString(obj.sessionConfigurationModeThree.maxCurrent);
+    writer.writeString(obj.sessionConfigurationModeThree.voltageResolution);
+    writer.writeString(obj.sessionConfigurationModeThree.chargeInTime);
+
     writer.write(obj.results);
     writer.writeString(obj.status);
   }

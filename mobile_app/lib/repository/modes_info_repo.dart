@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:http/http.dart';
 import 'package:rvi_analyzer/repository/entity/mode_five_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_four_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_info.dart';
@@ -48,12 +47,15 @@ class ModeInfoRepository {
 
   Future<ModeOne?> getLastModeOne(String username) async {
     final box = await _openBox();
-
-    final modeInfo = box.get(username);
-    if (modeInfo == null) {
-      return null;
-    } else {
-      return modeInfo.modeOnes.last;
+    try {
+      final modeInfo = box.get(username);
+      if (modeInfo == null || modeInfo.modeOnes.isEmpty) {
+        return null;
+      } else {
+        return modeInfo.modeOnes.last;
+      }
+    } catch (error) {
+      print(error);
     }
   }
 
@@ -98,7 +100,7 @@ class ModeInfoRepository {
     final box = await _openBox();
 
     final modeInfo = box.get(username);
-    if (modeInfo == null) {
+    if (modeInfo == null || modeInfo.modeTwos.isEmpty) {
       return null;
     } else {
       return modeInfo.modeTwos.last;
@@ -124,24 +126,22 @@ class ModeInfoRepository {
       String username, ModeThree modeThree) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      modeInfo.modeThrees.firstWhere((m) =>
-          m.defaultConfigurations.sessionId ==
-          modeThree.defaultConfigurations.sessionId);
-    } catch (error) {
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      modeInfo.modeThrees.add(modeThree);
+    } else {
+      modeInfo = ModeInfo(username, [], [], [], [], [], []);
       modeInfo.modeThrees.add(modeThree);
     }
-    await box.add(modeInfo);
+    await box.put(username, modeInfo);
   }
 
   Future<ModeThree?> getLastModeThree(String username) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    if (modeInfo.modeThrees.isEmpty) {
+    final modeInfo = box.get(username);
+    if (modeInfo == null || modeInfo.modeThrees.isEmpty) {
       return null;
     } else {
       return modeInfo.modeThrees.last;
@@ -166,24 +166,22 @@ class ModeInfoRepository {
   Future<void> saveOrUpdateModeFour(String username, ModeFour modeFour) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      modeInfo.modeFours.firstWhere((m) =>
-          m.defaultConfigurations.sessionId ==
-          modeFour.defaultConfigurations.sessionId);
-    } catch (error) {
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      modeInfo.modeFours.add(modeFour);
+    } else {
+      modeInfo = ModeInfo(username, [], [], [], [], [], []);
       modeInfo.modeFours.add(modeFour);
     }
-    await box.add(modeInfo);
+    await box.put(username, modeInfo);
   }
 
   Future<ModeFour?> getLastModeFour(String username) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    if (modeInfo.modeFours.isEmpty) {
+    final modeInfo = box.get(username);
+    if (modeInfo == null || modeInfo.modeFours.isEmpty) {
       return null;
     } else {
       return modeInfo.modeFours.last;
@@ -208,24 +206,22 @@ class ModeInfoRepository {
   Future<void> saveOrUpdateModeFive(String username, ModeFive modeFive) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      modeInfo.modeFives.firstWhere((m) =>
-          m.defaultConfigurations.sessionId ==
-          modeFive.defaultConfigurations.sessionId);
-    } catch (error) {
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      modeInfo.modeFives.add(modeFive);
+    } else {
+      modeInfo = ModeInfo(username, [], [], [], [], [], []);
       modeInfo.modeFives.add(modeFive);
     }
-    await box.add(modeInfo);
+    await box.put(username, modeInfo);
   }
 
   Future<ModeFive?> getLastModeFive(String username) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    if (modeInfo.modeFives.isEmpty) {
+    final modeInfo = box.get(username);
+    if (modeInfo == null || modeInfo.modeFives.isEmpty) {
       return null;
     } else {
       return modeInfo.modeFives.last;
@@ -250,24 +246,22 @@ class ModeInfoRepository {
   Future<void> saveOrUpdateModeSix(String username, ModeSix modeSix) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      modeInfo.modeSixs.firstWhere((m) =>
-          m.defaultConfigurations.sessionId ==
-          modeSix.defaultConfigurations.sessionId);
-    } catch (error) {
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      modeInfo.modeSixs.add(modeSix);
+    } else {
+      modeInfo = ModeInfo(username, [], [], [], [], [], []);
       modeInfo.modeSixs.add(modeSix);
     }
-    await box.add(modeInfo);
+    await box.put(username, modeInfo);
   }
 
   Future<ModeSix?> getLastModeSIX(String username) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    if (modeInfo.modeSixs.isEmpty) {
+    final modeInfo = box.get(username);
+    if (modeInfo == null || modeInfo.modeSixs.isEmpty) {
       return null;
     } else {
       return modeInfo.modeSixs.last;

@@ -24,7 +24,24 @@ class ModeInfoAdapter extends TypeAdapter<ModeInfo> {
     final modeTwos =
         List<ModeTwo>.generate(modeTwosLength, (_) => reader.read());
 
-    return ModeInfo(username, modeOnes, modeTwos, [], [], [], []);
+    final modeThreesLength = reader.readInt();
+    final modeThrees =
+        List<ModeThree>.generate(modeThreesLength, (_) => reader.read());
+
+    final modeFoursLength = reader.readInt();
+    final modeFours =
+        List<ModeFour>.generate(modeFoursLength, (_) => reader.read());
+
+    final modeFivesLength = reader.readInt();
+    final modeFives =
+        List<ModeFive>.generate(modeFivesLength, (_) => reader.read());
+
+    final modeSixsLength = reader.readInt();
+    final modeSixs =
+        List<ModeSix>.generate(modeSixsLength, (_) => reader.read());
+
+    return ModeInfo(username, modeOnes, modeTwos, modeThrees, modeFours,
+        modeFives, modeSixs);
   }
 
   @override
@@ -36,5 +53,17 @@ class ModeInfoAdapter extends TypeAdapter<ModeInfo> {
 
     writer.writeInt(obj.modeTwos.length);
     obj.modeTwos.forEach(writer.write);
+
+    writer.writeInt(obj.modeThrees.length);
+    obj.modeThrees.forEach(writer.write);
+
+    writer.writeInt(obj.modeFours.length);
+    obj.modeFours.forEach(writer.write);
+
+    writer.writeInt(obj.modeFives.length);
+    obj.modeFives.forEach(writer.write);
+
+    writer.writeInt(obj.modeSixs.length);
+    obj.modeSixs.forEach(writer.write);
   }
 }
