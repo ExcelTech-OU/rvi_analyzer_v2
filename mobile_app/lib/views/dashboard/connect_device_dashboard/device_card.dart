@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rvi_analyzer/providers/connected_devices_provider.dart';
+import 'package:rvi_analyzer/repository/connected_devices_info_repo.dart';
+import 'package:rvi_analyzer/repository/entity/login_info.dart';
+import 'package:rvi_analyzer/repository/login_repo.dart';
+import 'package:rvi_analyzer/service/device_service.dart';
 import 'package:rvi_analyzer/views/configure/configure_layout.dart';
 import 'package:rvi_analyzer/views/dashboard/connect_device_dashboard/device_status_text.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +31,12 @@ class DeviceCardHomePage extends StatefulWidget {
 class _deviceCardHomePageState extends State<DeviceCardHomePage> {
   _deviceCardHomePageState(this.scanResult);
   final ScanResult scanResult;
+
+  final ConnectedDevicesInfoRepository connectedRepo =
+      ConnectedDevicesInfoRepository();
+
+  final loginInfoRepo = LoginInfoRepository();
+
   bool isClicked = false;
   bool isDisconnectPressed = false;
   @override
@@ -39,51 +49,55 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
               setState(() {
                 isClicked = true;
               });
-              // await validateDeviceByName(scanResult.device.id.id).then((value) =>
-              //     {
-              //       if (value.status == "S1000")
-              //         {
-              print(scanResult.device);
-              scanResult.device
-                  .connect(autoConnect: false)
-                  .then((value) => {
-                        ref.read(deviceManagementState).addDevice(scanResult),
-                        deviceDataMap.putIfAbsent(
-                            scanResult.device.id.id,
-                            () =>
-                                ChangeNotifierProvider((ref) => DeviceState())),
-                        deviceConnectionStatusMap.putIfAbsent(
-                            scanResult.device.id.id,
-                            () => ChangeNotifierProvider(
-                                (ref) => BluetoothDeviceStatus(scanResult))),
-                        ref
-                            .read(deviceConnectionStatusMap[
-                                    scanResult.device.id.id]!
-                                .notifier)
-                            .activeNotifyStreamListener(),
-                        ref
-                            .read(deviceDataMap[scanResult.device.id.id]!
-                                .notifier)
-                            .isConnected = true,
-                        ref
-                            .read(ref
-                                .read(deviceDataMap[scanResult.device.id.id]!)
-                                .streamData)
-                            .runNotify(scanResult),
-                      })
-                  .onError((error, stackTrace) => {
+              await validateDeviceByMac(scanResult.device.id.id).then((value) =>
+                  {
+                    if (value.status == "S1000")
+                      {
+                        scanResult.device
+                            .connect(autoConnect: false)
+                            .then((value) async {
+                          List<LoginInfo> infos =
+                              await loginInfoRepo.getAllLoginInfos();
+
+                          await connectedRepo.addDeviceByUserName(
+                              infos.first.username, scanResult);
+
+                          ref.read(deviceManagementState).addDevice(scanResult);
+                          deviceDataMap.putIfAbsent(
+                              scanResult.device.id.id,
+                              () => ChangeNotifierProvider(
+                                  (ref) => DeviceState()));
+                          deviceConnectionStatusMap.putIfAbsent(
+                              scanResult.device.id.id,
+                              () => ChangeNotifierProvider(
+                                  (ref) => BluetoothDeviceStatus(scanResult)));
+                          ref
+                              .read(deviceConnectionStatusMap[
+                                      scanResult.device.id.id]!
+                                  .notifier)
+                              .activeNotifyStreamListener();
+                          ref
+                              .read(deviceDataMap[scanResult.device.id.id]!
+                                  .notifier)
+                              .isConnected = true;
+                          ref
+                              .read(ref
+                                  .read(deviceDataMap[scanResult.device.id.id]!)
+                                  .streamData)
+                              .runNotify(scanResult);
+                        }).onError((error, stackTrace) {
+                          setState(() {
+                            isClicked = false;
+                          });
+                        })
+                      }
+                    else
+                      {
                         setState(() {
                           isClicked = false;
                         }),
-                      });
-              //     }
-              //   else
-              //     {
-              //       setState(() {
-              //         isClicked = false;
-              //       }),
-              //     }
-              // });
+                      }
+                  });
             }
 
             void disconnect() async {
@@ -94,40 +108,42 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                 ref
                     .read(deviceManagementState)
                     .disconnectDevice(widget.scanResult)
-                    .then((value) => {
-                          ref
-                              .read(
-                                  deviceDataMap[widget.scanResult.device.id.id]!
-                                      .notifier)
-                              .isConnected = false,
-                          if (deviceConnectionStatusMap
-                              .containsKey(widget.scanResult.device.id.id))
-                            {
-                              ref
-                                  .read(deviceConnectionStatusMap[
-                                          widget.scanResult.device.id.id]!
-                                      .notifier)
-                                  .alreadyListening = false,
-                              ref
-                                  .read(deviceConnectionStatusMap[
-                                          widget.scanResult.device.id.id]!
-                                      .notifier)
-                                  .cancelSubscription(),
-                              deviceConnectionStatusMap
-                                  .remove(widget.scanResult.device.id.id),
-                            },
-                          ref
-                              .read(ref
-                                  .read(deviceDataMap[
-                                      widget.scanResult.device.id.id]!)
-                                  .streamData
-                                  .notifier)
-                              .subscription
-                              .cancel(),
-                          setState(() {
-                            isDisconnectPressed = false;
-                          }),
-                        });
+                    .then((value) async {
+                  // List<LoginInfo> infos =
+                  //     await loginInfoRepo.getAllLoginInfos();
+
+                  // await connectedRepo.removeByName(
+                  //     infos.first.username, scanResult);
+                  ref
+                      .read(deviceDataMap[widget.scanResult.device.id.id]!
+                          .notifier)
+                      .isConnected = false;
+                  if (deviceConnectionStatusMap
+                      .containsKey(widget.scanResult.device.id.id)) {
+                    ref
+                        .read(deviceConnectionStatusMap[
+                                widget.scanResult.device.id.id]!
+                            .notifier)
+                        .alreadyListening = false;
+                    ref
+                        .read(deviceConnectionStatusMap[
+                                widget.scanResult.device.id.id]!
+                            .notifier)
+                        .cancelSubscription();
+                    deviceConnectionStatusMap
+                        .remove(widget.scanResult.device.id.id);
+                  }
+                  ref
+                      .read(ref
+                          .read(deviceDataMap[widget.scanResult.device.id.id]!)
+                          .streamData
+                          .notifier)
+                      .subscription
+                      .cancel();
+                  setState(() {
+                    isDisconnectPressed = false;
+                  });
+                });
               });
             }
 

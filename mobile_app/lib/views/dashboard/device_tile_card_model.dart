@@ -65,7 +65,7 @@ class _DeviceTileCardModelState extends State<DeviceTileCardModel> {
             setState(() {
               buttonEnabled = true;
             });
-            validateDeviceByName(scanResult.device.id.id).then((value) => {
+            validateDeviceByMac(scanResult.device.id.id).then((value) => {
                   if (value.status == "S1000")
                     {
                       scanResult.device

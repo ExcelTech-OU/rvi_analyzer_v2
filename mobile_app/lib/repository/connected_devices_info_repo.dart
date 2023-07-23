@@ -23,7 +23,7 @@ class ConnectedDevicesInfoRepository {
 
   Future<void> addConnectedDevicesInfo(ConnectedDevicesInfo data) async {
     final box = await _openBox();
-    await box.add(data);
+    await box.put(data.username, data);
   }
 
   Future<List<ConnectedDevicesInfo>> getAllConnectedDevicesInfos() async {
@@ -35,12 +35,14 @@ class ConnectedDevicesInfoRepository {
   Future<ConnectedDevicesInfo?> getConnectedDevicesInfoByUserName(
       String username) async {
     final box = await _openBox();
-    final connectedDevicesData = box.values.toList();
 
     try {
-      ConnectedDevicesInfo? connectedDeviceInfo =
-          connectedDevicesData.firstWhere((p) => p.username == username);
-      return connectedDeviceInfo;
+      final connectedDevicesData = box.get(username);
+      if (connectedDevicesData != null) {
+        return connectedDevicesData;
+      } else {
+        return null;
+      }
     } catch (error) {
       return null;
     }
@@ -56,11 +58,12 @@ class ConnectedDevicesInfoRepository {
         connectedDeviceInfo.devicesMacs
             .add(Platform.isAndroid ? result.device.id.id : result.device.name);
       }
-      await box.delete(connectedDeviceInfo.key);
-      await box.add(connectedDeviceInfo);
+      await box.put(username, connectedDeviceInfo);
     } else {
-      await box.add(ConnectedDevicesInfo(username,
-          [Platform.isAndroid ? result.device.id.id : result.device.name]));
+      await box.put(
+          username,
+          ConnectedDevicesInfo(username,
+              [Platform.isAndroid ? result.device.id.id : result.device.name]));
     }
   }
 
@@ -74,8 +77,7 @@ class ConnectedDevicesInfoRepository {
         connectedDeviceInfo.devicesMacs.remove(
             Platform.isAndroid ? result.device.id.id : result.device.name);
       }
-      await box.delete(connectedDeviceInfo.key);
-      await box.add(connectedDeviceInfo);
+      await box.put(username, connectedDeviceInfo);
     }
   }
 

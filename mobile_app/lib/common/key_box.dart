@@ -15,6 +15,7 @@ const String stateK = 'state';
 const String stateDescriptionK = 'stateDescription';
 const String questionK = 'question';
 const String devicesK = 'devices';
+const String macK = 'mac';
 const String lastLoginK = 'lastLogin';
 const String sessionsK = 'sessions';
 

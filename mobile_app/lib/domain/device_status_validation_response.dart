@@ -11,8 +11,8 @@ class DeviceStatusValidationResponse {
 
   factory DeviceStatusValidationResponse.fromJson(Map<String, dynamic> json) {
     return DeviceStatusValidationResponse(
-      status: json[stateK],
-      statusDescription: json[stateDescriptionK],
+      status: json[statusK],
+      statusDescription: json[statusDescriptionK],
     );
   }
 
