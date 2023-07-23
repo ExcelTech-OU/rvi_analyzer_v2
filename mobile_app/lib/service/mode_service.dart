@@ -38,13 +38,13 @@ Future<CommonResponse> saveModeOne(ModeOne modeOne, String username) async {
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
-      // await repo.saveOrUpdateModeOne(username, modeOne);
+      await repo.saveOrUpdateModeOne(username, modeOne);
 
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
-    // await repo.saveOrUpdateModeOne(username, modeOne);
+    await repo.saveOrUpdateModeOne(username, modeOne);
 
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");

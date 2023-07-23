@@ -32,16 +32,22 @@ class SessionResultAdapter extends TypeAdapter<SessionResult> {
 
   @override
   SessionResult read(BinaryReader reader) {
+    final testId = reader.readString();
+    final readingsLength = reader.readInt();
+    final readings =
+        List<Reading>.generate(readingsLength, (_) => reader.read());
+
     return SessionResult(
-      testId: reader.readString(),
-      readings: reader.readList().cast<Reading>(),
+      testId: testId,
+      readings: readings,
     );
   }
 
   @override
   void write(BinaryWriter writer, SessionResult obj) {
     writer.writeString(obj.testId);
-    writer.writeList(obj.readings, writeLength: true);
+    writer.writeInt(obj.readings.length);
+    obj.readings.forEach(writer.write);
   }
 }
 

@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:rvi_analyzer/repository/adapter/common_adapter.dart';
 import 'package:rvi_analyzer/repository/entity/common_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
 
@@ -10,13 +9,23 @@ class ModeOneAdapter extends TypeAdapter<ModeOne> {
   @override
   ModeOne read(BinaryReader reader) {
     final createdBy = reader.readString();
-    final defaultConfigurations = reader
-        .read(DefaultConfigurationAdapter().typeId) as DefaultConfiguration;
-    final sessionConfigurationModeOne =
-        reader.read(SessionConfigurationModeOneAdapter().typeId)
-            as SessionConfigurationModeOne;
+    final defaultConfigurations = DefaultConfiguration(
+      customerName: reader.readString(),
+      operatorId: reader.readString(),
+      batchNo: reader.readString(),
+      serialNo: reader.readString(),
+      sessionId: reader.readString(),
+    );
+    final sessionConfigurationModeOne = SessionConfigurationModeOne(
+      voltage: reader.readString(),
+      maxCurrent: reader.readString(),
+      passMinCurrent: reader.readString(),
+      passMaxCurrent: reader.readString(),
+    );
+
+    final resultsLength = reader.readInt();
     final results =
-        reader.readList(reader.readByteList().length).cast<SessionResult>();
+        List<SessionResult>.generate(resultsLength, (_) => reader.read());
     final status = reader.readString();
 
     return ModeOne(
@@ -31,9 +40,20 @@ class ModeOneAdapter extends TypeAdapter<ModeOne> {
   @override
   void write(BinaryWriter writer, ModeOne obj) {
     writer.writeString(obj.createdBy);
-    writer.write(obj.defaultConfigurations);
-    writer.write(obj.sessionConfigurationModeOne);
-    writer.writeList(obj.results);
+
+    writer.writeString(obj.defaultConfigurations.customerName);
+    writer.writeString(obj.defaultConfigurations.operatorId);
+    writer.writeString(obj.defaultConfigurations.batchNo);
+    writer.writeString(obj.defaultConfigurations.serialNo);
+    writer.writeString(obj.defaultConfigurations.sessionId);
+
+    writer.writeString(obj.sessionConfigurationModeOne.voltage);
+    writer.writeString(obj.sessionConfigurationModeOne.maxCurrent);
+    writer.writeString(obj.sessionConfigurationModeOne.passMinCurrent);
+    writer.writeString(obj.sessionConfigurationModeOne.passMaxCurrent);
+
+    writer.writeInt(obj.results.length);
+    obj.results.forEach(writer.write);
     writer.writeString(obj.status);
   }
 }

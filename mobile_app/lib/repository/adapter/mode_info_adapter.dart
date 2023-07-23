@@ -15,24 +15,26 @@ class ModeInfoAdapter extends TypeAdapter<ModeInfo> {
   @override
   ModeInfo read(BinaryReader reader) {
     final username = reader.readString();
-    final modeOnes = reader.readList().cast<ModeOne>();
-    // final modeTwos = reader.readList().cast<ModeTwo>();
-    // final modeThrees = reader.readList().cast<ModeThree>();
-    // final modeFours = reader.readList().cast<ModeFour>();
-    // final modeFives = reader.readList().cast<ModeFive>();
-    // final modeSixs = reader.readList().cast<ModeSix>();
 
-    return ModeInfo(username, modeOnes, [], [], [], [], []);
+    final modeOnesLength = reader.readInt();
+    final modeOnes =
+        List<ModeOne>.generate(modeOnesLength, (_) => reader.read());
+
+    final modeTwosLength = reader.readInt();
+    final modeTwos =
+        List<ModeTwo>.generate(modeTwosLength, (_) => reader.read());
+
+    return ModeInfo(username, modeOnes, modeTwos, [], [], [], []);
   }
 
   @override
   void write(BinaryWriter writer, ModeInfo obj) {
     writer.writeString(obj.username);
-    writer.writeList(obj.modeOnes);
-    // writer.writeList(obj.modeTwos, writeLength: true);
-    // writer.writeList(obj.modeThrees, writeLength: true);
-    // writer.writeList(obj.modeFours, writeLength: true);
-    // writer.writeList(obj.modeFives, writeLength: true);
-    // writer.writeList(obj.modeSixs, writeLength: true);
+
+    writer.writeInt(obj.modeOnes.length);
+    obj.modeOnes.forEach(writer.write);
+
+    writer.writeInt(obj.modeTwos.length);
+    obj.modeTwos.forEach(writer.write);
   }
 }

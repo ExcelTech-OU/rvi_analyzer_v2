@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:http/http.dart';
 import 'package:rvi_analyzer/repository/entity/mode_five_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_four_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_info.dart';
@@ -26,25 +27,30 @@ class ModeInfoRepository {
   Future<void> saveOrUpdateModeOne(String username, ModeOne modeOne) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      final existingModeOne = modeInfo.modeOnes.firstWhere((m) =>
-          m.defaultConfigurations.sessionId ==
-          modeOne.defaultConfigurations.sessionId);
-      existingModeOne.results.addAll(modeOne.results);
-    } catch (error) {
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      try {
+        final existingModeOne = modeInfo.modeOnes.firstWhere((m) =>
+            m.defaultConfigurations.sessionId ==
+            modeOne.defaultConfigurations.sessionId);
+        existingModeOne.results.addAll(modeOne.results);
+      } catch (error) {
+        modeInfo.modeOnes.add(modeOne);
+      }
+    } else {
+      modeInfo = ModeInfo(username, [], [], [], [], [], []);
       modeInfo.modeOnes.add(modeOne);
     }
-    await box.add(modeInfo);
+
+    await box.put(username, modeInfo);
   }
 
   Future<ModeOne?> getLastModeOne(String username) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    if (modeInfo.modeOnes.isEmpty) {
+    final modeInfo = box.get(username);
+    if (modeInfo == null) {
       return null;
     } else {
       return modeInfo.modeOnes.last;
@@ -69,27 +75,30 @@ class ModeInfoRepository {
   Future<void> saveOrUpdateModeTwo(String username, ModeTwo modeTwo) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
+    ModeInfo? modeInfo = box.get(username);
 
-    try {
-      final existingModeTwo = modeInfo.modeTwos.firstWhere((m) =>
-          m.defaultConfigurations.sessionId ==
-          modeTwo.defaultConfigurations.sessionId);
-      existingModeTwo.results.addAll(modeTwo.results);
-    } catch (error) {
+    if (modeInfo != null) {
+      try {
+        final existingModeTwo = modeInfo.modeTwos.firstWhere((m) =>
+            m.defaultConfigurations.sessionId ==
+            modeTwo.defaultConfigurations.sessionId);
+        existingModeTwo.results.addAll(modeTwo.results);
+      } catch (error) {
+        modeInfo.modeTwos.add(modeTwo);
+      }
+    } else {
+      modeInfo = ModeInfo(username, [], [], [], [], [], []);
       modeInfo.modeTwos.add(modeTwo);
     }
 
-    await box.add(modeInfo);
+    await box.put(username, modeInfo);
   }
 
   Future<ModeTwo?> getLastModeTwo(String username) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    if (modeInfo.modeTwos.isEmpty) {
+    final modeInfo = box.get(username);
+    if (modeInfo == null) {
       return null;
     } else {
       return modeInfo.modeTwos.last;
