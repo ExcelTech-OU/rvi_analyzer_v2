@@ -4,7 +4,7 @@ import 'package:rvi_analyzer/repository/entity/mode_six_entity.dart';
 class ModeSixResp {
   final String status;
   final String statusDescription;
-  final List<ModeSix> sessions;
+  List<ModeSix> sessions;
 
   ModeSixResp(
       {required this.status,

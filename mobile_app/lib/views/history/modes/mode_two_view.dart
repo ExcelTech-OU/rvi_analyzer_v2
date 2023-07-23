@@ -16,7 +16,7 @@ class ModeTwoView extends StatelessWidget {
         child: Scaffold(
             body: SingleChildScrollView(
       child: FutureBuilder<ModeTwoResp?>(
-          future: getLastModeTwo(),
+          future: getLastModeTwo(username),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

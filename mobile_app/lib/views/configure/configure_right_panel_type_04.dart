@@ -8,7 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/repository/entity/common_entity.dart';
+import 'package:rvi_analyzer/repository/entity/login_info.dart';
 import 'package:rvi_analyzer/repository/entity/mode_four_entity.dart';
+import 'package:rvi_analyzer/repository/login_repo.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
@@ -176,7 +178,7 @@ class _ConfigureRightPanelType04State
         "S_$milliseconds";
   }
 
-  void saveMode() {
+  Future<void> saveMode() async {
     ref.read(deviceDataMap[widget.sc.device.id.id]!).saveClickedMode04 = true;
     ref.read(deviceDataMap[widget.sc.device.id.id]!).updateStatus();
 
@@ -195,8 +197,12 @@ class _ConfigureRightPanelType04State
           voltage: voltageCurrentReadings[i].y.toString()));
     }
 
+    final loginInfoRepo = LoginInfoRepository();
+
+    List<LoginInfo> infos = await loginInfoRepo.getAllLoginInfos();
+
     ModeFour modeFour = ModeFour(
-        createdBy: "rukshan",
+        createdBy: infos.first.username,
         defaultConfigurations: DefaultConfiguration(
             customerName: ref
                 .read(deviceDataMap[widget.sc.device.id.id]!)
@@ -247,7 +253,7 @@ class _ConfigureRightPanelType04State
             readings: readings),
         status: "ACTIVE");
 
-    saveModeFour(modeFour)
+    saveModeFour(modeFour, infos.first.username)
         .then((value) => {
               if (value.status == "S1000")
                 {

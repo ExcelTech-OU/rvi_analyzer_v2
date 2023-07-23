@@ -51,26 +51,37 @@ Future<CommonResponse> saveModeOne(ModeOne modeOne, String username) async {
   }
 }
 
-Future<ModeOneResp> getLastModeOne() async {
+Future<ModeOneResp> getLastModeOne(String username) async {
   const storage = FlutterSecureStorage();
+  final repo = ModeInfoRepository();
+
+  ModeOneResp resp = ModeOneResp.fromDetails("", "");
 
   try {
-    String? jwt = await storage.read(key: jwtK);
-    final response = await http.get(
-      Uri.parse('$baseUrl$getLastModeOnePath'),
-      headers: <String, String>{
-        contentTypeK: contentTypeJsonK,
-        authorizationK: '$bearerK $jwt',
-      },
-    );
-    if (response.statusCode == 200) {
-      return ModeOneResp.fromJson(jsonDecode(response.body));
-    } else if (response.statusCode == 401) {
-      return ModeOneResp.fromDetails("E2000", "Session Expired");
+    var value = await repo.getLastModeOne(
+        username); // Wait for the repo.getLastModeOne to complete
+    if (value != null) {
+      resp.sessions = [value];
     } else {
-      return ModeOneResp.fromDetails(
-          "E1000", "Cannot update the data. Please try again");
+      String? jwt = await storage.read(key: jwtK);
+      final response = await http.get(
+        Uri.parse('$baseUrl$getLastModeOnePath'),
+        headers: <String, String>{
+          contentTypeK: contentTypeJsonK,
+          authorizationK: '$bearerK $jwt',
+        },
+      );
+      if (response.statusCode == 200) {
+        resp = ModeOneResp.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        resp = ModeOneResp.fromDetails("E2000", "Session Expired");
+      } else {
+        resp = ModeOneResp.fromDetails(
+            "E1000", "Cannot update the data. Please try again");
+      }
     }
+
+    return resp; // Return the response after the block is completed
   } catch (e) {
     return ModeOneResp.fromDetails(
         "E1000", "Cannot update the data. Please try again");
@@ -108,26 +119,38 @@ Future<CommonResponse> saveModeTwo(ModeTwo modeTwo, String username) async {
   }
 }
 
-Future<ModeTwoResp> getLastModeTwo() async {
+Future<ModeTwoResp> getLastModeTwo(String username) async {
   const storage = FlutterSecureStorage();
 
+  final repo = ModeInfoRepository();
+
+  ModeTwoResp resp = ModeTwoResp.fromDetails("", "");
+
   try {
-    String? jwt = await storage.read(key: jwtK);
-    final response = await http.get(
-      Uri.parse('$baseUrl$getLastModeTwoPath'),
-      headers: <String, String>{
-        contentTypeK: contentTypeJsonK,
-        authorizationK: '$bearerK $jwt',
-      },
-    );
-    if (response.statusCode == 200) {
-      return ModeTwoResp.fromJson(jsonDecode(response.body));
-    } else if (response.statusCode == 401) {
-      return ModeTwoResp.fromDetails("E2000", "Session Expired");
+    var value = await repo.getLastModeTwo(username);
+
+    if (value != null) {
+      resp.sessions = [value];
     } else {
-      return ModeTwoResp.fromDetails(
-          "E1000", "Cannot update the data. Please try again");
+      String? jwt = await storage.read(key: jwtK);
+      final response = await http.get(
+        Uri.parse('$baseUrl$getLastModeTwoPath'),
+        headers: <String, String>{
+          contentTypeK: contentTypeJsonK,
+          authorizationK: '$bearerK $jwt',
+        },
+      );
+      if (response.statusCode == 200) {
+        resp = ModeTwoResp.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        resp = ModeTwoResp.fromDetails("E2000", "Session Expired");
+      } else {
+        resp = ModeTwoResp.fromDetails(
+            "E1000", "Cannot update the data. Please try again");
+      }
     }
+
+    return resp;
   } catch (e) {
     return ModeTwoResp.fromDetails(
         "E1000", "Cannot update the data. Please try again");
@@ -164,34 +187,47 @@ Future<CommonResponse> saveModeThree(
   }
 }
 
-Future<ModeThreeResp> getLastModeThree() async {
+Future<ModeThreeResp> getLastModeThree(String username) async {
   const storage = FlutterSecureStorage();
+  final repo = ModeInfoRepository();
+
+  ModeThreeResp resp = ModeThreeResp.fromDetails("", "");
 
   try {
-    String? jwt = await storage.read(key: jwtK);
-    final response = await http.get(
-      Uri.parse('$baseUrl$getLastModeThreePath'),
-      headers: <String, String>{
-        contentTypeK: contentTypeJsonK,
-        authorizationK: '$bearerK $jwt',
-      },
-    );
-    if (response.statusCode == 200) {
-      return ModeThreeResp.fromJson(jsonDecode(response.body));
-    } else if (response.statusCode == 401) {
-      return ModeThreeResp.fromDetails("E2000", "Session Expired");
+    var value = await repo.getLastModeThree(username);
+
+    if (value != null) {
+      resp.sessions = [value];
     } else {
-      return ModeThreeResp.fromDetails(
-          "E1000", "Cannot update the data. Please try again");
+      String? jwt = await storage.read(key: jwtK);
+      final response = await http.get(
+        Uri.parse('$baseUrl$getLastModeThreePath'),
+        headers: <String, String>{
+          contentTypeK: contentTypeJsonK,
+          authorizationK: '$bearerK $jwt',
+        },
+      );
+      if (response.statusCode == 200) {
+        resp = ModeThreeResp.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        resp = ModeThreeResp.fromDetails("E2000", "Session Expired");
+      } else {
+        resp = ModeThreeResp.fromDetails(
+            "E1000", "Cannot update the data. Please try again");
+      }
     }
+
+    return resp;
   } catch (e) {
     return ModeThreeResp.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
 }
 
-Future<CommonResponse> saveModeFour(ModeFour modeFour) async {
+Future<CommonResponse> saveModeFour(ModeFour modeFour, String username) async {
   const storage = FlutterSecureStorage();
+  final repo = ModeInfoRepository();
+
   try {
     String? jwt = await storage.read(key: jwtK);
     final response = await http.post(
@@ -207,42 +243,56 @@ Future<CommonResponse> saveModeFour(ModeFour modeFour) async {
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
+      await repo.saveOrUpdateModeFour(username, modeFour);
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
+    await repo.saveOrUpdateModeFour(username, modeFour);
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
 }
 
-Future<ModeFourResp> getLastModeFour() async {
+Future<ModeFourResp> getLastModeFour(String username) async {
   const storage = FlutterSecureStorage();
+  final repo = ModeInfoRepository();
+
+  ModeFourResp resp = ModeFourResp.fromDetails("", "");
 
   try {
-    String? jwt = await storage.read(key: jwtK);
-    final response = await http.get(
-      Uri.parse('$baseUrl$getLastModeFourPath'),
-      headers: <String, String>{
-        contentTypeK: contentTypeJsonK,
-        authorizationK: '$bearerK $jwt',
-      },
-    );
-    if (response.statusCode == 200) {
-      return ModeFourResp.fromJson(jsonDecode(response.body));
-    } else if (response.statusCode == 401) {
-      return ModeFourResp.fromDetails("E2000", "Session Expired");
+    var value = await repo.getLastModeFour(username);
+
+    if (value != null) {
+      resp.sessions = [value];
     } else {
-      return ModeFourResp.fromDetails(
-          "E1000", "Cannot update the data. Please try again");
+      String? jwt = await storage.read(key: jwtK);
+      final response = await http.get(
+        Uri.parse('$baseUrl$getLastModeFourPath'),
+        headers: <String, String>{
+          contentTypeK: contentTypeJsonK,
+          authorizationK: '$bearerK $jwt',
+        },
+      );
+      if (response.statusCode == 200) {
+        resp = ModeFourResp.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        resp = ModeFourResp.fromDetails("E2000", "Session Expired");
+      } else {
+        resp = ModeFourResp.fromDetails(
+            "E1000", "Cannot update the data. Please try again");
+      }
     }
+    return resp;
   } catch (e) {
     return ModeFourResp.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
 }
 
-Future<CommonResponse> saveModeFive(ModeFive modeFive) async {
+Future<CommonResponse> saveModeFive(ModeFive modeFive, String username) async {
+  final repo = ModeInfoRepository();
+
   const storage = FlutterSecureStorage();
   try {
     String? jwt = await storage.read(key: jwtK);
@@ -259,42 +309,57 @@ Future<CommonResponse> saveModeFive(ModeFive modeFive) async {
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
+      await repo.saveOrUpdateModeFive(username, modeFive);
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
+    await repo.saveOrUpdateModeFive(username, modeFive);
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
 }
 
-Future<ModeFiveResp> getLastModeFive() async {
+Future<ModeFiveResp> getLastModeFive(String username) async {
   const storage = FlutterSecureStorage();
 
+  final repo = ModeInfoRepository();
+
+  ModeFiveResp resp = ModeFiveResp.fromDetails("", "");
+
   try {
-    String? jwt = await storage.read(key: jwtK);
-    final response = await http.get(
-      Uri.parse('$baseUrl$getLastModeFivePath'),
-      headers: <String, String>{
-        contentTypeK: contentTypeJsonK,
-        authorizationK: '$bearerK $jwt',
-      },
-    );
-    if (response.statusCode == 200) {
-      return ModeFiveResp.fromJson(jsonDecode(response.body));
-    } else if (response.statusCode == 401) {
-      return ModeFiveResp.fromDetails("E2000", "Session Expired");
+    var value = await repo.getLastModeFive(username);
+
+    if (value != null) {
+      resp.sessions = [value];
     } else {
-      return ModeFiveResp.fromDetails(
-          "E1000", "Cannot update the data. Please try again");
+      String? jwt = await storage.read(key: jwtK);
+      final response = await http.get(
+        Uri.parse('$baseUrl$getLastModeFivePath'),
+        headers: <String, String>{
+          contentTypeK: contentTypeJsonK,
+          authorizationK: '$bearerK $jwt',
+        },
+      );
+      if (response.statusCode == 200) {
+        resp = ModeFiveResp.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        resp = ModeFiveResp.fromDetails("E2000", "Session Expired");
+      } else {
+        resp = ModeFiveResp.fromDetails(
+            "E1000", "Cannot update the data. Please try again");
+      }
     }
+    return resp;
   } catch (e) {
     return ModeFiveResp.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
 }
 
-Future<CommonResponse> saveModeSix(ModeSix modeSix) async {
+Future<CommonResponse> saveModeSix(ModeSix modeSix, String username) async {
+  final repo = ModeInfoRepository();
+
   const storage = FlutterSecureStorage();
   try {
     String? jwt = await storage.read(key: jwtK);
@@ -311,35 +376,50 @@ Future<CommonResponse> saveModeSix(ModeSix modeSix) async {
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
+      await repo.saveOrUpdateModeSix(username, modeSix);
+
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
+    await repo.saveOrUpdateModeSix(username, modeSix);
+
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
 }
 
-Future<ModeSixResp> getLastModeSix() async {
+Future<ModeSixResp> getLastModeSix(String username) async {
   const storage = FlutterSecureStorage();
 
+  final repo = ModeInfoRepository();
+
+  ModeSixResp resp = ModeSixResp.fromDetails("", "");
+
   try {
-    String? jwt = await storage.read(key: jwtK);
-    final response = await http.get(
-      Uri.parse('$baseUrl$getLastModeSixPath'),
-      headers: <String, String>{
-        contentTypeK: contentTypeJsonK,
-        authorizationK: '$bearerK $jwt',
-      },
-    );
-    if (response.statusCode == 200) {
-      return ModeSixResp.fromJson(jsonDecode(response.body));
-    } else if (response.statusCode == 401) {
-      return ModeSixResp.fromDetails("E2000", "Session Expired");
+    var value = await repo.getLastModeSIX(username);
+
+    if (value != null) {
+      resp.sessions = [value];
     } else {
-      return ModeSixResp.fromDetails(
-          "E1000", "Cannot update the data. Please try again");
+      String? jwt = await storage.read(key: jwtK);
+      final response = await http.get(
+        Uri.parse('$baseUrl$getLastModeSixPath'),
+        headers: <String, String>{
+          contentTypeK: contentTypeJsonK,
+          authorizationK: '$bearerK $jwt',
+        },
+      );
+      if (response.statusCode == 200) {
+        resp = ModeSixResp.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        resp = ModeSixResp.fromDetails("E2000", "Session Expired");
+      } else {
+        resp = ModeSixResp.fromDetails(
+            "E1000", "Cannot update the data. Please try again");
+      }
     }
+    return resp;
   } catch (e) {
     return ModeSixResp.fromDetails(
         "E1000", "Cannot update the data. Please try again");

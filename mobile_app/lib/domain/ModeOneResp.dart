@@ -4,7 +4,7 @@ import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
 class ModeOneResp {
   final String status;
   final String statusDescription;
-  final List<ModeOne> sessions;
+  List<ModeOne> sessions;
 
   ModeOneResp(
       {required this.status,

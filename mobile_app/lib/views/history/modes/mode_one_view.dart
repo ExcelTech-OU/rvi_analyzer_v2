@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rvi_analyzer/domain/ModeOneResp.dart';
-import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
 import 'package:rvi_analyzer/repository/modes_info_repo.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/history/modes/default_configurations.dart';
@@ -15,8 +14,8 @@ class ModeOneView extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             body: SingleChildScrollView(
-      child: FutureBuilder<ModeOne?>(
-          future: repo.getLastModeOne(username),
+      child: FutureBuilder<ModeOneResp?>(
+          future: getLastModeOne(username),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -27,7 +26,7 @@ class ModeOneView extends StatelessWidget {
                 child: Text('Error occurred while loading data.'),
               );
             } else {
-              if (snapshot.data != null && snapshot.data!.results.isNotEmpty) {
+              if (snapshot.data != null && snapshot.data!.sessions.isNotEmpty) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Container(
@@ -65,8 +64,8 @@ class ModeOneView extends StatelessWidget {
                             children: <Widget>[
                               Expanded(
                                   child: DefaultConfView(
-                                      config: snapshot
-                                          .data!.defaultConfigurations)),
+                                      config: snapshot.data!.sessions.first
+                                          .defaultConfigurations)),
                               const SizedBox(width: 16.0),
                               Expanded(
                                 child: Column(
@@ -89,6 +88,8 @@ class ModeOneView extends StatelessWidget {
                                         Text(
                                           snapshot
                                               .data!
+                                              .sessions
+                                              .first
                                               .sessionConfigurationModeOne
                                               .maxCurrent,
                                           style: const TextStyle(
@@ -107,8 +108,8 @@ class ModeOneView extends StatelessWidget {
                                         Text(
                                           snapshot
                                               .data!
-                                              // .sessions
-                                              // .first
+                                              .sessions
+                                              .first
                                               .sessionConfigurationModeOne
                                               .voltage,
                                           style: const TextStyle(
@@ -175,7 +176,8 @@ class ModeOneView extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                ...snapshot.data!.results.map((e) {
+                                ...snapshot.data!.sessions.first.results
+                                    .map((e) {
                                   return TableRow(
                                     children: [
                                       TableCell(

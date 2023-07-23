@@ -36,7 +36,7 @@ class ModeFourView extends StatelessWidget {
         child: Scaffold(
             body: SingleChildScrollView(
       child: FutureBuilder<ModeFourResp?>(
-          future: getLastModeFour(),
+          future: getLastModeFour(username),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

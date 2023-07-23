@@ -4,7 +4,7 @@ import 'package:rvi_analyzer/repository/entity/mode_three_entity.dart';
 class ModeThreeResp {
   final String status;
   final String statusDescription;
-  final List<ModeThree> sessions;
+  List<ModeThree> sessions;
 
   ModeThreeResp(
       {required this.status,

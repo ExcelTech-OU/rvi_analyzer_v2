@@ -46,7 +46,7 @@ class ModeSixView extends StatelessWidget {
         child: Scaffold(
             body: SingleChildScrollView(
       child: FutureBuilder<ModeSixResp?>(
-          future: getLastModeSix(),
+          future: getLastModeSix(username),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
