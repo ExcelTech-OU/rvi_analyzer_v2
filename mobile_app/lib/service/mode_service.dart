@@ -19,7 +19,8 @@ import 'package:rvi_analyzer/repository/entity/mode_three_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_two_entity.dart';
 import 'package:rvi_analyzer/repository/modes_info_repo.dart';
 
-Future<CommonResponse> saveModeOne(ModeOne modeOne, String username) async {
+Future<CommonResponse> saveModeOne(ModeOne modeOne, String username,
+    {bool needToSaveLocal = true}) async {
   final repo = ModeInfoRepository();
   const storage = FlutterSecureStorage();
 
@@ -38,13 +39,16 @@ Future<CommonResponse> saveModeOne(ModeOne modeOne, String username) async {
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
-      await repo.saveOrUpdateModeOne(username, modeOne);
-
+      if (needToSaveLocal) {
+        await repo.saveOrUpdateModeOne(username, modeOne);
+      }
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
-    await repo.saveOrUpdateModeOne(username, modeOne);
+    if (needToSaveLocal) {
+      await repo.saveOrUpdateModeOne(username, modeOne);
+    }
 
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
@@ -88,7 +92,8 @@ Future<ModeOneResp> getLastModeOne(String username) async {
   }
 }
 
-Future<CommonResponse> saveModeTwo(ModeTwo modeTwo, String username) async {
+Future<CommonResponse> saveModeTwo(ModeTwo modeTwo, String username,
+    {bool needToSaveLocal = true}) async {
   final repo = ModeInfoRepository();
   const storage = FlutterSecureStorage();
   try {
@@ -101,18 +106,23 @@ Future<CommonResponse> saveModeTwo(ModeTwo modeTwo, String username) async {
       },
       body: jsonEncode(modeTwo),
     );
+    print(response.body);
     if (response.statusCode == 200) {
       return CommonResponse.fromJson(jsonDecode(response.body));
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
-      await repo.saveOrUpdateModeTwo(username, modeTwo);
+      if (needToSaveLocal) {
+        await repo.saveOrUpdateModeTwo(username, modeTwo);
+      }
 
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
-    await repo.saveOrUpdateModeTwo(username, modeTwo);
+    if (needToSaveLocal) {
+      await repo.saveOrUpdateModeTwo(username, modeTwo);
+    }
 
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
@@ -157,8 +167,8 @@ Future<ModeTwoResp> getLastModeTwo(String username) async {
   }
 }
 
-Future<CommonResponse> saveModeThree(
-    ModeThree modeThree, String username) async {
+Future<CommonResponse> saveModeThree(ModeThree modeThree, String username,
+    {bool needToSaveLocal = true}) async {
   final repo = ModeInfoRepository();
   const storage = FlutterSecureStorage();
   try {
@@ -176,12 +186,17 @@ Future<CommonResponse> saveModeThree(
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
+      if (needToSaveLocal) {
+        await repo.saveOrUpdateModeThree(username, modeThree);
+      }
       await repo.saveOrUpdateModeThree(username, modeThree);
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
-    await repo.saveOrUpdateModeThree(username, modeThree);
+    if (needToSaveLocal) {
+      await repo.saveOrUpdateModeThree(username, modeThree);
+    }
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
@@ -224,7 +239,8 @@ Future<ModeThreeResp> getLastModeThree(String username) async {
   }
 }
 
-Future<CommonResponse> saveModeFour(ModeFour modeFour, String username) async {
+Future<CommonResponse> saveModeFour(ModeFour modeFour, String username,
+    {bool needToSaveLocal = true}) async {
   const storage = FlutterSecureStorage();
   final repo = ModeInfoRepository();
 
@@ -243,12 +259,16 @@ Future<CommonResponse> saveModeFour(ModeFour modeFour, String username) async {
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
-      await repo.saveOrUpdateModeFour(username, modeFour);
+      if (needToSaveLocal) {
+        await repo.saveOrUpdateModeFour(username, modeFour);
+      }
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
-    await repo.saveOrUpdateModeFour(username, modeFour);
+    if (needToSaveLocal) {
+      await repo.saveOrUpdateModeFour(username, modeFour);
+    }
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
@@ -290,7 +310,8 @@ Future<ModeFourResp> getLastModeFour(String username) async {
   }
 }
 
-Future<CommonResponse> saveModeFive(ModeFive modeFive, String username) async {
+Future<CommonResponse> saveModeFive(ModeFive modeFive, String username,
+    {bool needToSaveLocal = true}) async {
   final repo = ModeInfoRepository();
 
   const storage = FlutterSecureStorage();
@@ -309,12 +330,16 @@ Future<CommonResponse> saveModeFive(ModeFive modeFive, String username) async {
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
-      await repo.saveOrUpdateModeFive(username, modeFive);
+      if (needToSaveLocal) {
+        await repo.saveOrUpdateModeFive(username, modeFive);
+      }
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
-    await repo.saveOrUpdateModeFive(username, modeFive);
+    if (needToSaveLocal) {
+      await repo.saveOrUpdateModeFive(username, modeFive);
+    }
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
@@ -357,7 +382,8 @@ Future<ModeFiveResp> getLastModeFive(String username) async {
   }
 }
 
-Future<CommonResponse> saveModeSix(ModeSix modeSix, String username) async {
+Future<CommonResponse> saveModeSix(ModeSix modeSix, String username,
+    {bool needToSaveLocal = true}) async {
   final repo = ModeInfoRepository();
 
   const storage = FlutterSecureStorage();
@@ -376,13 +402,17 @@ Future<CommonResponse> saveModeSix(ModeSix modeSix, String username) async {
     } else if (response.statusCode == 401) {
       return CommonResponse.fromDetails("E2000", "Session Expired");
     } else {
-      await repo.saveOrUpdateModeSix(username, modeSix);
+      if (needToSaveLocal) {
+        await repo.saveOrUpdateModeSix(username, modeSix);
+      }
 
       return CommonResponse.fromDetails(
           "E1000", "Cannot update the data. Please try again");
     }
   } catch (e) {
-    await repo.saveOrUpdateModeSix(username, modeSix);
+    if (needToSaveLocal) {
+      await repo.saveOrUpdateModeSix(username, modeSix);
+    }
 
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");

@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:rvi_analyzer/providers/connected_devices_provider.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/login_service.dart';
+import 'package:rvi_analyzer/views/splash/splash_screen.dart';
 
 import '../common/config.dart';
 import '../common/key_box.dart';
@@ -125,6 +126,45 @@ void showLogoutPopup(BuildContext context, WidgetRef ref) {
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           '/login', (Route route) => false)
                     });
+              },
+            ),
+          ],
+        ),
+      );
+    },
+    transitionDuration: const Duration(milliseconds: 350),
+  );
+}
+
+void showNoInternetPopup(BuildContext context, WidgetRef ref) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierLabel: "",
+    pageBuilder: (ctx, a1, a2) {
+      return Container();
+    },
+    transitionBuilder: (ctx, a1, a2, child) {
+      var curve = Curves.easeInOut.transform(a1.value);
+      return Transform.scale(
+        scale: curve,
+        child: AlertDialog(
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+              side: BorderSide(color: Colors.grey),
+              borderRadius: BorderRadius.all(Radius.circular(15.0))),
+          elevation: 40,
+          title: const Center(
+              child: Text(
+                  "Network Connection Failed. Please connect and try again",
+                  style: TextStyle(fontSize: 15, color: Colors.black))),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Retry'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SplashScreen()));
               },
             ),
           ],

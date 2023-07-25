@@ -27,6 +27,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 checkJwt().then((value) => {
                       if (value.status == "S1000")
                         {Navigator.pushReplacementNamed(context, "/home")}
+                      else if (value.status == "E2500")
+                        {showNoInternetPopup(context, ref)}
                       else
                         {showLogoutPopup(context, ref)}
                     })

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:rvi_analyzer/service/common_service.dart';
 import 'package:rvi_analyzer/providers/connected_devices_provider.dart';
 import 'package:rvi_analyzer/repository/connected_devices_info_repo.dart';
 import 'package:rvi_analyzer/repository/entity/login_info.dart';
@@ -93,6 +94,8 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                       }
                     else
                       {
+                        showErrorDialog(context,
+                            "Device Authentication failed. Please contact administrator"),
                         setState(() {
                           isClicked = false;
                         }),

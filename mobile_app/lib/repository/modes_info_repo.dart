@@ -23,6 +23,12 @@ class ModeInfoRepository {
     return box;
   }
 
+  Future<ModeInfo?> getModeInfoForUsername(String username) async {
+    final box = await _openBox();
+
+    return box.get(username);
+  }
+
   Future<void> saveOrUpdateModeOne(String username, ModeOne modeOne) async {
     final box = await _openBox();
 
@@ -52,6 +58,15 @@ class ModeInfoRepository {
       if (modeInfo == null || modeInfo.modeOnes.isEmpty) {
         return null;
       } else {
+        print(modeInfo.modeOnes.length);
+        print(modeInfo.modeTwos.length);
+
+        print(modeInfo.modeThrees.length);
+
+        print(modeInfo.modeFours.length);
+
+        print(modeInfo.modeFives.length);
+
         return modeInfo.modeOnes.last;
       }
     } catch (error) {
@@ -59,19 +74,21 @@ class ModeInfoRepository {
     }
   }
 
-  Future<void> removeModeOne(String username, String sessionId) async {
+  Future<void> removeModeOne(String username, ModeOne modeOne) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      final existingModeOne = modeInfo.modeOnes
-          .firstWhere((m) => m.defaultConfigurations.sessionId == sessionId);
-      modeInfo.modeOnes.remove(existingModeOne);
-    } catch (error) {
-      // print("cannot find the Mode one");
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      try {
+        modeInfo.modeOnes.removeWhere((m) =>
+            m.defaultConfigurations.sessionId ==
+            modeOne.defaultConfigurations.sessionId);
+        await box.put(username, modeInfo);
+      } catch (error) {
+        //Do nothing since not found
+      }
     }
-    await box.add(modeInfo);
   }
 
   Future<void> saveOrUpdateModeTwo(String username, ModeTwo modeTwo) async {
@@ -107,19 +124,22 @@ class ModeInfoRepository {
     }
   }
 
-  Future<void> removeModeTwo(String username, String sessionId) async {
+  Future<void> removeModeTwo(String username, ModeTwo modeTwo) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      final existingModeTwo = modeInfo.modeTwos
-          .firstWhere((m) => m.defaultConfigurations.sessionId == sessionId);
-      modeInfo.modeTwos.remove(existingModeTwo);
-    } catch (error) {
-      // print("cannot find the Mode one");
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      try {
+        modeInfo.modeTwos.removeWhere((m) =>
+            m.defaultConfigurations.sessionId ==
+            modeTwo.defaultConfigurations.sessionId);
+        // modeInfo.modeTwos.remove(existingModeTwo);
+        await box.put(username, modeInfo);
+      } catch (error) {
+        //Do nothing since not found
+      }
     }
-    await box.add(modeInfo);
   }
 
   Future<void> saveOrUpdateModeThree(
@@ -148,19 +168,22 @@ class ModeInfoRepository {
     }
   }
 
-  Future<void> removeModeThree(String username, String sessionId) async {
+  Future<void> removeModeThree(String username, ModeThree modeThree) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      final existingModeOne = modeInfo.modeThrees
-          .firstWhere((m) => m.defaultConfigurations.sessionId == sessionId);
-      modeInfo.modeThrees.remove(existingModeOne);
-    } catch (error) {
-      // print("cannot find the Mode one");
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      try {
+        modeInfo.modeThrees.removeWhere((m) =>
+            m.defaultConfigurations.sessionId ==
+            modeThree.defaultConfigurations.sessionId);
+        // modeInfo.modeThrees.remove(existingModeThree);
+        await box.put(username, modeInfo);
+      } catch (error) {
+        //Do nothing since not found
+      }
     }
-    await box.add(modeInfo);
   }
 
   Future<void> saveOrUpdateModeFour(String username, ModeFour modeFour) async {
@@ -188,19 +211,22 @@ class ModeInfoRepository {
     }
   }
 
-  Future<void> removeModeFour(String username, String sessionId) async {
+  Future<void> removeModeFour(String username, ModeFour modeFour) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      final existingModeOne = modeInfo.modeFours
-          .firstWhere((m) => m.defaultConfigurations.sessionId == sessionId);
-      modeInfo.modeFours.remove(existingModeOne);
-    } catch (error) {
-      // print("cannot find the Mode one");
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      try {
+        modeInfo.modeFours.removeWhere((m) =>
+            m.defaultConfigurations.sessionId ==
+            modeFour.defaultConfigurations.sessionId);
+        // modeInfo.modeFours.remove(existingModeFour);
+        await box.put(username, modeInfo);
+      } catch (error) {
+        //Do nothing since not found
+      }
     }
-    await box.add(modeInfo);
   }
 
   Future<void> saveOrUpdateModeFive(String username, ModeFive modeFive) async {
@@ -228,19 +254,22 @@ class ModeInfoRepository {
     }
   }
 
-  Future<void> removeModeFive(String username, String sessionId) async {
+  Future<void> removeModeFive(String username, ModeFive modeFive) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      final existingModeOne = modeInfo.modeFives
-          .firstWhere((m) => m.defaultConfigurations.sessionId == sessionId);
-      modeInfo.modeFives.remove(existingModeOne);
-    } catch (error) {
-      // print("cannot find the Mode one");
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      try {
+        modeInfo.modeFives.removeWhere((m) =>
+            m.defaultConfigurations.sessionId ==
+            modeFive.defaultConfigurations.sessionId);
+        // modeInfo.modeFives.remove(existingModeFive);
+        await box.put(username, modeInfo);
+      } catch (error) {
+        //Do nothing since not found
+      }
     }
-    await box.add(modeInfo);
   }
 
   Future<void> saveOrUpdateModeSix(String username, ModeSix modeSix) async {
@@ -268,18 +297,21 @@ class ModeInfoRepository {
     }
   }
 
-  Future<void> removeModeSix(String username, String sessionId) async {
+  Future<void> removeModeSix(String username, ModeSix modeSix) async {
     final box = await _openBox();
 
-    final modeInfo = box.values.firstWhere((info) => info.username == username,
-        orElse: () => ModeInfo(username, [], [], [], [], [], []));
-    try {
-      final existingModeOne = modeInfo.modeSixs
-          .firstWhere((m) => m.defaultConfigurations.sessionId == sessionId);
-      modeInfo.modeSixs.remove(existingModeOne);
-    } catch (error) {
-      // print("cannot find the Mode one");
+    ModeInfo? modeInfo = box.get(username);
+
+    if (modeInfo != null) {
+      try {
+        modeInfo.modeSixs.firstWhere((m) =>
+            m.defaultConfigurations.sessionId ==
+            modeSix.defaultConfigurations.sessionId);
+        // modeInfo.modeSixs.remove(existingModeSix);
+        await box.put(username, modeInfo);
+      } catch (error) {
+        //Do nothing since not found
+      }
     }
-    await box.add(modeInfo);
   }
 }
