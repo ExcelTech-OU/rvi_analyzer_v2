@@ -67,10 +67,10 @@ public class UserService {
                                 .status("E1000")
                                 .statusDescription("Failed")
                                 .build());
-
     }
 
     private Mono<NewUserResponse> createUser(UserDto userDto, String username) {
+        //original code is mentioned bellow, remove if condition if you want to add security when you create top admin
         return userRepository.findByUsername(username)
                 .flatMap(creatingUser -> userGroupRoleService.getUserRolesByUserGroup(creatingUser.getGroup())
                         .flatMap(userRoles -> {
@@ -126,6 +126,9 @@ public class UserService {
                                                 .stateDescription("Password Reset Needed").build())
                                 );
                             } else {
+                                System.out.println(loginRequest.getPassword());
+                                System.out.println("user_pwd : "+user.getPassword());
+                                System.out.println("enc_pwd : "+encoder.encode(loginRequest.getPassword()));
                                 if (Objects.equals(encoder.encode(loginRequest.getPassword()), user.getPassword())) {
                                     return userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                                             .flatMap(roles -> {

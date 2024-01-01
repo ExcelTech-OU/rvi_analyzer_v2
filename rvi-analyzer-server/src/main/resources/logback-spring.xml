@@ -2,7 +2,9 @@
 <configuration>
 
 <!--    <property name="LOGS" value="/rvi/logs/rvi_analyzer" />-->
-    <property name="LOGS" value="/Volumes/Beyond/projects/logs/rvi_analyzer" />
+
+<!--    <property name="LOGS" value="/Volumes/Beyond/projects/logs/rvi_analyzer" /> default value-->
+    <property name="LOGS" value="/home/himesh/rvi_analyzer"/>
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">

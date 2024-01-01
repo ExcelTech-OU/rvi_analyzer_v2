@@ -8,80 +8,71 @@ import { DashboardLayout } from "./views/components/dashboard-layout";
 import { useGetRolesMutation, useGetRolesQuery } from "./services/user_service";
 import { useDispatch } from "react-redux";
 import { logout, rolesGetSuccess } from "./views/auth/login/auth-slice";
+import SignUp from "./views/auth/sign_up/sign_up";
 
 type AppProps = {
   children: ReactNode;
-}
+};
 
 const footerStyles = {
-  position: 'fixed',
+  position: "fixed",
   bottom: 0,
   left: 0,
-  width: '100%',
-  height: '50px',
-  backgroundColor: '#f5f5f5',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  width: "100%",
+  height: "50px",
+  backgroundColor: "#f5f5f5",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 };
 
 const copyrightStyles = {
-  fontSize: '12px',
-  color: '#999',
+  fontSize: "12px",
+  color: "#999",
 };
 
-
 function App({ children }: AppProps) {
-
   const isLogin = localStorage.getItem("jwt") != null;
-  const stateLogin = useAppSelector((state) => state.loginStatus.jwt)
+  const stateLogin = useAppSelector((state) => state.loginStatus.jwt);
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   const [roles] = useGetRolesMutation();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  console.log(isLogin)
+  // console.log(isLogin);
 
   useEffect(() => {
     if (isLogin) {
       roles({})
         .unwrap()
         .then((payload) => {
-          console.log(payload)
-          dispatch(rolesGetSuccess(payload))
-          navigate("/");
+          console.log(payload);
+          dispatch(rolesGetSuccess(payload));
+          navigate("/sign-up");
         })
         .catch((error) => {
-          console.log(error)
-
-          dispatch(logout())
+          console.log(error);
+          dispatch(logout());
           navigate("/login");
-        })
+        });
     } else {
       navigate("/login");
     }
   }, [isLogin]);
 
-
-  return (
-    isLogin ? <>
+  return isLogin ? (
+    <>
       <DashboardLayout>
         <Box
           component="main"
           sx={{
             flexGrow: 1,
-            py: 8
+            py: 8,
           }}
         >
           <Container maxWidth={false}>
-            <Grid
-              container
-              spacing={3}
-            >
-              <Grid
-                item
-                xs={12}
-              >
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
                 {children}
               </Grid>
             </Grid>
@@ -94,12 +85,11 @@ function App({ children }: AppProps) {
         </Box>
       </DashboardLayout>
     </>
-      :
-      <>
-        <Login />
-      </>
-
-  )
+  ) : (
+    <>
+      <SignUp />
+    </>
+  );
 }
 
-export default App
+export default App;

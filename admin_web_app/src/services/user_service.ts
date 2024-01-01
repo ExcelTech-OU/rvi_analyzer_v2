@@ -65,7 +65,8 @@ export const userApi = createApi({
         getRoles: build.mutation<RolesResponse, {}>({
             query() {
                 return {
-                    url: `login/user`,
+                    url: `rvi/analyzer/v1/user/roles`,
+                    // url: `login/user`,
                     method: 'GET'
                 }
             },
