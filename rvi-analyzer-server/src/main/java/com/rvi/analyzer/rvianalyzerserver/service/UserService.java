@@ -12,11 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -61,7 +59,9 @@ public class UserService {
                         .status("E1002")
                         .statusDescription("User Already exists")
                         .build()))
-                .switchIfEmpty(createUser(userDto, jwtUtils.getUsername(jwt)))
+                .switchIfEmpty(
+                        createUser(userDto, jwtUtils.getUsername(jwt))
+                )
                 .doOnError(e ->
                         NewUserResponse.builder()
                                 .status("E1000")
@@ -70,7 +70,6 @@ public class UserService {
     }
 
     private Mono<NewUserResponse> createUser(UserDto userDto, String username) {
-        //original code is mentioned bellow, remove if condition if you want to add security when you create top admin
         return userRepository.findByUsername(username)
                 .flatMap(creatingUser -> userGroupRoleService.getUserRolesByUserGroup(creatingUser.getGroup())
                         .flatMap(userRoles -> {

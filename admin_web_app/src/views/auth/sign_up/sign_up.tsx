@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Container,
@@ -8,6 +9,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -20,6 +22,7 @@ export default function SignUp() {
   const [isLogin, setLogin] = useState(false);
   const navigate = useNavigate();
   const [group, setGroup] = useState("");
+  const [open, setOpen] = useState(false);
 
   const handleLogin = () => {
     setLogin(true);
@@ -30,6 +33,8 @@ export default function SignUp() {
     initialValues: {
       userName: "",
       password: "",
+      confirmPassword: "",
+      group: "",
     },
     validationSchema: Yup.object({
       userName: Yup.string()
@@ -37,6 +42,8 @@ export default function SignUp() {
         .max(255)
         .required("Email is required"),
       password: Yup.string().max(100).required("Password is required"),
+      confirmPassword: Yup.string().max(100).required("Password is required"),
+      group: Yup.string().max(100).required("User group is required"),
     }),
     onSubmit: (values, actions) => {
       // login({
@@ -58,6 +65,17 @@ export default function SignUp() {
       //   });
     },
   });
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const handleChangeGroup = (event: SelectChangeEvent) => {
     setGroup(event.target.value);
@@ -91,7 +109,7 @@ export default function SignUp() {
               margin="normal"
               name="userName"
               type="email"
-              required
+              // required
               variant="outlined"
             />
             <TextField
@@ -100,16 +118,16 @@ export default function SignUp() {
               margin="normal"
               name="password"
               type="password"
-              required
+              // required
               variant="outlined"
             />
             <TextField
               fullWidth
               label="Confirm Password"
               margin="normal"
-              name="confirm_password"
+              name="confirmPassword"
               type="password"
-              required
+              // required
               variant="outlined"
             />
             <FormControl sx={{ my: 2 }} fullWidth>
@@ -121,7 +139,8 @@ export default function SignUp() {
                 id="demo-simple-select-helper"
                 value={group}
                 label="Group"
-                required
+                name="group"
+                // required
                 onChange={handleChangeGroup}
               >
                 <MenuItem value="">
@@ -135,6 +154,7 @@ export default function SignUp() {
             </FormControl>
             <Box sx={{ py: 2 }}>
               <Button
+                disabled={formik.isSubmitting}
                 color="primary"
                 fullWidth
                 size="large"
@@ -175,6 +195,16 @@ export default function SignUp() {
             </Box>
           </form>
         </Container>
+        <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+            Sign up Failed! something went wrong
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   );
