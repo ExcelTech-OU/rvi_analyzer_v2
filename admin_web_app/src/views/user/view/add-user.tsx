@@ -36,6 +36,26 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openFail, setOpenFail] = useState(false);
   const [group, setGroup] = useState("");
+  var userRoles: string | string[] = [];
+  const [topAdmin, setTopAdmin] = useState(false);
+  const [admin, setAdmin] = useState(false);
+  const [user, setUser] = useState(false);
+
+  if (localStorage.getItem("roles") === "") {
+    console.log("roles empty");
+  } else {
+    userRoles = localStorage
+      .getItem("roles")
+      .split(",")
+      .map((item) => item.trim());
+    // console.log(userRoles.includes("CREATE_TOP_ADMIN"));
+    if (
+      userRoles.includes("CREATE_TOP_ADMIN") &&
+      userRoles.includes("CREATE_ADMIN")
+    ) {
+      setTopAdmin(true);
+    }
+  }
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -156,6 +176,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             >
+              {/* {userRoles.includes("CREATE_TOP_ADMIN")} */}
               <MenuItem value={"TOP_ADMIN"}>TOP_ADMIN</MenuItem>
               <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
               <MenuItem value={"USER"}>USER</MenuItem>

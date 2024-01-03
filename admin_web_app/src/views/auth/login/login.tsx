@@ -26,11 +26,6 @@ export default function Login() {
     setOpen(true);
   };
 
-  // const handleSignUp = () => {
-  //   console.log("sign up");
-  //   navigate("/sign-up");
-  // };
-
   const handleClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string

@@ -46,7 +46,7 @@ function App({ children }: AppProps) {
       roles({})
         .unwrap()
         .then((payload) => {
-          console.log(payload);
+          // console.log(payload);
           dispatch(rolesGetSuccess(payload));
           navigate("/");
         })
