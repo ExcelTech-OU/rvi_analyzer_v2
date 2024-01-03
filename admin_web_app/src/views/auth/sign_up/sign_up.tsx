@@ -15,14 +15,23 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useSignUpMutation } from "../../../services/sign_up_service";
+import { signUpSuccess } from "./sign-up-slice";
+import { useDispatch } from "react-redux";
 
 export default function SignUp() {
+  const [signUp] = useSignUpMutation();
   const [isLogin, setLogin] = useState(false);
   const navigate = useNavigate();
   const [group, setGroup] = useState("");
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    formik.handleChange;
+  }, [group]);
 
   const handleLogin = () => {
     setLogin(true);
@@ -46,23 +55,25 @@ export default function SignUp() {
       group: Yup.string().max(100).required("User group is required"),
     }),
     onSubmit: (values, actions) => {
-      // login({
-      //   userName: values.userName,
-      //   password: values.password,
-      //   source: "WEB",
-      // })
-      //   .unwrap()
-      //   .then((payload) => {
-      //     if (payload.state == "S1000") {
-      //       dispatch(loginSuccess(payload));
-      //       navigate("/");
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     actions.setSubmitting(false);
-      //     actions.resetForm();
-      //     setOpen(true);
-      //   });
+      signUp({
+        userName: values.userName,
+        password: values.password,
+        confirmPassword: values.confirmPassword,
+        group: values.group,
+        source: "WEB",
+      })
+        .unwrap()
+        .then((payload) => {
+          if (payload.state == "S1000") {
+            dispatch(signUpSuccess(payload));
+            navigate("/");
+          }
+        })
+        .catch((error) => {
+          actions.setSubmitting(false);
+          actions.resetForm();
+          setOpen(true);
+        });
     },
   });
 
@@ -93,7 +104,7 @@ export default function SignUp() {
         style={{ minHeight: "100vh" }}
       >
         <Container maxWidth="sm">
-          <form>
+          <form onSubmit={formik.handleSubmit}>
             <Box sx={{ my: 3 }}>
               <Typography color="textPrimary" variant="h4">
                 Sign up
@@ -104,37 +115,60 @@ export default function SignUp() {
             </Box>
 
             <TextField
+              error={Boolean(formik.touched.userName && formik.errors.userName)}
               fullWidth
+              helperText={formik.touched.userName && formik.errors.userName}
               label="Email Address"
               margin="normal"
               name="userName"
               type="email"
-              // required
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.userName}
               variant="outlined"
             />
             <TextField
+              error={Boolean(formik.touched.password && formik.errors.password)}
               fullWidth
+              helperText={formik.touched.password && formik.errors.password}
               label="Password"
               margin="normal"
               name="password"
               type="password"
-              // required
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.password}
               variant="outlined"
             />
             <TextField
+              error={Boolean(
+                formik.touched.confirmPassword && formik.errors.confirmPassword
+              )}
               fullWidth
+              helperText={
+                formik.touched.confirmPassword && formik.errors.confirmPassword
+              }
               label="Confirm Password"
               margin="normal"
               name="confirmPassword"
               type="password"
-              // required
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.confirmPassword}
               variant="outlined"
             />
-            <FormControl sx={{ my: 2 }} fullWidth>
+            <FormControl
+              sx={{ my: 2 }}
+              fullWidth
+              error={Boolean(formik.touched.group && formik.errors.group)}
+            >
               <InputLabel id="demo-simple-select-helper-label">
-                Group
+                User group
               </InputLabel>
               <Select
+                // error={Boolean(formik.touched.group && formik.errors.group)}
+                // helperText={formik.touched.userName && formik.errors.group}
+                onBlur={formik.handleBlur}
                 labelId="demo-simple-select-helper-label"
                 id="demo-simple-select-helper"
                 value={group}
@@ -150,7 +184,9 @@ export default function SignUp() {
                 <MenuItem value={2}>Admin</MenuItem>
                 <MenuItem value={3}>User</MenuItem>
               </Select>
-              {/* <FormHelperText>With label + helper text</FormHelperText> */}
+              <FormHelperText>
+                {formik.touched.userName && formik.errors.group}
+              </FormHelperText>
             </FormControl>
             <Box sx={{ py: 2 }}>
               <Button

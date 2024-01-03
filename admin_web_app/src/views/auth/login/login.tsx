@@ -26,10 +26,10 @@ export default function Login() {
     setOpen(true);
   };
 
-  const handleSignUp = () => {
-    console.log("sign up");
-    navigate("/sign-up");
-  };
+  // const handleSignUp = () => {
+  //   console.log("sign up");
+  //   navigate("/sign-up");
+  // };
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -134,7 +134,7 @@ export default function Login() {
             >
               Sign In
             </Button>
-            <Box
+            {/* <Box
               sx={{
                 padding: 3,
                 display: "flex",
@@ -163,7 +163,7 @@ export default function Login() {
               >
                 Create account
               </Typography>
-            </Box>
+            </Box> */}
           </Box>
         </form>
       </Container>
