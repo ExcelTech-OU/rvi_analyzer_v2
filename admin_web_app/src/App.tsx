@@ -48,7 +48,7 @@ function App({ children }: AppProps) {
         .then((payload) => {
           console.log(payload);
           dispatch(rolesGetSuccess(payload));
-          navigate("/sign-up");
+          navigate("/");
         })
         .catch((error) => {
           console.log(error);
