@@ -37,9 +37,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   const [openFail, setOpenFail] = useState(false);
   const [group, setGroup] = useState("");
   var userRoles: string | string[] = [];
-  const [topAdmin, setTopAdmin] = useState(false);
-  const [admin, setAdmin] = useState(false);
-  const [user, setUser] = useState(false);
+  var admin = "";
 
   if (localStorage.getItem("roles") === "") {
     console.log("roles empty");
@@ -53,7 +51,11 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
       userRoles.includes("CREATE_TOP_ADMIN") &&
       userRoles.includes("CREATE_ADMIN")
     ) {
-      setTopAdmin(true);
+      admin = "TOP_ADMIN";
+      console.log("TOP_ADMIN");
+    } else if (userRoles.includes("CREATE_USER")) {
+      admin = "ADMIN";
+      console.log("ADMIN");
     }
   }
 
@@ -166,7 +168,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
             >
               Group
             </InputLabel>
-            <Select
+            {/* <Select
               fullWidth
               // labelId="demo-simple-select-label"
               id="group"
@@ -176,11 +178,42 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             >
-              {/* {userRoles.includes("CREATE_TOP_ADMIN")} */}
               <MenuItem value={"TOP_ADMIN"}>TOP_ADMIN</MenuItem>
               <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
               <MenuItem value={"USER"}>USER</MenuItem>
-            </Select>
+            </Select> */}
+            {admin === "TOP_ADMIN" ? (
+              <Select
+                fullWidth
+                // labelId="demo-simple-select-label"
+                id="group"
+                label="Group"
+                value={formik.values.group}
+                name="group"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <MenuItem value={"TOP_ADMIN"}>TOP_ADMIN</MenuItem>
+                <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
+                <MenuItem value={"USER"}>USER</MenuItem>
+              </Select>
+            ) : admin === "ADMIN" ? (
+              <Select
+                fullWidth
+                // labelId="demo-simple-select-label"
+                id="group"
+                label="Group"
+                value={formik.values.group}
+                name="group"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <MenuItem value={"USER"}>USER</MenuItem>
+              </Select>
+            ) : (
+              <></>
+            )}
+
             <FormHelperText>
               {formik.touched.group && formik.errors.group}
             </FormHelperText>
