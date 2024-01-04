@@ -10,6 +10,7 @@ import Login from "./views/auth/login/login";
 import Dashboard from "./views/dashboard/dashboard";
 import QuestionList from "./views/question/QuestionList";
 import UserList from "./views/user/view/UserList";
+import PlantList from "./views/plant/view/PlantList";
 import ModeTwoList from "./views/mode_two/mode-two-list";
 import ModeThreeList from "./views/mode_three/mode-three-list";
 import ModeFourList from "./views/mode_four/mode-four-list";
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path="/mode-five" element={<ModeFiveList />} />
               <Route path="/mode-six" element={<ModeSixList />} />
               <Route path="/users" element={<UserList />} />
+              <Route path="/plants" element={<PlantList />} />
               <Route path="/devices" element={<DeviceList />} />
               <Route path="/questions" element={<QuestionList />} />
               <Route path="/login" element={<Login />} />
