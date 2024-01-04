@@ -16,7 +16,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import {
   User,
@@ -24,7 +24,6 @@ import {
   useUpdateUserMutation,
 } from "../../../services/user_service";
 import * as Yup from "yup";
-
 import CloseIcon from "@mui/icons-material/Close";
 
 type AddUserProps = {
@@ -35,10 +34,19 @@ type AddUserProps = {
 export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openFail, setOpenFail] = useState(false);
-  const [group, setGroup] = useState("");
+  const [formReset, setFormReset] = useState(false);
   var userRoles: string | string[] = [];
   var admin = "";
 
+  // if (open != null) {
+  //   setFormReset(open);
+  // }
+
+  // useEffect(() => {
+  //   formik.resetForm();
+  // }, [formReset]);
+
+  //filters users according to admin's permissions
   if (localStorage.getItem("roles") === "") {
     console.log("roles empty");
   } else {
@@ -46,16 +54,13 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
       .getItem("roles")
       .split(",")
       .map((item) => item.trim());
-    // console.log(userRoles.includes("CREATE_TOP_ADMIN"));
     if (
       userRoles.includes("CREATE_TOP_ADMIN") &&
       userRoles.includes("CREATE_ADMIN")
     ) {
       admin = "TOP_ADMIN";
-      console.log("TOP_ADMIN");
     } else if (userRoles.includes("CREATE_USER")) {
       admin = "ADMIN";
-      console.log("ADMIN");
     }
   }
 
@@ -148,44 +153,16 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
             error={Boolean(formik.touched.email && formik.errors.email)}
             helperText={formik.touched.email && formik.errors.email}
           />
-          {/* <TextField
-            fullWidth
-            label="Group"
-            margin="normal"
-            name="group"
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            value={formik.values.group}
-            variant="outlined"
-          /> */}
           <FormControl
             sx={{ mt: 2 }}
             fullWidth
             error={Boolean(formik.touched.group && formik.errors.group)}
           >
-            <InputLabel
-            // id="demo-simple-select-helper-label"
-            >
-              Group
-            </InputLabel>
-            {/* <Select
-              fullWidth
-              // labelId="demo-simple-select-label"
-              id="group"
-              label="Group"
-              value={formik.values.group}
-              name="group"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            >
-              <MenuItem value={"TOP_ADMIN"}>TOP_ADMIN</MenuItem>
-              <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
-              <MenuItem value={"USER"}>USER</MenuItem>
-            </Select> */}
+            <InputLabel id="demo-simple-select-helper-label">Group</InputLabel>
             {admin === "TOP_ADMIN" ? (
               <Select
                 fullWidth
-                // labelId="demo-simple-select-label"
+                labelId="demo-simple-select-label"
                 id="group"
                 label="Group"
                 value={formik.values.group}
@@ -195,12 +172,12 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
               >
                 <MenuItem value={"TOP_ADMIN"}>TOP_ADMIN</MenuItem>
                 <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
-                <MenuItem value={"USER"}>USER</MenuItem>
+                {/* <MenuItem value={"USER"}>USER</MenuItem> */}
               </Select>
             ) : admin === "ADMIN" ? (
               <Select
                 fullWidth
-                // labelId="demo-simple-select-label"
+                labelId="demo-simple-select-label"
                 id="group"
                 label="Group"
                 value={formik.values.group}
@@ -224,14 +201,10 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
             fullWidth
             error={Boolean(formik.touched.status && formik.errors.status)}
           >
-            <InputLabel
-            // id="demo-simple-select-helper-label"
-            >
-              Status
-            </InputLabel>
+            <InputLabel id="demo-simple-select-helper-label">Status</InputLabel>
             <Select
               fullWidth
-              // labelId="demo-simple-select-label"
+              labelId="demo-simple-select-label"
               id="status"
               label="Status"
               value={formik.values.status}
@@ -243,7 +216,6 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
               <MenuItem value={"TEMPORARY_BLOCKED"} color="orange">
                 TEMPORARY_BLOCKED
               </MenuItem>
-              <MenuItem value={"INACTIVE"}>INACTIVE</MenuItem>
             </Select>
             <FormHelperText>
               {formik.touched.status && formik.errors.status}

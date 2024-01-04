@@ -18,6 +18,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import { useGetUsersQuery, User } from "../../../services/user_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
 import CustomizedMenusUsers from "./custom-menu-user";
+import { List } from "reselect/es/types";
 import React, { useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
@@ -62,6 +63,36 @@ export default function UserList() {
   const { data, error, isLoading } = useGetUsersQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
+  var userRoles: string | string[] = [];
+  var admin = "";
+
+  //get user roles from local storage
+  if (localStorage.getItem("roles") === "") {
+    console.log("roles empty");
+  } else {
+    userRoles = localStorage
+      .getItem("roles")
+      .split(",")
+      .map((item) => item.trim());
+    if (
+      userRoles.includes("CREATE_TOP_ADMIN") &&
+      userRoles.includes("CREATE_ADMIN")
+    ) {
+      admin = "TOP_ADMIN";
+    } else if (userRoles.includes("CREATE_USER")) {
+      admin = "ADMIN";
+    }
+  }
+
+  //filters users according to admin's permissions
+  var userList = data?.users.filter((user) => {
+    if (admin === "ADMIN") {
+      return user.group === "USER";
+    } else {
+      return user;
+    }
+  });
+
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -151,7 +182,8 @@ export default function UserList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data!.users.map((item, index) => {
+                                {userList.map((item: User, index: any) => {
+                                  // data!.users.map((item: User, index: any) => {
                                   return (
                                     <StyledTableRow
                                       //   id="index"
