@@ -66,6 +66,10 @@ export default function UserList() {
   var userRoles: string | string[] = [];
   var admin = "";
 
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   //get user roles from local storage
   if (localStorage.getItem("roles") === "") {
     console.log("roles empty");
@@ -93,6 +97,7 @@ export default function UserList() {
     }
   });
 
+  handleRefresh;
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
