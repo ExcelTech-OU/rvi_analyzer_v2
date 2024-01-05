@@ -11,7 +11,6 @@ export interface CustomerListResponse {
 
 export interface Customer {
     username: string
-    plant: string
     status: string
     createdBy: string
     createdDateTime: string
