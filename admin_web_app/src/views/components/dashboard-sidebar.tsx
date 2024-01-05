@@ -21,6 +21,7 @@ import Looks6Icon from "@mui/icons-material/Looks6";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HardwareIcon from "@mui/icons-material/Hardware";
 import AddIcon from "@mui/icons-material/Add";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import { NavItem } from "./nav-item";
 import {
   Add,
@@ -40,7 +41,7 @@ const items = [
     childs: [],
   },
   {
-    href: "",
+    href: "#",
     icon: <HardwareIcon fontSize="small" />,
     title: "Plants",
     childs: [
@@ -48,6 +49,19 @@ const items = [
         href: "/plants",
         icon: <AddIcon fontSize="small" />,
         title: "Create Plant",
+        childs: [],
+      },
+    ],
+  },
+  {
+    href: "#",
+    icon: <SupportAgentIcon fontSize="small" />,
+    title: "Customers",
+    childs: [
+      {
+        href: "/customers",
+        icon: <AddIcon fontSize="small" />,
+        title: "Create Customer",
         childs: [],
       },
     ],

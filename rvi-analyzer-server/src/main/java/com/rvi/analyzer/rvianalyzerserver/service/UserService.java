@@ -125,9 +125,6 @@ public class UserService {
                                                 .stateDescription("Password Reset Needed").build())
                                 );
                             } else {
-//                                System.out.println(loginRequest.getPassword());
-//                                System.out.println("user_pwd : "+user.getPassword());
-//                                System.out.println("enc_pwd : "+encoder.encode(loginRequest.getPassword()));
                                 if (Objects.equals(encoder.encode(loginRequest.getPassword()), user.getPassword())) {
                                     return userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                                             .flatMap(roles -> {

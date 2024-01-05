@@ -16,6 +16,10 @@ import {
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useGetUsersQuery, User } from "../../../services/user_service";
+import {
+  useGetCustomerQuery,
+  Customer,
+} from "../../../services/customer_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
 import CustomizedMenusUsers from "../../user/view/custom-menu-user";
 import { List } from "reselect/es/types";
@@ -23,44 +27,20 @@ import React, { useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
 import { AddUserModel } from "../../user/view/add-user";
+import { AddCustomerModel } from "../add/add-customer";
 
 const columns: GridColDef[] = [
-  { field: "email", headerName: "Email", width: 200 },
+  { field: "customer", headerName: "Customer", width: 400 },
   {
-    field: "group",
-    headerName: "User Group",
-    width: 150,
-  },
-  {
-    field: "createdBy",
-    headerName: "CreatedBy",
-    width: 180,
-  },
-  {
-    field: "createdDateTime",
-    headerName: "Created Date",
-    width: 250,
-  },
-  {
-    field: "passwordType",
-    headerName: "Password Status",
-    width: 200,
-  },
-  {
-    field: "enabled",
-    headerName: "Status",
-    width: 200,
-  },
-  {
-    field: "actions",
-    headerName: "Actions",
-    type: "actions",
-    width: 200,
+    field: "plant",
+    headerName: "Plant",
+    width: 400,
   },
 ];
 
-export default function PlantList() {
+export default function CustomerList() {
   const { data, error, isLoading } = useGetUsersQuery("");
+  // const { data, error, isLoading } = useGetCustomerQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   var userRoles: string | string[] = [];
@@ -87,15 +67,6 @@ export default function PlantList() {
       admin = "ADMIN";
     }
   }
-
-  //filters users according to admin's permissions
-  var userList = data?.users.filter((user) => {
-    if (admin === "ADMIN") {
-      return user.group === "USER";
-    } else {
-      return user;
-    }
-  });
 
   handleRefresh;
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -143,7 +114,7 @@ export default function PlantList() {
                           component="div"
                           color="grey"
                         >
-                          Plants
+                          Customers
                         </Typography>
                         <Box display="flex" justifyContent="flex-end">
                           <Button
@@ -162,7 +133,6 @@ export default function PlantList() {
                             borderStyle: "dashed",
                           }}
                         />
-                        {/* <TableSearchForm searchFun={setSearchParams}></TableSearchForm> */}
                         <Divider
                           sx={{
                             borderColor: "grey",
@@ -187,7 +157,7 @@ export default function PlantList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {userList.map((item: User, index: any) => {
+                                {data?.users.map((item: User, index: any) => {
                                   return (
                                     <StyledTableRow
                                       //   id="index"
@@ -200,58 +170,6 @@ export default function PlantList() {
                                       </StyledTableCell>
                                       <StyledTableCell align={"left"}>
                                         {item.group}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.createdBy}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.createdDateTime}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.passwordType == "PASSWORD" ? (
-                                          <Button
-                                            variant="contained"
-                                            color="success"
-                                          >
-                                            ACTIVE
-                                          </Button>
-                                        ) : item.passwordType == "DEFAULT" ? (
-                                          <Button
-                                            variant="contained"
-                                            color="warning"
-                                          >
-                                            DEFAULT
-                                          </Button>
-                                        ) : (
-                                          <Button
-                                            variant="contained"
-                                            color="error"
-                                          >
-                                            RESET
-                                          </Button>
-                                        )}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.status == "ACTIVE" ? (
-                                          <Button
-                                            variant="contained"
-                                            color="primary"
-                                          >
-                                            ACTIVE
-                                          </Button>
-                                        ) : (
-                                          <Button
-                                            variant="contained"
-                                            color="error"
-                                          >
-                                            TEMPORARY_BLOCKED
-                                          </Button>
-                                        )}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"right"}>
-                                        <CustomizedMenusUsers
-                                          user={item as User}
-                                        />
                                       </StyledTableCell>
                                     </StyledTableRow>
                                   );
@@ -276,7 +194,7 @@ export default function PlantList() {
                 </Box>
               </>
             </Container>
-            <AddUserModel open={open} changeOpenStatus={setOpen} />
+            <AddCustomerModel open={open} changeOpenStatus={setOpen} />
           </Box>
         )}
       </>
