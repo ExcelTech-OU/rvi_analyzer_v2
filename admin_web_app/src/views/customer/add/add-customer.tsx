@@ -18,11 +18,15 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
+// import {
+//   User,
+//   useAddUserMutation,
+//   useUpdateUserMutation,
+// } from "../../../services/user_service";
 import {
-  User,
-  useAddUserMutation,
-  useUpdateUserMutation,
-} from "../../../services/user_service";
+  Customer,
+  useAddCustomerMutation,
+} from "../../../services/customer_service";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -67,7 +71,7 @@ export function AddCustomerModel({ open, changeOpenStatus }: AddCustomerProps) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [addUser] = useAddUserMutation();
+  const [addCustomer] = useAddCustomerMutation();
 
   const handleCloseSuccess = () => {
     setOpenSuccess(false);
@@ -83,26 +87,26 @@ export function AddCustomerModel({ open, changeOpenStatus }: AddCustomerProps) {
       plant: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().max(255).required("Name is required"),
+      name: Yup.string().max(255).required("Name is required"),
       plant: Yup.string().max(25).required("Plant is required"),
     }),
     onSubmit: (values, actions) => {
-      //   addUser({
-      //     username: values.name,
-      //     group: values.plant,
-      //   })
-      //     .unwrap()
-      //     .then((payload) => {
-      //       if (payload.status == "S1000") {
-      //         actions.setSubmitting(false);
-      //         actions.resetForm();
-      //         setOpenSuccess(true);
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       actions.setSubmitting(false);
-      //       setOpenFail(true);
-      //     });
+      addCustomer({
+        name: values.name,
+        plant: values.plant,
+      })
+        .unwrap()
+        .then((payload) => {
+          if (payload.status == "S1000") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setOpenSuccess(true);
+          }
+        })
+        .catch((error) => {
+          actions.setSubmitting(false);
+          setOpenFail(true);
+        });
     },
   });
 
@@ -152,7 +156,7 @@ export function AddCustomerModel({ open, changeOpenStatus }: AddCustomerProps) {
             fullWidth
             label="Plant"
             margin="normal"
-            name="Plant"
+            name="plant"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.plant}

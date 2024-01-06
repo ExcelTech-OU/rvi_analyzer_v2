@@ -6,15 +6,21 @@ import { RolesResponse } from './login_service'
 export interface CustomerListResponse {
     status: string
     statusDescription: string
-    customers: List<Customer>
+    name: List<Customer>
 }
 
 export interface Customer {
-    username: string
-    status: string
+    name: string
+    plant: string
     createdBy: string
     createdDateTime: string
     lastUpdatedDateTime: boolean
+}
+
+export interface CustomerGetResponse {
+    status: string,
+    statusDescription: string,
+    name: string
 }
 
 export const customerApi = createApi({
@@ -36,7 +42,7 @@ export const customerApi = createApi({
             providesTags: [{ type: 'customerList', id: "getCustomers" }]
 
         }),
-        addCustomer: build.mutation<CommonResponse, {}>({
+        addCustomer: build.mutation<CustomerGetResponse, {}>({
             query(body) {
                 return {
                     url: `register/customer`,

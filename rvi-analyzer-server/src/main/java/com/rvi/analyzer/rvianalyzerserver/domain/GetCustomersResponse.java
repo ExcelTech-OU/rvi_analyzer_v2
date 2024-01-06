@@ -1,6 +1,5 @@
 package com.rvi.analyzer.rvianalyzerserver.domain;
-
-import com.elextrone.smart_store_server.repo.entity.Customer;
+import com.rvi.analyzer.rvianalyzerserver.entiy.Customer;
 import lombok.Builder;
 import lombok.Data;
 

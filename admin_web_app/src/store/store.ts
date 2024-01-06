@@ -7,11 +7,13 @@ import { sessionApi } from '../services/sessions_service'
 import { userApi } from '../services/user_service'
 import { loginSlice } from '../views/auth/login/auth-slice'
 import { signUpApi } from '../services/sign_up_service'
+import { customerApi } from '../services/customer_service'
 
 export const store = configureStore({
     reducer: {
         [loginApi.reducerPath]: loginApi.reducer,
         // [signUpApi.reducerPath]: signUpApi.reducer,
+        [customerApi.reducerPath]: customerApi.reducer,
         [deviceApi.reducerPath]: deviceApi.reducer,
         [userApi.reducerPath]: userApi.reducer,
         [dashboardApi.reducerPath]: dashboardApi.reducer,
@@ -22,6 +24,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(loginApi.middleware)
             // .concat(signUpApi.middleware)
+            .concat(customerApi.middleware)
             .concat(deviceApi.middleware)
             .concat(userApi.middleware)
             .concat(dashboardApi.middleware)

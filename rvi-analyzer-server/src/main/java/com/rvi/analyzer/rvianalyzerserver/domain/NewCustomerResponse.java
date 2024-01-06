@@ -1,15 +1,12 @@
 package com.rvi.analyzer.rvianalyzerserver.domain;
-import com.rvi.analyzer.rvianalyzerserver.entiy.Plant;
+
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @Builder
-public class GetPlantsResponse {
+public class NewCustomerResponse {
     private String status;
     private String statusDescription;
-    private List<Plant> plants;
-    private int total;
+    private String name;
 }

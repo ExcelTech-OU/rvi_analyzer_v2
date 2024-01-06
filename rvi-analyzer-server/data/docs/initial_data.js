@@ -35,9 +35,17 @@ db.role.insertMany([
     'role-name': 'CREATE_USER'
   },
   {
+    'role-id' : 'create_customer',
+    'role-name': 'CREATE_CUSTOMER'
+  },
+  {
+    'role-id' : 'create_plant',
+    'role-name': 'CREATE_PLANT'
+   },
+  {
     'role-id': 'reset_password',
     'role-name': 'RESET_PASSWORD'
-  },//
+  },
   {
     'role-id': 'update_device',
     'role-name': 'UPDATE_DEVICE'
@@ -150,6 +158,8 @@ db.groupRole.insertMany([
     'group-id': 'top_admin_group',
     'role-ids': [ 'login_web',
     'create_top_admin',
+    'create_customer',
+    'create_plant',
     'update_admin_user',
     'get_all_users',
     'create_admin',

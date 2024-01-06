@@ -4,6 +4,8 @@ public enum UserRoles {
     LOGIN_WEB,
     LOGIN_APP,
     CREATE_TOP_ADMIN,
+    CREATE_CUSTOMER,
+    CREATE_PLANT,
     CREATE_ADMIN,
     CREATE_USER,
     RESET_PASSWORD,
