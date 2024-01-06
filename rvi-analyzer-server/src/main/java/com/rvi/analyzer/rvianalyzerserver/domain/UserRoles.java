@@ -30,6 +30,7 @@ public enum UserRoles {
     GET_LAST_MODE_SIX,
     SHARE_REPORT,
     GET_USERS,
+    GET_CUSTOMERS,
     GET_ALL_USERS,
     UPDATE_USER,
     UPDATE_ADMIN_USER,
