@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  rvi-analyzer-mongo:
+    image: mongo:6.0.5
+    restart: always
+    ports:
+      - "27017:27017"

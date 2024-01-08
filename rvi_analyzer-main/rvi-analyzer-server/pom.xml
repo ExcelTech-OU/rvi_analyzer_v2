@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.0.5</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.rvi.analyzer</groupId>
+	<artifactId>rvi-analyzer-server</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>rvi-analyzer-server</name>
+	<description>RVI Analyser server</description>
+
+	<properties>
+		<java.version>17</java.version>
+		<org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+		<org.projectlombok.version>1.18.26</org.projectlombok.version>
+		<lombok.mapstuct.binding.version>0.2.0</lombok.mapstuct.binding.version>
+		<jwt.version>0.11.5</jwt.version>
+		<jsw.assemble.dir>target/generated-resources/appassembler/jsw</jsw.assemble.dir>
+		<appassembler.basedir>target/generated-resources/appassembler/jsw/rvi-analyzer-server</appassembler.basedir>
+		<resource.file.location>.</resource.file.location>
+	</properties>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${org.projectlombok.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${org.mapstruct.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${org.projectlombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>${lombok.mapstuct.binding.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<id>generate-jsw-scripts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-daemons</goal>
+							<goal>create-repository</goal>
+						</goals>
+						<configuration>
+							<repositoryLayout>flat</repositoryLayout>
+							<configurationDirectory>conf</configurationDirectory>
+							<useWildcardClassPath>true</useWildcardClassPath>
+							<daemons>
+								<daemon>
+									<id>rvi-analyzer-server</id>
+									<wrapperMainClass>org.tanukisoftware.wrapper.WrapperSimpleApp</wrapperMainClass>
+									<mainClass>
+										com.rvi.analyzer.rvianalyzerserver.RviAnalyzerServerApplication
+									</mainClass>
+									<commandLineArguments>
+										<commandLineArgument>start</commandLineArgument>
+									</commandLineArguments>
+									<platforms>
+										<platform>jsw</platform>
+									</platforms>
+									<generatorConfigurations>
+										<generatorConfiguration>
+											<generator>jsw</generator>
+											<configuration>
+												<property>
+													<name>wrapper.java.additional.1</name>
+													<value>-XX:MaxDirectMemorySize=256M</value>
+												</property>
+												<property>
+													<name>configuration.directory.in.classpath.first</name>
+													<value>conf</value>
+												</property>
+												<property>
+													<name>set.default.REPO_DIR</name>
+													<value>lib</value>
+												</property>
+												<property>
+													<name>wrapper.logfile</name>
+													<value>logs/wrapper.log</value>
+												</property>
+												<property>
+													<name>wrapper.startup.timeout</name>
+													<value>0</value>
+												</property>
+												<property>
+													<name>wrapper.ping.timeout</name>
+													<value>60</value>
+												</property>
+											</configuration>
+											<includes>
+												<include>linux-x86-64</include>
+											</includes>
+										</generatorConfiguration>
+									</generatorConfigurations>
+								</daemon>
+							</daemons>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>make-log-dir</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="${appassembler.basedir}/logs"/>
+								<mkdir dir="target/rvi-analyzer-server/logs"/>
+
+								<copy todir="target/rvi-analyzer-server/bin" overwrite="true">
+									<fileset dir="${jsw.assemble.dir}/rvi-analyzer-server/bin"/>
+								</copy>
+								<copy todir="target/rvi-analyzer-server/lib" overwrite="true">
+									<fileset dir="${jsw.assemble.dir}/rvi-analyzer-server/lib"/>
+								</copy>
+								<copy todir="target/rvi-analyzer-server/lib" overwrite="true">
+									<fileset dir="${jsw.assemble.dir}/rvi-analyzer-server/lib"/>
+								</copy>
+								<copy todir="target/rvi-analyzer-server/conf">
+									<fileset dir="${jsw.assemble.dir}/rvi-analyzer-server/conf"/>
+								</copy>
+								<copy todir="target/rvi-analyzer-server/conf" overwrite="true">
+									<fileset dir="src/main/${resource.file.location}/resources"/>
+									<filterset>
+										<filter token="VERSION" value="${project.version}"/>
+									</filterset>
+								</copy>
+								<chmod dir="target/rvi-analyzer-server/bin" perm="777" includes="**/**"/>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

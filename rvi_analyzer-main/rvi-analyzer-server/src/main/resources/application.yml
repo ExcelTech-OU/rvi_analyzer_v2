@@ -1,0 +1,26 @@
+server:
+  port: 7550
+
+spring:
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      database: rvi_analyzer
+#      username: rviUser
+#      password: password
+
+jwt:
+  secretKey: "thisWasSecurityKeyUsedForMakingJWTKeys"
+  validityInMs: 6000000
+  password:
+    encoder:
+      secret: rviAnalyzerKey
+      iteration: 33
+      key-length: 256
+
+report:
+  server:
+    base:
+      url: http://localhost:3001/
+
