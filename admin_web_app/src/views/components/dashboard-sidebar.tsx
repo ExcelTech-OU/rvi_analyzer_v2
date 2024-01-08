@@ -173,6 +173,10 @@ export const DashboardSidebar = ({
     }
   }
 
+  const newList = items.filter(
+    (item) => item.title !== "Customers" && item.title !== "Plants"
+  );
+
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"), {
     defaultMatches: true,
     noSsr: false,
@@ -197,15 +201,25 @@ export const DashboardSidebar = ({
           }}
         />
         <Box sx={{ flexGrow: 1 }}>
-          {items.map((item) => (
-            <NavItem
-              key={item.title}
-              icon={item.icon}
-              href={item.href}
-              title={item.title}
-              childs={item.childs}
-            />
-          ))}
+          {admin === "ADMIN"
+            ? newList.map((item) => (
+                <NavItem
+                  key={item.title}
+                  icon={item.icon}
+                  href={item.href}
+                  title={item.title}
+                  childs={item.childs}
+                />
+              ))
+            : items.map((item) => (
+                <NavItem
+                  key={item.title}
+                  icon={item.icon}
+                  href={item.href}
+                  title={item.title}
+                  childs={item.childs}
+                />
+              ))}
         </Box>
 
         <Divider sx={{ borderColor: "#2D3748" }} />
