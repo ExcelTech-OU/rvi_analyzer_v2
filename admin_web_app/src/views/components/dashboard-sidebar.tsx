@@ -173,6 +173,7 @@ export const DashboardSidebar = ({
     }
   }
 
+  //customizes side bar according to user's permissions
   const newList = items.filter(
     (item) => item.title !== "Customers" && item.title !== "Plants"
   );
