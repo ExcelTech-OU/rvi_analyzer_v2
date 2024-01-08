@@ -60,8 +60,8 @@ const items = [
     childs: [
       {
         href: "/customers",
-        icon: <AddIcon fontSize="small" />,
-        title: "Create Customer",
+        icon: <ListAlt fontSize="small" />,
+        title: "List",
         childs: [],
       },
     ],

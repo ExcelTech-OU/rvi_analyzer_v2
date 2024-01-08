@@ -107,6 +107,10 @@ db.role.insertMany([
     'role-name': 'GET_USERS'
   },
   {
+      'role-id': 'get_all_customers',
+      'role-name': 'GET_ALL_CUSTOMERS'
+  },
+  {
     'role-id': 'update_user',
     'role-name': 'UPDATE_USER'
   },
@@ -162,6 +166,7 @@ db.groupRole.insertMany([
     'create_plant',
     'update_admin_user',
     'get_all_users',
+    'get_all_customers',
     'create_admin',
     'reset_password',
     'update_device',

@@ -68,6 +68,7 @@ public class CustomerService {
                 .doOnNext(customer -> {
                     customer.setName(customerDto.getName());
                     customer.setStatus("ACTIVE");
+                    customer.setPlant(customerDto.getPlant());
                     customer.setCreatedBy(username);
                     customer.setCreatedDateTime(LocalDateTime.now());
                     customer.setLastUpdatedDateTime(LocalDateTime.now());
@@ -86,33 +87,42 @@ public class CustomerService {
 
         return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
-                        .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.GET_CUSTOMERS)) {
-                                return customerRepository.findByCreatedBy(requestedUser.getUsername())
-                                        .map(customerMapper::customerToCustomerDto)
-                                        .collectList()
-                                        .flatMap(customerDtos -> Mono.just(ResponseEntity.ok(CustomersResponse.builder()
-                                                .status("S1000")
-                                                .statusDescription("Success")
-                                                .customers(customerDtos)
-                                                .build()
-                                        )));
-                            } else if (userRoles.contains(UserRoles.GET_ALL_USERS)) {
-                                return customerRepository.findAll()
-                                        .map(customerMapper::customerToCustomerDto)
-                                        .collectList()
-                                        .flatMap(customerDtos -> Mono.just(ResponseEntity.ok(CustomersResponse.builder()
-                                                .status("S1000")
-                                                .statusDescription("Success")
-                                                .customers(customerDtos)
-                                                .build()
-                                        )));
-                            } else {
-                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CustomersResponse.builder()
-                                        .status("E1200")
-                                        .statusDescription("You are not authorized to use this service").build()));
-                            }
-                        })
+                                .flatMap(userRoles -> {
+                                    if (userRoles.contains(UserRoles.GET_ALL_CUSTOMERS)) {
+//                                return customerRepository.findByCreatedBy(requestedUser.getUsername())
+//                                        .map(customerMapper::customerToCustomerDto)
+//                                        .collectList()
+//                                        .flatMap(customerDtos -> Mono.just(ResponseEntity.ok(CustomersResponse.builder()
+//                                                .status("S1000")
+//                                                .statusDescription("Success")
+//                                                .customers(customerDtos)
+//                                                .build()
+//                                        )));
+                                        return customerRepository.findAll()
+                                                .map(customerMapper::customerToCustomerDto)
+                                                .collectList()
+                                                .flatMap(customerDtos -> Mono.just(ResponseEntity.ok(CustomersResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Success")
+                                                        .customers(customerDtos)
+                                                        .build()
+                                                )));
+                                    } else if (userRoles.contains(UserRoles.GET_ALL_USERS)) {
+                                        return customerRepository.findAll()
+                                                .map(customerMapper::customerToCustomerDto)
+                                                .collectList()
+                                                .flatMap(customerDtos -> Mono.just(ResponseEntity.ok(CustomersResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Success")
+                                                        .customers(customerDtos)
+                                                        .build()
+                                                )));
+                                    } else {
+                                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CustomersResponse.builder()
+                                                .status("E1200")
+                                                .statusDescription("You are not authorized to use this service").build()));
+                                    }
+                                })
                 )
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CustomersResponse.builder()
                         .status("E1000")
