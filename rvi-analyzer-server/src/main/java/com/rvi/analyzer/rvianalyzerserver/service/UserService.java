@@ -120,7 +120,6 @@ public class UserService {
     }
 
     public Mono<ResponseEntity<LoginResponse>> login(LoginRequest loginRequest) {
-//        System.out.println("loginRequest :" + loginRequest.getUserName());
         return Mono.just(loginRequest)
                 .doOnNext(request -> log.info("Login request received [{}]", request.getUserName()))
                 .flatMap(request -> userRepository.findByUsername(request.getUserName()))
@@ -128,7 +127,6 @@ public class UserService {
                 .flatMap(user ->
                         {
                             if (user.getPasswordType().equals("DEFAULT") || user.getPasswordType().equals("RESET")) {
-//                                System.out.println("passwordType :" + loginRequest.getUserName() + " , " + user.getPasswordType());
                                 return Mono.just(
                                         ResponseEntity.ok(LoginResponse.builder()
                                                 .user(userMapper.userToUserDto(user))
@@ -138,12 +136,10 @@ public class UserService {
                                 );
                             } else {
                                 if (Objects.equals(encoder.encode(loginRequest.getPassword()), user.getPassword())) {
-//                                    System.out.println("passwordMatch :" + loginRequest.getUserName());
                                     return userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                                             .flatMap(roles -> {
                                                 log.info("user roles [{}] user group [{}]", roles, user.getGroup());
                                                 if (loginRequest.getSource().equals("WEB") && roles.contains(UserRoles.LOGIN_WEB)) {
-//                                                    System.out.println("web :" + loginRequest.getUserName());
                                                     return Mono.just(ResponseEntity.ok(LoginResponse.builder()
                                                             .user(userMapper.userToUserDto(user))
                                                             .jwt(jwtUtils.createToken(user))
