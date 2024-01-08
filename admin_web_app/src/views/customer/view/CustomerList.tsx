@@ -39,16 +39,16 @@ const columns: GridColDef[] = [
 ];
 
 export default function CustomerList() {
-  // const { data, error, isLoading } = useGetUsersQuery("");
   const { data, error, isLoading } = useGetCustomerQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   var userRoles: string | string[] = [];
   var admin = "";
 
-  const handleRefresh = () => {
-    window.location.reload();
-  };
+  // const handleRefresh = () => {
+  //   window.location.reload();
+  // };
+  // handleRefresh();
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === "") {
@@ -75,8 +75,6 @@ export default function CustomerList() {
   const [open, setOpen] = useState(false);
   if (isLoading) {
     return <div>Loading...</div>;
-  } else {
-    handleRefresh;
   }
 
   if (error != null && "status" in error) {

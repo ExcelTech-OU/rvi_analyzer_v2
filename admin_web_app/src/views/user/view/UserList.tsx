@@ -19,7 +19,7 @@ import { useGetUsersQuery, User } from "../../../services/user_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
 import CustomizedMenusUsers from "./custom-menu-user";
 import { List } from "reselect/es/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
 import { AddUserModel } from "./add-user";
@@ -65,10 +65,36 @@ export default function UserList() {
   const [page, setPage] = React.useState(1);
   var userRoles: string | string[] = [];
   var admin = "";
+  // const [userList, setUserList] = useState(data?.users);
+  // const [admin, setAdmin] = useState("");
 
-  const handleRefresh = () => {
-    window.location.reload();
-  };
+  // useEffect(() => {
+  // setUserList(
+  //   data?.users.filter((user) => {
+  //     if (admin === "ADMIN") {
+  //       return user.group === "USER";
+  //     } else {
+  //       return user;
+  //     }
+  //   })
+  // );
+  //   console.log(admin);
+  // }, [admin]);
+  // const handleRefresh = () => {
+  //   window.location.reload();
+  // };
+
+  // const handleList = () => {
+  //   setUserList(
+  //     data?.users.filter((user) => {
+  //       if (admin === "ADMIN") {
+  //         return user.group === "USER";
+  //       } else {
+  //         return user;
+  //       }
+  //     })
+  //   );
+  // };
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === "") {
@@ -83,8 +109,10 @@ export default function UserList() {
       userRoles.includes("CREATE_ADMIN")
     ) {
       admin = "TOP_ADMIN";
+      // setAdmin("TOP_ADMIN");
     } else if (userRoles.includes("CREATE_USER")) {
       admin = "ADMIN";
+      // setAdmin("ADMIN");
     }
   }
 
@@ -104,8 +132,6 @@ export default function UserList() {
   const [open, setOpen] = useState(false);
   if (isLoading) {
     return <div>Loading...</div>;
-  } else {
-    handleRefresh;
   }
 
   if (error != null && "status" in error) {
