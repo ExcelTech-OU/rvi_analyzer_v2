@@ -97,7 +97,6 @@ export default function UserList() {
     }
   });
 
-  handleRefresh;
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -105,6 +104,8 @@ export default function UserList() {
   const [open, setOpen] = useState(false);
   if (isLoading) {
     return <div>Loading...</div>;
+  } else {
+    handleRefresh;
   }
 
   if (error != null && "status" in error) {
