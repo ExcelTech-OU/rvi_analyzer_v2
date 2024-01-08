@@ -19,6 +19,7 @@ public class Customer {
     private String name;
     private String createdBy;
     private String status;
+    private String plant;
     @Field(name = "created-date")
     private LocalDateTime createdDateTime;
     @Field(name = "last-updated-date")

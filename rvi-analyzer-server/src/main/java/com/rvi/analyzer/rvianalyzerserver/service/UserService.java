@@ -52,6 +52,9 @@ public class UserService {
     }
 
     public Mono<NewUserResponse> addUser(UserDto userDto, String jwt) {
+        //to create super admin un-comment bellow lines
+//    public Mono<NewUserResponse> addUser(UserDto userDto) {
+        System.out.println("addUser :" + userDto.getUsername());
         return Mono.just(userDto)
                 .doOnNext(userDto1 -> log.info("User add request received [{}]", userDto))
                 .flatMap(request -> userRepository.findByUsername(request.getUsername()))
@@ -61,6 +64,8 @@ public class UserService {
                         .build()))
                 .switchIfEmpty(
                         createUser(userDto, jwtUtils.getUsername(jwt))
+                        //to create super admin un-comment bellow lines
+//                        createUser(userDto, "SUPER_USER")
                 )
                 .doOnError(e ->
                         NewUserResponse.builder()
@@ -70,6 +75,7 @@ public class UserService {
     }
 
     private Mono<NewUserResponse> createUser(UserDto userDto, String username) {
+        System.out.println("createUser :" + userDto.getUsername());
         return userRepository.findByUsername(username)
                 .flatMap(creatingUser -> userGroupRoleService.getUserRolesByUserGroup(creatingUser.getGroup())
                         .flatMap(userRoles -> {
@@ -86,12 +92,16 @@ public class UserService {
                                         .statusDescription("You are not authorized to use this service").build());
                             }
                         }));
+        //to create super admin un-comment bellow lines
+//        return save(userDto, username);
     }
 
     private Mono<NewUserResponse> save(UserDto userDto, String username) {
+        System.out.println("save :" + userDto.getUsername());
         return Mono.just(userDto)
                 .map(userMapper::userDtoToUser)
                 .doOnNext(user -> {
+                    user.setUsername(userDto.getUsername());
                     user.setGroup(userDto.getGroup());
                     user.setStatus(userDto.getStatus());
                     user.setCreatedBy(username);
@@ -110,6 +120,7 @@ public class UserService {
     }
 
     public Mono<ResponseEntity<LoginResponse>> login(LoginRequest loginRequest) {
+//        System.out.println("loginRequest :" + loginRequest.getUserName());
         return Mono.just(loginRequest)
                 .doOnNext(request -> log.info("Login request received [{}]", request.getUserName()))
                 .flatMap(request -> userRepository.findByUsername(request.getUserName()))
@@ -117,6 +128,7 @@ public class UserService {
                 .flatMap(user ->
                         {
                             if (user.getPasswordType().equals("DEFAULT") || user.getPasswordType().equals("RESET")) {
+//                                System.out.println("passwordType :" + loginRequest.getUserName() + " , " + user.getPasswordType());
                                 return Mono.just(
                                         ResponseEntity.ok(LoginResponse.builder()
                                                 .user(userMapper.userToUserDto(user))
@@ -126,10 +138,12 @@ public class UserService {
                                 );
                             } else {
                                 if (Objects.equals(encoder.encode(loginRequest.getPassword()), user.getPassword())) {
+//                                    System.out.println("passwordMatch :" + loginRequest.getUserName());
                                     return userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                                             .flatMap(roles -> {
                                                 log.info("user roles [{}] user group [{}]", roles, user.getGroup());
                                                 if (loginRequest.getSource().equals("WEB") && roles.contains(UserRoles.LOGIN_WEB)) {
+//                                                    System.out.println("web :" + loginRequest.getUserName());
                                                     return Mono.just(ResponseEntity.ok(LoginResponse.builder()
                                                             .user(userMapper.userToUserDto(user))
                                                             .jwt(jwtUtils.createToken(user))

@@ -39,8 +39,8 @@ const columns: GridColDef[] = [
 ];
 
 export default function CustomerList() {
-  const { data, error, isLoading } = useGetUsersQuery("");
-  // const { data, error, isLoading } = useGetCustomerQuery("");
+  // const { data, error, isLoading } = useGetUsersQuery("");
+  const { data, error, isLoading } = useGetCustomerQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   var userRoles: string | string[] = [];
@@ -68,7 +68,6 @@ export default function CustomerList() {
     }
   }
 
-  handleRefresh;
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -76,6 +75,8 @@ export default function CustomerList() {
   const [open, setOpen] = useState(false);
   if (isLoading) {
     return <div>Loading...</div>;
+  } else {
+    handleRefresh;
   }
 
   if (error != null && "status" in error) {
@@ -157,23 +158,25 @@ export default function CustomerList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data?.users.map((item: User, index: any) => {
-                                  return (
-                                    <StyledTableRow
-                                      //   id="index"
-                                      hover
-                                      role="checkbox"
-                                      tabIndex={-1}
-                                    >
-                                      <StyledTableCell align={"left"}>
-                                        {item.username}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.group}
-                                      </StyledTableCell>
-                                    </StyledTableRow>
-                                  );
-                                })}
+                                {data?.customers.map(
+                                  (item: Customer, index: any) => {
+                                    return (
+                                      <StyledTableRow
+                                        //   id="index"
+                                        hover
+                                        role="checkbox"
+                                        tabIndex={-1}
+                                      >
+                                        <StyledTableCell align={"left"}>
+                                          {item.name}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.plant}
+                                        </StyledTableCell>
+                                      </StyledTableRow>
+                                    );
+                                  }
+                                )}
                               </TableBody>
                             </Table>
                           </TableContainer>

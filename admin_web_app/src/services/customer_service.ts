@@ -6,7 +6,7 @@ import { RolesResponse } from './login_service'
 export interface CustomerListResponse {
     status: string
     statusDescription: string
-    name: List<Customer>
+    customers: List<Customer>
 }
 
 export interface Customer {
