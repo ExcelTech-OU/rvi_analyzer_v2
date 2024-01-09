@@ -64,37 +64,9 @@ export default function UserList() {
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   var userRoles: string | string[] = [];
+  // const [admin, setAdmin] = useState("ADMIN");
   var admin = "";
-  // const [userList, setUserList] = useState(data?.users);
-  // const [admin, setAdmin] = useState("");
-
-  // useEffect(() => {
-  // setUserList(
-  //   data?.users.filter((user) => {
-  //     if (admin === "ADMIN") {
-  //       return user.group === "USER";
-  //     } else {
-  //       return user;
-  //     }
-  //   })
-  // );
-  //   console.log(admin);
-  // }, [admin]);
-  // const handleRefresh = () => {
-  //   window.location.reload();
-  // };
-
-  // const handleList = () => {
-  //   setUserList(
-  //     data?.users.filter((user) => {
-  //       if (admin === "ADMIN") {
-  //         return user.group === "USER";
-  //       } else {
-  //         return user;
-  //       }
-  //     })
-  //   );
-  // };
+  const userList = data?.users;
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === "") {
@@ -117,13 +89,13 @@ export default function UserList() {
   }
 
   //filters users according to admin's permissions
-  var userList = data?.users.filter((user) => {
-    if (admin === "ADMIN") {
-      return user.group === "USER";
-    } else {
-      return user;
-    }
-  });
+  // var userList = data?.users.filter((user) => {
+  //   if (admin === "ADMIN") {
+  //     return user.group === "USER";
+  //   } else {
+  //     return user;
+  //   }
+  // });
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -214,76 +186,83 @@ export default function UserList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {userList.map((item: User, index: any) => {
-                                  // data!.users.map((item: User, index: any) => {
-                                  return (
-                                    <StyledTableRow
-                                      //   id="index"
-                                      hover
-                                      role="checkbox"
-                                      tabIndex={-1}
-                                    >
-                                      <StyledTableCell align={"left"}>
-                                        {item.username}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.group}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.createdBy}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.createdDateTime}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.passwordType == "PASSWORD" ? (
-                                          <Button
-                                            variant="contained"
-                                            color="success"
-                                          >
-                                            ACTIVE
-                                          </Button>
-                                        ) : item.passwordType == "DEFAULT" ? (
-                                          <Button
-                                            variant="contained"
-                                            color="warning"
-                                          >
-                                            DEFAULT
-                                          </Button>
-                                        ) : (
-                                          <Button
-                                            variant="contained"
-                                            color="error"
-                                          >
-                                            RESET
-                                          </Button>
-                                        )}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.status == "ACTIVE" ? (
-                                          <Button
-                                            variant="contained"
-                                            color="primary"
-                                          >
-                                            ACTIVE
-                                          </Button>
-                                        ) : (
-                                          <Button
-                                            variant="contained"
-                                            color="error"
-                                          >
-                                            TEMPORARY_BLOCKED
-                                          </Button>
-                                        )}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"right"}>
-                                        <CustomizedMenusUsers
-                                          user={item as User}
-                                        />
-                                      </StyledTableCell>
-                                    </StyledTableRow>
-                                  );
-                                })}
+                                {userList
+                                  .filter((user) => {
+                                    if (admin === "ADMIN") {
+                                      return user.group === "USER";
+                                    } else {
+                                      return user;
+                                    }
+                                  })
+                                  .map((item: User, index: any) => {
+                                    return (
+                                      <StyledTableRow
+                                        id={item.username}
+                                        hover
+                                        role="checkbox"
+                                        tabIndex={-1}
+                                      >
+                                        <StyledTableCell align={"left"}>
+                                          {item.username}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.group}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.createdBy}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.createdDateTime}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.passwordType == "PASSWORD" ? (
+                                            <Button
+                                              variant="contained"
+                                              color="success"
+                                            >
+                                              ACTIVE
+                                            </Button>
+                                          ) : item.passwordType == "DEFAULT" ? (
+                                            <Button
+                                              variant="contained"
+                                              color="warning"
+                                            >
+                                              DEFAULT
+                                            </Button>
+                                          ) : (
+                                            <Button
+                                              variant="contained"
+                                              color="error"
+                                            >
+                                              RESET
+                                            </Button>
+                                          )}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.status == "ACTIVE" ? (
+                                            <Button
+                                              variant="contained"
+                                              color="primary"
+                                            >
+                                              ACTIVE
+                                            </Button>
+                                          ) : (
+                                            <Button
+                                              variant="contained"
+                                              color="error"
+                                            >
+                                              TEMPORARY_BLOCKED
+                                            </Button>
+                                          )}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"right"}>
+                                          <CustomizedMenusUsers
+                                            user={item as User}
+                                          />
+                                        </StyledTableCell>
+                                      </StyledTableRow>
+                                    );
+                                  })}
                               </TableBody>
                             </Table>
                           </TableContainer>

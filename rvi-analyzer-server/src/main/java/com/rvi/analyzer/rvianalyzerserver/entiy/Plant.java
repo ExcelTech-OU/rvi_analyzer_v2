@@ -18,7 +18,8 @@ public class Plant {
     private String _id;
     private String name;
     private String createdBy;
-    private String status;
+    //    private String status;
+    //    private Customer customer;
     @Field(name = "created-date")
     private LocalDateTime createdDateTime;
     @Field(name = "last-updated-date")

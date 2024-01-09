@@ -27,6 +27,7 @@ import {
   Add,
   Construction,
   Devices,
+  Domain,
   Group,
   ListAlt,
   People,
@@ -42,7 +43,7 @@ const items = [
   },
   {
     href: "#",
-    icon: <HardwareIcon fontSize="small" />,
+    icon: <Domain fontSize="small" />,
     title: "Plants",
     childs: [
       {

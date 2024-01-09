@@ -31,11 +31,6 @@ import { AddCustomerModel } from "../add/add-customer";
 
 const columns: GridColDef[] = [
   { field: "customer", headerName: "Customer", width: 400 },
-  {
-    field: "plant",
-    headerName: "Plant",
-    width: 400,
-  },
 ];
 
 export default function CustomerList() {
@@ -160,16 +155,13 @@ export default function CustomerList() {
                                   (item: Customer, index: any) => {
                                     return (
                                       <StyledTableRow
-                                        //   id="index"
+                                        id={item.name}
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}
                                       >
                                         <StyledTableCell align={"left"}>
                                           {item.name}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
-                                          {item.plant}
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );
