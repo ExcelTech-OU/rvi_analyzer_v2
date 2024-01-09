@@ -31,24 +31,19 @@ import { AddCustomerModel } from "../add/add-customer";
 
 const columns: GridColDef[] = [
   { field: "customer", headerName: "Customer", width: 400 },
-  {
-    field: "plant",
-    headerName: "Plant",
-    width: 400,
-  },
 ];
 
 export default function CustomerList() {
-  // const { data, error, isLoading } = useGetUsersQuery("");
   const { data, error, isLoading } = useGetCustomerQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   var userRoles: string | string[] = [];
   var admin = "";
 
-  const handleRefresh = () => {
-    window.location.reload();
-  };
+  // const handleRefresh = () => {
+  //   window.location.reload();
+  // };
+  // handleRefresh();
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === "") {
@@ -75,8 +70,6 @@ export default function CustomerList() {
   const [open, setOpen] = useState(false);
   if (isLoading) {
     return <div>Loading...</div>;
-  } else {
-    handleRefresh;
   }
 
   if (error != null && "status" in error) {
@@ -162,16 +155,13 @@ export default function CustomerList() {
                                   (item: Customer, index: any) => {
                                     return (
                                       <StyledTableRow
-                                        //   id="index"
+                                        id={item.name}
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}
                                       >
                                         <StyledTableCell align={"left"}>
                                           {item.name}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
-                                          {item.plant}
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );
