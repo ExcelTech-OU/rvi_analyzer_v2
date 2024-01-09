@@ -1,5 +1,7 @@
 package com.rvi.analyzer.rvianalyzerserver.controller;
 
+import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.CustomerUpdateRequest;
 import com.rvi.analyzer.rvianalyzerserver.domain.CustomersResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.NewCustomerResponse;
 import com.rvi.analyzer.rvianalyzerserver.dto.CustomerDto;
@@ -56,12 +58,12 @@ public class CustomerController {
 //    }
 //
     @GetMapping(path = "/rvi/analyzer/v1/customers")
-    public Mono<ResponseEntity<CustomersResponse>> getUsers(@RequestHeader("Authorization") String auth) {
+    public Mono<ResponseEntity<CustomersResponse>> getCustomers(@RequestHeader("Authorization") String auth) {
         return customerService.getCustomers(auth);
     }
-//
-//    @PostMapping(path = "/rvi/analyzer/v1/user/update")
-//    public Mono<ResponseEntity<CommonResponse>> updateUser(@RequestBody UserUpdateRequest request, @RequestHeader("Authorization") String auth) {
-//        return userService.updateUser(request, auth);
-//    }
+
+    @PostMapping(path = "/rvi/analyzer/v1/customer/update")
+    public Mono<ResponseEntity<CommonResponse>> updateCustomer(@RequestBody CustomerUpdateRequest request, @RequestHeader("Authorization") String auth) {
+        return customerService.updateCustomer(request, auth);
+    }
 }
