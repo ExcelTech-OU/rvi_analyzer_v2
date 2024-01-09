@@ -94,7 +94,17 @@ public class PlantService {
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.GET_ALL_PLANTS)) {
                                 return plantRepository.findAll()
-                                        .map(plantMapper::plantToPlantDto)
+                                        .map(
+                                                plant -> {
+                                                    return PlantDto.builder()
+                                                            ._id(plant.get_id())
+                                                            .name(plant.getName())
+                                                            .createdBy(plant.getCreatedBy())
+                                                            .lastUpdatedDateTime(plant.getLastUpdatedDateTime())
+                                                            .createdDateTime(plant.getCreatedDateTime())
+                                                            .build();
+                                                }
+                                        )
                                         .collectList()
                                         .flatMap(plantDtos -> Mono.just(ResponseEntity.ok(PlantResponse.builder()
                                                 .status("S1000")

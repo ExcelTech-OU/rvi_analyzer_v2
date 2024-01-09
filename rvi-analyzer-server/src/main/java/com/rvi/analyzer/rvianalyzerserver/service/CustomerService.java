@@ -90,7 +90,13 @@ public class CustomerService {
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.GET_ALL_CUSTOMERS)) {
                                 return customerRepository.findAll()
-                                        .map(customerMapper::customerToCustomerDto)
+                                        .map(customer -> {
+                                            return CustomerDto.builder()
+                                                    ._id(customer.get_id())
+                                                    .plant(customer.getPlant())
+                                                    .name(customer.getName())
+                                                    .build();
+                                        })
                                         .collectList()
                                         .flatMap(customerDtos -> Mono.just(ResponseEntity.ok(CustomersResponse.builder()
                                                 .status("S1000")
