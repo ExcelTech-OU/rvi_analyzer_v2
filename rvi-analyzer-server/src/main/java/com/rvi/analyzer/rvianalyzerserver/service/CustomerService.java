@@ -1,10 +1,8 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.CustomersResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.NewCustomerResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.NewUserResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.UserRoles;
+import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.CustomerDto;
+import com.rvi.analyzer.rvianalyzerserver.entiy.Customer;
 import com.rvi.analyzer.rvianalyzerserver.mappers.CustomerMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.CustomerRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -68,7 +67,7 @@ public class CustomerService {
                 .doOnNext(customer -> {
                     customer.setName(customerDto.getName());
                     customer.setStatus("ACTIVE");
-                    customer.setPlant(customerDto.getPlant());
+                    customer.setPlant("DEFAULT");
                     customer.setCreatedBy(username);
                     customer.setCreatedDateTime(LocalDateTime.now());
                     customer.setLastUpdatedDateTime(LocalDateTime.now());
@@ -95,6 +94,8 @@ public class CustomerService {
                                                     ._id(customer.get_id())
                                                     .plant(customer.getPlant())
                                                     .name(customer.getName())
+                                                    .createdBy(customer.getCreatedBy())
+                                                    .createdDateTime(customer.getCreatedDateTime())
                                                     .build();
                                         })
                                         .collectList()
@@ -112,6 +113,33 @@ public class CustomerService {
                         })
                 )
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CustomersResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed").build())));
+    }
+
+    public Mono<ResponseEntity<CommonResponse>> updateCustomer(CustomerUpdateRequest request, String auth) {
+        log.info("update customer request received  [{}] ", request);
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> userRepository.findByUsername(request.getAdmin())
+                                .flatMap(user -> {
+                                    if (Objects.equals("TOP_ADMIN", user.getGroup())) {
+                                        return customerRepository.findByName(request.getName())
+                                                .flatMap(customer1 -> {
+                                                    customer1.setPlant(request.getPlant());
+                                                    return customerRepository.save(customer1).flatMap(
+                                                            customerDtos -> Mono.just(ResponseEntity.ok(CommonResponse.success()))
+                                                    ).switchIfEmpty(Mono.just(ResponseEntity.ok(CommonResponse.fail())));
+                                                });
+                                    } else {
+                                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                                                .status("E1200")
+                                                .statusDescription("You are not authorized to use this service").build()));
+                                    }
+                                })
+                                .switchIfEmpty(Mono.just(ResponseEntity.ok(CommonResponse.fail()))))
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
                         .status("E1000")
                         .statusDescription("Failed").build())));
     }

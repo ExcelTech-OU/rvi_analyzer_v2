@@ -31,6 +31,7 @@ public enum UserRoles {
     SHARE_REPORT,
     GET_USERS,
     GET_CUSTOMERS,
+    UPDATE_CUSTOMER,
     GET_ALL_CUSTOMERS,
     GET_ALL_PLANTS,
     GET_ALL_USERS,

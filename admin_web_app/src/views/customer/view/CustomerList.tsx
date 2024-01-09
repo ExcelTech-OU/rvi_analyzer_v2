@@ -30,7 +30,9 @@ import { AddUserModel } from "../../user/view/add-user";
 import { AddCustomerModel } from "../add/add-customer";
 
 const columns: GridColDef[] = [
-  { field: "customer", headerName: "Customer", width: 400 },
+  { field: "customer", headerName: "Customer", width: 250 },
+  { field: "createdBy", headerName: "Created by", width: 250 },
+  { field: "createdDate", headerName: "Created date & time", width: 250 },
 ];
 
 export default function CustomerList() {
@@ -162,6 +164,12 @@ export default function CustomerList() {
                                       >
                                         <StyledTableCell align={"left"}>
                                           {item.name}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.createdBy}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.createdDateTime}
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );

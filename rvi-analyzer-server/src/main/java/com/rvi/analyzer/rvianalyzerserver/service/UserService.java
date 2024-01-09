@@ -54,7 +54,6 @@ public class UserService {
     public Mono<NewUserResponse> addUser(UserDto userDto, String jwt) {
         //to create super admin un-comment bellow lines
 //    public Mono<NewUserResponse> addUser(UserDto userDto) {
-//        System.out.println("addUser :" + userDto.getUsername());
         return Mono.just(userDto)
                 .doOnNext(userDto1 -> log.info("User add request received [{}]", userDto))
                 .flatMap(request -> userRepository.findByUsername(request.getUsername()))
@@ -75,7 +74,6 @@ public class UserService {
     }
 
     private Mono<NewUserResponse> createUser(UserDto userDto, String username) {
-//        System.out.println("createUser :" + userDto.getUsername());
         return userRepository.findByUsername(username)
                 .flatMap(creatingUser -> userGroupRoleService.getUserRolesByUserGroup(creatingUser.getGroup())
                         .flatMap(userRoles -> {
@@ -97,7 +95,6 @@ public class UserService {
     }
 
     private Mono<NewUserResponse> save(UserDto userDto, String username) {
-//        System.out.println("save :" + userDto.getUsername());
         return Mono.just(userDto)
                 .map(userMapper::userDtoToUser)
                 .doOnNext(user -> {
