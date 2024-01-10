@@ -48,8 +48,8 @@ const items = [
     childs: [
       {
         href: "/plants",
-        icon: <AddIcon fontSize="small" />,
-        title: "Create Plant",
+        icon: <ListAlt fontSize="small" />,
+        title: "List",
         childs: [],
       },
     ],

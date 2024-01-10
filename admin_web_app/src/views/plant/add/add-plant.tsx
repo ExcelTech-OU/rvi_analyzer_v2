@@ -18,56 +18,23 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import {
-  User,
-  useAddUserMutation,
-  useUpdateUserMutation,
-} from "../../../services/user_service";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
+import { useAddPlantMutation } from "../../../services/plant_service";
 
 type AddPlantProps = {
   open: boolean;
   changeOpenStatus: (status: boolean) => void;
 };
 
-export function AddUserModel({ open, changeOpenStatus }: AddPlantProps) {
+export function AddPlantModel({ open, changeOpenStatus }: AddPlantProps) {
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openFail, setOpenFail] = useState(false);
   const [formReset, setFormReset] = useState(false);
-  var userRoles: string | string[] = [];
-  var admin = "";
-
-  // if (open != null) {
-  //   setFormReset(open);
-  // }
-
-  // useEffect(() => {
-  //   formik.resetForm();
-  // }, [formReset]);
-
-  //filters users according to admin's permissions
-  if (localStorage.getItem("roles") === "") {
-    console.log("roles empty");
-  } else {
-    userRoles = localStorage
-      .getItem("roles")
-      .split(",")
-      .map((item) => item.trim());
-    if (
-      userRoles.includes("CREATE_TOP_ADMIN") &&
-      userRoles.includes("CREATE_ADMIN")
-    ) {
-      admin = "TOP_ADMIN";
-    } else if (userRoles.includes("CREATE_USER")) {
-      admin = "ADMIN";
-    }
-  }
-
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [addUser] = useAddUserMutation();
+  const [addPLant] = useAddPlantMutation();
 
   const handleCloseSuccess = () => {
     setOpenSuccess(false);
@@ -79,23 +46,14 @@ export function AddUserModel({ open, changeOpenStatus }: AddPlantProps) {
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      group: "",
-      status: "",
+      name: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Must be a valid email")
-        .max(255)
-        .required("Email is required"),
-      group: Yup.string().max(25).required("Group is required"),
-      status: Yup.string().max(255).required("Status is required"),
+      name: Yup.string().max(25).required("Plant name is required"),
     }),
     onSubmit: (values, actions) => {
-      addUser({
-        username: values.email,
-        group: values.group,
-        status: values.status,
+      addPLant({
+        name: values.name,
       })
         .unwrap()
         .then((payload) => {
@@ -143,84 +101,16 @@ export function AddUserModel({ open, changeOpenStatus }: AddPlantProps) {
 
           <TextField
             fullWidth
-            label="Email"
+            label="Plant name"
             margin="normal"
-            name="email"
+            name="name"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.email}
+            value={formik.values.name}
             variant="outlined"
-            error={Boolean(formik.touched.email && formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
+            error={Boolean(formik.touched.name && formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
           />
-          <FormControl
-            sx={{ mt: 2 }}
-            fullWidth
-            error={Boolean(formik.touched.group && formik.errors.group)}
-          >
-            <InputLabel id="demo-simple-select-helper-label">Group</InputLabel>
-            {admin === "TOP_ADMIN" ? (
-              <Select
-                fullWidth
-                labelId="demo-simple-select-label"
-                id="group"
-                label="Group"
-                value={formik.values.group}
-                name="group"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
-                <MenuItem value={"TOP_ADMIN"}>TOP_ADMIN</MenuItem>
-                <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
-                {/* <MenuItem value={"USER"}>USER</MenuItem> */}
-              </Select>
-            ) : admin === "ADMIN" ? (
-              <Select
-                fullWidth
-                labelId="demo-simple-select-label"
-                id="group"
-                label="Group"
-                value={formik.values.group}
-                name="group"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
-                <MenuItem value={"USER"}>USER</MenuItem>
-              </Select>
-            ) : (
-              <></>
-            )}
-
-            <FormHelperText>
-              {formik.touched.group && formik.errors.group}
-            </FormHelperText>
-          </FormControl>
-
-          <FormControl
-            sx={{ mt: 2 }}
-            fullWidth
-            error={Boolean(formik.touched.status && formik.errors.status)}
-          >
-            <InputLabel id="demo-simple-select-helper-label">Status</InputLabel>
-            <Select
-              fullWidth
-              labelId="demo-simple-select-label"
-              id="status"
-              label="Status"
-              value={formik.values.status}
-              name="status"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            >
-              <MenuItem value={"ACTIVE"}>ACTIVE</MenuItem>
-              <MenuItem value={"TEMPORARY_BLOCKED"} color="orange">
-                TEMPORARY_BLOCKED
-              </MenuItem>
-            </Select>
-            <FormHelperText>
-              {formik.touched.status && formik.errors.status}
-            </FormHelperText>
-          </FormControl>
           <Box sx={{ py: 2 }}>
             <Button
               color="primary"
