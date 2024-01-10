@@ -13,18 +13,23 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 @Slf4j
 public class RviAnalyzerServerApplication {
 
-	@PostConstruct
-	public void init(){
-		log.info("Server started");
-	}
+    public static void main(String[] args) {
+        try {
+            SpringApplication.run(RviAnalyzerServerApplication.class, args);
+        } catch (Exception e) {
+            System.out.println("SpringApplication : " + e.toString());
+        }
 
-	@PreDestroy
-	public void destroy(){
-		log.info("Server stopped");
-	}
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(RviAnalyzerServerApplication.class, args);
-	}
+    @PostConstruct
+    public void init() {
+        log.info("Server started");
+    }
+
+    @PreDestroy
+    public void destroy() {
+        log.info("Server stopped");
+    }
 
 }
