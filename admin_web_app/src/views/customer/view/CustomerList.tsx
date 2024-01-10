@@ -88,16 +88,28 @@ export default function CustomerList() {
                         >
                           Customers
                         </Typography>
-                        <Box display="flex" justifyContent="flex-end">
-                          <Button
-                            variant="contained"
-                            startIcon={<AddIcon />}
-                            color="success"
-                            onClick={() => setOpen(true)}
-                          >
-                            ADD
-                          </Button>
-                        </Box>
+                        <Container
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row-reverse",
+                            padding: "0",
+                          }}
+                        >
+                          <Box display="flex" justifyContent="flex-end">
+                            <Button
+                              variant="contained"
+                              startIcon={<AddIcon />}
+                              sx={{
+                                backgroundColor: "#00e676",
+                                // mx: 1,
+                                "&:hover": { backgroundColor: "#00a152" },
+                              }}
+                              onClick={() => setOpen(true)}
+                            >
+                              ADD
+                            </Button>
+                          </Box>
+                        </Container>
                         <Divider
                           sx={{
                             borderColor: "grey",

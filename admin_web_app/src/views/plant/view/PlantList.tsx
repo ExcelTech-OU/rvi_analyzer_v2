@@ -92,16 +92,41 @@ export default function PlantList() {
                         >
                           Plants
                         </Typography>
-                        <Box display="flex" justifyContent="flex-end">
-                          <Button
-                            variant="contained"
-                            startIcon={<AddIcon />}
-                            color="success"
-                            onClick={() => setOpen(true)}
-                          >
-                            ADD
-                          </Button>
-                        </Box>
+                        <Container
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row-reverse",
+                            padding: "0",
+                          }}
+                        >
+                          <Box display="flex" justifyContent="flex-end">
+                            <Button
+                              variant="contained"
+                              startIcon={<AddIcon />}
+                              sx={{
+                                backgroundColor: "#ff6d00",
+                                "&:hover": { backgroundColor: "#ef6c00" },
+                              }}
+                              onClick={() => setOpen(true)}
+                            >
+                              ALOCATE CUSTOMERS
+                            </Button>
+                          </Box>
+                          <Box display="flex" justifyContent="flex-end">
+                            <Button
+                              variant="contained"
+                              startIcon={<AddIcon />}
+                              sx={{
+                                backgroundColor: "#00e676",
+                                mx: 1,
+                                "&:hover": { backgroundColor: "#00c853" },
+                              }}
+                              onClick={() => setOpen(true)}
+                            >
+                              ADD
+                            </Button>
+                          </Box>
+                        </Container>
                         <Divider
                           sx={{
                             borderColor: "grey",

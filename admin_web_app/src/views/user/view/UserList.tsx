@@ -136,7 +136,10 @@ export default function UserList() {
                           <Button
                             variant="contained"
                             startIcon={<AddIcon />}
-                            color="success"
+                            sx={{
+                              backgroundColor: "#00e676",
+                              "&:hover": { backgroundColor: "#00a152" },
+                            }}
                             onClick={() => setOpen(true)}
                           >
                             ADD
