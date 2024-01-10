@@ -1,28 +1,27 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { List } from 'reselect/es/types'
 
-export interface CustomerListResponse {
+export interface PlantListResponse {
     status: string
     statusDescription: string
-    customers: List<Customer>
+    plants: List<Plant>
 }
 
-export interface Customer {
+export interface Plant {
     name: string
-    plant: string
     createdBy: string
     createdDateTime: string
     lastUpdatedDateTime: boolean
 }
 
-export interface CustomerGetResponse {
+export interface PlantGetResponse {
     status: string,
     statusDescription: string,
     name: string
 }
 
-export const customerApi = createApi({
-    reducerPath: 'customerApi',
+export const plantApi = createApi({
+    reducerPath: 'plantApi',
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
@@ -33,27 +32,27 @@ export const customerApi = createApi({
             return headers;
         },
     }),
-    tagTypes: ['customerList'],
+    tagTypes: ['plantList'],
     endpoints: (build) => ({
-        getCustomer: build.query<CustomerListResponse, {}>({
-            query: () => `rvi/analyzer/v1/customers`,
-            providesTags: [{ type: 'customerList', id: "getCustomers" }]
+        getPlant: build.query<PlantListResponse, {}>({
+            query: () => `rvi/analyzer/v1/plants`,
+            providesTags: [{ type: 'plantList', id: "getPlants" }]
 
         }),
-        addCustomer: build.mutation<CustomerGetResponse, {}>({
+        addPlant: build.mutation<PlantGetResponse, {}>({
             query(body) {
                 return {
-                    url: `register/customer`,
+                    url: `register/plant`,
                     method: 'POST',
                     body: body,
                 }
             },
-            invalidatesTags: [{ type: 'customerList', id: "getCustomers" }]
+            invalidatesTags: [{ type: 'plantList', id: "getPlants" }]
         }),
     }),
 })
 
 export const {
-    useGetCustomerQuery,
-    useAddCustomerMutation,
-} = customerApi
+    useGetPlantQuery,
+    useAddPlantMutation,
+} = plantApi

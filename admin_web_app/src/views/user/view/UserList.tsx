@@ -64,7 +64,6 @@ export default function UserList() {
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   var userRoles: string | string[] = [];
-  // const [admin, setAdmin] = useState("ADMIN");
   var admin = "";
   const userList = data?.users;
 
@@ -81,21 +80,10 @@ export default function UserList() {
       userRoles.includes("CREATE_ADMIN")
     ) {
       admin = "TOP_ADMIN";
-      // setAdmin("TOP_ADMIN");
     } else if (userRoles.includes("CREATE_USER")) {
       admin = "ADMIN";
-      // setAdmin("ADMIN");
     }
   }
-
-  //filters users according to admin's permissions
-  // var userList = data?.users.filter((user) => {
-  //   if (admin === "ADMIN") {
-  //     return user.group === "USER";
-  //   } else {
-  //     return user;
-  //   }
-  // });
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -148,7 +136,10 @@ export default function UserList() {
                           <Button
                             variant="contained"
                             startIcon={<AddIcon />}
-                            color="success"
+                            sx={{
+                              backgroundColor: "#00e676",
+                              "&:hover": { backgroundColor: "#00a152" },
+                            }}
                             onClick={() => setOpen(true)}
                           >
                             ADD

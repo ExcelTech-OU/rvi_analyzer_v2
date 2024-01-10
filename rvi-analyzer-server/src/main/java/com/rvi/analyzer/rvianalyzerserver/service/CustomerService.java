@@ -29,8 +29,6 @@ public class CustomerService {
     final private CustomerMapper customerMapper;
     final private JwtUtils jwtUtils;
     final private UserGroupRoleService userGroupRoleService;
-    final private PlantService plantService;
-    final private PlantRepository plantRepository;
 
     public Mono<NewCustomerResponse> addCustomer(CustomerDto customerDto, String jwt) {
         return Mono.just(customerDto)
@@ -71,7 +69,7 @@ public class CustomerService {
                 .doOnNext(customer -> {
                     customer.setName(customerDto.getName());
                     customer.setStatus("ACTIVE");
-                    customer.setPlant(savePlant(customer.getPlant(), jwt));
+                    customer.setPlant("UN-ASSIGNED");
                     customer.setCreatedBy(username);
                     customer.setCreatedDateTime(LocalDateTime.now());
                     customer.setLastUpdatedDateTime(LocalDateTime.now());
@@ -85,18 +83,8 @@ public class CustomerService {
                         .build());
     }
 
-    public String savePlant(String plant, String jwt) {
-        Mono<NewPlantResponse> plantResponseMono = plantService.addPlant(PlantDto.builder()
-                .name(plant)
-                .createdBy("TOP_ADMIN")
-                .lastUpdatedDateTime(LocalDateTime.now())
-                .createdDateTime(LocalDateTime.now()).build(), jwt);
-        return Objects.equals(plant, "") || Objects.equals(plant, null) ? "UN-ASSIGNED" : plant;
-    }
-
     public Mono<ResponseEntity<CustomersResponse>> getCustomers(String auth) {
         log.info("get customers request received with jwt [{}]", auth);
-
         return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {

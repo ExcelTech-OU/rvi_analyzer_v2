@@ -40,31 +40,6 @@ export default function CustomerList() {
   const { data, error, isLoading } = useGetCustomerQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
-  var userRoles: string | string[] = [];
-  var admin = "";
-
-  // const handleRefresh = () => {
-  //   window.location.reload();
-  // };
-  // handleRefresh();
-
-  //get user roles from local storage
-  if (localStorage.getItem("roles") === "") {
-    console.log("roles empty");
-  } else {
-    userRoles = localStorage
-      .getItem("roles")
-      .split(",")
-      .map((item) => item.trim());
-    if (
-      userRoles.includes("CREATE_TOP_ADMIN") &&
-      userRoles.includes("CREATE_ADMIN")
-    ) {
-      admin = "TOP_ADMIN";
-    } else if (userRoles.includes("CREATE_USER")) {
-      admin = "ADMIN";
-    }
-  }
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -113,16 +88,28 @@ export default function CustomerList() {
                         >
                           Customers
                         </Typography>
-                        <Box display="flex" justifyContent="flex-end">
-                          <Button
-                            variant="contained"
-                            startIcon={<AddIcon />}
-                            color="success"
-                            onClick={() => setOpen(true)}
-                          >
-                            ADD
-                          </Button>
-                        </Box>
+                        <Container
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row-reverse",
+                            padding: "0",
+                          }}
+                        >
+                          <Box display="flex" justifyContent="flex-end">
+                            <Button
+                              variant="contained"
+                              startIcon={<AddIcon />}
+                              sx={{
+                                backgroundColor: "#00e676",
+                                // mx: 1,
+                                "&:hover": { backgroundColor: "#00a152" },
+                              }}
+                              onClick={() => setOpen(true)}
+                            >
+                              ADD
+                            </Button>
+                          </Box>
+                        </Container>
                         <Divider
                           sx={{
                             borderColor: "grey",
@@ -155,25 +142,25 @@ export default function CustomerList() {
                               </TableHead>
                               <TableBody>
                                 {data?.customers.map(
-                                  (item: Customer, index: any) => {
+                                  (customer: Customer, index: any) => {
                                     return (
                                       <StyledTableRow
-                                        id={item.name}
+                                        id={customer.name}
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}
                                       >
                                         <StyledTableCell align={"left"}>
-                                          {item.name}
+                                          {customer.name}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
-                                          {item.plant}
+                                          {customer.plant}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
-                                          {item.createdBy}
+                                          {customer.createdBy}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
-                                          {item.createdDateTime}
+                                          {customer.createdDateTime}
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );

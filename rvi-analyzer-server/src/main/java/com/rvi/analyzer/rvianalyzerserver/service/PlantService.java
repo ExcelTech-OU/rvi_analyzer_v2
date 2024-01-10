@@ -31,7 +31,6 @@ public class PlantService {
     final private UserGroupRoleService userGroupRoleService;
 
     public Mono<NewPlantResponse> addPlant(PlantDto plantDto, String jwt) {
-        System.out.println("addPlant");
         return Mono.just(plantDto)
                 .doOnNext(plantDto1 -> log.info("Plant add request received [{}]", plantDto))
                 .flatMap(request -> plantRepository.findByName(request.getName()))
@@ -50,18 +49,13 @@ public class PlantService {
     }
 
     private Mono<NewPlantResponse> createPlant(PlantDto plantDto, String username) {
-        System.out.println("createPlant");
-        System.out.println(username);
         return userRepository.findByUsername(username)
                 .flatMap(creatingPlant -> userGroupRoleService.getUserRolesByUserGroup(creatingPlant.getGroup())
                         .flatMap(userRoles -> {
                             log.info(plantDto.getName());
-                            System.out.println("plant name :" + plantDto.getName());
                             if (userRoles.contains(UserRoles.CREATE_PLANT)) {
-                                System.out.println("if");
                                 return save(plantDto, username);
                             } else {
-                                System.out.println("else");
                                 return Mono.just(NewPlantResponse.builder()
                                         .status("E1200")
                                         .statusDescription("You are not authorized to use this service").build());
@@ -70,7 +64,6 @@ public class PlantService {
     }
 
     private Mono<NewPlantResponse> save(PlantDto plantDto, String username) {
-        System.out.println("save");
         return Mono.just(plantDto)
                 .map(plantMapper::plantDtoToPlant)
                 .doOnNext(plant -> {

@@ -23,81 +23,28 @@ import React, { useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
 import { AddUserModel } from "../../user/view/add-user";
+import { Plant, useGetPlantQuery } from "../../../services/plant_service";
+import { AddPlantModel } from "../add/add-plant";
 
 const columns: GridColDef[] = [
-  { field: "email", headerName: "Email", width: 200 },
-  {
-    field: "group",
-    headerName: "User Group",
-    width: 150,
-  },
+  { field: "plantName", headerName: "Plant name", width: 250 },
   {
     field: "createdBy",
-    headerName: "CreatedBy",
-    width: 180,
-  },
-  {
-    field: "createdDateTime",
-    headerName: "Created Date",
+    headerName: "Created by",
     width: 250,
   },
   {
-    field: "passwordType",
-    headerName: "Password Status",
-    width: 200,
-  },
-  {
-    field: "enabled",
-    headerName: "Status",
-    width: 200,
-  },
-  {
-    field: "actions",
-    headerName: "Actions",
-    type: "actions",
-    width: 200,
+    field: "createdDate",
+    headerName: "Created date & time",
+    width: 250,
   },
 ];
 
 export default function PlantList() {
-  const { data, error, isLoading } = useGetUsersQuery("");
+  const { data, error, isLoading } = useGetPlantQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
-  var userRoles: string | string[] = [];
-  var admin = "";
 
-  const handleRefresh = () => {
-    window.location.reload();
-  };
-
-  //get user roles from local storage
-  if (localStorage.getItem("roles") === "") {
-    console.log("roles empty");
-  } else {
-    userRoles = localStorage
-      .getItem("roles")
-      .split(",")
-      .map((item) => item.trim());
-    if (
-      userRoles.includes("CREATE_TOP_ADMIN") &&
-      userRoles.includes("CREATE_ADMIN")
-    ) {
-      admin = "TOP_ADMIN";
-    } else if (userRoles.includes("CREATE_USER")) {
-      admin = "ADMIN";
-    }
-  }
-
-  //filters users according to admin's permissions
-  var userList = data?.users.filter((user) => {
-    if (admin === "ADMIN") {
-      return user.group === "USER";
-    } else {
-      return user;
-    }
-  });
-
-  handleRefresh;
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -145,16 +92,41 @@ export default function PlantList() {
                         >
                           Plants
                         </Typography>
-                        <Box display="flex" justifyContent="flex-end">
-                          <Button
-                            variant="contained"
-                            startIcon={<AddIcon />}
-                            color="success"
-                            onClick={() => setOpen(true)}
-                          >
-                            ADD
-                          </Button>
-                        </Box>
+                        <Container
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row-reverse",
+                            padding: "0",
+                          }}
+                        >
+                          <Box display="flex" justifyContent="flex-end">
+                            <Button
+                              variant="contained"
+                              startIcon={<AddIcon />}
+                              sx={{
+                                backgroundColor: "#ff6d00",
+                                "&:hover": { backgroundColor: "#ef6c00" },
+                              }}
+                              onClick={() => setOpen(true)}
+                            >
+                              ALOCATE CUSTOMERS
+                            </Button>
+                          </Box>
+                          <Box display="flex" justifyContent="flex-end">
+                            <Button
+                              variant="contained"
+                              startIcon={<AddIcon />}
+                              sx={{
+                                backgroundColor: "#00e676",
+                                mx: 1,
+                                "&:hover": { backgroundColor: "#00c853" },
+                              }}
+                              onClick={() => setOpen(true)}
+                            >
+                              ADD
+                            </Button>
+                          </Box>
+                        </Container>
                         <Divider
                           sx={{
                             borderColor: "grey",
@@ -187,75 +159,28 @@ export default function PlantList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {userList.map((item: User, index: any) => {
-                                  return (
-                                    <StyledTableRow
-                                      //   id="index"
-                                      hover
-                                      role="checkbox"
-                                      tabIndex={-1}
-                                    >
-                                      <StyledTableCell align={"left"}>
-                                        {item.username}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.group}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.createdBy}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.createdDateTime}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.passwordType == "PASSWORD" ? (
-                                          <Button
-                                            variant="contained"
-                                            color="success"
-                                          >
-                                            ACTIVE
-                                          </Button>
-                                        ) : item.passwordType == "DEFAULT" ? (
-                                          <Button
-                                            variant="contained"
-                                            color="warning"
-                                          >
-                                            DEFAULT
-                                          </Button>
-                                        ) : (
-                                          <Button
-                                            variant="contained"
-                                            color="error"
-                                          >
-                                            RESET
-                                          </Button>
-                                        )}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"left"}>
-                                        {item.status == "ACTIVE" ? (
-                                          <Button
-                                            variant="contained"
-                                            color="primary"
-                                          >
-                                            ACTIVE
-                                          </Button>
-                                        ) : (
-                                          <Button
-                                            variant="contained"
-                                            color="error"
-                                          >
-                                            TEMPORARY_BLOCKED
-                                          </Button>
-                                        )}
-                                      </StyledTableCell>
-                                      <StyledTableCell align={"right"}>
-                                        <CustomizedMenusUsers
-                                          user={item as User}
-                                        />
-                                      </StyledTableCell>
-                                    </StyledTableRow>
-                                  );
-                                })}
+                                {data?.plants.map(
+                                  (plant: Plant, index: any) => {
+                                    return (
+                                      <StyledTableRow
+                                        id={plant.name}
+                                        hover
+                                        role="checkbox"
+                                        tabIndex={-1}
+                                      >
+                                        <StyledTableCell align={"left"}>
+                                          {plant.name}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {plant.createdBy}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {plant.createdDateTime}
+                                        </StyledTableCell>
+                                      </StyledTableRow>
+                                    );
+                                  }
+                                )}
                               </TableBody>
                             </Table>
                           </TableContainer>
@@ -276,7 +201,7 @@ export default function PlantList() {
                 </Box>
               </>
             </Container>
-            <AddUserModel open={open} changeOpenStatus={setOpen} />
+            <AddPlantModel open={open} changeOpenStatus={setOpen} />
           </Box>
         )}
       </>
