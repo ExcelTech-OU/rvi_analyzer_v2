@@ -223,7 +223,8 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                                   onPressed: isClicked
                                       ? null
                                       : () {
-                                          disconnect();
+                                          //disconnect();
+                                          connect();
                                         },
                                   child: isDisconnectPressed
                                       ? const SpinKitWave(

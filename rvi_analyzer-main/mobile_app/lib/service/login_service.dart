@@ -85,14 +85,35 @@ Future<LoginResponse> login(
         "GET_DEVICES"
       ]
     })));
-    
-    await storage.write(key: jwtK, value: loginResponse.jwt);
-    loginInfoRepo.addLoginInfo(LoginInfo(userName, loginResponse.jwt));
-    return loginResponse;
+
+    var userData;
+    String userGroup = userData['user']['group'];
+    if (userGroup == 'USER') {
+      if (kDebugMode) {
+        print("User logged in");
+      }
+      LoginResponse loginResponse =
+          LoginResponse.fromJson(jsonDecode(jsonEncode(userData)));
+      await storage.write(key: jwtK, value: loginResponse.jwt);
+      loginInfoRepo.addLoginInfo(LoginInfo(userName, loginResponse.jwt));
+      return loginResponse;
+    } else {
+      // User is not allowed to log in
+      return LoginResponse.fromDetails(
+          "E1200", "Access Denied", "You are not authorized to log in", null);
+    }
   } else {
     return LoginResponse.fromDetails("E1000", "Error", "Hello error", null);
   }
 }
+
+//     await storage.write(key: jwtK, value: loginResponse.jwt);
+//     loginInfoRepo.addLoginInfo(LoginInfo(userName, loginResponse.jwt));
+//     return loginResponse;
+//   } else {
+//     return LoginResponse.fromDetails("E1000", "Error", "Hello error", null);
+//   }
+// }
 
 Future<CommonResponse> resetPassword(String jwt, String password) async {
   final response = await http.post(
@@ -154,7 +175,6 @@ Future<CommonResponse> checkJwt() async {
     return CommonResponse.fromDetails("E2500", "No Connection");
   }
 }
-
 
 Future<void> logout() async {
   const storage = FlutterSecureStorage();

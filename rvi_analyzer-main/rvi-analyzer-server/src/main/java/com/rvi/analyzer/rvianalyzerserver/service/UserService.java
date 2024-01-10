@@ -111,13 +111,16 @@ public class UserService {
     }
 
     public Mono<ResponseEntity<LoginResponse>> login(LoginRequest loginRequest) {
+        System.out.println("loginRequest : "+loginRequest.getUserName());
         return Mono.just(loginRequest)
                 .doOnNext(request -> log.info("Login request received [{}]", request.getUserName()))
                 .flatMap(request -> userRepository.findByUsername(request.getUserName()))
                 .filter(Objects::nonNull)
                 .flatMap(user ->
                         {
+                            System.out.println("comes here");
                             if (user.getPasswordType().equals("DEFAULT") || user.getPasswordType().equals("RESET")) {
+                                System.out.println("comp : "+loginRequest.getPassword());
                                 return Mono.just(
                                         ResponseEntity.ok(LoginResponse.builder()
                                                 .user(userMapper.userToUserDto(user))
@@ -126,7 +129,10 @@ public class UserService {
                                                 .stateDescription("Password Reset Needed").build())
                                 );
                             } else {
-                                if (encoder.encode(loginRequest.getPassword()).equals(user.getPassword())) {
+
+                                System.out.println(loginRequest.getPassword());
+                                System.out.println(encoder.encode(loginRequest.getPassword())+" , "+user.getPassword());
+                                if (Objects.equals(encoder.encode(loginRequest.getPassword()),user.getPassword())) {
                                     return userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                                             .flatMap(roles -> {
                                                 log.info("user roles [{}] user group [{}]", roles, user.getGroup());

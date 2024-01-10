@@ -21,6 +21,7 @@ public class UserController {
 
     @PostMapping(path = "/login/user")
     public Mono<ResponseEntity<LoginResponse>> loginUser(@RequestBody LoginRequest loginRequest) {
+        System.out.println("controller : "+loginRequest.getPassword());
         return userService.login(loginRequest);
     }
 
