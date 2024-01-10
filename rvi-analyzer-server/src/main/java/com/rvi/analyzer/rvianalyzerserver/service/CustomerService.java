@@ -2,9 +2,11 @@ package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.CustomerDto;
+import com.rvi.analyzer.rvianalyzerserver.dto.PlantDto;
 import com.rvi.analyzer.rvianalyzerserver.entiy.Customer;
 import com.rvi.analyzer.rvianalyzerserver.mappers.CustomerMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.CustomerRepository;
+import com.rvi.analyzer.rvianalyzerserver.repository.PlantRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
 import com.rvi.analyzer.rvianalyzerserver.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +24,13 @@ import java.util.Objects;
 @Slf4j
 public class CustomerService {
 
-    final CustomerRepository customerRepository;
+    final private CustomerRepository customerRepository;
     final private UserRepository userRepository;
     final private CustomerMapper customerMapper;
     final private JwtUtils jwtUtils;
     final private UserGroupRoleService userGroupRoleService;
+    final private PlantService plantService;
+    final private PlantRepository plantRepository;
 
     public Mono<NewCustomerResponse> addCustomer(CustomerDto customerDto, String jwt) {
         return Mono.just(customerDto)
@@ -37,7 +41,7 @@ public class CustomerService {
                         .statusDescription("Customer Already exists")
                         .build()))
                 .switchIfEmpty(
-                        createCustomer(customerDto, jwtUtils.getUsername(jwt))
+                        createCustomer(customerDto, jwtUtils.getUsername(jwt), jwt)
                 )
                 .doOnError(e ->
                         NewUserResponse.builder()
@@ -46,13 +50,13 @@ public class CustomerService {
                                 .build());
     }
 
-    private Mono<NewCustomerResponse> createCustomer(CustomerDto customerDto, String username) {
+    private Mono<NewCustomerResponse> createCustomer(CustomerDto customerDto, String username, String jwt) {
         return userRepository.findByUsername(username)
                 .flatMap(creatingUser -> userGroupRoleService.getUserRolesByUserGroup(creatingUser.getGroup())
                         .flatMap(userRoles -> {
                             log.info(customerDto.getName());
                             if (userRoles.contains(UserRoles.CREATE_CUSTOMER)) {
-                                return save(customerDto, username);
+                                return save(customerDto, username, jwt);
                             } else {
                                 return Mono.just(NewCustomerResponse.builder()
                                         .status("E1200")
@@ -61,13 +65,13 @@ public class CustomerService {
                         }));
     }
 
-    private Mono<NewCustomerResponse> save(CustomerDto customerDto, String username) {
+    private Mono<NewCustomerResponse> save(CustomerDto customerDto, String username, String jwt) {
         return Mono.just(customerDto)
                 .map(customerMapper::customerDtoToCustomer)
                 .doOnNext(customer -> {
                     customer.setName(customerDto.getName());
                     customer.setStatus("ACTIVE");
-                    customer.setPlant("DEFAULT");
+                    customer.setPlant(savePlant(customer.getPlant(), jwt));
                     customer.setCreatedBy(username);
                     customer.setCreatedDateTime(LocalDateTime.now());
                     customer.setLastUpdatedDateTime(LocalDateTime.now());
@@ -79,6 +83,15 @@ public class CustomerService {
                         .statusDescription("Success")
                         .name(customerDto.getName())
                         .build());
+    }
+
+    public String savePlant(String plant, String jwt) {
+        Mono<NewPlantResponse> plantResponseMono = plantService.addPlant(PlantDto.builder()
+                .name(plant)
+                .createdBy("TOP_ADMIN")
+                .lastUpdatedDateTime(LocalDateTime.now())
+                .createdDateTime(LocalDateTime.now()).build(), jwt);
+        return Objects.equals(plant, "") || Objects.equals(plant, null) ? "UN-ASSIGNED" : plant;
     }
 
     public Mono<ResponseEntity<CustomersResponse>> getCustomers(String auth) {
@@ -123,7 +136,7 @@ public class CustomerService {
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> userRepository.findByUsername(request.getAdmin())
                                 .flatMap(user -> {
-                                    if (Objects.equals("TOP_ADMIN", user.getGroup())) {
+                                    if (Objects.equals("TOP_ADMIN", user.getGroup()) && userRoles.contains(UserRoles.UPDATE_CUSTOMER)) {
                                         return customerRepository.findByName(request.getName())
                                                 .flatMap(customer1 -> {
                                                     customer1.setPlant(request.getPlant());
