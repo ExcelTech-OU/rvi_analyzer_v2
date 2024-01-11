@@ -84,7 +84,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
       email: "",
       group: "",
       status: "",
-      superviser: "",
+      supervisor: "",
     },
     validationSchema: Yup.object({
       email: Yup.string()
@@ -93,14 +93,14 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
         .required("Email is required"),
       group: Yup.string().max(25).required("Group is required"),
       status: Yup.string().max(255).required("Status is required"),
-      superviser: Yup.string().max(255).required("Superviser is required"),
+      supervisor: Yup.string().max(255).required("supervisor is required"),
     }),
     onSubmit: (values, actions) => {
       addUser({
         username: values.email,
         group: values.group,
         status: values.status,
-        admin: values.superviser,
+        supervisor: values.supervisor,
       })
         .unwrap()
         .then((payload) => {
@@ -249,19 +249,19 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
               sx={{ mt: 2 }}
               fullWidth
               error={Boolean(
-                formik.touched.superviser && formik.errors.superviser
+                formik.touched.supervisor && formik.errors.supervisor
               )}
             >
               <InputLabel id="demo-simple-select-helper-label">
-                Superviser
+                Supervisor
               </InputLabel>
               <Select
                 fullWidth
                 labelId="demo-simple-select-label"
-                id="superviser"
-                label="Superviser"
-                value={formik.values.superviser}
-                name="superviser"
+                id="supervisor"
+                label="Supervisor"
+                value={formik.values.supervisor}
+                name="supervisor"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
@@ -278,7 +278,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                   })}
               </Select>
               <FormHelperText>
-                {formik.touched.superviser && formik.errors.superviser}
+                {formik.touched.supervisor && formik.errors.supervisor}
               </FormHelperText>
             </FormControl>
 

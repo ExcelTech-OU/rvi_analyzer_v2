@@ -102,6 +102,7 @@ public class UserService {
                     user.setGroup(userDto.getGroup());
                     user.setStatus(userDto.getStatus());
                     user.setCreatedBy(username);
+                    user.setSupervisor(userDto.getSupervisor() == null ? username : userDto.getSupervisor());
                     user.setCreatedDateTime(LocalDateTime.now());
                     user.setLastUpdatedDateTime(LocalDateTime.now());
                     user.setPassword(encoder.encode("default@rvi"));
@@ -251,7 +252,18 @@ public class UserService {
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.GET_USERS)) {
                                 return userRepository.findByCreatedBy(requestedUser.getUsername())
-                                        .map(userMapper::userToUserDto)
+                                        .map(user -> {
+                                            return UserDto.builder()
+                                                    .username(user.getUsername())
+                                                    .group(user.getGroup())
+                                                    .status(user.getStatus())
+                                                    .passwordType(user.getPasswordType())
+                                                    .createdBy(user.getCreatedBy())
+                                                    .supervisor(user.getSupervisor() == null ? "UN-ASSIGNED" : user.getSupervisor())
+                                                    .createdDateTime(user.getCreatedDateTime())
+                                                    .lastUpdatedDateTime(user.getLastUpdatedDateTime())
+                                                    .build();
+                                        })
                                         .collectList()
                                         .flatMap(userDtos -> Mono.just(ResponseEntity.ok(UsersResponse.builder()
                                                 .status("S1000")
@@ -261,7 +273,18 @@ public class UserService {
                                         )));
                             } else if (userRoles.contains(UserRoles.GET_ALL_USERS)) {
                                 return userRepository.findAll()
-                                        .map(userMapper::userToUserDto)
+                                        .map(user -> {
+                                            return UserDto.builder()
+                                                    .username(user.getUsername())
+                                                    .group(user.getGroup())
+                                                    .status(user.getStatus())
+                                                    .passwordType(user.getPasswordType())
+                                                    .createdBy(user.getCreatedBy())
+                                                    .supervisor(user.getSupervisor())
+                                                    .createdDateTime(user.getCreatedDateTime())
+                                                    .lastUpdatedDateTime(user.getLastUpdatedDateTime())
+                                                    .build();
+                                        })
                                         .collectList()
                                         .flatMap(userDtos -> Mono.just(ResponseEntity.ok(UsersResponse.builder()
                                                 .status("S1000")
