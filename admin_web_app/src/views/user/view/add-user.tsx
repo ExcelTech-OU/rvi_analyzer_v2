@@ -21,6 +21,7 @@ import { useFormik } from "formik";
 import {
   User,
   useAddUserMutation,
+  useGetUsersQuery,
   useUpdateUserMutation,
 } from "../../../services/user_service";
 import * as Yup from "yup";
@@ -33,6 +34,7 @@ type AddUserProps = {
 
 export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   const [openSuccess, setOpenSuccess] = React.useState(false);
+  const { data, error, isLoading } = useGetUsersQuery("");
   const [openFail, setOpenFail] = useState(false);
   const [formReset, setFormReset] = useState(false);
   var userRoles: string | string[] = [];
@@ -78,6 +80,44 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   };
 
   const formik = useFormik({
+    initialValues: {
+      email: "",
+      group: "",
+      status: "",
+      superviser: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email("Must be a valid email")
+        .max(255)
+        .required("Email is required"),
+      group: Yup.string().max(25).required("Group is required"),
+      status: Yup.string().max(255).required("Status is required"),
+      superviser: Yup.string().max(255).required("Superviser is required"),
+    }),
+    onSubmit: (values, actions) => {
+      addUser({
+        username: values.email,
+        group: values.group,
+        status: values.status,
+        admin: values.superviser,
+      })
+        .unwrap()
+        .then((payload) => {
+          if (payload.status == "S1000") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setOpenSuccess(true);
+          }
+        })
+        .catch((error) => {
+          actions.setSubmitting(false);
+          setOpenFail(true);
+        });
+    },
+  });
+
+  const formikAdmin = useFormik({
     initialValues: {
       email: "",
       group: "",
@@ -132,108 +172,277 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
         >
           <CloseIcon />
         </IconButton>
-        <form onSubmit={formik.handleSubmit}>
-          <Box sx={{ my: 3 }}>
-            <Typography
-              color="textSecondary"
-              gutterBottom
-              variant="body2"
-            ></Typography>
-          </Box>
-
-          <TextField
-            fullWidth
-            label="Email"
-            margin="normal"
-            name="email"
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            value={formik.values.email}
-            variant="outlined"
-            error={Boolean(formik.touched.email && formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
-          />
-          <FormControl
-            sx={{ mt: 2 }}
-            fullWidth
-            error={Boolean(formik.touched.group && formik.errors.group)}
-          >
-            <InputLabel id="demo-simple-select-helper-label">Group</InputLabel>
-            {admin === "TOP_ADMIN" ? (
-              <Select
-                fullWidth
-                labelId="demo-simple-select-label"
-                id="group"
-                label="Group"
-                value={formik.values.group}
-                name="group"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+        {admin === "TOP_ADMIN" ? (
+          <form onSubmit={formik.handleSubmit}>
+            <Box sx={{ my: 3 }}>
+              <Typography
+                color="textSecondary"
+                sx={{
+                  textAlign: "center",
+                  fontSize: "1.1rem",
+                  color: "#424242",
+                }}
+                gutterBottom
+                variant="body2"
               >
-                <MenuItem value={"TOP_ADMIN"}>TOP_ADMIN</MenuItem>
-                <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
-                {/* <MenuItem value={"USER"}>USER</MenuItem> */}
-              </Select>
-            ) : admin === "ADMIN" ? (
-              <Select
-                fullWidth
-                labelId="demo-simple-select-label"
-                id="group"
-                label="Group"
-                value={formik.values.group}
-                name="group"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
-                <MenuItem value={"USER"}>USER</MenuItem>
-              </Select>
-            ) : (
-              <></>
-            )}
-
-            <FormHelperText>
-              {formik.touched.group && formik.errors.group}
-            </FormHelperText>
-          </FormControl>
-
-          <FormControl
-            sx={{ mt: 2 }}
-            fullWidth
-            error={Boolean(formik.touched.status && formik.errors.status)}
-          >
-            <InputLabel id="demo-simple-select-helper-label">Status</InputLabel>
-            <Select
+                {localStorage.getItem("user")}
+              </Typography>
+            </Box>
+            <TextField
               fullWidth
-              labelId="demo-simple-select-label"
-              id="status"
-              label="Status"
-              value={formik.values.status}
-              name="status"
-              onChange={formik.handleChange}
+              label="Email"
+              margin="normal"
+              name="email"
               onBlur={formik.handleBlur}
-            >
-              <MenuItem value={"ACTIVE"}>ACTIVE</MenuItem>
-              <MenuItem value={"TEMPORARY_BLOCKED"} color="orange">
-                TEMPORARY_BLOCKED
-              </MenuItem>
-            </Select>
-            <FormHelperText>
-              {formik.touched.status && formik.errors.status}
-            </FormHelperText>
-          </FormControl>
-          <Box sx={{ py: 2 }}>
-            <Button
-              color="primary"
-              disabled={formik.isSubmitting}
+              onChange={formik.handleChange}
+              value={formik.values.email}
+              variant="outlined"
+              error={Boolean(formik.touched.email && formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
+            />
+            <FormControl
+              sx={{ mt: 2 }}
               fullWidth
-              size="large"
-              type="submit"
-              variant="contained"
+              error={Boolean(formik.touched.group && formik.errors.group)}
             >
-              ADD
-            </Button>
-          </Box>
-        </form>
+              <InputLabel id="demo-simple-select-helper-label">
+                Group
+              </InputLabel>
+              {admin === "TOP_ADMIN" ? (
+                <Select
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  id="group"
+                  label="Group"
+                  value={formik.values.group}
+                  name="group"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <MenuItem value={"TOP_ADMIN"}>TOP_ADMIN</MenuItem>
+                  <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
+                  <MenuItem value={"USER"}>USER</MenuItem>
+                </Select>
+              ) : admin === "ADMIN" ? (
+                <Select
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  id="group"
+                  label="Group"
+                  value={formik.values.group}
+                  name="group"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <MenuItem value={"USER"}>USER</MenuItem>
+                </Select>
+              ) : (
+                <></>
+              )}
+
+              <FormHelperText>
+                {formik.touched.group && formik.errors.group}
+              </FormHelperText>
+            </FormControl>
+
+            <FormControl
+              sx={{ mt: 2 }}
+              fullWidth
+              error={Boolean(
+                formik.touched.superviser && formik.errors.superviser
+              )}
+            >
+              <InputLabel id="demo-simple-select-helper-label">
+                Superviser
+              </InputLabel>
+              <Select
+                fullWidth
+                labelId="demo-simple-select-label"
+                id="superviser"
+                label="Superviser"
+                value={formik.values.superviser}
+                name="superviser"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                {data?.users
+                  .filter((user) => {
+                    if (admin === "TOP_ADMIN") {
+                      return user.group === "ADMIN";
+                    }
+                  })
+                  .map((item: User, index: any) => {
+                    return (
+                      <MenuItem value={item.username}>{item.username}</MenuItem>
+                    );
+                  })}
+              </Select>
+              <FormHelperText>
+                {formik.touched.superviser && formik.errors.superviser}
+              </FormHelperText>
+            </FormControl>
+
+            <FormControl
+              sx={{ mt: 2 }}
+              fullWidth
+              error={Boolean(formik.touched.status && formik.errors.status)}
+            >
+              <InputLabel id="demo-simple-select-helper-label">
+                Status
+              </InputLabel>
+              <Select
+                fullWidth
+                labelId="demo-simple-select-label"
+                id="status"
+                label="Status"
+                value={formik.values.status}
+                name="status"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <MenuItem value={"ACTIVE"}>ACTIVE</MenuItem>
+                <MenuItem value={"TEMPORARY_BLOCKED"} color="orange">
+                  TEMPORARY_BLOCKED
+                </MenuItem>
+              </Select>
+              <FormHelperText>
+                {formik.touched.status && formik.errors.status}
+              </FormHelperText>
+            </FormControl>
+            <Box sx={{ py: 2 }}>
+              <Button
+                color="primary"
+                disabled={formik.isSubmitting}
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+              >
+                ADD
+              </Button>
+            </Box>
+          </form>
+        ) : (
+          <form onSubmit={formikAdmin.handleSubmit}>
+            <Box sx={{ my: 3 }}>
+              <Typography
+                color="textSecondary"
+                sx={{
+                  textAlign: "center",
+                  fontSize: "1.1rem",
+                  color: "#424242",
+                }}
+                gutterBottom
+                variant="body2"
+              >
+                {localStorage.getItem("user")}
+              </Typography>
+            </Box>
+            <TextField
+              fullWidth
+              label="Email"
+              margin="normal"
+              name="email"
+              onBlur={formikAdmin.handleBlur}
+              onChange={formikAdmin.handleChange}
+              value={formikAdmin.values.email}
+              variant="outlined"
+              error={Boolean(
+                formikAdmin.touched.email && formikAdmin.errors.email
+              )}
+              helperText={formikAdmin.touched.email && formikAdmin.errors.email}
+            />
+            <FormControl
+              sx={{ mt: 2 }}
+              fullWidth
+              error={Boolean(
+                formikAdmin.touched.group && formikAdmin.errors.group
+              )}
+            >
+              <InputLabel id="demo-simple-select-helper-label">
+                Group
+              </InputLabel>
+              {admin === "TOP_ADMIN" ? (
+                <Select
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  id="group"
+                  label="Group"
+                  value={formikAdmin.values.group}
+                  name="group"
+                  onChange={formikAdmin.handleChange}
+                  onBlur={formikAdmin.handleBlur}
+                >
+                  <MenuItem value={"TOP_ADMIN"}>TOP_ADMIN</MenuItem>
+                  <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
+                  <MenuItem value={"USER"}>USER</MenuItem>
+                </Select>
+              ) : admin === "ADMIN" ? (
+                <Select
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  id="group"
+                  label="Group"
+                  value={formikAdmin.values.group}
+                  name="group"
+                  onChange={formikAdmin.handleChange}
+                  onBlur={formikAdmin.handleBlur}
+                >
+                  <MenuItem value={"USER"}>USER</MenuItem>
+                </Select>
+              ) : (
+                <></>
+              )}
+
+              <FormHelperText>
+                {formikAdmin.touched.group && formikAdmin.errors.group}
+              </FormHelperText>
+            </FormControl>
+
+            <FormControl
+              sx={{ mt: 2 }}
+              fullWidth
+              error={Boolean(
+                formikAdmin.touched.status && formikAdmin.errors.status
+              )}
+            >
+              <InputLabel id="demo-simple-select-helper-label">
+                Status
+              </InputLabel>
+              <Select
+                fullWidth
+                labelId="demo-simple-select-label"
+                id="status"
+                label="Status"
+                value={formikAdmin.values.status}
+                name="status"
+                onChange={formikAdmin.handleChange}
+                onBlur={formikAdmin.handleBlur}
+              >
+                <MenuItem value={"ACTIVE"}>ACTIVE</MenuItem>
+                <MenuItem value={"TEMPORARY_BLOCKED"} color="orange">
+                  TEMPORARY_BLOCKED
+                </MenuItem>
+              </Select>
+              <FormHelperText>
+                {formikAdmin.touched.status && formikAdmin.errors.status}
+              </FormHelperText>
+            </FormControl>
+            <Box sx={{ py: 2 }}>
+              <Button
+                color="primary"
+                disabled={formikAdmin.isSubmitting}
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+              >
+                ADD
+              </Button>
+            </Box>
+          </form>
+        )}
+
         <Snackbar
           open={openSuccess}
           autoHideDuration={6000}

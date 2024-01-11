@@ -7,6 +7,7 @@ import com.rvi.analyzer.rvianalyzerserver.domain.NewCustomerResponse;
 import com.rvi.analyzer.rvianalyzerserver.dto.CustomerDto;
 import com.rvi.analyzer.rvianalyzerserver.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -62,8 +63,8 @@ public class CustomerController {
         return customerService.getCustomers(auth);
     }
 
-    @PostMapping(path = "/rvi/analyzer/v1/customer/update")
-    public Mono<ResponseEntity<CommonResponse>> updateCustomer(@RequestBody CustomerUpdateRequest request, @RequestHeader("Authorization") String auth) {
-        return customerService.updateCustomer(request, auth);
-    }
+//    @PostMapping(path = "/rvi/analyzer/v1/customer/update")
+//    public Mono<ResponseEntity<CommonResponse>> updateCustomer(@RequestBody CustomerUpdateRequest request, @RequestHeader("Authorization") String auth) {
+//        return customerService.updateCustomer(request, auth);
+//    }
 }

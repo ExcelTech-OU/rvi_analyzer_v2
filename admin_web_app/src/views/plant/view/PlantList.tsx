@@ -28,6 +28,7 @@ import { AddPlantModel } from "../add/add-plant";
 
 const columns: GridColDef[] = [
   { field: "plantName", headerName: "Plant name", width: 250 },
+  { field: "customers", headerName: "Customers", width: 250 },
   {
     field: "createdBy",
     headerName: "Created by",
@@ -96,7 +97,7 @@ export default function PlantList() {
                           sx={{
                             display: "flex",
                             flexDirection: "row-reverse",
-                            padding: "0",
+                            padding: 0,
                           }}
                         >
                           <Box display="flex" justifyContent="flex-end">
@@ -109,7 +110,7 @@ export default function PlantList() {
                               }}
                               onClick={() => setOpen(true)}
                             >
-                              ALOCATE CUSTOMERS
+                              ALLOCATE CUSTOMERS
                             </Button>
                           </Box>
                           <Box display="flex" justifyContent="flex-end">
@@ -170,6 +171,9 @@ export default function PlantList() {
                                       >
                                         <StyledTableCell align={"left"}>
                                           {plant.name}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {plant.createdBy}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {plant.createdBy}
