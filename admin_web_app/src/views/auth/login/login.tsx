@@ -59,6 +59,7 @@ export default function Login() {
         .then((payload) => {
           if (payload.state == "S1000") {
             dispatch(loginSuccess(payload));
+            localStorage.setItem("user", values.userName);
             navigate("/");
           }
         })

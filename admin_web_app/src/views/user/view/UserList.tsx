@@ -33,7 +33,7 @@ const columns: GridColDef[] = [
   },
   {
     field: "createdBy",
-    headerName: "CreatedBy",
+    headerName: "Created By",
     width: 180,
   },
   {

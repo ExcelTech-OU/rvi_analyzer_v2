@@ -13,6 +13,7 @@ export interface User {
     username: string
     group: string
     status: string
+    superviser: string
     passwordType: string
     createdBy: string
     createdDateTime: string

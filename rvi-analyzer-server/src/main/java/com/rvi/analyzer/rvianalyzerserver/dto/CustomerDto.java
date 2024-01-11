@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class CustomerDto {
     private String _id;
     private String name;
-    private String plant;
+    //    private String plant;
     private String createdBy;
     private LocalDateTime createdDateTime;
 }

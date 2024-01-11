@@ -170,6 +170,7 @@ db.groupRole.insertMany([
     'group-id': 'top_admin_group',
     'role-ids': [ 'login_web',
     'create_top_admin',
+    'create_user',
     'create_customer',
     'create_plant',
     'update_admin_user',
