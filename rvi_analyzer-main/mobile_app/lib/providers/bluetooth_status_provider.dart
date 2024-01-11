@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final deviceBluetoothState =
@@ -9,9 +9,8 @@ class BluetoothStatus extends ChangeNotifier {
   String state = "";
 
   void activeNotifyStreamListener() {
-    FlutterBlue flutterBlue = FlutterBlue.instance;
-    flutterBlue.state.listen((event) {
-      state = event.name;
+    FlutterBluePlus.instance.state.listen((state) {
+      this.state = state.toString(); // Use state.toString() for compatibility
       notifyListeners();
     });
   }

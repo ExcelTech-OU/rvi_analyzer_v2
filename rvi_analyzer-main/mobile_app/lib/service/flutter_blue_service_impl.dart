@@ -1,16 +1,16 @@
 import 'dart:collection';
 
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class Blue {
-  FlutterBlue flutterBlue = FlutterBlue.instance;
+  final FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
 
   HashMap<String, ScanResult> blueDeviceList = HashMap();
 
   Future<HashMap<String, ScanResult>> scanDevices() {
     blueDeviceList = HashMap();
-    flutterBlue.startScan(timeout: const Duration(seconds: 5));
-    flutterBlue.scanResults.listen((results) {
+    FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+    FlutterBluePlus.scanResults.listen((results) {
       for (ScanResult r in results) {
         if (r.device.name.isNotEmpty) {
           blueDeviceList.putIfAbsent(r.device.name, () => r);
@@ -18,7 +18,7 @@ class Blue {
       }
     });
 
-    flutterBlue.stopScan();
+    FlutterBluePlus.stopScan();
 
     return Future.delayed(
       const Duration(seconds: 6),

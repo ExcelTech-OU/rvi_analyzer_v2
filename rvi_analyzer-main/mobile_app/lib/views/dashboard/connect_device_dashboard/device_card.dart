@@ -11,7 +11,7 @@ import 'package:rvi_analyzer/service/device_service.dart';
 import 'package:rvi_analyzer/views/configure/configure_layout.dart';
 import 'package:rvi_analyzer/views/dashboard/connect_device_dashboard/device_status_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:rvi_analyzer/providers/device_state_provider.dart';

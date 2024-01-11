@@ -2,7 +2,7 @@ import 'package:rvi_analyzer/providers/connected_devices_provider.dart';
 import 'package:rvi_analyzer/views/settings/device_settings/device_aditional_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DeviceSettings extends StatefulWidget {
