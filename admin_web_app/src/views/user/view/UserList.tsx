@@ -37,6 +37,11 @@ const columns: GridColDef[] = [
     width: 180,
   },
   {
+    field: "superviser",
+    headerName: "Superviser",
+    width: 180,
+  },
+  {
     field: "createdDateTime",
     headerName: "Created Date",
     width: 250,
@@ -198,6 +203,9 @@ export default function UserList() {
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {item.group}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.createdBy}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {item.createdBy}

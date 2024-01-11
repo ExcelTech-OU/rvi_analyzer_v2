@@ -13,6 +13,7 @@ public class UserDto {
     private String status;
     private String passwordType;
     private String createdBy;
+    //    private String supervisor;
     private LocalDateTime createdDateTime;
     private LocalDateTime lastUpdatedDateTime;
 }

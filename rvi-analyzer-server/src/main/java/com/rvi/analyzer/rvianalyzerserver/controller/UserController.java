@@ -16,6 +16,7 @@ public class UserController {
 
     @PostMapping(path = "/register/user")
     public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String auth) {
+        System.out.println(userDto);
         return userService.addUser(userDto, auth);
         //to create super admin un-comment bellow lines
 //    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto) {

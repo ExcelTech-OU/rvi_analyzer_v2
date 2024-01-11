@@ -19,6 +19,7 @@ public class User {
     private String _id;
     private String username;
     private String password;
+//    private String supervisor;
 
     @Field(name = "password-type")
     private String passwordType;

@@ -100,7 +100,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
         username: values.email,
         group: values.group,
         status: values.status,
-        admin: values.superviser,
+        superviser: values.superviser,
       })
         .unwrap()
         .then((payload) => {
