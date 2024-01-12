@@ -37,6 +37,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   const { data, error, isLoading } = useGetUsersQuery("");
   const [openFail, setOpenFail] = useState(false);
   const [formReset, setFormReset] = useState(false);
+  const [supervisor, setSupervisor] = useState(false);
   var userRoles: string | string[] = [];
   var admin = "";
 
@@ -79,6 +80,14 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
     setOpenFail(false);
   };
 
+  const handleSupervisor = (value: string) => {
+    if (value === "USER") {
+      setSupervisor(true);
+    } else {
+      setSupervisor(false);
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -93,7 +102,10 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
         .required("Email is required"),
       group: Yup.string().max(25).required("Group is required"),
       status: Yup.string().max(255).required("Status is required"),
-      supervisor: Yup.string().max(255).required("supervisor is required"),
+      supervisor:
+        supervisor === false
+          ? Yup.string().max(255)
+          : Yup.string().max(255).required("supervisor is required"),
     }),
     onSubmit: (values, actions) => {
       addUser({
@@ -216,12 +228,22 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                   label="Group"
                   value={formik.values.group}
                   name="group"
-                  onChange={formik.handleChange}
+                  // onChange={formik.handleChange}
+                  onChange={(event) => {
+                    formik.handleChange(event);
+                    handleSupervisor(event.target.value);
+                  }}
                   onBlur={formik.handleBlur}
                 >
-                  <MenuItem value={"TOP_ADMIN"}>TOP_ADMIN</MenuItem>
-                  <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
-                  <MenuItem value={"USER"}>USER</MenuItem>
+                  <MenuItem key={"TOP_ADMIN"} value={"TOP_ADMIN"}>
+                    TOP_ADMIN
+                  </MenuItem>
+                  <MenuItem key={"ADMIN"} value={"ADMIN"}>
+                    ADMIN
+                  </MenuItem>
+                  <MenuItem key={"USER"} value={"USER"}>
+                    USER
+                  </MenuItem>
                 </Select>
               ) : admin === "ADMIN" ? (
                 <Select
@@ -245,42 +267,48 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
               </FormHelperText>
             </FormControl>
 
-            <FormControl
-              sx={{ mt: 2 }}
-              fullWidth
-              error={Boolean(
-                formik.touched.supervisor && formik.errors.supervisor
-              )}
-            >
-              <InputLabel id="demo-simple-select-helper-label">
-                Supervisor
-              </InputLabel>
-              <Select
+            {supervisor ? (
+              <FormControl
+                sx={{ mt: 2 }}
                 fullWidth
-                labelId="demo-simple-select-label"
-                id="supervisor"
-                label="Supervisor"
-                value={formik.values.supervisor}
-                name="supervisor"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                error={Boolean(
+                  formik.touched.supervisor && formik.errors.supervisor
+                )}
               >
-                {data?.users
-                  .filter((user) => {
-                    if (admin === "TOP_ADMIN") {
-                      return user.group === "ADMIN";
-                    }
-                  })
-                  .map((item: User, index: any) => {
-                    return (
-                      <MenuItem value={item.username}>{item.username}</MenuItem>
-                    );
-                  })}
-              </Select>
-              <FormHelperText>
-                {formik.touched.supervisor && formik.errors.supervisor}
-              </FormHelperText>
-            </FormControl>
+                <InputLabel id="demo-simple-select-helper-label">
+                  Supervisor
+                </InputLabel>
+                <Select
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  id="supervisor"
+                  label="Supervisor"
+                  value={formik.values.supervisor}
+                  name="supervisor"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  {data?.users
+                    .filter((user) => {
+                      if (admin === "TOP_ADMIN") {
+                        return user.group === "ADMIN";
+                      }
+                    })
+                    .map((item: User, index: any) => {
+                      return (
+                        <MenuItem value={item.username}>
+                          {item.username}
+                        </MenuItem>
+                      );
+                    })}
+                </Select>
+                <FormHelperText>
+                  {formik.touched.supervisor && formik.errors.supervisor}
+                </FormHelperText>
+              </FormControl>
+            ) : (
+              <></>
+            )}
 
             <FormControl
               sx={{ mt: 2 }}
