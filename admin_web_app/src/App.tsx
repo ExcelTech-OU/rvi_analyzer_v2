@@ -4,11 +4,13 @@ import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "./store/hooks";
 import Login from "./views/auth/login/login";
+import PasswordReset from "./views/auth/login/reset-password";
 import { DashboardLayout } from "./views/components/dashboard-layout";
 import { useGetRolesMutation, useGetRolesQuery } from "./services/user_service";
 import { useDispatch } from "react-redux";
 import { logout, rolesGetSuccess } from "./views/auth/login/auth-slice";
 import SignUp from "./views/auth/sign_up/sign_up";
+import { Password } from "@mui/icons-material";
 
 type AppProps = {
   children: ReactNode;
@@ -33,20 +35,20 @@ const copyrightStyles = {
 
 function App({ children }: AppProps) {
   const isLogin = localStorage.getItem("jwt") != null;
+  const isReset = localStorage.getItem("passwordReset");
   const stateLogin = useAppSelector((state) => state.loginStatus.jwt);
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   const [roles] = useGetRolesMutation();
   const dispatch = useDispatch();
 
-  // console.log(isLogin);
+  console.log(isReset);
 
   useEffect(() => {
-    if (isLogin) {
+    if (isLogin && isReset === "S1000") {
       roles({})
         .unwrap()
         .then((payload) => {
-          // console.log(payload);
           dispatch(rolesGetSuccess(payload));
           navigate("/");
         })
@@ -55,12 +57,17 @@ function App({ children }: AppProps) {
           dispatch(logout());
           navigate("/login");
         });
+    } else if (isLogin && isReset === "S1010") {
+      console.log("S1010");
+      navigate("/password-reset");
     } else {
+      console.log(isLogin);
+      console.log(isReset);
       navigate("/login");
     }
   }, [isLogin]);
 
-  return isLogin ? (
+  return isReset === "S1000" ? (
     <>
       <DashboardLayout>
         <Box
@@ -84,6 +91,10 @@ function App({ children }: AppProps) {
           </span>
         </Box>
       </DashboardLayout>
+    </>
+  ) : isLogin && isReset === "S1010" ? (
+    <>
+      <PasswordReset />
     </>
   ) : (
     <>

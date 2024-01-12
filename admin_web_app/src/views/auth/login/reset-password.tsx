@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import { loginSuccess } from "./auth-slice";
 import { alignProperty } from "@mui/material/styles/cssUtils";
 
-export default function Login() {
+export default function Reset() {
   const [login] = useLoginMutation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -57,16 +57,10 @@ export default function Login() {
       })
         .unwrap()
         .then((payload) => {
-          console.log(payload.state);
-          localStorage.setItem("passwordReset", payload.state);
           if (payload.state == "S1000") {
             dispatch(loginSuccess(payload));
             localStorage.setItem("user", values.userName);
             navigate("/");
-          } else if (payload.state == "S1010") {
-            // dispatch(loginSuccess(payload));
-            console.log("reset needed");
-            // navigate("/password-reset");
           }
         })
         .catch((error) => {
@@ -92,7 +86,7 @@ export default function Login() {
         <form onSubmit={formik.handleSubmit}>
           <Box sx={{ my: 3 }}>
             <Typography color="textPrimary" variant="h4">
-              Sign in
+              Reset password
             </Typography>
             <Typography color="textSecondary" gutterBottom variant="body2">
               Sign in to the RVI Analyzer admin panel

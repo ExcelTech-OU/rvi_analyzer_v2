@@ -50,7 +50,8 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   // }, [formReset]);
 
   //filters users according to admin's permissions
-  if (localStorage.getItem("roles") === "") {
+  if (localStorage.getItem("roles") === null) {
+    admin = "ADMIN";
     console.log("roles empty");
   } else {
     userRoles = localStorage

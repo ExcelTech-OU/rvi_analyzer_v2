@@ -7,6 +7,7 @@ import App from "./App";
 
 import { store } from "./store/store";
 import Login from "./views/auth/login/login";
+import PasswordReset from "./views/auth/login/reset-password";
 import Dashboard from "./views/dashboard/dashboard";
 import QuestionList from "./views/question/QuestionList";
 import UserList from "./views/user/view/UserList";
@@ -42,6 +43,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path="/devices" element={<DeviceList />} />
               <Route path="/questions" element={<QuestionList />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/password-reset" element={<PasswordReset />} />
               {/* <Route path="/sign-up" element={<SignUp />} /> */}
               <Route path="*" element={<Dashboard />} />
             </Routes>
