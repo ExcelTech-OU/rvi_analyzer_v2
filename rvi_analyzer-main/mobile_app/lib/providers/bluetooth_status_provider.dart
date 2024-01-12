@@ -7,11 +7,20 @@ final deviceBluetoothState =
 
 class BluetoothStatus extends ChangeNotifier {
   String state = "";
+  bool alreadyListening = false;
 
   void activeNotifyStreamListener() {
-    FlutterBluePlus.instance.state.listen((state) {
-      this.state = state.toString(); // Use state.toString() for compatibility
-      notifyListeners();
-    });
+    if (!alreadyListening) {
+      FlutterBluePlus.state.listen((event) {
+        state = event.name;
+        alreadyListening = true;
+
+        //   })
+        // }
+        // FlutterBluePlus.instance.state.listen((state) {
+        //   this.state = state.toString(); // Use state.toString() for compatibility
+        notifyListeners();
+      });
+    }
   }
 }

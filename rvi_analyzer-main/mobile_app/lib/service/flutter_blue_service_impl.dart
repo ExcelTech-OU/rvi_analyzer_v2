@@ -1,31 +1,11 @@
 import 'dart:collection';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class Blue {
-  final FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
+  //final FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
 
   HashMap<String, ScanResult> blueDeviceList = HashMap();
-
-  Future<HashMap<String, ScanResult>> scanDevices() {
-    blueDeviceList = HashMap();
-    FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
-    FlutterBluePlus.scanResults.listen((results) {
-      for (ScanResult r in results) {
-        if (r.device.name.isNotEmpty) {
-          blueDeviceList.putIfAbsent(r.device.name, () => r);
-        }
-      }
-    });
-
-    FlutterBluePlus.stopScan();
-
-    return Future.delayed(
-      const Duration(seconds: 6),
-      () => blueDeviceList,
-    );
-  }
-
   Future<bool> write(BluetoothDevice device, List<int> data, String ServiceUUID,
       String charUUID) async {
     bool response = false;
@@ -47,6 +27,50 @@ class Blue {
       return false;
     }
     return response;
+  }
+
+  Future<List<int>> read(
+      BluetoothDevice device, String ServiceUUID, String charUUID) async {
+    List<int> readData = [];
+    try {
+      List<BluetoothService> services = await device.discoverServices();
+      bool response = false;
+      for (var service in services) {
+        if (service.uuid.toString() == ServiceUUID) {
+          for (var element in service.characteristics) {
+            if (element.uuid.toString() == charUUID) {
+              await element.read().then((value) {
+                readData = value;
+              }).onError((error, stackTrace) {
+                if (kDebugMode) {
+                  print("Error while reading data");
+                }
+              });
+            }
+          }
+        }
+      }
+    } catch (e) {}
+    return readData;
+  }
+
+  Future<HashMap<String, ScanResult>> scanDevices() async {
+    blueDeviceList = HashMap();
+    FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+    FlutterBluePlus.scanResults.listen((results) {
+      for (ScanResult r in results) {
+        if (r.device.name.isNotEmpty) {
+          blueDeviceList.putIfAbsent(r.device.name, () => r);
+        }
+      }
+    });
+
+    FlutterBluePlus.stopScan();
+
+    return Future.delayed(
+      const Duration(seconds: 6),
+      () => blueDeviceList,
+    );
   }
 
   Future<bool> stop(BluetoothDevice device) async {
