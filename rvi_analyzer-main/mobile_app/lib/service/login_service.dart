@@ -75,7 +75,7 @@ Future<LoginResponse> login(
         "passwordType": "PASSWORD",
         "createdBy": "SUPER_USER",
         "createdDateTime": "2024-01-02T16:19:52.035",
-        "lastUpdatedDateTime": "2024-01-02T16:19:52.036"
+        "lastUpdatedDateTime": "2024-01-02T16:19:52.036",
       },
       "state": "S1000",
       "stateDescription": "Success",
@@ -92,6 +92,7 @@ Future<LoginResponse> login(
         "GET_DEVICES"
       ]
     })));
+
     String userGroup = userData['user']['group'];
     await storage.write(key: jwtK, value: loginResponse.jwt);
     loginInfoRepo.addLoginInfo(LoginInfo(userName, loginResponse.jwt));

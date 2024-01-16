@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class Blue {
-  //final FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
+  //FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
 
   HashMap<String, ScanResult> blueDeviceList = HashMap();
   Future<bool> write(BluetoothDevice device, List<int> data, String ServiceUUID,
@@ -16,7 +16,7 @@ class Blue {
           for (var element in service.characteristics) {
             if (element.uuid.toString() == charUUID) {
               await element
-                  .write(data)
+                  .write(data, allowLongWrite: true)
                   .then((value) => response = true)
                   .onError((error, stackTrace) => response = false);
             }
@@ -56,21 +56,31 @@ class Blue {
 
   Future<HashMap<String, ScanResult>> scanDevices() async {
     blueDeviceList = HashMap();
-    FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
-    FlutterBluePlus.scanResults.listen((results) {
-      for (ScanResult r in results) {
-        if (r.device.name.isNotEmpty) {
-          blueDeviceList.putIfAbsent(r.device.name, () => r);
+
+    try {
+      FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+
+      await Future.delayed(
+          const Duration(seconds: 5)); // Allow scanning to run for 5 seconds
+
+      FlutterBluePlus.stopScan();
+
+      FlutterBluePlus.scanResults.listen((results) {
+        for (ScanResult r in results) {
+          // Print the scan result information
+          if (kDebugMode) {
+            print("$r");
+          }
+          if (r.device.name.isNotEmpty) {
+            blueDeviceList.putIfAbsent(r.device.name, () => r);
+          }
         }
-      }
-    });
+      });
+    } catch (e) {
+      print("Error during scanning: $e");
+    }
 
-    FlutterBluePlus.stopScan();
-
-    return Future.delayed(
-      const Duration(seconds: 6),
-      () => blueDeviceList,
-    );
+    return blueDeviceList;
   }
 
   Future<bool> stop(BluetoothDevice device) async {
