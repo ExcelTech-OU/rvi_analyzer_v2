@@ -16,6 +16,8 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import CustomSelect from "./custom-select";
+import AsyncSelect from "react-select/async";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import {
@@ -26,11 +28,17 @@ import {
 } from "../../../services/user_service";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
+import Option from "react-select/dist/declarations/src/components/Option";
 
 type AddUserProps = {
   open: boolean;
   changeOpenStatus: (status: boolean) => void;
 };
+
+interface Option {
+  value: string;
+  label: string;
+}
 
 export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   const [openSuccess, setOpenSuccess] = React.useState(false);
@@ -39,7 +47,31 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   const [formReset, setFormReset] = useState(false);
   const [supervisor, setSupervisor] = useState(false);
   var userRoles: string | string[] = [];
+  var filterUsers: User[] = [];
   var admin = "";
+  // const admin_options = [
+  //   { value: "TOP_ADMIN", label: "TOP_ADMIN" },
+  //   { value: "ADMIN", label: "ADMIN" },
+  //   { value: "USER", label: "USER" },
+  // ];
+  let admin_options: Option[] = [];
+
+  // admin_options = data?.users.filter((user) => {
+  //   if (user.group === "ADMIN") {
+  //     return { value: "TOP_ADMIN", label: "TOP_ADMIN" };
+  //   }
+  // });
+
+  admin_options = data?.users
+    .filter((admin) => {
+      if (admin.group === "ADMIN") {
+        return admin;
+      }
+    })
+    .map((user) => ({
+      value: user.username,
+      label: user.username,
+    }));
 
   // if (open != null) {
   //   setFormReset(open);
@@ -67,6 +99,19 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
       admin = "ADMIN";
     }
   }
+
+  // const loadOptionsUserGroup = (
+  //   searchValue: string,
+  //   callback: (arg0: User[] | undefined) => void
+  // ) => {
+  //   setTimeout(() => {
+  //     const filteredOptions = data?.users.filter((item) => {
+  //       item.username.includes(searchValue);
+  //     });
+  //     console.log("loadOptions", searchValue, filteredOptions);
+  //     callback(filteredOptions);
+  //   }, 2000);
+  // };
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -120,6 +165,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
           if (payload.status == "S1000") {
             actions.setSubmitting(false);
             actions.resetForm();
+            // actions.setFieldValue("supervisor", "Select...");
             setOpenSuccess(true);
           }
         })
@@ -276,7 +322,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                   formik.touched.supervisor && formik.errors.supervisor
                 )}
               >
-                <InputLabel id="demo-simple-select-helper-label">
+                {/* <InputLabel id="demo-simple-select-helper-label">
                   Supervisor
                 </InputLabel>
                 <Select
@@ -302,7 +348,19 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                         </MenuItem>
                       );
                     })}
-                </Select>
+                </Select> */}
+
+                <CustomSelect
+                  id="supervisor"
+                  options={admin_options}
+                  onChange={(value: { value: any }) => {
+                    formik.setFieldValue("supervisor", value.value);
+                  }}
+                  name="superviser"
+                  className={"input"}
+                  value={formik.values.supervisor}
+                  onBlur={formik}
+                />
                 <FormHelperText>
                   {formik.touched.supervisor && formik.errors.supervisor}
                 </FormHelperText>
@@ -334,6 +392,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                   TEMPORARY_BLOCKED
                 </MenuItem>
               </Select>
+              <></>
               <FormHelperText>
                 {formik.touched.status && formik.errors.status}
               </FormHelperText>
