@@ -35,7 +35,7 @@ const copyrightStyles = {
 function App({ children }: AppProps) {
   const isToken = localStorage.getItem("jwt") != null;
   const isUser = localStorage.getItem("user") != null;
-  const stateLogin = useAppSelector((state) => state.loginStatus.jwt);
+  // const stateLogin = useAppSelector((state) => state.loginStatus.jwt);
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   const [roles] = useGetRolesMutation();

@@ -9,6 +9,11 @@ export interface UserListResponse {
     users: List<User>
 }
 
+export interface PasswordResetResponse {
+    status : string
+    statusDescription: string
+}
+
 export interface User {
     username: string
     group: string
@@ -49,8 +54,13 @@ export const userApi = createApi({
             },
             invalidatesTags: [{ type: 'userList', id: "getUsers" }]
         }),
-        resetPassword: build.mutation<UserListResponse, { username: string }>({
-            query: (data) => `rvi/analyzer/v1/user/resetPassword/${data.username}`,
+        resetPassword: build.mutation<PasswordResetResponse, {}>({
+            query(body) {
+                return {
+                    url: `rvi/analyzer/v1/user/resetPassword`,
+                    method: 'POST',
+                    body,
+            };},
             invalidatesTags: [{ type: 'userList', id: "getUsers" }]
         }),
         addUser: build.mutation<CommonResponse, {}>({
