@@ -37,7 +37,7 @@ export default ({ onChange, options, value, className, name, id, onBlur }) => {
         options={options}
         name={name}
         id={id}
-        isClearable={true}
+        isClearable
         value={defaultValue(options, value)}
         onChange={(value) => onChange(value)}
         // onFocus={handleFocus}

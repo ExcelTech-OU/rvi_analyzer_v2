@@ -37,6 +37,8 @@ export default function Reset() {
     setOpen(false);
   };
 
+  console.log(localStorage.getItem("jwt"));
+
   const formik = useFormik({
     initialValues: {
       userName: "",

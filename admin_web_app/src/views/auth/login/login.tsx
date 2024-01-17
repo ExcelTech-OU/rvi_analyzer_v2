@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import PasswordReset from "./reset-password";
 import { useLoginMutation } from "../../../services/login_service";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
@@ -21,6 +22,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const [isReset, setReset] = useState(false);
 
   const handleClick = () => {
     setOpen(true);
@@ -58,15 +60,18 @@ export default function Login() {
         .unwrap()
         .then((payload) => {
           console.log(payload.state);
-          localStorage.setItem("passwordReset", payload.state);
+          localStorage.removeItem("jwt");
+          localStorage.setItem("jwt", payload.jwt);
           if (payload.state == "S1000") {
+            setReset(false);
             dispatch(loginSuccess(payload));
+            console.log(payload.jwt);
             localStorage.setItem("user", values.userName);
             navigate("/");
           } else if (payload.state == "S1010") {
-            // dispatch(loginSuccess(payload));
-            console.log("reset needed");
-            // navigate("/password-reset");
+            console.log(payload.jwt);
+            setReset(true);
+            navigate("/password-reset");
           }
         })
         .catch((error) => {
@@ -77,7 +82,9 @@ export default function Login() {
     },
   });
 
-  return (
+  return isReset ? (
+    <PasswordReset />
+  ) : (
     <Box
       component="main"
       sx={{
