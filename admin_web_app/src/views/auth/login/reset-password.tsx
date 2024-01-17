@@ -9,18 +9,20 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useLoginMutation } from "../../../services/login_service";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "./auth-slice";
 import { alignProperty } from "@mui/material/styles/cssUtils";
+import { useResetDefaultPasswordMutation } from "../../../services/user_service";
+import Login from "./login";
 
 export default function Reset() {
-  const [login] = useLoginMutation();
+  const [reset] = useResetDefaultPasswordMutation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   const handleClick = () => {
     setOpen(true);
@@ -37,43 +39,45 @@ export default function Reset() {
     setOpen(false);
   };
 
-  console.log(localStorage.getItem("jwt"));
-
   const formik = useFormik({
     initialValues: {
-      userName: "",
       password: "",
     },
     validationSchema: Yup.object({
-      userName: Yup.string()
-        .email("Must be a valid email")
-        .max(255)
-        .required("Email is required"),
       password: Yup.string().max(100).required("Password is required"),
     }),
     onSubmit: (values, actions) => {
-      login({
-        userName: values.userName,
+      reset({
         password: values.password,
         source: "WEB",
       })
         .unwrap()
         .then((payload) => {
-          if (payload.state == "S1000") {
-            dispatch(loginSuccess(payload));
-            localStorage.setItem("user", values.userName);
-            navigate("/");
+          if (payload.status == "S1000") {
+            // dispatch(loginSuccess(payload));
+            setResetSuccess(true);
+            console.log("success");
+            navigate("/login");
+          } else {
+            setResetSuccess(false);
+            setOpen(true);
+            console.log("failed");
+            navigate("/password-reset");
           }
         })
         .catch((error) => {
+          setResetSuccess(false);
           actions.setSubmitting(false);
           actions.resetForm();
+          console.log(error);
           setOpen(true);
         });
     },
   });
 
-  return (
+  return resetSuccess ? (
+    <Login />
+  ) : (
     <Box
       component="main"
       sx={{
@@ -91,11 +95,11 @@ export default function Reset() {
               Reset password
             </Typography>
             <Typography color="textSecondary" gutterBottom variant="body2">
-              Sign in to the RVI Analyzer admin panel
+              Reset your password for your account
             </Typography>
           </Box>
 
-          <TextField
+          {/* <TextField
             error={Boolean(formik.touched.userName && formik.errors.userName)}
             fullWidth
             helperText={formik.touched.userName && formik.errors.userName}
@@ -107,7 +111,7 @@ export default function Reset() {
             type="email"
             value={formik.values.userName}
             variant="outlined"
-          />
+          /> */}
           <TextField
             error={Boolean(formik.touched.password && formik.errors.password)}
             fullWidth
@@ -130,7 +134,7 @@ export default function Reset() {
               type="submit"
               variant="contained"
             >
-              Sign In
+              Reset password
             </Button>
             {/* <Box
               sx={{
@@ -172,7 +176,7 @@ export default function Reset() {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Login Failed! username or password incorrect
+          Password reset Failed! please try again later
         </Alert>
       </Snackbar>
     </Box>

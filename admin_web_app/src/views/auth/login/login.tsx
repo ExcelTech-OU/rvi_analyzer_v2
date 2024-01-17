@@ -65,11 +65,11 @@ export default function Login() {
           if (payload.state == "S1000") {
             setReset(false);
             dispatch(loginSuccess(payload));
-            console.log(payload.jwt);
+            // console.log(payload.jwt);
             localStorage.setItem("user", values.userName);
             navigate("/");
           } else if (payload.state == "S1010") {
-            console.log(payload.jwt);
+            // console.log(payload.jwt);
             setReset(true);
             navigate("/password-reset");
           }
