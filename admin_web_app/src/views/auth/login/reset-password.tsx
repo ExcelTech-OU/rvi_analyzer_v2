@@ -14,11 +14,11 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "./auth-slice";
 import { alignProperty } from "@mui/material/styles/cssUtils";
-import { useResetPasswordMutation } from "../../../services/user_service";
+import { useResetDefaultPasswordMutation } from "../../../services/user_service";
 import Login from "./login";
 
 export default function Reset() {
-  const [login] = useResetPasswordMutation();
+  const [reset] = useResetDefaultPasswordMutation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ export default function Reset() {
       password: Yup.string().max(100).required("Password is required"),
     }),
     onSubmit: (values, actions) => {
-      login({
+      reset({
         password: values.password,
         source: "WEB",
       })

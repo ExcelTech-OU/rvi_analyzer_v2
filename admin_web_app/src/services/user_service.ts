@@ -54,7 +54,11 @@ export const userApi = createApi({
             },
             invalidatesTags: [{ type: 'userList', id: "getUsers" }]
         }),
-        resetPassword: build.mutation<PasswordResetResponse, {}>({
+        resetPassword: build.mutation<UserListResponse, { username: string }>({
+            query: (data) => `rvi/analyzer/v1/user/resetPassword/${data.username}`,
+            invalidatesTags: [{ type: 'userList', id: "getUsers" }]
+        }),
+        resetDefaultPassword: build.mutation<PasswordResetResponse, {}>({
             query(body) {
                 return {
                     url: `rvi/analyzer/v1/user/resetPassword`,
@@ -89,6 +93,7 @@ export const {
     useGetUsersQuery,
     useUpdateUserMutation,
     useResetPasswordMutation,
+    useResetDefaultPasswordMutation,
     useAddUserMutation,
     useGetRolesMutation
 } = userApi
