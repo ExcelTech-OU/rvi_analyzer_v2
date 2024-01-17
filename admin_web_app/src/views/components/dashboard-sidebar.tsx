@@ -157,7 +157,7 @@ export const DashboardSidebar = ({
   var admin = "";
 
   //get user roles from local storage
-  if (localStorage.getItem("roles") === "") {
+  if (localStorage.getItem("roles") === null) {
     console.log("roles empty");
   } else {
     userRoles = localStorage

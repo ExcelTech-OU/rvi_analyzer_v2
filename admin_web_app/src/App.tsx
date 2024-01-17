@@ -5,10 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "./store/hooks";
 import Login from "./views/auth/login/login";
 import { DashboardLayout } from "./views/components/dashboard-layout";
-import { useGetRolesMutation, useGetRolesQuery } from "./services/user_service";
+import { useGetRolesMutation } from "./services/user_service";
 import { useDispatch } from "react-redux";
 import { logout, rolesGetSuccess } from "./views/auth/login/auth-slice";
 import SignUp from "./views/auth/sign_up/sign_up";
+import { Password } from "@mui/icons-material";
 
 type AppProps = {
   children: ReactNode;
@@ -32,21 +33,21 @@ const copyrightStyles = {
 };
 
 function App({ children }: AppProps) {
-  const isLogin = localStorage.getItem("jwt") != null;
+  const isToken = localStorage.getItem("jwt") != null;
+  const isUser = localStorage.getItem("user") != null;
   const stateLogin = useAppSelector((state) => state.loginStatus.jwt);
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   const [roles] = useGetRolesMutation();
   const dispatch = useDispatch();
 
-  // console.log(isLogin);
+  console.log(isUser);
 
   useEffect(() => {
-    if (isLogin) {
+    if (isToken) {
       roles({})
         .unwrap()
         .then((payload) => {
-          // console.log(payload);
           dispatch(rolesGetSuccess(payload));
           navigate("/");
         })
@@ -58,9 +59,9 @@ function App({ children }: AppProps) {
     } else {
       navigate("/login");
     }
-  }, [isLogin]);
+  }, [isToken]);
 
-  return isLogin ? (
+  return isToken && isUser ? (
     <>
       <DashboardLayout>
         <Box

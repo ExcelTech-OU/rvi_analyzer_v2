@@ -21,7 +21,7 @@ export const loginSlice = createSlice({
         loginSuccess: (state, loginResponse: PayloadAction<LoginResponse>) => {
             state.jwt = loginResponse.payload.jwt
             state.simpleUser = loginResponse.payload.user
-            localStorage.setItem("jwt", loginResponse.payload.jwt)
+            // localStorage.setItem("jwt", loginResponse.payload.jwt)
             localStorage.setItem("roles",loginResponse.payload.roles.join(', '));
         },
         setJWT: (state, jwt: PayloadAction<string>) => {
@@ -31,6 +31,7 @@ export const loginSlice = createSlice({
             state = initialState
             localStorage.removeItem("jwt")
             localStorage.removeItem("roles")
+            localStorage.removeItem("user");
         },
         rolesGetSuccess: (state, rolesResponse: PayloadAction<RolesResponse>) => {
             state.simpleUser = rolesResponse.payload.user
