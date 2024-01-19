@@ -17,19 +17,24 @@ import {
 import { GridColDef } from "@mui/x-data-grid";
 import { useGetUsersQuery, User } from "../../../services/user_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
-import CustomizedMenusUsers from "./custom-menu-user";
+import CustomizedMenusUsers from "../../user/view/custom-menu-user";
 import { List } from "reselect/es/types";
 import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
-import { AddUserModel } from "./add-user";
+import { AddStyleModel } from "../add/add-style";
 
 const columns: GridColDef[] = [
-  { field: "email", headerName: "Email", width: 200 },
+  { field: "name", headerName: "Name", width: 200 },
   {
-    field: "group",
-    headerName: "User Group",
-    width: 150,
+    field: "customer",
+    headerName: "Customer",
+    width: 200,
+  },
+  {
+    field: "plant",
+    headerName: "Plant",
+    width: 200,
   },
   {
     field: "createdBy",
@@ -37,34 +42,13 @@ const columns: GridColDef[] = [
     width: 180,
   },
   {
-    field: "supervisor",
-    headerName: "Supervisor",
-    width: 180,
-  },
-  {
     field: "createdDateTime",
     headerName: "Created Date",
     width: 250,
   },
-  {
-    field: "passwordType",
-    headerName: "Password Status",
-    width: 200,
-  },
-  {
-    field: "enabled",
-    headerName: "Status",
-    width: 200,
-  },
-  {
-    field: "actions",
-    headerName: "Actions",
-    type: "actions",
-    width: 200,
-  },
 ];
 
-export default function UserList() {
+export default function StyleList() {
   const { data, error, isLoading } = useGetUsersQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
@@ -139,7 +123,7 @@ export default function UserList() {
                           component="div"
                           color="grey"
                         >
-                          Users
+                          Styles
                         </Typography>
                         <Box display="flex" justifyContent="flex-end">
                           <Button
@@ -220,53 +204,6 @@ export default function UserList() {
                                           <StyledTableCell align={"left"}>
                                             {item.createdDateTime}
                                           </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.passwordType == "PASSWORD" ? (
-                                              <Button
-                                                variant="contained"
-                                                color="success"
-                                              >
-                                                ACTIVE
-                                              </Button>
-                                            ) : item.passwordType ==
-                                              "DEFAULT" ? (
-                                              <Button
-                                                variant="contained"
-                                                color="warning"
-                                              >
-                                                DEFAULT
-                                              </Button>
-                                            ) : (
-                                              <Button
-                                                variant="contained"
-                                                color="error"
-                                              >
-                                                RESET
-                                              </Button>
-                                            )}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.status == "ACTIVE" ? (
-                                              <Button
-                                                variant="contained"
-                                                color="primary"
-                                              >
-                                                ACTIVE
-                                              </Button>
-                                            ) : (
-                                              <Button
-                                                variant="contained"
-                                                color="error"
-                                              >
-                                                TEMPORARY_BLOCKED
-                                              </Button>
-                                            )}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"right"}>
-                                            <CustomizedMenusUsers
-                                              user={item as User}
-                                            />
-                                          </StyledTableCell>
                                         </StyledTableRow>
                                       );
                                     })
@@ -291,7 +228,7 @@ export default function UserList() {
                 </Box>
               </>
             </Container>
-            <AddUserModel open={open} changeOpenStatus={setOpen} />
+            <AddStyleModel open={open} changeOpenStatus={setOpen} />
           </Box>
         )}
       </>
