@@ -81,16 +81,7 @@ Future<LoginResponse> login(
       "stateDescription": "Success",
       "jwt":
           "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b3BBZG1pbjJAZ21haWwuY29tIiwicm9sZXMiOiJbVE9QX0FETUlOXSIsImlhdCI6MTcwNDI1MDQ1MywiZXhwIjoxNzA0MjU2NDUzfQ.AkbuThdYMzCEyCqevJwNiU50MM7JUJ2NUwLpt0IBG3c",
-      "roles": [
-        "LOGIN_WEB",
-        "CREATE_TOP_ADMIN",
-        "CREATE_ADMIN",
-        "RESET_PASSWORD",
-        "UPDATE_DEVICE",
-        "UPDATE_ADMIN_USER",
-        "GET_ALL_USERS",
-        "GET_DEVICES"
-      ]
+      "roles": ["LOGIN_APP", "SAVE_MODE_ONE", "GET_LAST_MODE_ONE"]
     })));
 
     String userGroup = userData['user']['group'];

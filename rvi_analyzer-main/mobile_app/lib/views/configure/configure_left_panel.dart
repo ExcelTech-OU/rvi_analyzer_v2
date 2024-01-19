@@ -37,7 +37,8 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
     'Mode 05',
     'Mode 06'
   ];
-
+  //set assign mode
+  String assignedMode = 'Mode 01';
   void setQRCode(String? qrCode) {
     setState(() {
       if (qrCode != null) {
