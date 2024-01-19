@@ -19,6 +19,7 @@ import Looks4Icon from "@mui/icons-material/Looks4";
 import Looks5Icon from "@mui/icons-material/Looks5";
 import Looks6Icon from "@mui/icons-material/Looks6";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import Pattern from "@mui/icons-material/Pattern";
 import HardwareIcon from "@mui/icons-material/Hardware";
 import AddIcon from "@mui/icons-material/Add";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
@@ -61,6 +62,19 @@ const items = [
     childs: [
       {
         href: "/customers",
+        icon: <ListAlt fontSize="small" />,
+        title: "List",
+        childs: [],
+      },
+    ],
+  },
+  {
+    href: "#",
+    icon: <Pattern fontSize="small" />,
+    title: "Styles",
+    childs: [
+      {
+        href: "/styles",
         icon: <ListAlt fontSize="small" />,
         title: "List",
         childs: [],

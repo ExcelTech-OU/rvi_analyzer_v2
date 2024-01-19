@@ -21,6 +21,7 @@ import ModeSixList from "./views/mode_six/mode-six-list";
 import { theme } from "./theme";
 import ModeOneList from "./views/mode_one/mode-one-list";
 import DeviceList from "./views/device/view/DeviceList";
+import StyleList from "./views/styles/view/StyleList";
 import SignUp from "./views/auth/sign_up/sign_up";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
@@ -40,6 +41,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path="/users" element={<UserList />} />
               <Route path="/plants" element={<PlantList />} />
               <Route path="/customers" element={<CustomerList />} />
+              <Route path="/styles" element={<StyleList />} />
               <Route path="/devices" element={<DeviceList />} />
               <Route path="/questions" element={<QuestionList />} />
               <Route path="/login" element={<Login />} />
