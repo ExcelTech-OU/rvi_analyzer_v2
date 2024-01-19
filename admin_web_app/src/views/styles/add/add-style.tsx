@@ -24,6 +24,7 @@ import {
 } from "../../../services/customer_service";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
+import { useAddStyleMutation } from "../../../services/styles_service";
 
 type AddStyleProps = {
   open: boolean;
@@ -37,7 +38,7 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [addCustomer] = useAddCustomerMutation();
+  const [addStyle] = useAddStyleMutation();
 
   const handleCloseSuccess = () => {
     setOpenSuccess(false);
@@ -55,7 +56,7 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
       name: Yup.string().max(255).required("Style name is required"),
     }),
     onSubmit: (values, actions) => {
-      addCustomer({
+      addStyle({
         name: values.name,
       })
         .unwrap()

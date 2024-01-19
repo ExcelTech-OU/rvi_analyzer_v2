@@ -190,7 +190,10 @@ export const DashboardSidebar = ({
 
   //customizes side bar according to user's permissions
   const newList = items.filter(
-    (item) => item.title !== "Customers" && item.title !== "Plants"
+    (item) =>
+      item.title !== "Customers" &&
+      item.title !== "Plants" &&
+      item.title !== "Styles"
   );
 
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"), {

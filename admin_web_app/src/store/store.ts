@@ -9,12 +9,14 @@ import { loginSlice } from '../views/auth/login/auth-slice'
 import { signUpApi } from '../services/sign_up_service'
 import { customerApi } from '../services/customer_service'
 import { plantApi } from '../services/plant_service'
+import { styleApi } from '../services/styles_service'
 
 export const store = configureStore({
     reducer: {
         [loginApi.reducerPath]: loginApi.reducer,
         // [signUpApi.reducerPath]: signUpApi.reducer,
         [customerApi.reducerPath]: customerApi.reducer,
+        [styleApi.reducerPath]: styleApi.reducer,
         [deviceApi.reducerPath]: deviceApi.reducer,
         [userApi.reducerPath]: userApi.reducer,
         [plantApi.reducerPath]: plantApi.reducer,
@@ -28,6 +30,7 @@ export const store = configureStore({
             // .concat(signUpApi.middleware)
             .concat(plantApi.middleware)
             .concat(customerApi.middleware)
+            .concat(styleApi.middleware)
             .concat(deviceApi.middleware)
             .concat(userApi.middleware)
             .concat(dashboardApi.middleware)

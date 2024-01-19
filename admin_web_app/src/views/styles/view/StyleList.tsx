@@ -23,6 +23,7 @@ import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
 import { AddStyleModel } from "../add/add-style";
+import { Style, useGetStyleQuery } from "../../../services/styles_service";
 
 const columns: GridColDef[] = [
   { field: "name", headerName: "Name", width: 200 },
@@ -49,16 +50,15 @@ const columns: GridColDef[] = [
 ];
 
 export default function StyleList() {
-  const { data, error, isLoading } = useGetUsersQuery("");
+  const { data, error, isLoading } = useGetStyleQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   const [users, setUsers] = useState<any>([]);
   var userRoles: string | string[] = [];
   var admin = "";
-  var userList: List<User> | undefined = [];
-  userList = data?.users;
+  var styleList: List<Style> | undefined = [];
+  styleList = data?.styles;
 
-  console.log("loads");
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
     admin = "ADMIN";
@@ -173,40 +173,32 @@ export default function StyleList() {
                                 {
                                   // users
                                   //   .filter((user: User) => {
-                                  userList
-                                    .filter((user) => {
-                                      if (admin === "ADMIN") {
-                                        return user.group === "USER";
-                                      } else {
-                                        return user;
-                                      }
-                                    })
-                                    .map((item: User, index: any) => {
-                                      return (
-                                        <StyledTableRow
-                                          id={item.username}
-                                          hover
-                                          role="checkbox"
-                                          tabIndex={-1}
-                                        >
-                                          <StyledTableCell align={"left"}>
-                                            {item.username}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.group}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.createdBy}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.supervisor}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.createdDateTime}
-                                          </StyledTableCell>
-                                        </StyledTableRow>
-                                      );
-                                    })
+                                  styleList.map((item: Style, index: any) => {
+                                    return (
+                                      <StyledTableRow
+                                        id={item.name}
+                                        hover
+                                        role="checkbox"
+                                        tabIndex={-1}
+                                      >
+                                        <StyledTableCell align={"left"}>
+                                          {item.name}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.plant}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.customer}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.createdBy}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.createdDateTime}
+                                        </StyledTableCell>
+                                      </StyledTableRow>
+                                    );
+                                  })
                                 }
                               </TableBody>
                             </Table>
