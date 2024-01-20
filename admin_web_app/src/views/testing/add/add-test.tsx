@@ -6,10 +6,14 @@ import {
   Dialog,
   DialogContent,
   FormControl,
+  FormControlLabel,
   FormHelperText,
+  FormLabel,
   IconButton,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   Snackbar,
   Table,
@@ -27,6 +31,7 @@ import {
 } from "../../../services/customer_service";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
 import { useAddStyleMutation } from "../../../services/styles_service";
 import { useAddTestMutation } from "../../../services/test_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
@@ -49,6 +54,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [formReset, setFormReset] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [isParameterSet, setIsParameterSet] = useState(false);
   //   let materials: Material[] = [];
 
   const materials = [
@@ -67,14 +73,24 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
     setOpenFail(false);
   };
 
+  const handleParameters = (event: any) => {
+    formik.handleChange(event);
+    if (event.target.value != null) {
+      console.log(event.target.value);
+      setIsParameterSet(true);
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       testGate: "",
       material: "",
+      parameter: "",
     },
     validationSchema: Yup.object({
       testGate: Yup.string().max(255).required("Test Gate is required"),
       material: Yup.string().max(255).required("Material is required"),
+      parameter: Yup.string().max(255).required("Parameter is required"),
     }),
     onSubmit: (values, actions) => {
       //   addTest({
@@ -128,66 +144,64 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
           <Container
             sx={{ backgroundColor: "#9e9e9e", borderRadius: "8px", py: 1 }}
           >
-            <Box>
-              <Table>
-                <TableHead>
-                  <StyledTableRow>
-                    <StyledTableCell
-                      style={{
-                        color: "#e0e0e0",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      Plant
-                    </StyledTableCell>
-                    <StyledTableCell
-                      style={{
-                        color: "#424242",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      Plant 01
-                    </StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell
-                      style={{
-                        color: "#e0e0e0",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      Customer
-                    </StyledTableCell>
-                    <StyledTableCell
-                      style={{
-                        color: "#424242",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      Customer 01
-                    </StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell
-                      style={{
-                        color: "#e0e0e0",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      Style
-                    </StyledTableCell>
-                    <StyledTableCell
-                      style={{
-                        color: "#424242",
-                        fontWeight: "normal",
-                      }}
-                    >
-                      Style 01
-                    </StyledTableCell>
-                  </StyledTableRow>
-                </TableHead>
-              </Table>
-            </Box>
+            <Table>
+              <TableHead>
+                <StyledTableRow>
+                  <StyledTableCell
+                    style={{
+                      color: "#e0e0e0",
+                      fontWeight: "normal",
+                    }}
+                  >
+                    Plant
+                  </StyledTableCell>
+                  <StyledTableCell
+                    style={{
+                      color: "#424242",
+                      fontWeight: "normal",
+                    }}
+                  >
+                    Plant 01
+                  </StyledTableCell>
+                </StyledTableRow>
+                <StyledTableRow>
+                  <StyledTableCell
+                    style={{
+                      color: "#e0e0e0",
+                      fontWeight: "normal",
+                    }}
+                  >
+                    Customer
+                  </StyledTableCell>
+                  <StyledTableCell
+                    style={{
+                      color: "#424242",
+                      fontWeight: "normal",
+                    }}
+                  >
+                    Customer 01
+                  </StyledTableCell>
+                </StyledTableRow>
+                <StyledTableRow>
+                  <StyledTableCell
+                    style={{
+                      color: "#e0e0e0",
+                      fontWeight: "normal",
+                    }}
+                  >
+                    Style
+                  </StyledTableCell>
+                  <StyledTableCell
+                    style={{
+                      color: "#424242",
+                      fontWeight: "normal",
+                    }}
+                  >
+                    Style 01
+                  </StyledTableCell>
+                </StyledTableRow>
+              </TableHead>
+            </Table>
           </Container>
 
           <TextField
@@ -204,7 +218,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
           />
 
           <FormControl
-            sx={{ mt: 2 }}
+            sx={{ mt: 1 }}
             fullWidth
             error={Boolean(formik.touched.material && formik.errors.material)}
           >
@@ -224,19 +238,92 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
             </FormHelperText>
           </FormControl>
 
-          <Box>
-            <Container
-              style={{
+          <Box
+            sx={{
+              borderRadius: "8px",
+              borderColor: "#9e9e9e",
+              borderWidth: 1,
+              borderStyle: "solid",
+              marginTop: 1.5,
+              padding: 2,
+            }}
+          >
+            <Typography color="textSecondary" gutterBottom variant="body1">
+              Parameters
+            </Typography>
+
+            <FormControl
+              error={Boolean(
+                formik.touched.parameter && formik.errors.parameter
+              )}
+            >
+              {/* <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel> */}
+              <RadioGroup
+                row
+                aria-labelledby="demo-radio-buttons-group-label"
+                // defaultValue="female"
+                name="parameter"
+                onChange={(event) => {
+                  handleParameters(event);
+                }}
+                value={formik.values.parameter}
+              >
+                <FormControlLabel value="V" control={<Radio />} label="V" />
+                <FormControlLabel value="I" control={<Radio />} label="I" />
+                <FormControlLabel value="R" control={<Radio />} label="R" />
+                <FormControlLabel value="T" control={<Radio />} label="T" />
+                <FormControlLabel
+                  value="V & R"
+                  control={<Radio />}
+                  label="V & R"
+                />
+                <FormControlLabel
+                  value="I & R"
+                  control={<Radio />}
+                  label="I & R"
+                />
+                <FormControlLabel
+                  value="T & I"
+                  control={<Radio />}
+                  label="T & I"
+                />
+              </RadioGroup>
+              <FormHelperText>
+                {formik.touched.parameter && formik.errors.parameter}
+              </FormHelperText>
+            </FormControl>
+          </Box>
+          {isParameterSet ? (
+            <Box
+              sx={{
                 borderRadius: "8px",
                 borderColor: "#9e9e9e",
                 borderWidth: 1,
                 borderStyle: "solid",
-                marginTop: 2,
+                marginTop: 1.5,
+                padding: 2,
               }}
             >
-              Test
-            </Container>
-          </Box>
+              <Typography color="textSecondary" gutterBottom variant="body1">
+                Testing Setup
+              </Typography>
+              <Box sx={{ py: 2 }}>
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  sx={{
+                    backgroundColor: "#00e676",
+                    "&:hover": { backgroundColor: "#00a152" },
+                  }}
+                  // onClick={() => setOpen(true)}
+                >
+                  ADD
+                </Button>
+              </Box>
+            </Box>
+          ) : (
+            <></>
+          )}
 
           <Box sx={{ py: 2 }}>
             <Button
