@@ -20,6 +20,7 @@ import Looks5Icon from "@mui/icons-material/Looks5";
 import Looks6Icon from "@mui/icons-material/Looks6";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import Pattern from "@mui/icons-material/Pattern";
+import BugReport from "@mui/icons-material/BugReport";
 import HardwareIcon from "@mui/icons-material/Hardware";
 import AddIcon from "@mui/icons-material/Add";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
@@ -140,7 +141,7 @@ const items = [
   {
     href: "#",
     icon: <Devices fontSize="small" />,
-    title: "devices",
+    title: "Devices",
     childs: [
       // {
       //   href: '/add-device',
@@ -150,6 +151,19 @@ const items = [
       // },
       {
         href: "/devices",
+        icon: <ListAlt fontSize="small" />,
+        title: "List",
+        childs: [],
+      },
+    ],
+  },
+  {
+    href: "#",
+    icon: <BugReport fontSize="small" />,
+    title: "Testing",
+    childs: [
+      {
+        href: "/tests",
         icon: <ListAlt fontSize="small" />,
         title: "List",
         childs: [],
@@ -190,7 +204,10 @@ export const DashboardSidebar = ({
 
   //customizes side bar according to user's permissions
   const newList = items.filter(
-    (item) => item.title !== "Customers" && item.title !== "Plants"
+    (item) =>
+      item.title !== "Customers" &&
+      item.title !== "Plants" &&
+      item.title !== "Styles"
   );
 
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"), {

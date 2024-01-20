@@ -22,7 +22,7 @@ import { List } from "reselect/es/types";
 import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
-import { AddStyleModel } from "../add/add-style";
+import { AddTestModel } from "../add/add-test";
 import { Style, useGetStyleQuery } from "../../../services/styles_service";
 
 const columns: GridColDef[] = [
@@ -49,7 +49,7 @@ const columns: GridColDef[] = [
   },
 ];
 
-export default function StyleList() {
+export default function TestList() {
   const { data, error, isLoading } = useGetStyleQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
@@ -123,7 +123,7 @@ export default function StyleList() {
                           component="div"
                           color="grey"
                         >
-                          Styles
+                          Tests
                         </Typography>
                         <Box display="flex" justifyContent="flex-end">
                           <Button
@@ -220,7 +220,7 @@ export default function StyleList() {
                 </Box>
               </>
             </Container>
-            <AddStyleModel open={open} changeOpenStatus={setOpen} />
+            <AddTestModel open={open} changeOpenStatus={setOpen} />
           </Box>
         )}
       </>

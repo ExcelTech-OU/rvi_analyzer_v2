@@ -1,28 +1,31 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { List } from 'reselect/es/types'
 
-export interface StyleListResponse {
+export interface TestsListResponse {
     status: string
     statusDescription: string
-    styles: List<Style>
+    tests: List<Test>
 }
 
-export interface Style {
+export interface Test {
+    material: string
+    testGate: string
+    parameterModes: List<ParameterMode>
+}
+
+export interface ParameterMode{
     name: string
-    plant: string
-    customer: string
-    createdBy: string
-    createdDateTime: string
+    parameter: string
 }
 
-export interface StyleGetResponse {
+export interface TestGetResponse {
     status: string,
     statusDescription: string,
     name: string
 }
 
-export const styleApi = createApi({
-    reducerPath: 'styleApi',
+export const testApi = createApi({
+    reducerPath: 'testApi',
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
@@ -33,27 +36,27 @@ export const styleApi = createApi({
             return headers;
         },
     }),
-    tagTypes: ['styleList'],
+    tagTypes: ['testList'],
     endpoints: (build) => ({
-        getStyle: build.query<StyleListResponse, {}>({
-            query: () => `rvi/analyzer/v1/styles`,
-            providesTags: [{ type: 'styleList', id: "getStyles" }]
+        getTest: build.query<TestsListResponse, {}>({
+            query: () => `rvi/analyzer/v1/tests`,
+            providesTags: [{ type: 'testList', id: "getTests" }]
 
         }),
-        addStyle: build.mutation<StyleGetResponse, {}>({
+        addTest: build.mutation<TestGetResponse, {}>({
             query(body) {
                 return {
-                    url: `register/style`,
+                    url: `register/test`,
                     method: 'POST',
                     body: body,
                 }
             },
-            invalidatesTags: [{ type: 'styleList', id: "getStyles" }]
+            invalidatesTags: [{ type: 'testList', id: "getTests" }]
         }),
     }),
 })
 
 export const {
-    useGetStyleQuery,
-    useAddStyleMutation,
-} = styleApi
+    useGetTestQuery,
+    useAddTestMutation,
+} = testApi

@@ -23,6 +23,7 @@ import ModeOneList from "./views/mode_one/mode-one-list";
 import DeviceList from "./views/device/view/DeviceList";
 import StyleList from "./views/styles/view/StyleList";
 import SignUp from "./views/auth/sign_up/sign_up";
+import TestList from "./views/testing/view/TestList";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -42,6 +43,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path="/plants" element={<PlantList />} />
               <Route path="/customers" element={<CustomerList />} />
               <Route path="/styles" element={<StyleList />} />
+              <Route path="/tests" element={<TestList />} />
               <Route path="/devices" element={<DeviceList />} />
               <Route path="/questions" element={<QuestionList />} />
               <Route path="/login" element={<Login />} />
