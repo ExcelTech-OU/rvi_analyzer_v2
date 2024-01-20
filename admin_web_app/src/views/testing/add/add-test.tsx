@@ -24,6 +24,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { WithContext as ReactTags } from "react-tag-input";
 import { useFormik } from "formik";
 import {
   Customer,
@@ -55,6 +56,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [isParameterSet, setIsParameterSet] = useState(false);
+  const [parameterModes, setParameterModes] = useState([]);
   //   let materials: Material[] = [];
 
   const materials = [
@@ -292,39 +294,66 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                 {formik.touched.parameter && formik.errors.parameter}
               </FormHelperText>
             </FormControl>
-          </Box>
-          {isParameterSet ? (
-            <Box
-              sx={{
-                borderRadius: "8px",
-                borderColor: "#9e9e9e",
-                borderWidth: 1,
-                borderStyle: "solid",
-                marginTop: 1.5,
-                padding: 2,
-              }}
-            >
-              <Typography color="textSecondary" gutterBottom variant="body1">
-                Testing Setup
-              </Typography>
-              <Box sx={{ py: 2 }}>
-                <Button
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                  sx={{
-                    backgroundColor: "#00e676",
-                    "&:hover": { backgroundColor: "#00a152" },
-                  }}
-                  // onClick={() => setOpen(true)}
-                >
-                  ADD
-                </Button>
-              </Box>
-            </Box>
-          ) : (
-            <></>
-          )}
 
+            {isParameterSet ? (
+              <Box
+                sx={{
+                  marginTop: 1.5,
+                }}
+              >
+                <Typography color="textSecondary" gutterBottom variant="body1">
+                  Testing Setup
+                </Typography>
+                <Box sx={{ py: 2 }}>
+                  <Container
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      flexDirection: "row",
+                      padding: 0,
+                    }}
+                  >
+                    {/* {parameterModes.map((mode:any)=>{
+                      <Typography
+                      color="textSecondary"
+                      gutterBottom
+                      variant="body1"
+                    >
+                      P01
+                    </Typography>
+                    })} */}
+                  </Container>
+                  <TextField
+                    fullWidth
+                    label="Parameter Mode"
+                    margin="normal"
+                    name="parameterMode"
+                    // onBlur={formik.handleBlur}
+                    // onChange={formik.handleChange}
+                    // value={formik.values.testGate}
+                    variant="outlined"
+                    // error={Boolean(
+                    //   formik.touched.testGate && formik.errors.testGate
+                    // )}
+                    // helperText={formik.touched.testGate && formik.errors.testGate}
+                  />
+                  <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    sx={{
+                      backgroundColor: "#00e676",
+                      "&:hover": { backgroundColor: "#00a152" },
+                    }}
+                    // onClick={() => setOpen(true)}
+                  >
+                    SAVE
+                  </Button>
+                </Box>
+              </Box>
+            ) : (
+              <></>
+            )}
+          </Box>
           <Box sx={{ py: 2 }}>
             <Button
               color="primary"
