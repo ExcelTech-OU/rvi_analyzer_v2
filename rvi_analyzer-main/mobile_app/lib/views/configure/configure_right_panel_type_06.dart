@@ -18,6 +18,7 @@ import 'package:rvi_analyzer/views/common/line_chart.dart';
 import 'package:rvi_analyzer/views/common/line_chart_temp.dart';
 import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
+import 'package:rvi_analyzer/views/configure/mode_setting.dart';
 
 class ConfigureRightPanelType06 extends ConsumerStatefulWidget {
   final ScanResult sc;
@@ -766,58 +767,62 @@ class _ConfigureRightPanelType06State
       width: isLandscape ? (width / 3) * 2 - 32 : width,
       child: SizedBox(
         child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 5,
-                  offset: const Offset(0, 0.5), // changes position of shadow
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 5,
+                offset: const Offset(0, 0.5), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Mode 06",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.settings),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ModeSettingsPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 2.0,
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                getScrollView(),
+                const SizedBox(
+                  height: 30.0,
                 ),
               ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        "Mode 06",
-                        style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54),
-                      ),
-                      // const SizedBox(
-                      //   width: 50,
-                      // ),
-                      // Text(
-                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData).notifyData}]",
-                      //   style: const TextStyle(
-                      //       fontSize: 15,
-                      //       fontWeight: FontWeight.bold,
-                      //       color: Colors.black54),
-                      // ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 2.0,
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  getScrollView(),
-                  const SizedBox(
-                    height: 30.0,
-                  ),
-                ],
-              ),
-            )),
+          ),
+        ),
       ),
     );
   }

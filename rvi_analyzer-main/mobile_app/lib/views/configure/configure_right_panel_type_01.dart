@@ -8,23 +8,24 @@ import 'package:rvi_analyzer/repository/entity/common_entity.dart';
 import 'package:rvi_analyzer/repository/entity/login_info.dart';
 import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
 import 'package:rvi_analyzer/repository/login_repo.dart';
+import 'package:rvi_analyzer/service/common_service.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/dropdown.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:rvi_analyzer/views/common/snack_bar.dart';
-import 'package:rvi_analyzer/service/common_service.dart';
+import 'package:rvi_analyzer/views/configure/mode_setting.dart';
 
 class ConfigureRightPanelType01 extends ConsumerStatefulWidget {
   final ScanResult sc;
   final GlobalKey<FormState> keyForm;
   final void Function() updateTestId;
-  const ConfigureRightPanelType01(
-      {Key? key,
-      required this.sc,
-      required this.keyForm,
-      required this.updateTestId})
-      : super(key: key);
+  const ConfigureRightPanelType01({
+    Key? key,
+    required this.sc,
+    required this.keyForm,
+    required this.updateTestId,
+  }) : super(key: key);
 
   @override
   ConsumerState<ConfigureRightPanelType01> createState() =>
@@ -66,58 +67,62 @@ class _ConfigureRightPanelType01State
       width: isLandscape ? (width / 3) * 2 - 32 : width,
       child: SizedBox(
         child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 5,
-                  offset: const Offset(0, 0.5), // changes position of shadow
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 5,
+                offset: const Offset(0, 0.5), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Mode 01",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.settings),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ModeSettingsPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 2.0,
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                getScrollView(),
+                const SizedBox(
+                  height: 30.0,
                 ),
               ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    children: const [
-                      Text(
-                        "Mode 01",
-                        style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54),
-                      ),
-                      // const SizedBox(
-                      //   width: 50,
-                      // ),
-                      // Text(
-                      //   "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData).notifyData}]",
-                      //   style: const TextStyle(
-                      //       fontSize: 15,
-                      //       fontWeight: FontWeight.bold,
-                      //       color: Colors.black54),
-                      // ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 2.0,
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  getScrollView(),
-                  const SizedBox(
-                    height: 30.0,
-                  ),
-                ],
-              ),
-            )),
+          ),
+        ),
       ),
     );
   }
