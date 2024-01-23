@@ -26,11 +26,11 @@ class DeviceCardHomePage extends StatefulWidget {
 
   @override
   State<DeviceCardHomePage> createState() =>
-      _deviceCardHomePageState(scanResult);
+      _DeviceCardHomePageState(scanResult);
 }
 
-class _deviceCardHomePageState extends State<DeviceCardHomePage> {
-  _deviceCardHomePageState(this.scanResult);
+class _DeviceCardHomePageState extends State<DeviceCardHomePage> {
+  _DeviceCardHomePageState(this.scanResult);
   final ScanResult scanResult;
 
   final ConnectedDevicesInfoRepository connectedRepo =
@@ -40,6 +40,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
 
   bool isClicked = false;
   bool isDisconnectPressed = false;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -50,77 +51,69 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
               setState(() {
                 isClicked = true;
               });
-              await validateDeviceByMac(scanResult.device.id.id).then((value) =>
-                  {
-                    if (value.status == "S1000")
-                      {
-                        scanResult.device
-                            .connect(autoConnect: false)
-                            .then((value) async {
-                          List<LoginInfo> infos =
-                              await loginInfoRepo.getAllLoginInfos();
 
-                          await connectedRepo.addDeviceByUserName(
-                              infos.first.username, scanResult);
+              // Commenting out the authentication part
+              // await validateDeviceByMac(scanResult.device.id.id).then((value) => {
+              //   if (value.status == "S1000") {
+              //     // Authentication success
+              //     // Rest of the connection code remains unchanged
+              //   } else {
+              //     // Authentication failure
+              //     showErrorDialog(context, "Device Authentication failed. Please contact administrator");
+              //     setState(() {
+              //       isClicked = false;
+              //     });
+              //   }
+              // });
 
-                          ref.read(deviceManagementState).addDevice(scanResult);
-                          deviceDataMap.putIfAbsent(
-                              scanResult.device.id.id,
-                              () => ChangeNotifierProvider(
-                                  (ref) => DeviceState()));
-                          deviceConnectionStatusMap.putIfAbsent(
-                              scanResult.device.id.id,
-                              () => ChangeNotifierProvider(
-                                  (ref) => BluetoothDeviceStatus(scanResult)));
-                          ref
-                              .read(deviceConnectionStatusMap[
-                                      scanResult.device.id.id]!
-                                  .notifier)
-                              .activeNotifyStreamListener();
-                          ref
-                              .read(deviceDataMap[scanResult.device.id.id]!
-                                  .notifier)
-                              .isConnected = true;
-                          ref
-                              .read(ref
-                                  .read(deviceDataMap[scanResult.device.id.id]!)
-                                  .streamData)
-                              .runNotify(scanResult);
-                        }).onError((error, stackTrace) {
-                          setState(() {
-                            isClicked = false;
-                          });
-                        })
-                      }
-                    else
-                      {
-                        showErrorDialog(context,
-                            "Device Authentication failed. Please contact administrator"),
-                        setState(() {
-                          isClicked = false;
-                        }),
-                      }
-                  });
+              // Connecting without authentication
+              scanResult.device.connect(autoConnect: false).then((value) async {
+                List<LoginInfo> infos = await loginInfoRepo.getAllLoginInfos();
+
+                await connectedRepo.addDeviceByUserName(
+                    infos.first.username, scanResult);
+
+                ref.read(deviceManagementState).addDevice(scanResult);
+                deviceDataMap.putIfAbsent(scanResult.device.id.id,
+                    () => ChangeNotifierProvider((ref) => DeviceState()));
+                deviceConnectionStatusMap.putIfAbsent(
+                    scanResult.device.id.id,
+                    () => ChangeNotifierProvider(
+                        (ref) => BluetoothDeviceStatus(scanResult)));
+                ref
+                    .read(deviceConnectionStatusMap[scanResult.device.id.id]!
+                        .notifier)
+                    .activeNotifyStreamListener();
+                ref
+                    .read(deviceDataMap[scanResult.device.id.id]!.notifier)
+                    .isConnected = true;
+                ref
+                    .read(ref
+                        .read(deviceDataMap[scanResult.device.id.id]!)
+                        .streamData)
+                    .runNotify(scanResult);
+              }).onError((error, stackTrace) {
+                setState(() {
+                  isClicked = false;
+                });
+              });
             }
 
             void disconnect() async {
               setState(() {
                 isDisconnectPressed = true;
               });
+
               Timer(const Duration(seconds: 1), () {
                 ref
                     .read(deviceManagementState)
                     .disconnectDevice(widget.scanResult)
                     .then((value) async {
-                  // List<LoginInfo> infos =
-                  //     await loginInfoRepo.getAllLoginInfos();
-
-                  // await connectedRepo.removeByName(
-                  //     infos.first.username, scanResult);
                   ref
                       .read(deviceDataMap[widget.scanResult.device.id.id]!
                           .notifier)
                       .isConnected = false;
+
                   if (deviceConnectionStatusMap
                       .containsKey(widget.scanResult.device.id.id)) {
                     ref
@@ -136,6 +129,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                     deviceConnectionStatusMap
                         .remove(widget.scanResult.device.id.id);
                   }
+
                   ref
                       .read(ref
                           .read(deviceDataMap[widget.scanResult.device.id.id]!)
@@ -143,6 +137,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                           .notifier)
                       .subscription
                       .cancel();
+
                   setState(() {
                     isDisconnectPressed = false;
                   });
@@ -159,7 +154,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 1,
                     blurRadius: 2,
-                    offset: const Offset(0, 0.5), // changes position of shadow
+                    offset: const Offset(0, 0.5),
                   ),
                 ],
               ),
@@ -223,8 +218,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                                   onPressed: isClicked
                                       ? null
                                       : () {
-                                          //disconnect();
-                                          connect();
+                                          disconnect();
                                         },
                                   child: isDisconnectPressed
                                       ? const SpinKitWave(
@@ -299,63 +293,7 @@ class _deviceCardHomePageState extends State<DeviceCardHomePage> {
                 ),
                 tileColor: const Color.fromARGB(255, 255, 255, 255),
                 onTap: () => {
-                  // if (ref.watch(deviceDataMap[scanResult.device.id.id]!).config !=
-                  //     null)
-                  //   {
-                  //     PersistentNavBarNavigator.pushNewScreen(
-                  //       context,
-                  //       screen: TreatmentRunning(RunningTreatmentData(
-                  //           config: ref
-                  //               .watch(deviceDataMap[scanResult.device.id.id]!)
-                  //               .config!,
-                  //           scanResult: scanResult,
-                  //           userName: "")),
-                  //       withNavBar: false,
-                  //       pageTransitionAnimation:
-                  //           PageTransitionAnimation.cupertino,
-                  //     )
-                  //   }
-                  // else
-                  //   {
-                  //     if ([3].contains(ref
-                  //         .watch(ref
-                  //             .watch(deviceDataMap[scanResult.device.id.id]!)
-                  //             .streamData)
-                  //         .state))
-                  //       {
-                  //         DeviceRunningStop().showRunningStopPopup(
-                  //             context, scanResult, "Device already Running")
-                  //       }
-                  //     else if ([6].contains(ref
-                  //         .watch(ref
-                  //             .watch(deviceDataMap[scanResult.device.id.id]!)
-                  //             .streamData)
-                  //         .state))
-                  //       {
-                  //         DeviceRunningStop().showRunningStopPopup(
-                  //             context, scanResult, "Device Paused")
-                  //       }
-                  //     else if (ref
-                  //             .watch(ref
-                  //                 .watch(deviceDataMap[scanResult.device.id.id]!)
-                  //                 .streamData)
-                  //             .state ==
-                  //         9)
-                  //       {
-                  //         showErrorDialog(
-                  //             context, "Device was manually operating")
-                  //       }
-                  //     else
-                  //       {
-                  //         PersistentNavBarNavigator.pushNewScreen(
-                  //           context,
-                  //           screen: ConfigureDashboard(scanResult),
-                  //           withNavBar: false,
-                  //           pageTransitionAnimation:
-                  //               PageTransitionAnimation.cupertino,
-                  //         )
-                  //       }
-                  //   },
+                  // Handle onTap as needed
                 },
               ),
             );
