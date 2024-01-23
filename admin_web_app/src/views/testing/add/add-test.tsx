@@ -24,6 +24,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { WithContext as ReactTags } from "react-tag-input";
 import { useFormik } from "formik";
 import {
   Customer,
@@ -55,6 +56,9 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [isParameterSet, setIsParameterSet] = useState(false);
+  const [parameterModes, setParameterModes] = useState([]);
+  const [parameter, setParameter] = useState(null);
+  const [parameterError, setParameterError] = useState("");
   //   let materials: Material[] = [];
 
   const materials = [
@@ -74,7 +78,8 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   };
 
   const handleParameters = (event: any) => {
-    formik.handleChange(event);
+    setParameter(event.target.value);
+    // formik.handleChange;
     if (event.target.value != null) {
       console.log(event.target.value);
       setIsParameterSet(true);
@@ -85,14 +90,20 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
     initialValues: {
       testGate: "",
       material: "",
-      parameter: "",
+      parameterMode: "",
     },
     validationSchema: Yup.object({
       testGate: Yup.string().max(255).required("Test Gate is required"),
       material: Yup.string().max(255).required("Material is required"),
-      parameter: Yup.string().max(255).required("Parameter is required"),
+      parameterMode: isParameterSet
+        ? Yup.string().max(255).required("Parameter mode is required")
+        : Yup.string().max(255).required("Parameter is required"),
+      // parameterMode: Yup.string()
+      //   .max(255)
+      //   .required("Parameter mode is required"),
     }),
     onSubmit: (values, actions) => {
+      console.log("works");
       //   addTest({
       //     testGate: values.testGate,
       //     material: values.material,
@@ -254,7 +265,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
 
             <FormControl
               error={Boolean(
-                formik.touched.parameter && formik.errors.parameter
+                formik.touched.parameterMode && formik.errors.parameterMode
               )}
             >
               {/* <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel> */}
@@ -266,7 +277,8 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                 onChange={(event) => {
                   handleParameters(event);
                 }}
-                value={formik.values.parameter}
+                // value={formik.values.parameterMode}
+                value={parameter}
               >
                 <FormControlLabel value="V" control={<Radio />} label="V" />
                 <FormControlLabel value="I" control={<Radio />} label="I" />
@@ -288,43 +300,82 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                   label="T & I"
                 />
               </RadioGroup>
-              <FormHelperText>
-                {formik.touched.parameter && formik.errors.parameter}
-              </FormHelperText>
+              {isParameterSet ? (
+                <Box
+                  sx={{
+                    marginTop: 1.5,
+                  }}
+                >
+                  <Typography
+                    color="textSecondary"
+                    gutterBottom
+                    variant="body1"
+                  >
+                    Testing Setup
+                  </Typography>
+                  <Box sx={{ py: 2 }}>
+                    <Container
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        flexDirection: "row",
+                        padding: 0,
+                      }}
+                    >
+                      {/* {parameterModes.map((mode:any)=>{
+                      <Typography
+                      color="textSecondary"
+                      gutterBottom
+                      variant="body1"
+                    >
+                      P01
+                    </Typography>
+                    })} */}
+                    </Container>
+                    <TextField
+                      fullWidth
+                      label="Parameter Mode"
+                      margin="normal"
+                      name="parameterMode"
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      value={formik.values.parameterMode}
+                      variant="outlined"
+                      error={Boolean(
+                        formik.touched.parameterMode &&
+                          formik.errors.parameterMode
+                      )}
+                    />
+                    <Button
+                      variant="contained"
+                      startIcon={<AddIcon />}
+                      sx={{
+                        backgroundColor: "#00e676",
+                        "&:hover": { backgroundColor: "#00a152" },
+                      }}
+                      // onClick={() => setOpen(true)}
+                    >
+                      SAVE
+                    </Button>
+                  </Box>
+                </Box>
+              ) : (
+                <></>
+              )}
+              {parameter === null ? (
+                <FormHelperText>
+                  {formik.touched.parameterMode && formik.errors.parameterMode}
+                </FormHelperText>
+              ) : formik.errors.parameterMode ===
+                "Parameter mode is required" ? (
+                <FormHelperText>
+                  {formik.touched.parameterMode && formik.errors.parameterMode}
+                </FormHelperText>
+              ) : (
+                <></>
+              )}
             </FormControl>
           </Box>
-          {isParameterSet ? (
-            <Box
-              sx={{
-                borderRadius: "8px",
-                borderColor: "#9e9e9e",
-                borderWidth: 1,
-                borderStyle: "solid",
-                marginTop: 1.5,
-                padding: 2,
-              }}
-            >
-              <Typography color="textSecondary" gutterBottom variant="body1">
-                Testing Setup
-              </Typography>
-              <Box sx={{ py: 2 }}>
-                <Button
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                  sx={{
-                    backgroundColor: "#00e676",
-                    "&:hover": { backgroundColor: "#00a152" },
-                  }}
-                  // onClick={() => setOpen(true)}
-                >
-                  ADD
-                </Button>
-              </Box>
-            </Box>
-          ) : (
-            <></>
-          )}
-
           <Box sx={{ py: 2 }}>
             <Button
               color="primary"
@@ -333,6 +384,11 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
               size="large"
               type="submit"
               variant="contained"
+              // onClick={(e) => {
+              //   parameter === null
+              //     ? setParameterError("Parameter is required")
+              //     : setParameterError("");
+              // }}
             >
               ADD
             </Button>
