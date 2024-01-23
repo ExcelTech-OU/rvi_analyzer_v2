@@ -11,6 +11,9 @@ import {
   FormLabel,
   IconButton,
   InputLabel,
+  List,
+  ListItem,
+  ListItemText,
   MenuItem,
   Radio,
   RadioGroup,
@@ -23,7 +26,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { WithContext as ReactTags } from "react-tag-input";
 import { useFormik } from "formik";
 import {
@@ -32,6 +35,7 @@ import {
 } from "../../../services/customer_service";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useAddStyleMutation } from "../../../services/styles_service";
 import { useAddTestMutation } from "../../../services/test_service";
@@ -49,6 +53,11 @@ interface Material {
   customer: string;
 }
 
+interface parameterSetup {
+  param: string;
+  mode: string;
+}
+
 export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openFail, setOpenFail] = useState(false);
@@ -56,10 +65,19 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [isParameterSet, setIsParameterSet] = useState(false);
-  const [parameterModes, setParameterModes] = useState([]);
+  const [parameterModes, setParameterModes] = useState<parameterSetup[]>([]);
   const [parameter, setParameter] = useState(null);
+  const [parameterMode, setParameterMode] = useState("");
   const [parameterError, setParameterError] = useState("");
   //   let materials: Material[] = [];
+
+  useEffect(() => {
+    console.log(parameterModes);
+  }, [parameterModes]);
+
+  // useEffect(() => {
+  //   console.log(parameterMode);
+  // }, [parameterMode]);
 
   const materials = [
     { value: "Material 01", label: "Material 01" },
@@ -84,6 +102,19 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
       console.log(event.target.value);
       setIsParameterSet(true);
     }
+  };
+
+  const handleParameterModesList = () => {
+    const newParameterModes: parameterSetup = [
+      ...parameterModes,
+      { param: parameter, mode: parameterMode },
+    ];
+    setParameterModes(newParameterModes);
+    // console.log(parameter + ", " + parameterMode);
+  };
+
+  const removePrameterModes = (name: String) => {
+    setParameterModes(parameterModes.filter((mode) => mode.mode !== name));
   };
 
   const formik = useFormik({
@@ -322,15 +353,33 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                         padding: 0,
                       }}
                     >
-                      {/* {parameterModes.map((mode:any)=>{
-                      <Typography
-                      color="textSecondary"
-                      gutterBottom
-                      variant="body1"
-                    >
-                      P01
-                    </Typography>
-                    })} */}
+                      <List
+                        sx={{
+                          width: "100%",
+                          maxWidth: 360,
+                        }}
+                      >
+                        {parameterModes.map((value: parameterSetup) => (
+                          <ListItem
+                            key={value.mode}
+                            disableGutters
+                            sx={{
+                              backgroundColor: "#e0e0e0",
+                              color: "white",
+                              mt: 1,
+                              borderRadius: "6px",
+                              padding: 1,
+                            }}
+                            secondaryAction={
+                              <IconButton aria-label="comment">
+                                <DeleteIcon sx={{ color: "white" }} />
+                              </IconButton>
+                            }
+                          >
+                            <ListItemText primary={`Line item ${value.mode}`} />
+                          </ListItem>
+                        ))}
+                      </List>
                     </Container>
                     <TextField
                       fullWidth
@@ -338,7 +387,10 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                       margin="normal"
                       name="parameterMode"
                       onBlur={formik.handleBlur}
-                      onChange={formik.handleChange}
+                      onChange={(event) => {
+                        formik.handleChange(event);
+                        setParameterMode(event.target.value);
+                      }}
                       value={formik.values.parameterMode}
                       variant="outlined"
                       error={Boolean(
@@ -353,7 +405,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                         backgroundColor: "#00e676",
                         "&:hover": { backgroundColor: "#00a152" },
                       }}
-                      // onClick={() => setOpen(true)}
+                      onClick={handleParameterModesList}
                     >
                       SAVE
                     </Button>
