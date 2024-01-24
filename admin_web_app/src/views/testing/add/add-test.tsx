@@ -68,7 +68,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [parameterModes, setParameterModes] = useState<parameterSetup[]>([]);
   const [parameter, setParameter] = useState(null);
   const [parameterMode, setParameterMode] = useState("");
-  const [parameterError, setParameterError] = useState("");
+  const [parameterModeError, setParameterModeError] = useState("");
   // let materials: Material[] = [];
 
   useEffect(() => {
@@ -106,6 +106,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
 
   const handleParameterModesList = () => {
     if (!parameterModes.some((object) => object.mode === parameterMode)) {
+      setParameterModeError("");
       const newParameterModes: parameterSetup = [
         ...parameterModes,
         { param: parameter, mode: parameterMode },
@@ -113,6 +114,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
       setParameterModes(newParameterModes);
     } else {
       console.log("Duplicate found");
+      setParameterModeError("Mode is already added");
     }
 
     // console.log(parameter + ", " + parameterMode);
@@ -448,6 +450,10 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                 "Parameter mode is required" ? (
                 <FormHelperText>
                   {formik.touched.parameterMode && formik.errors.parameterMode}
+                </FormHelperText>
+              ) : parameterModeError != "" ? (
+                <FormHelperText sx={{ color: "#d32f2f" }}>
+                  {parameterModeError}
                 </FormHelperText>
               ) : (
                 <></>
