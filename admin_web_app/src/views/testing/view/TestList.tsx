@@ -26,15 +26,20 @@ import { AddTestModel } from "../add/add-test";
 import { Style, useGetStyleQuery } from "../../../services/styles_service";
 
 const columns: GridColDef[] = [
-  { field: "name", headerName: "Name", width: 200 },
+  { field: "parameterMode", headerName: "Parameter Mode", width: 200 },
   {
-    field: "customer",
-    headerName: "Customer",
+    field: "parameters",
+    headerName: "parameters",
     width: 200,
   },
   {
-    field: "plant",
-    headerName: "Plant",
+    field: "testGate",
+    headerName: "Test Gate",
+    width: 200,
+  },
+  {
+    field: "material",
+    headerName: "Material",
     width: 200,
   },
   {
@@ -183,6 +188,9 @@ export default function TestList() {
                                       >
                                         <StyledTableCell align={"left"}>
                                           {item.name}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          UN-ASSIGNED
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {item.plant}
