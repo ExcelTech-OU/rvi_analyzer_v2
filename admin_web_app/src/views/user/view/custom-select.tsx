@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import Select from "react-select";
 import { useFormik } from "formik";
-export default ({ onChange, options, value, className, name, id, onBlur }) => {
+export default ({
+  onChange,
+  options,
+  value,
+  className,
+  name,
+  id,
+  onBlur,
+  placeholder,
+}) => {
   const defaultValue = (options: any[], values: any) => {
     return options ? options.find((option) => option.value === value) : "";
   };
@@ -38,6 +47,7 @@ export default ({ onChange, options, value, className, name, id, onBlur }) => {
         name={name}
         id={id}
         isClearable
+        placeholder={placeholder}
         value={defaultValue(options, value)}
         onChange={(value) => onChange(value)}
         // onFocus={handleFocus}

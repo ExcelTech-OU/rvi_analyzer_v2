@@ -283,6 +283,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
           >
             <CustomSelect
               id="material"
+              placeholder="Material"
               options={materials}
               onChange={(value: { value: any }) => {
                 formik.setFieldValue("material", value.value);

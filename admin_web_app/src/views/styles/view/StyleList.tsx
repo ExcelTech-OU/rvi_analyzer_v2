@@ -24,6 +24,10 @@ import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
 import { AddStyleModel } from "../add/add-style";
 import { Style, useGetStyleQuery } from "../../../services/styles_service";
+import {
+  Customer,
+  useGetCustomerQuery,
+} from "../../../services/customer_service";
 
 const columns: GridColDef[] = [
   { field: "name", headerName: "Name", width: 200 },
@@ -51,6 +55,8 @@ const columns: GridColDef[] = [
 
 export default function StyleList() {
   const { data, error, isLoading } = useGetStyleQuery("");
+  // const { data:Customer, error, isLoading } =
+  //   useGetCustomerQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   const [users, setUsers] = useState<any>([]);
@@ -58,6 +64,8 @@ export default function StyleList() {
   var admin = "";
   var styleList: List<Style> | undefined = [];
   styleList = data?.styles;
+  // var customerList: List<Customer> | undefined = [];
+  // customerList = data;
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
