@@ -353,6 +353,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                 <CustomSelect
                   id="supervisor"
                   options={admin_options}
+                  placeholder="Superviser"
                   onChange={(value: { value: any }) => {
                     formik.setFieldValue("supervisor", value.value);
                   }}

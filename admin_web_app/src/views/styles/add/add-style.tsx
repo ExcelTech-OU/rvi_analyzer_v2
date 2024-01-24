@@ -21,10 +21,11 @@ import { useFormik } from "formik";
 import {
   Customer,
   useAddCustomerMutation,
-} from "../../../services/customer_service";
+} from "../../../services/plant_service";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAddStyleMutation } from "../../../services/styles_service";
+import CustomSelect from "../../user/view/custom-select";
 
 type AddStyleProps = {
   open: boolean;
@@ -37,6 +38,17 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
   const [formReset, setFormReset] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const customers = [
+    { value: "Customer 01", label: "Customer 01" },
+    { value: "Customer 02", label: "Customer 02" },
+    { value: "Customer 03", label: "Customer 03" },
+  ];
+
+  const plants = [
+    { value: "Plant 01", label: "Plant 01" },
+    { value: "Plant 02", label: "Plant 02" },
+    { value: "Plant 03", label: "Plant 03" },
+  ];
 
   const [addStyle] = useAddStyleMutation();
 
@@ -51,13 +63,19 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
   const formik = useFormik({
     initialValues: {
       name: "",
+      customer: "",
+      plant: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().max(255).required("Style name is required"),
+      customer: Yup.string().max(255).required("Customer is required"),
+      plant: Yup.string().max(255).required("Plant is required"),
     }),
     onSubmit: (values, actions) => {
       addStyle({
         name: values.name,
+        customer: values.customer,
+        plant: values.plant,
       })
         .unwrap()
         .then((payload) => {
@@ -115,6 +133,50 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
             error={Boolean(formik.touched.name && formik.errors.name)}
             helperText={formik.touched.name && formik.errors.name}
           />
+
+          <FormControl
+            sx={{ mt: 1 }}
+            fullWidth
+            error={Boolean(formik.touched.customer && formik.errors.customer)}
+          >
+            <CustomSelect
+              id="customer"
+              options={customers}
+              placeholder="Customer"
+              onChange={(value: { value: any }) => {
+                formik.setFieldValue("customer", value.value);
+              }}
+              name="customer"
+              className={"input"}
+              value={formik.values.customer}
+              onBlur={formik}
+            />
+            <FormHelperText>
+              {formik.touched.customer && formik.errors.customer}
+            </FormHelperText>
+          </FormControl>
+
+          <FormControl
+            sx={{ mt: 1 }}
+            fullWidth
+            error={Boolean(formik.touched.plant && formik.errors.plant)}
+          >
+            <CustomSelect
+              id="plant"
+              options={plants}
+              placeholder="Plant"
+              onChange={(value: { value: any }) => {
+                formik.setFieldValue("plant", value.value);
+              }}
+              name="plant"
+              className={"input"}
+              value={formik.values.plant}
+              onBlur={formik}
+            />
+            <FormHelperText>
+              {formik.touched.plant && formik.errors.plant}
+            </FormHelperText>
+          </FormControl>
 
           <Box sx={{ py: 2 }}>
             <Button

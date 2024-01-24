@@ -66,8 +66,10 @@ public class StyleService {
                 .map(styleMapper::styleDtoToStyle)
                 .doOnNext(style -> {
                     style.setName(styleDto.getName());
-                    style.setPlant("UN-ASSIGNED");
-                    style.setCustomer("UN-ASSIGNED");
+                    style.setCustomer(styleDto.getCustomer() != null ? styleDto.getCustomer() : "UN-ASSIGNED");
+                    style.setPlant(styleDto.getPlant() != null ? styleDto.getPlant() : "UN-ASSIGNED");
+//                    style.setPlant("UN-ASSIGNED");
+//                    style.setCustomer("UN-ASSIGNED");
                     style.setCreatedBy(username);
                     style.setCreatedDateTime(LocalDateTime.now());
                 })
