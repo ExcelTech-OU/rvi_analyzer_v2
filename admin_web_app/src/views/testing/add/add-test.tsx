@@ -69,7 +69,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [parameter, setParameter] = useState(null);
   const [parameterMode, setParameterMode] = useState("");
   const [parameterError, setParameterError] = useState("");
-  //   let materials: Material[] = [];
+  // let materials: Material[] = [];
 
   useEffect(() => {
     console.log(parameterModes);
@@ -105,17 +105,32 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   };
 
   const handleParameterModesList = () => {
-    const newParameterModes: parameterSetup = [
-      ...parameterModes,
-      { param: parameter, mode: parameterMode },
-    ];
-    setParameterModes(newParameterModes);
+    if (!parameterModes.some((object) => object.mode === parameterMode)) {
+      const newParameterModes: parameterSetup = [
+        ...parameterModes,
+        { param: parameter, mode: parameterMode },
+      ];
+      setParameterModes(newParameterModes);
+    } else {
+      console.log("Duplicate found");
+    }
+
     // console.log(parameter + ", " + parameterMode);
   };
 
-  const removePrameterModes = (name: String) => {
-    setParameterModes(parameterModes.filter((mode) => mode.mode !== name));
+  const removeParameterModes = (name: string) => {
+    const updatedList: parameterSetup[] = parameterModes.filter(
+      (mode: parameterSetup) => {
+        return mode.mode !== name;
+      }
+    );
+
+    setParameterModes(updatedList);
   };
+
+  // const removePrameterModes = (name: String) => {
+  //   setParameterModes(parameterModes.filter((mode) => mode.mode !== name));
+  // };
 
   const formik = useFormik({
     initialValues: {
@@ -371,12 +386,23 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                               padding: 1,
                             }}
                             secondaryAction={
-                              <IconButton aria-label="comment">
+                              <IconButton
+                                aria-label="comment"
+                                onClick={() => {
+                                  removeParameterModes(value.mode);
+                                }}
+                              >
                                 <DeleteIcon sx={{ color: "white" }} />
                               </IconButton>
                             }
                           >
-                            <ListItemText primary={`Line item ${value.mode}`} />
+                            <ListItemText
+                              primary={`Parameter mode ${
+                                parameterModes.findIndex(
+                                  (object) => object.mode === value.mode
+                                ) + 1
+                              }:  ${value.mode}`}
+                            />
                           </ListItem>
                         ))}
                       </List>
