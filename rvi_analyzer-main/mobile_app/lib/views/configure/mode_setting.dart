@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:rvi_analyzer/views/configure/customer_po_setting.dart';
 import 'package:rvi_analyzer/views/configure/rm_setting_page.dart';
+import 'package:rvi_analyzer/views/configure/customer_po_setting.dart';
 
 class ModeSettingsPage extends StatelessWidget {
+  // Variable to track if the first "Add" button is pressed
+  bool isFirstAddButtonPressed = false;
+  bool isSecondAddButtonPressed = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,14 +18,14 @@ class ModeSettingsPage extends StatelessWidget {
             style: TextStyle(
               fontSize: 30.0,
               fontWeight: FontWeight.bold,
+              color: Colors.black54,
             ),
           ),
         ),
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: const Color.fromARGB(
-              255, 157, 195, 226), // Set the background color to blue
+          color: Colors.cyan,
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -42,15 +48,6 @@ class ModeSettingsPage extends StatelessWidget {
                   SizedBox(
                     height: 16.0,
                   ), // Add some space between the rectangles and the "Next" button
-
-                  // Next button
-                  ElevatedButton(
-                    onPressed: () {
-                      // Add your logic here when the "Next" button is pressed
-                      print('Next button pressed');
-                    },
-                    child: Text('Next'),
-                  ),
                 ],
               ),
             ),
@@ -59,9 +56,6 @@ class ModeSettingsPage extends StatelessWidget {
       ),
     );
   }
-
-  // Variable to track if the first "Add" button is pressed
-  bool isFirstAddButtonPressed = false;
 
   Widget buildLabelRow(BuildContext context, String label) {
     return Row(
@@ -99,6 +93,12 @@ class ModeSettingsPage extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => RmSettingPage()),
+              );
+            } else if (label == "Customer PO" && !isSecondAddButtonPressed) {
+              isSecondAddButtonPressed = true;
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => PoSettingPage()),
               );
             }
           },

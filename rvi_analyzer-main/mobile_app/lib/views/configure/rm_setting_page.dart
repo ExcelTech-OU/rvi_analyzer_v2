@@ -1,18 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:rvi_analyzer/views/configure/customer_po_setting.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class RmSettingPage extends StatelessWidget {
+class RmSettingPage extends StatefulWidget {
+  @override
+  _RmSettingPageState createState() => _RmSettingPageState();
+}
+
+class _RmSettingPageState extends State<RmSettingPage> {
+  String? selectedPlant;
+  String? selectedCustomer;
+  String? selectedStyle;
+  String? inputValue;
+  bool settingsSaved = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text(
-            ' Setting',
+            'Setting',
             style: TextStyle(
               fontSize: 30.0,
               fontWeight: FontWeight.bold,
+              color: Colors.black54,
             ),
           ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(
+                context); // Use Navigator.pop instead of Navigator.pushReplacement
+          },
         ),
       ),
       body: SingleChildScrollView(
@@ -24,25 +45,39 @@ class RmSettingPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Label 1 with Dropdown
                     buildLabelWithDropdown(
                       "Plant",
                       ["Plant 1", "Plant 2", "Plant 3"],
+                      selectedPlant,
+                      (String? newValue) {
+                        setState(() {
+                          selectedPlant = newValue;
+                        });
+                        print('Selected $newValue for Plant');
+                      },
                     ),
-
-                    // Label 2 with Dropdown
                     buildLabelWithDropdown(
                       "Customer",
                       ["Customer A", "Customer B", "Customer C"],
+                      selectedCustomer,
+                      (String? newValue) {
+                        setState(() {
+                          selectedCustomer = newValue;
+                        });
+                        print('Selected $newValue for Customer');
+                      },
                     ),
-
-                    // Label 3 with Dropdown
                     buildLabelWithDropdown(
                       "Style",
                       ["Style X", "Style Y", "Style Z"],
+                      selectedStyle,
+                      (String? newValue) {
+                        setState(() {
+                          selectedStyle = newValue;
+                        });
+                        print('Selected $newValue for Style');
+                      },
                     ),
-
-                    // Label 4 with Text Input
                     buildLabelWithTextInput("RM"),
                   ],
                 ),
@@ -51,11 +86,60 @@ class RmSettingPage extends StatelessWidget {
                 bottom: 16.0,
                 right: 16.0,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Handle save button click
-                    print("Save button clicked");
+                  onPressed: () async {
+                    if (validateInput()) {
+                      if (settingsSaved) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PoSettingPage(),
+                          ),
+                        );
+                      } else {
+                        await saveToLocalStorage();
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Saved"),
+                              content: Text("Saved successfully."),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    setState(() {
+                                      settingsSaved = true;
+                                    });
+                                  },
+                                  child: Text("OK"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    } else {
+                      // Show error message for empty RM field
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Error"),
+                            content: Text("RM field cannot be empty."),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("OK"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
                   },
-                  child: Text("Save"),
+                  child: Text(settingsSaved ? "Next" : "Save"),
                 ),
               ),
             ],
@@ -65,21 +149,35 @@ class RmSettingPage extends StatelessWidget {
     );
   }
 
-  Widget buildLabelWithDropdown(String label, List<String> options) {
-    String? selectedOption; // Track the selected option
+  bool validateInput() {
+    return inputValue != null && inputValue!.isNotEmpty;
+  }
 
+  Future<void> saveToLocalStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('selectedPlant', selectedPlant ?? '');
+    prefs.setString('selectedCustomer', selectedCustomer ?? '');
+    prefs.setString('selectedStyle', selectedStyle ?? '');
+    prefs.setString('inputValue', inputValue ?? '');
+  }
+
+  Widget buildLabelWithDropdown(
+    String label,
+    List<String> options,
+    String? selectedOption,
+    Function(String?) onChanged,
+  ) {
     return Card(
       elevation: 2.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Container(
-        width: 400.00,
+        width: 400.0,
         padding: EdgeInsets.symmetric(
           horizontal: 16.0,
           vertical: 8.0,
         ),
-        // Set a fixed height for the container
         height: 60.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,42 +191,32 @@ class RmSettingPage extends StatelessWidget {
             ),
             SizedBox(width: 8.0),
             Container(
-              height: 40.0, // Set a fixed height for the dropdown container
+              height: 40.0,
+              width: 250.0,
               padding: EdgeInsets.symmetric(horizontal: 12.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.0),
-                border:
-                    Border.all(color: const Color.fromARGB(255, 158, 158, 158)),
+                border: Border.all(
+                  color: const Color.fromARGB(255, 158, 158, 158),
+                ),
               ),
               child: Row(
                 children: [
                   DropdownButton<String>(
                     value: selectedOption,
                     icon: Icon(Icons.arrow_drop_down),
-                    iconSize: 24.0,
-                    elevation: 16,
                     style: TextStyle(color: Colors.black),
                     underline: SizedBox(),
-                    onChanged: (String? newValue) {
-                      selectedOption = newValue;
-                      print('Selected $newValue for $label');
-                    },
-                    items:
-                        options.map<DropdownMenuItem<String>>((String option) {
-                      return DropdownMenuItem<String>(
-                        value: option,
-                        child: Text(option),
-                      );
-                    }).toList(),
+                    onChanged: (String? newValue) => onChanged(newValue),
+                    items: options.map<DropdownMenuItem<String>>(
+                      (String option) {
+                        return DropdownMenuItem<String>(
+                          value: option,
+                          child: Text(option),
+                        );
+                      },
+                    ).toList(),
                   ),
-                  SizedBox(width: 8.0),
-                  if (selectedOption != null)
-                    Text(
-                      selectedOption!,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
                 ],
               ),
             ),
@@ -139,20 +227,17 @@ class RmSettingPage extends StatelessWidget {
   }
 
   Widget buildLabelWithTextInput(String label) {
-    String? inputValue; // Track the entered value
-
     return Card(
       elevation: 2.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Container(
-        width: 400.00,
+        width: 400.0,
         padding: EdgeInsets.symmetric(
           horizontal: 16.0,
           vertical: 8.0,
         ),
-        // Set a fixed height for the container
         height: 60.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -164,18 +249,22 @@ class RmSettingPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(width: 200.0),
+            SizedBox(width: 8.0),
             Expanded(
               child: Container(
-                height: 40.0, // Set a fixed height for the text input container
+                height: 40.0,
                 padding: EdgeInsets.symmetric(horizontal: 5.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.0),
-                  border: Border.all(color: Color.fromARGB(255, 158, 158, 158)),
+                  border: Border.all(
+                    color: Color.fromARGB(255, 158, 158, 158),
+                  ),
                 ),
                 child: TextField(
                   onChanged: (value) {
-                    inputValue = value;
+                    setState(() {
+                      inputValue = value;
+                    });
                     print('Entered $value for $label');
                   },
                   decoration: InputDecoration(

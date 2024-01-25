@@ -807,7 +807,10 @@ class _ConfigureRightPanelType03State
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.settings),
+                      icon: Icon(
+                        Icons.settings,
+                        color: Colors.black54,
+                      ),
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
