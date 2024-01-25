@@ -25,41 +25,50 @@ import {
 import { List } from "reselect/es/types";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAddStyleMutation } from "../../../services/styles_service";
+import {
+  Style,
+  useAddStyleMutation,
+  useAllocateAdminMutation,
+  useGetStyleQuery,
+} from "../../../services/styles_service";
 import CustomSelect from "../../user/view/custom-select";
 import { useGetCustomerQuery } from "../../../services/customer_service";
 import { Plant, useGetPlantQuery } from "../../../services/plant_service";
+import { User, useGetUsersQuery } from "../../../services/user_service";
 
 type AddStyleProps = {
   open: boolean;
   changeOpenStatus: (status: boolean) => void;
 };
 
-export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
+export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openFail, setOpenFail] = useState(false);
   const [formReset, setFormReset] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [style, setStyle] = useState("");
+  const [admin, setAdmin] = useState("");
+  const [allocateAdmin] = useAllocateAdminMutation();
   const {
-    data: customerData,
-    error: customerError,
-    isLoading: customerLoading,
-  } = useGetCustomerQuery("");
+    data: styleData,
+    error: styleError,
+    isLoading: styleLoading,
+  } = useGetStyleQuery("");
 
   const {
-    data: plantData,
-    error: plantError,
-    isLoading: plantLoading,
-  } = useGetPlantQuery("");
+    data: adminData,
+    error: adminError,
+    isLoading: adminLoading,
+  } = useGetUsersQuery("");
   // const [customerList, setCustomerList] = useState([]);
 
-  const customers = customerData?.customers.map((object: Customer) => {
+  const customers = styleData?.styles.map((object: Style) => {
     return { value: object.name, label: object.name };
   });
 
-  const plants = plantData?.plants.map((plant: Plant) => {
-    return { value: plant.name, label: plant.name };
+  const plants = adminData?.users.map((plant: User) => {
+    return { value: plant.username, label: plant.username };
   });
   const [addStyle] = useAddStyleMutation();
 
@@ -73,20 +82,18 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      customer: "",
-      plant: "",
+      style: "",
+      admin: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().max(255).required("Style name is required"),
-      customer: Yup.string().max(255).required("Customer is required"),
-      plant: Yup.string().max(255).required("Plant is required"),
+      style: Yup.string().max(255).required("Style is required"),
+      admin: Yup.string().max(255).required("Admin is required"),
     }),
     onSubmit: (values, actions) => {
-      addStyle({
-        name: values.name,
-        customer: values.customer,
-        plant: values.plant,
+      console.log(admin + " , " + style);
+      allocateAdmin({
+        name: values.style,
+        admin: values.admin,
       })
         .unwrap()
         .then((payload) => {
@@ -132,7 +139,7 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
             ></Typography>
           </Box>
 
-          <TextField
+          {/* <TextField
             fullWidth
             label="Style name"
             margin="normal"
@@ -143,49 +150,51 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
             variant="outlined"
             error={Boolean(formik.touched.name && formik.errors.name)}
             helperText={formik.touched.name && formik.errors.name}
-          />
+          /> */}
 
           <FormControl
             sx={{ mt: 1 }}
             fullWidth
-            error={Boolean(formik.touched.customer && formik.errors.customer)}
+            error={Boolean(formik.touched.style && formik.errors.style)}
           >
             <CustomSelect
-              id="customer"
+              id="style"
               options={customers}
-              placeholder="Customer"
+              placeholder="Style"
               onChange={(value: { value: any }) => {
-                formik.setFieldValue("customer", value.value);
+                formik.setFieldValue("style", value.value);
+                setStyle(value.value);
               }}
-              name="customer"
+              name="style"
               className={"input"}
-              value={formik.values.customer}
+              value={formik.values.style}
               onBlur={formik}
             />
             <FormHelperText>
-              {formik.touched.customer && formik.errors.customer}
+              {formik.touched.style && formik.errors.style}
             </FormHelperText>
           </FormControl>
 
           <FormControl
             sx={{ mt: 1 }}
             fullWidth
-            error={Boolean(formik.touched.plant && formik.errors.plant)}
+            error={Boolean(formik.touched.admin && formik.errors.admin)}
           >
             <CustomSelect
-              id="plant"
+              id="admin"
               options={plants}
-              placeholder="Plant"
+              placeholder="Admin"
               onChange={(value: { value: any }) => {
-                formik.setFieldValue("plant", value.value);
+                formik.setFieldValue("admin", value.value);
+                setAdmin(value.value);
               }}
-              name="plant"
+              name="admin"
               className={"input"}
-              value={formik.values.plant}
+              value={formik.values.admin}
               onBlur={formik}
             />
             <FormHelperText>
-              {formik.touched.plant && formik.errors.plant}
+              {formik.touched.admin && formik.errors.admin}
             </FormHelperText>
           </FormControl>
 
