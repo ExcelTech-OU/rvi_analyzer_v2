@@ -11,7 +11,7 @@ export interface Style {
     name: string
     plant: string
     customer: string
-    admin: string
+    admin: List<string>
     createdBy: string
     createdDateTime: string
 }

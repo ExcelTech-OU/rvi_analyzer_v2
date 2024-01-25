@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +72,7 @@ public class StyleService {
                     style.setName(styleDto.getName());
                     style.setCustomer(styleDto.getCustomer() != null ? styleDto.getCustomer() : "UN-ASSIGNED");
                     style.setPlant(styleDto.getPlant() != null ? styleDto.getPlant() : "UN-ASSIGNED");
-                    style.setAdmin(styleDto.getAdmin() != null ? styleDto.getAdmin() : "UN-ASSIGNED");
+                    style.setAdmin(styleDto.getAdmin() != null ? styleDto.getAdmin() : new ArrayList<>());
 //                    style.setPlant("UN-ASSIGNED");
 //                    style.setCustomer("UN-ASSIGNED");
                     style.setCreatedBy(username);
@@ -85,15 +87,16 @@ public class StyleService {
                         .build());
     }
 
-    public Mono<ResponseEntity<CommonResponse>> updateAdmin(StyleDto styleDto, String jwt) {
+    public Mono<ResponseEntity<CommonResponse>> updateAdmin(UpdateStyleByAdmin updateStyleByAdmin, String jwt) {
         return userRepository.findByUsername(jwtUtils.getUsername(jwt))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
-                                return styleRepository.findByName(styleDto.getName())
+                                return styleRepository.findByName(updateStyleByAdmin.getName())
                                         .flatMap(style -> {
-                                            System.out.println("01 : " + styleDto.getAdmin());
-                                            style.setAdmin(styleDto.getAdmin());
+                                            List<String> admins = style.getAdmin();
+                                            admins.add(updateStyleByAdmin.getAdmin());
+                                            style.setAdmin(admins);
                                             return styleRepository.save(style)
                                                     .flatMap(style1 -> Mono.just(
                                                             ResponseEntity.ok(CommonResponse.builder()
