@@ -11,6 +11,7 @@ export interface Style {
     name: string
     plant: string
     customer: string
+    admin: string
     createdBy: string
     createdDateTime: string
 }
@@ -50,10 +51,21 @@ export const styleApi = createApi({
             },
             invalidatesTags: [{ type: 'styleList', id: "getStyles" }]
         }),
+        allocateAdmin: build.mutation<StyleGetResponse, {}>({
+            query(body) {
+                return {
+                    url: `/allocate/style/admin`,
+                    method: 'POST',
+                    body: body,
+                }
+            },
+            invalidatesTags: [{ type: 'styleList', id: "getStyles" }]
+        }),
     }),
 })
 
 export const {
     useGetStyleQuery,
     useAddStyleMutation,
+    useAllocateAdminMutation,
 } = styleApi

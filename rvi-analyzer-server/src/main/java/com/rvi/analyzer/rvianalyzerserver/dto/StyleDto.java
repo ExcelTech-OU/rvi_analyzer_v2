@@ -12,6 +12,7 @@ public class StyleDto {
     private String name;
     private String customer;
     private String plant;
+    private String admin;
     private String createdBy;
     private LocalDateTime createdDateTime;
 }

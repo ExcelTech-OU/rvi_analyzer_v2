@@ -21,6 +21,12 @@ public class StyleController {
         return styleService.addStyle(styleDto, auth);
     }
 
+    @PostMapping(path = "/allocate/style/admin")
+    public Mono<ResponseEntity<CommonResponse>> updateAdmin(@RequestBody StyleDto styleDto, @RequestHeader("Authorization") String auth) {
+        System.out.println("controller");
+        return styleService.updateAdmin(styleDto, auth);
+    }
+
     @GetMapping(path = "/rvi/analyzer/v1/styles")
     public Mono<ResponseEntity<StyleResponse>> getStyles(@RequestHeader("Authorization") String auth) {
         return styleService.getStyles(auth);

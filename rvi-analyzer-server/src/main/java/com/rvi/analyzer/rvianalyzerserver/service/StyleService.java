@@ -4,6 +4,8 @@ import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.CustomerDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.StyleDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
+import com.rvi.analyzer.rvianalyzerserver.entiy.Style;
+import com.rvi.analyzer.rvianalyzerserver.entiy.User;
 import com.rvi.analyzer.rvianalyzerserver.mappers.StyleMapper;
 import com.rvi.analyzer.rvianalyzerserver.mappers.UserMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.StyleRepository;
@@ -68,6 +70,7 @@ public class StyleService {
                     style.setName(styleDto.getName());
                     style.setCustomer(styleDto.getCustomer() != null ? styleDto.getCustomer() : "UN-ASSIGNED");
                     style.setPlant(styleDto.getPlant() != null ? styleDto.getPlant() : "UN-ASSIGNED");
+                    style.setAdmin(styleDto.getAdmin() != null ? styleDto.getAdmin() : "UN-ASSIGNED");
 //                    style.setPlant("UN-ASSIGNED");
 //                    style.setCustomer("UN-ASSIGNED");
                     style.setCreatedBy(username);
@@ -80,6 +83,45 @@ public class StyleService {
                         .statusDescription("Success")
                         .name(styleDto.getName())
                         .build());
+    }
+
+    public Mono<ResponseEntity<CommonResponse>> updateAdmin(StyleDto styleDto, String jwt) {
+        return userRepository.findByUsername(jwtUtils.getUsername(jwt))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
+                                return styleRepository.findByName(styleDto.getName())
+                                        .flatMap(style -> {
+                                            System.out.println("01 : " + styleDto.getAdmin());
+                                            style.setAdmin(styleDto.getAdmin());
+                                            return styleRepository.save(style)
+                                                    .flatMap(style1 -> Mono.just(
+                                                            ResponseEntity.ok(CommonResponse.builder()
+                                                                    .status("S1000")
+                                                                    .statusDescription("Success").build(
+                                                                    )
+                                                            )));
+                                        })
+                                        .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("Failed").build())));
+                            } else {
+                                System.out.println("02");
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed").build())));
+    }
+
+    public Mono<Style> getStyle(String name) {
+        return Mono.just(name)
+                .doOnNext(s -> log.info("Finding style by name [{}]", s))
+                .flatMap(styleRepository::findByName);
     }
 
     public Mono<ResponseEntity<StyleResponse>> getStyles(String auth) {
@@ -95,6 +137,7 @@ public class StyleService {
                                                     .plant(style.getPlant())
                                                     .customer(style.getCustomer())
                                                     .name(style.getName())
+                                                    .admin(style.getAdmin())
                                                     .createdBy(style.getCreatedBy())
                                                     .createdDateTime(style.getCreatedDateTime())
                                                     .build();

@@ -19,6 +19,7 @@ public class Style {
     private String _id;
     private String name;
     private String plant;
+    private String admin;
     private String customer;
 
     @Field(name = "created-by")

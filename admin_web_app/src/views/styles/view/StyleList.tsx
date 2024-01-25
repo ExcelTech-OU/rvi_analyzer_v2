@@ -22,12 +22,15 @@ import { List } from "reselect/es/types";
 import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
+import AddLinkIcon from "@mui/icons-material/AddLink";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { AddStyleModel } from "../add/add-style";
 import { Style, useGetStyleQuery } from "../../../services/styles_service";
 import {
   Customer,
   useGetCustomerQuery,
 } from "../../../services/customer_service";
+import { AllocateAdminsModel } from "../add/allocate-admins";
 
 const columns: GridColDef[] = [
   { field: "name", headerName: "Name", width: 200 },
@@ -42,30 +45,35 @@ const columns: GridColDef[] = [
     width: 200,
   },
   {
+    field: "assignedTo",
+    headerName: "Assigned To",
+    width: 200,
+  },
+  {
     field: "createdBy",
     headerName: "Created By",
     width: 180,
   },
-  {
-    field: "createdDateTime",
-    headerName: "Created Date",
-    width: 250,
-  },
+  // {
+  //   field: "createdDateTime",
+  //   headerName: "Created Date",
+  //   width: 250,
+  // },
 ];
 
 export default function StyleList() {
-  const { data, error, isLoading } = useGetStyleQuery("");
-  // const { data:Customer, error, isLoading } =
-  //   useGetCustomerQuery("");
+  const {
+    data: styleData,
+    error: styleError,
+    isLoading: styleLoading,
+  } = useGetStyleQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   const [users, setUsers] = useState<any>([]);
   var userRoles: string | string[] = [];
   var admin = "";
   var styleList: List<Style> | undefined = [];
-  styleList = data?.styles;
-  // var customerList: List<Customer> | undefined = [];
-  // customerList = data;
+  styleList = styleData?.styles;
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
@@ -91,12 +99,13 @@ export default function StyleList() {
   };
 
   const [open, setOpen] = useState(false);
-  if (isLoading) {
+  const [openAdminAllocation, setOpenAdminAllocation] = useState(false);
+  if (styleLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error != null && "status" in error) {
-    if (error.status == 401 && error.data == null) {
+  if (styleError != null && "status" in styleError) {
+    if (styleError.status == 401 && styleError.data == null) {
       return <SessionTimeoutPopup />;
     } else {
       return <></>;
@@ -104,8 +113,8 @@ export default function StyleList() {
   } else {
     return (
       <>
-        {isLoading ? (
-          isLoading
+        {styleLoading ? (
+          styleLoading
         ) : (
           <Box
             component="main"
@@ -133,19 +142,42 @@ export default function StyleList() {
                         >
                           Styles
                         </Typography>
-                        <Box display="flex" justifyContent="flex-end">
-                          <Button
-                            variant="contained"
-                            startIcon={<AddIcon />}
-                            sx={{
-                              backgroundColor: "#00e676",
-                              "&:hover": { backgroundColor: "#00a152" },
-                            }}
-                            onClick={() => setOpen(true)}
-                          >
-                            ADD
-                          </Button>
-                        </Box>
+                        <Container
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row-reverse",
+                            padding: 0,
+                          }}
+                        >
+                          <Box display="flex" justifyContent="flex-end">
+                            <Button
+                              variant="contained"
+                              startIcon={<PersonAddIcon />}
+                              sx={{
+                                backgroundColor: "#ff6d00",
+                                "&:hover": { backgroundColor: "#ef6c00" },
+                              }}
+                              onClick={() => setOpenAdminAllocation(true)}
+                            >
+                              ALLOCATE ADMINS
+                            </Button>
+                          </Box>
+                          <Box display="flex" justifyContent="flex-end">
+                            <Button
+                              variant="contained"
+                              startIcon={<AddIcon />}
+                              sx={{
+                                backgroundColor: "#00e676",
+                                "&:hover": { backgroundColor: "#00a152" },
+                                mx: 1,
+                              }}
+                              onClick={() => setOpen(true)}
+                            >
+                              ADD
+                            </Button>
+                          </Box>
+                        </Container>
+
                         <Divider
                           sx={{
                             borderColor: "grey",
@@ -161,9 +193,18 @@ export default function StyleList() {
                             borderStyle: "dashed",
                           }}
                         />
-                        <Paper sx={{ width: "100%", overflow: "hidden" }}>
+                        <Paper
+                          sx={{
+                            width: "100%",
+                            overflow: "hidden",
+                          }}
+                        >
                           <TableContainer sx={{ maxHeight: 440 }}>
-                            <Table stickyHeader aria-label="sticky table">
+                            <Table
+                              stickyHeader
+                              aria-label="sticky table"
+                              sx={{ overflowX: "auto" }}
+                            >
                               <TableHead sx={{ backgroundColor: "#9e9e9e" }}>
                                 <StyledTableRow>
                                   {columns.map((column) => (
@@ -188,24 +229,28 @@ export default function StyleList() {
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}
+                                        // sx={{ width: 100 }}
                                       >
                                         <StyledTableCell align={"left"}>
                                           {item.name}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
+                                          {item.customer}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
                                           {item.plant}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
-                                          {item.customer}
+                                          {item.admin}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {item.createdBy}
                                         </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
-                                          {item.createdDateTime}
-                                        </StyledTableCell>
                                       </StyledTableRow>
                                     );
+                                    // <StyledTableCell align={"left"}>
+                                    //       {item.createdDateTime}
+                                    //     </StyledTableCell>
                                   })
                                 }
                               </TableBody>
@@ -229,6 +274,10 @@ export default function StyleList() {
               </>
             </Container>
             <AddStyleModel open={open} changeOpenStatus={setOpen} />
+            <AllocateAdminsModel
+              open={openAdminAllocation}
+              changeOpenStatus={setOpenAdminAllocation}
+            />
           </Box>
         )}
       </>
