@@ -58,6 +58,26 @@ class _PoSettingPageState extends State<PoSettingPage> {
     print('Saved to local storage');
   }
 
+  void showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Success"),
+          content: Text("Settings saved successfully."),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,6 +187,7 @@ class _PoSettingPageState extends State<PoSettingPage> {
                     setState(() {
                       settingsSaved = true;
                     });
+                    showSuccessDialog(); // Show success message
                   } else {
                     // Show error message for empty Customer PO number field
                     showDialog(
