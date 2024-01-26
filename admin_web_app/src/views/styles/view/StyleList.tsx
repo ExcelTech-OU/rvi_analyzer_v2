@@ -241,7 +241,11 @@ export default function StyleList() {
                                           {item.plant}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
-                                          {item.admin}
+                                          {item.admin.map((object: String) => {
+                                            return (
+                                              <Typography>{object}</Typography>
+                                            );
+                                          })}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {item.createdBy}

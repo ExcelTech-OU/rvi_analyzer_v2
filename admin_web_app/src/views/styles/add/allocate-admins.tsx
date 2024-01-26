@@ -63,13 +63,17 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
   } = useGetUsersQuery("");
   // const [customerList, setCustomerList] = useState([]);
 
-  const customers = styleData?.styles.map((object: Style) => {
+  const styles = styleData?.styles.map((object: Style) => {
     return { value: object.name, label: object.name };
   });
 
-  const plants = adminData?.users.map((plant: User) => {
-    return { value: plant.username, label: plant.username };
-  });
+  const admins = adminData?.users
+    .filter((object: User) => {
+      return object.group === "ADMIN";
+    })
+    .map((plant: User) => {
+      return { value: plant.username, label: plant.username };
+    });
   const [addStyle] = useAddStyleMutation();
 
   const handleCloseSuccess = () => {
@@ -159,7 +163,7 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
           >
             <CustomSelect
               id="style"
-              options={customers}
+              options={styles}
               placeholder="Style"
               onChange={(value: { value: any }) => {
                 formik.setFieldValue("style", value.value);
@@ -182,7 +186,7 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
           >
             <CustomSelect
               id="admin"
-              options={plants}
+              options={admins}
               placeholder="Admin"
               onChange={(value: { value: any }) => {
                 formik.setFieldValue("admin", value.value);
