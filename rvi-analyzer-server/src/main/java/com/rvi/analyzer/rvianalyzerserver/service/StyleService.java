@@ -1,13 +1,9 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
-import com.rvi.analyzer.rvianalyzerserver.dto.CustomerDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.StyleDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.entiy.Style;
-import com.rvi.analyzer.rvianalyzerserver.entiy.User;
 import com.rvi.analyzer.rvianalyzerserver.mappers.StyleMapper;
-import com.rvi.analyzer.rvianalyzerserver.mappers.UserMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.StyleRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
 import com.rvi.analyzer.rvianalyzerserver.security.JwtUtils;
@@ -87,16 +83,54 @@ public class StyleService {
                         .build());
     }
 
-    public Mono<ResponseEntity<CommonResponse>> updateAdmin(UpdateStyleByAdmin updateStyleByAdmin, String jwt) {
+    public Mono<ResponseEntity<CommonResponse>> allocateAdmin(UpdateStyle updateStyle, String jwt) {
         return userRepository.findByUsername(jwtUtils.getUsername(jwt))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
-                                return styleRepository.findByName(updateStyleByAdmin.getName())
+                                return styleRepository.findByName(updateStyle.getName())
                                         .flatMap(style -> {
                                             List<String> admins = style.getAdmin();
-                                            admins.add(updateStyleByAdmin.getAdmin());
+                                            if (!admins.contains(updateStyle.getAdmin())) {
+                                                admins.add(updateStyle.getAdmin());
+                                            }
                                             style.setAdmin(admins);
+                                            return styleRepository.save(style)
+                                                    .flatMap(style1 -> Mono.just(
+                                                            ResponseEntity.ok(CommonResponse.builder()
+                                                                    .status("S1000")
+                                                                    .statusDescription("Success").build(
+                                                                    )
+                                                            )));
+                                        })
+                                        .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("Failed").build())));
+                            } else {
+                                System.out.println("02");
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed").build())));
+    }
+
+    public Mono<ResponseEntity<CommonResponse>> updateStyle(UpdateStyle updateStyle, String jwt) {
+        return userRepository.findByUsername(jwtUtils.getUsername(jwt))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
+                                return styleRepository.findByName(updateStyle.getName())
+                                        .flatMap(style -> {
+                                            List<String> admins = style.getAdmin();
+                                            admins.add(updateStyle.getAdmin());
+                                            style.setAdmin(admins);
+                                            style.setPlant(updateStyle.getPlant());
+                                            style.setCustomer(updateStyle.getCustomer());
                                             return styleRepository.save(style)
                                                     .flatMap(style1 -> Mono.just(
                                                             ResponseEntity.ok(CommonResponse.builder()

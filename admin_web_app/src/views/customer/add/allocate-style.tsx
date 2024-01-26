@@ -18,29 +18,43 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import {
-  Customer,
-  useAddCustomerMutation,
-} from "../../../services/customer_service";
-import { List } from "reselect/es/types";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAddStyleMutation } from "../../../services/styles_service";
+import {
+  Plant,
+  useAddPlantMutation,
+  useGetPlantQuery,
+} from "../../../services/plant_service";
+import {
+  Style,
+  useAllocateStyleMutation,
+  useGetStyleQuery,
+} from "../../../services/styles_service";
+import {
+  Customer,
+  useGetCustomerQuery,
+} from "../../../services/customer_service";
 import CustomSelect from "../../user/view/custom-select";
-import { useGetCustomerQuery } from "../../../services/customer_service";
-import { Plant, useGetPlantQuery } from "../../../services/plant_service";
 
-type AddStyleProps = {
+type AddPlantProps = {
   open: boolean;
   changeOpenStatus: (status: boolean) => void;
 };
 
-export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
+export function AllocateStyleModel({ open, changeOpenStatus }: AddPlantProps) {
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openFail, setOpenFail] = useState(false);
   const [formReset, setFormReset] = useState(false);
   const theme = useTheme();
+  const [style, setStyle] = useState("");
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  const {
+    data: styleData,
+    error: styleError,
+    isLoading: styleLoading,
+  } = useGetStyleQuery("");
+
   const {
     data: customerData,
     error: customerError,
@@ -52,16 +66,20 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
     error: plantError,
     isLoading: plantLoading,
   } = useGetPlantQuery("");
-  // const [customerList, setCustomerList] = useState([]);
+
+  const styles = styleData?.styles.map((object: Style) => {
+    return { value: object.name, label: object.name };
+  });
 
   const customers = customerData?.customers.map((object: Customer) => {
     return { value: object.name, label: object.name };
   });
 
-  const plants = plantData?.plants.map((plant: Plant) => {
-    return { value: plant.name, label: plant.name };
+  const plants = plantData?.plants.map((object: Plant) => {
+    return { value: object.name, label: object.name };
   });
-  const [addStyle] = useAddStyleMutation();
+
+  const [allocateStyle] = useAllocateStyleMutation();
 
   const handleCloseSuccess = () => {
     setOpenSuccess(false);
@@ -73,20 +91,20 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      // customer: "",
-      // plant: "",
+      customer: "",
+      plant: "",
+      style: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().max(255).required("Style name is required"),
-      // customer: Yup.string().max(255).required("Customer is required"),
-      // plant: Yup.string().max(255).required("Plant is required"),
+      customer: Yup.string().max(255).required("Customer is required"),
+      plant: Yup.string().max(255).required("Plant is required"),
+      style: Yup.string().max(255).required("Style is required"),
     }),
     onSubmit: (values, actions) => {
-      addStyle({
-        name: values.name,
-        // customer: values.customer,
-        // plant: values.plant,
+      allocateStyle({
+        name: values.style,
+        customer: values.customer,
+        plant: values.plant,
       })
         .unwrap()
         .then((payload) => {
@@ -132,20 +150,30 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
             ></Typography>
           </Box>
 
-          <TextField
+          <FormControl
+            sx={{ mt: 1 }}
             fullWidth
-            label="Style name"
-            margin="normal"
-            name="name"
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            value={formik.values.name}
-            variant="outlined"
-            error={Boolean(formik.touched.name && formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-          />
+            error={Boolean(formik.touched.style && formik.errors.style)}
+          >
+            <CustomSelect
+              id="style"
+              options={styles}
+              placeholder="Style"
+              onChange={(value: { value: any }) => {
+                formik.setFieldValue("style", value.value);
+                setStyle(value.value);
+              }}
+              name="style"
+              className={"input"}
+              value={formik.values.style}
+              onBlur={formik}
+            />
+            <FormHelperText>
+              {formik.touched.style && formik.errors.style}
+            </FormHelperText>
+          </FormControl>
 
-          {/* <FormControl
+          <FormControl
             sx={{ mt: 1 }}
             fullWidth
             error={Boolean(formik.touched.customer && formik.errors.customer)}
@@ -187,8 +215,7 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
             <FormHelperText>
               {formik.touched.plant && formik.errors.plant}
             </FormHelperText>
-          </FormControl> */}
-
+          </FormControl>
           <Box sx={{ py: 2 }}>
             <Button
               color="primary"

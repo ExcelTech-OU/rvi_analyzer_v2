@@ -50,6 +50,13 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
   const [style, setStyle] = useState("");
   const [admin, setAdmin] = useState("");
   const [allocateAdmin] = useAllocateAdminMutation();
+
+  const {
+    data: adminData,
+    error: adminError,
+    isLoading: adminLoading,
+  } = useGetUsersQuery("");
+
   const {
     data: styleData,
     error: styleError,
@@ -57,13 +64,27 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
   } = useGetStyleQuery("");
 
   const {
-    data: adminData,
-    error: adminError,
-    isLoading: adminLoading,
-  } = useGetUsersQuery("");
+    data: customerData,
+    error: customerError,
+    isLoading: customerLoading,
+  } = useGetCustomerQuery("");
+
+  const {
+    data: plantData,
+    error: plantError,
+    isLoading: plantLoading,
+  } = useGetPlantQuery("");
   // const [customerList, setCustomerList] = useState([]);
 
   const styles = styleData?.styles.map((object: Style) => {
+    return { value: object.name, label: object.name };
+  });
+
+  const customers = customerData?.customers.map((object: Customer) => {
+    return { value: object.name, label: object.name };
+  });
+
+  const plants = plantData?.plants.map((object: Plant) => {
     return { value: object.name, label: object.name };
   });
 
@@ -90,14 +111,14 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
       admin: "",
     },
     validationSchema: Yup.object({
-      style: Yup.string().max(255).required("Style is required"),
       admin: Yup.string().max(255).required("Admin is required"),
+      style: Yup.string().max(255).required("Style is required"),
     }),
     onSubmit: (values, actions) => {
       console.log(admin + " , " + style);
       allocateAdmin({
-        name: values.style,
         admin: values.admin,
+        name: values.style,
       })
         .unwrap()
         .then((payload) => {

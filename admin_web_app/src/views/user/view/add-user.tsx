@@ -26,8 +26,12 @@ import {
   useGetUsersQuery,
   useUpdateUserMutation,
 } from "../../../services/user_service";
+import PersonIcon from "@mui/icons-material/Person";
 import * as Yup from "yup";
+import CircleIcon from "@mui/icons-material/Circle";
 import CloseIcon from "@mui/icons-material/Close";
+import Lottie from "react-lottie";
+import animationData from "../../animations/active.json";
 import Option from "react-select/dist/declarations/src/components/Option";
 
 type AddUserProps = {
@@ -234,18 +238,80 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
         {admin === "TOP_ADMIN" ? (
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ my: 3 }}>
-              <Typography
-                color="textSecondary"
+              <Box
                 sx={{
-                  textAlign: "center",
-                  fontSize: "1.1rem",
-                  color: "#424242",
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
-                gutterBottom
-                variant="body2"
               >
-                {localStorage.getItem("user")}
-              </Typography>
+                <Box
+                  sx={{
+                    borderRadius: "50%",
+                    backgroundColor: "#fff3e0",
+                    width: "40px",
+                    height: "40px",
+                    padding: 1,
+                    mr: 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <PersonIcon sx={{ width: "20px", color: "#ffb74d" }} />
+                </Box>
+                <Typography
+                  fontWeight={"bold"}
+                  color="textSecondary"
+                  sx={{
+                    textAlign: "left",
+                    fontSize: "1.1rem",
+                    color: "#424242",
+                    margin: 0,
+                  }}
+                  gutterBottom
+                  variant="body2"
+                >
+                  Create new users
+                  {/* {localStorage.getItem("user")} */}
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                {/* <CircleIcon
+                  sx={{ color: "#00e676", width: "14px", mx: "5px" }}
+                /> */}
+                <Box
+                  sx={{
+                    width: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    ml: 4,
+                  }}
+                >
+                  <Lottie
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                    options={{
+                      animationData,
+                      loop: true,
+                      autoplay: true,
+                    }}
+                  />
+                </Box>
+                <Typography sx={{ fontSize: "0.9rem", color: "#bdbdbd" }}>
+                  {localStorage.getItem("user")} is active
+                </Typography>
+              </Box>
             </Box>
             <TextField
               fullWidth
