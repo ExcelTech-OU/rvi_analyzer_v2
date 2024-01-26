@@ -11,6 +11,7 @@ import { customerApi } from '../services/customer_service'
 import { plantApi } from '../services/plant_service'
 import { styleApi } from '../services/styles_service'
 import { materialApi } from '../services/material_service'
+import { testApi } from '../services/test_service'
 
 export const store = configureStore({
     reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
         [customerApi.reducerPath]: customerApi.reducer,
         [styleApi.reducerPath]: styleApi.reducer,
         [materialApi.reducerPath]: materialApi.reducer,
+        [testApi.reducerPath]: testApi.reducer,
         [deviceApi.reducerPath]: deviceApi.reducer,
         [userApi.reducerPath]: userApi.reducer,
         [plantApi.reducerPath]: plantApi.reducer,
@@ -34,6 +36,7 @@ export const store = configureStore({
             .concat(materialApi.middleware)
             .concat(customerApi.middleware)
             .concat(styleApi.middleware)
+            .concat(testApi.middleware)
             .concat(deviceApi.middleware)
             .concat(userApi.middleware)
             .concat(dashboardApi.middleware)

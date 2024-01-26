@@ -56,8 +56,8 @@ interface Material {
 }
 
 interface parameterSetup {
-  param: string;
-  mode: string;
+  parameter: string;
+  name: string;
 }
 
 interface Option {
@@ -86,6 +86,10 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [plant, setPlant] = useState("");
   const [style, setStyle] = useState("");
   let materials: Option[] = [];
+
+  // useEffect(() => {
+  //   formik.handleChange;
+  // }, [parameterModes]);
 
   materials = materialData?.materials.map((material: Material) => ({
     value: material.name,
@@ -132,15 +136,17 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   };
 
   const handleParameterModesList = () => {
-    if (!parameterModes.some((object) => object.mode === parameterMode)) {
+    if (
+      !parameterModes.some((object) => object.name === parameterMode) &&
+      parameterMode != ""
+    ) {
       setParameterModeError("");
       const newParameterModes: parameterSetup = [
         ...parameterModes,
-        { param: parameter, mode: parameterMode },
+        { parameter: parameter, name: parameterMode },
       ];
       setParameterModes(newParameterModes);
-    } else {
-      // console.log("Duplicate found");
+    } else if (parameterModes.some((object) => object.name === parameterMode)) {
       setParameterModeError("Mode is already added");
     }
 
@@ -150,7 +156,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const removeParameterModes = (name: string) => {
     const updatedList: parameterSetup[] = parameterModes.filter(
       (mode: parameterSetup) => {
-        return mode.mode !== name;
+        return mode.name !== name;
       }
     );
 
@@ -178,23 +184,24 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
       //   .required("Parameter mode is required"),
     }),
     onSubmit: (values, actions) => {
-      // console.log("works");
-      //   addTest({
-      //     testGate: values.testGate,
-      //     material: values.material,
-      //   })
-      //     .unwrap()
-      //     .then((payload) => {
-      //       if (payload.status == "S1000") {
-      //         actions.setSubmitting(false);
-      //         actions.resetForm();
-      //         setOpenSuccess(true);
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       actions.setSubmitting(false);
-      //       setOpenFail(true);
-      //     });
+      console.log(parameterModes);
+      addTest({
+        testGate: values.testGate,
+        material: values.material,
+        parameterModes: parameterModes,
+      })
+        .unwrap()
+        .then((payload) => {
+          if (payload.status == "S1000") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setOpenSuccess(true);
+          }
+        })
+        .catch((error) => {
+          actions.setSubmitting(false);
+          setOpenFail(true);
+        });
     },
   });
 
@@ -407,7 +414,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                       >
                         {parameterModes.map((value: parameterSetup) => (
                           <ListItem
-                            key={value.mode}
+                            key={value.name}
                             disableGutters
                             sx={{
                               backgroundColor: "#e0e0e0",
@@ -420,7 +427,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                               <IconButton
                                 aria-label="comment"
                                 onClick={() => {
-                                  removeParameterModes(value.mode);
+                                  removeParameterModes(value.name);
                                 }}
                               >
                                 <DeleteIcon sx={{ color: "white" }} />
@@ -430,9 +437,9 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                             <ListItemText
                               primary={`Parameter mode ${
                                 parameterModes.findIndex(
-                                  (object) => object.mode === value.mode
+                                  (object) => object.name === value.name
                                 ) + 1
-                              }:  ${value.mode}`}
+                              }:  ${value.name}`}
                             />
                           </ListItem>
                         ))}
