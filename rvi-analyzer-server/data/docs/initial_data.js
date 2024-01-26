@@ -15,6 +15,18 @@ db.group.insertMany([
 
 db.role.insertMany([
   {
+    'role-id': 'create_styles',
+    'role-name': 'CREATE_STYLES'
+  },
+  {
+    'role-id': 'get_styles',
+    'role-name': 'GET_STYLES'
+  },
+  {
+     'role-id': 'get_all_styles',
+     'role-name': 'GET_ALL_STYLES'
+  },
+  {
     'role-id': 'login_web',
     'role-name': 'LOGIN_WEB'
   },

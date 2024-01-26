@@ -42,6 +42,11 @@ const columns: GridColDef[] = [
     width: 200,
   },
   {
+    field: "parameters",
+    headerName: "Parameters",
+    width: 200,
+  },
+  {
     field: "material",
     headerName: "Material",
     width: 200,
@@ -199,6 +204,17 @@ export default function TestList() {
                                               return (
                                                 <Typography>
                                                   {object.name}
+                                                </Typography>
+                                              );
+                                            }
+                                          )}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.parameterModes.map(
+                                            (object: ParameterMode) => {
+                                              return (
+                                                <Typography>
+                                                  {object.parameter}
                                                 </Typography>
                                               );
                                             }
