@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:rvi_analyzer/views/configure/customer_po_setting.dart';
 import 'package:rvi_analyzer/views/configure/rm_setting_page.dart';
 import 'package:rvi_analyzer/views/configure/customer_po_setting.dart';
+import 'package:rvi_analyzer/views/configure/so_setting.dart';
 
 class ModeSettingsPage extends StatelessWidget {
   // Variable to track if the first "Add" button is pressed
   bool isFirstAddButtonPressed = false;
   bool isSecondAddButtonPressed = false;
+  bool isThirdAddButtonPressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +101,12 @@ class ModeSettingsPage extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => PoSettingPage()),
+              );
+            } else if (label == "SO Number" && !isThirdAddButtonPressed) {
+              isThirdAddButtonPressed = true;
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => SoSettingPage()),
               );
             }
           },
