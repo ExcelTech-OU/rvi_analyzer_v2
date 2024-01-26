@@ -61,6 +61,16 @@ export const styleApi = createApi({
             },
             invalidatesTags: [{ type: 'styleList', id: "getStyles" }]
         }),
+        allocateStyle: build.mutation<StyleGetResponse, {}>({
+            query(body) {
+                return {
+                    url: `/allocate/style`,
+                    method: 'POST',
+                    body: body,
+                }
+            },
+            invalidatesTags: [{ type: 'styleList', id: "getStyles" }]
+        }),
     }),
 })
 
@@ -68,4 +78,5 @@ export const {
     useGetStyleQuery,
     useAddStyleMutation,
     useAllocateAdminMutation,
+    useAllocateStyleMutation
 } = styleApi

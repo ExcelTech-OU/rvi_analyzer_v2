@@ -22,9 +22,11 @@ import { List } from "reselect/es/types";
 import React, { useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { AddUserModel } from "../../user/view/add-user";
 import { Plant, useGetPlantQuery } from "../../../services/plant_service";
 import { AddPlantModel } from "../add/add-plant";
+import { AllocateStyleModel } from "../../customer/add/allocate-style";
 
 const columns: GridColDef[] = [
   { field: "plantName", headerName: "Plant name", width: 250 },
@@ -51,6 +53,7 @@ export default function PlantList() {
   };
 
   const [open, setOpen] = useState(false);
+  const [openStyle, setOpenStyle] = useState(false);
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -103,12 +106,12 @@ export default function PlantList() {
                           <Box display="flex" justifyContent="flex-end">
                             <Button
                               variant="contained"
-                              startIcon={<AddIcon />}
+                              startIcon={<GroupAddIcon />}
                               sx={{
-                                backgroundColor: "#ff6d00",
-                                "&:hover": { backgroundColor: "#ef6c00" },
+                                backgroundColor: "#ab47bc",
+                                "&:hover": { backgroundColor: "#7b1fa2" },
                               }}
-                              onClick={() => setOpen(true)}
+                              onClick={() => setOpenStyle(true)}
                             >
                               ALLOCATE CUSTOMERS
                             </Button>
@@ -206,6 +209,10 @@ export default function PlantList() {
               </>
             </Container>
             <AddPlantModel open={open} changeOpenStatus={setOpen} />
+            <AllocateStyleModel
+              open={openStyle}
+              changeOpenStatus={setOpenStyle}
+            />
           </Box>
         )}
       </>

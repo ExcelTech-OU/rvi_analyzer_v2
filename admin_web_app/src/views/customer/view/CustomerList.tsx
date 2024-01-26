@@ -26,8 +26,10 @@ import { List } from "reselect/es/types";
 import React, { useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { AddUserModel } from "../../user/view/add-user";
 import { AddCustomerModel } from "../add/add-customer";
+import { AllocateStyleModel } from "../add/allocate-style";
 
 const columns: GridColDef[] = [
   { field: "customer", headerName: "Customer", width: 250 },
@@ -46,6 +48,7 @@ export default function CustomerList() {
   };
 
   const [open, setOpen] = useState(false);
+  const [openStyle, setOpenStyle] = useState(false);
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -98,10 +101,23 @@ export default function CustomerList() {
                           <Box display="flex" justifyContent="flex-end">
                             <Button
                               variant="contained"
+                              startIcon={<GroupAddIcon />}
+                              sx={{
+                                backgroundColor: "#ab47bc",
+                                "&:hover": { backgroundColor: "#7b1fa2" },
+                              }}
+                              onClick={() => setOpenStyle(true)}
+                            >
+                              ALLOCATE CUSTOMERS
+                            </Button>
+                          </Box>
+                          <Box display="flex" justifyContent="flex-end">
+                            <Button
+                              variant="contained"
                               startIcon={<AddIcon />}
                               sx={{
                                 backgroundColor: "#00e676",
-                                // mx: 1,
+                                mx: 1,
                                 "&:hover": { backgroundColor: "#00a152" },
                               }}
                               onClick={() => setOpen(true)}
@@ -187,6 +203,10 @@ export default function CustomerList() {
               </>
             </Container>
             <AddCustomerModel open={open} changeOpenStatus={setOpen} />
+            <AllocateStyleModel
+              open={openStyle}
+              changeOpenStatus={setOpenStyle}
+            />
           </Box>
         )}
       </>

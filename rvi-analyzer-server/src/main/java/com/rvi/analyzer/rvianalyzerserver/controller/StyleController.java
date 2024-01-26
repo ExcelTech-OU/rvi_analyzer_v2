@@ -2,9 +2,7 @@ package com.rvi.analyzer.rvianalyzerserver.controller;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.StyleDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.service.StyleService;
-import com.rvi.analyzer.rvianalyzerserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +20,15 @@ public class StyleController {
     }
 
     @PostMapping(path = "/allocate/style/admin")
-    public Mono<ResponseEntity<CommonResponse>> updateAdmin(@RequestBody UpdateStyleByAdmin updateStyleByAdmin, @RequestHeader("Authorization") String auth) {
-        System.out.println(updateStyleByAdmin.getAdmin());
-        return styleService.updateAdmin(updateStyleByAdmin, auth);
+    public Mono<ResponseEntity<CommonResponse>> allocateAdmin(@RequestBody UpdateStyle updateStyle, @RequestHeader("Authorization") String auth) {
+        System.out.println(updateStyle.getAdmin());
+        return styleService.allocateAdmin(updateStyle, auth);
+    }
+
+    @PostMapping(path = "/allocate/style")
+    public Mono<ResponseEntity<CommonResponse>> allocateStyle(@RequestBody UpdateStyle updateStyle, @RequestHeader("Authorization") String auth) {
+        System.out.println(updateStyle.getAdmin());
+        return styleService.updateStyle(updateStyle, auth);
     }
 
     @GetMapping(path = "/rvi/analyzer/v1/styles")
