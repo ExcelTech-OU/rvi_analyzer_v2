@@ -11,30 +11,30 @@ class _SoSettingPageState extends State<SoSettingPage> {
   String plantValue = '';
   String customerValue = '';
   String styleValue = '';
-  String soNumberValue = '';
+  String CustomerPOValue = 'Customer PO 1'; // Set an initial value
 
   // Function to update values based on the selected RM
   void updateValues(String soNumber) {
     setState(() {
       // assign values
       switch (soNumber) {
-        case 'SO Number 1':
+        case 'Customer PO 1':
           plantValue = 'plant1';
           customerValue = 'customer1';
           styleValue = 'style1';
           rmValue = '01';
           break;
-        case 'SO  Number2':
+        case 'Customer PO 2':
           plantValue = 'plant2';
           customerValue = 'customer2';
           styleValue = 'style2';
           rmValue = '02';
           break;
-        case 'SO Number 3':
+        case 'Customer PO 3':
           plantValue = 'plant3';
           customerValue = 'customer3';
           styleValue = 'style3';
-          rmValue = '02';
+          rmValue = '03'; // Change to a unique value for SO Number 3
           break;
         // Add more cases if needed
         default:
@@ -49,67 +49,82 @@ class _SoSettingPageState extends State<SoSettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Setting',
-            style: TextStyle(
-              fontSize: 30.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.black54,
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text(
+              'Setting',
+              style: TextStyle(
+                fontSize: 30.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+              ),
             ),
           ),
         ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Display the selected values in a box
-            Container(
-              padding: EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(8.0),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Display the selected values in a fixed-size box
+              Container(
+                width: 300, // Set the width as per your requirement
+                height: 150, // Set the height as per your requirement
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Column(
+                  children: [
+                    Text('RM: $rmValue'),
+                    Text('Plant: $plantValue'),
+                    Text('Customer: $customerValue'),
+                    Text('Style: $styleValue'),
+                  ],
+                ),
               ),
-              child: Column(
-                children: [
-                  Text('RM: $rmValue'),
-                  Text('Plant: $plantValue'),
-                  Text('Customer: $customerValue'),
-                  Text('Style: $styleValue'),
-                ],
+              SizedBox(height: 30),
+              // DropdownButton to select Po
+              Container(
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: DropdownButton<String>(
+                  value: CustomerPOValue,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      CustomerPOValue = newValue!;
+                      // Call the function to update values based on the selected RM
+                      updateValues(CustomerPOValue);
+                    });
+                  },
+                  items: <String>[
+                    'Customer PO 1',
+                    'Customer PO 2',
+                    'Customer PO 3'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            // DropdownButton to select Po
-            DropdownButton<String>(
-              value: rmValue,
-              onChanged: (String? newValue) {
-                setState(() {
-                  soNumberValue = newValue!;
-                  // Call the function to update values based on the selected RM
-                  updateValues(soNumberValue);
-                });
-              },
-              items: <String>['SO Number 1', 'SO Number 2', 'SO Number 3']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ],
+            ],
+          ),
         ),
+        backgroundColor: Colors.cyan,
       ),
     );
   }
 }
 
 void main() {
-  runApp(MaterialApp(
-    home: SoSettingPage(),
-  ));
+  runApp(SoSettingPage());
 }

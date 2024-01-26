@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rvi_analyzer/views/configure/customer_po_setting.dart';
+import 'package:rvi_analyzer/views/configure/production_order.dart';
 import 'package:rvi_analyzer/views/configure/rm_setting_page.dart';
 import 'package:rvi_analyzer/views/configure/customer_po_setting.dart';
 import 'package:rvi_analyzer/views/configure/so_setting.dart';
@@ -9,6 +11,7 @@ class ModeSettingsPage extends StatelessWidget {
   bool isFirstAddButtonPressed = false;
   bool isSecondAddButtonPressed = false;
   bool isThirdAddButtonPressed = false;
+  bool isFourthAddButtonPreseed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -86,12 +89,13 @@ class ModeSettingsPage extends StatelessWidget {
           onPressed: () {
             // Add your logic here when the "Add" button is pressed
             // You can access the label value and perform any necessary actions
-            print('Adding $label');
+            if (kDebugMode) {
+              print('Adding $label');
+            }
 
             // Navigate to another page only when the first "Add" button is pressed
             if (label == "RM" && !isFirstAddButtonPressed) {
-              isFirstAddButtonPressed =
-                  true; // Set the flag to true after navigation
+              isFirstAddButtonPressed = true;
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => RmSettingPage()),
@@ -108,6 +112,13 @@ class ModeSettingsPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(builder: (context) => SoSettingPage()),
               );
+            } else if (label == "Production Order" &&
+                !isFourthAddButtonPreseed) {
+              isFourthAddButtonPreseed = true;
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProductionOrderPage()));
             }
           },
           child: Text('Add'),

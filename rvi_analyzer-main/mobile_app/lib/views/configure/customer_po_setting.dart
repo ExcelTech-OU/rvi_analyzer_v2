@@ -47,7 +47,10 @@ class _PoSettingPageState extends State<PoSettingPage> {
 
   // Function to validate input
   bool validateInput() {
-    return customerPoNumber.isNotEmpty;
+    return customerPoNumber.isNotEmpty &&
+        plantValue.isNotEmpty &&
+        customerValue.isNotEmpty &&
+        styleValue.isNotEmpty;
   }
 
   // Function to save to local storage
@@ -189,13 +192,13 @@ class _PoSettingPageState extends State<PoSettingPage> {
                     });
                     showSuccessDialog(); // Show success message
                   } else {
-                    // Show error message for empty Customer PO number field
+                    // Show error message for empty fields
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text("Error"),
-                          content: Text("Customer PO field cannot be empty."),
+                          content: Text("Please Select RM value from the list"),
                           actions: [
                             ElevatedButton(
                               onPressed: () {
