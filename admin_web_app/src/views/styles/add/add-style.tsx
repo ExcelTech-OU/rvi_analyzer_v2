@@ -24,6 +24,7 @@ import {
 } from "../../../services/customer_service";
 import { List } from "reselect/es/types";
 import * as Yup from "yup";
+import PatternIcon from "@mui/icons-material/Pattern";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAddStyleMutation } from "../../../services/styles_service";
 import CustomSelect from "../../user/view/custom-select";
@@ -125,11 +126,44 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
         </IconButton>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={{ my: 3 }}>
-            <Typography
-              color="textSecondary"
-              gutterBottom
-              variant="body2"
-            ></Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: "#fff3e0",
+                  width: "40px",
+                  height: "40px",
+                  padding: 1,
+                  mr: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <PatternIcon sx={{ width: "20px", color: "#ffb74d" }} />
+              </Box>
+              <Typography
+                fontWeight={"bold"}
+                color="textSecondary"
+                sx={{
+                  textAlign: "left",
+                  fontSize: "1.1rem",
+                  color: "#424242",
+                  margin: 0,
+                }}
+                gutterBottom
+                variant="body2"
+              >
+                Create new styles
+                {/* {localStorage.getItem("user")} */}
+              </Typography>
+            </Box>
           </Box>
 
           <TextField

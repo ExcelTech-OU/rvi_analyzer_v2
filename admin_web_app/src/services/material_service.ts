@@ -1,33 +1,29 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { List } from 'reselect/es/types'
 
-export interface TestsListResponse {
+export interface MaterialListResponse {
     status: string
     statusDescription: string
-    tests: List<Test>
+    materials: List<Material>
 }
 
-export interface Test {
-    material: string
-    testGate: string
-    parameterModes: List<ParameterMode>
-    createdBy: string,
+export interface Material {
+    name: string
+    plant: string
+    customer: string
+    style: string
+    createdBy: string
     createdDateTime: string
 }
 
-export interface ParameterMode{
-    name: string
-    parameter: string
-}
-
-export interface TestGetResponse {
+export interface MaterialGetResponse {
     status: string,
     statusDescription: string,
     name: string
 }
 
-export const testApi = createApi({
-    reducerPath: 'testApi',
+export const materialApi = createApi({
+    reducerPath: 'materialApi',
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
@@ -38,27 +34,27 @@ export const testApi = createApi({
             return headers;
         },
     }),
-    tagTypes: ['testList'],
+    tagTypes: ['materialList'],
     endpoints: (build) => ({
-        getTest: build.query<TestsListResponse, {}>({
-            query: () => `rvi/analyzer/v1/tests`,
-            providesTags: [{ type: 'testList', id: "getTests" }]
+        getMaterial: build.query<MaterialListResponse, {}>({
+            query: () => `rvi/analyzer/v1/materials`,
+            providesTags: [{ type: 'materialList', id: "getMaterials" }]
 
         }),
-        addTest: build.mutation<TestGetResponse, {}>({
+        addMaterial: build.mutation<MaterialGetResponse, {}>({
             query(body) {
                 return {
-                    url: `register/test`,
+                    url: `register/material`,
                     method: 'POST',
                     body: body,
                 }
             },
-            invalidatesTags: [{ type: 'testList', id: "getTests" }]
+            invalidatesTags: [{ type: 'materialList', id: "getMaterials" }]
         }),
     }),
 })
 
 export const {
-    useGetTestQuery,
-    useAddTestMutation,
-} = testApi
+    useGetMaterialQuery,
+    useAddMaterialMutation
+} = materialApi

@@ -17,6 +17,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { useFormik } from "formik";
 import {
   Customer,
@@ -24,6 +25,7 @@ import {
 } from "../../../services/customer_service";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
+import Lottie from "react-lottie";
 
 type AddCustomerProps = {
   open: boolean;
@@ -95,11 +97,44 @@ export function AddCustomerModel({ open, changeOpenStatus }: AddCustomerProps) {
         </IconButton>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={{ my: 3 }}>
-            <Typography
-              color="textSecondary"
-              gutterBottom
-              variant="body2"
-            ></Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: "#fff3e0",
+                  width: "40px",
+                  height: "40px",
+                  padding: 1,
+                  mr: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <PeopleAltIcon sx={{ width: "20px", color: "#ffb74d" }} />
+              </Box>
+              <Typography
+                fontWeight={"bold"}
+                color="textSecondary"
+                sx={{
+                  textAlign: "left",
+                  fontSize: "1.1rem",
+                  color: "#424242",
+                  margin: 0,
+                }}
+                gutterBottom
+                variant="body2"
+              >
+                Create new customers
+                {/* {localStorage.getItem("user")} */}
+              </Typography>
+            </Box>
           </Box>
 
           <TextField

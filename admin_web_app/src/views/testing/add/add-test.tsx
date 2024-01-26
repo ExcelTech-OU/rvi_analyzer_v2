@@ -36,11 +36,13 @@ import {
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
+import BugReportIcon from "@mui/icons-material/BugReport";
 import AddIcon from "@mui/icons-material/Add";
 import { useAddStyleMutation } from "../../../services/styles_service";
 import { useAddTestMutation } from "../../../services/test_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
 import CustomSelect from "../../user/view/custom-select";
+import { useGetMaterialQuery } from "../../../services/material_service";
 
 type AddStyleProps = {
   open: boolean;
@@ -51,11 +53,17 @@ interface Material {
   name: string;
   plant: string;
   customer: string;
+  style: string;
 }
 
 interface parameterSetup {
-  param: string;
-  mode: string;
+  parameter: string;
+  name: string;
+}
+
+interface Option {
+  value: string;
+  label: string;
 }
 
 export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
@@ -63,27 +71,51 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [openFail, setOpenFail] = useState(false);
   const [formReset, setFormReset] = useState(false);
   const theme = useTheme();
+  const {
+    data: materialData,
+    error: materialError,
+    isLoading: materialLoading,
+  } = useGetMaterialQuery("");
+  const [material, setMaterial] = useState("");
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [isParameterSet, setIsParameterSet] = useState(false);
   const [parameterModes, setParameterModes] = useState<parameterSetup[]>([]);
   const [parameter, setParameter] = useState(null);
   const [parameterMode, setParameterMode] = useState("");
   const [parameterModeError, setParameterModeError] = useState("");
-  // let materials: Material[] = [];
-
-  useEffect(() => {
-    console.log(parameterModes);
-  }, [parameterModes]);
+  const [customer, setCustomer] = useState("");
+  const [plant, setPlant] = useState("");
+  const [style, setStyle] = useState("");
+  let materials: Option[] = [];
 
   // useEffect(() => {
-  //   console.log(parameterMode);
-  // }, [parameterMode]);
+  //   formik.handleChange;
+  // }, [parameterModes]);
 
-  const materials = [
-    { value: "Material 01", label: "Material 01" },
-    { value: "Material 02", label: "Material 02" },
-    { value: "Material 03", label: "Material 03" },
-  ];
+  materials = materialData?.materials.map((material: Material) => ({
+    value: material.name,
+    label: material.name,
+  }));
+
+  useEffect(() => {
+    console.log(
+      materialData?.materials.find((item) => item.name === material)?.plant
+    );
+    setPlant(
+      materialData?.materials.find((item) => item.name === material)?.plant
+    );
+    setStyle(
+      materialData?.materials.find((item) => item.name === material)?.style
+    );
+    setCustomer(
+      materialData?.materials.find((item) => item.name === material)?.customer
+    );
+  }, [material]);
+  // const materials = [
+  //   { value: "Material 01", label: "Material 01" },
+  //   { value: "Material 02", label: "Material 02" },
+  //   { value: "Material 03", label: "Material 03" },
+  // ];
 
   const [addTest] = useAddTestMutation();
 
@@ -99,21 +131,23 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
     setParameter(event.target.value);
     // formik.handleChange;
     if (event.target.value != null) {
-      console.log(event.target.value);
+      // console.log(event.target.value);
       setIsParameterSet(true);
     }
   };
 
   const handleParameterModesList = () => {
-    if (!parameterModes.some((object) => object.mode === parameterMode)) {
+    if (
+      !parameterModes.some((object) => object.name === parameterMode) &&
+      parameterMode != ""
+    ) {
       setParameterModeError("");
       const newParameterModes: parameterSetup = [
         ...parameterModes,
-        { param: parameter, mode: parameterMode },
+        { parameter: parameter, name: parameterMode },
       ];
       setParameterModes(newParameterModes);
-    } else {
-      console.log("Duplicate found");
+    } else if (parameterModes.some((object) => object.name === parameterMode)) {
       setParameterModeError("Mode is already added");
     }
 
@@ -123,7 +157,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const removeParameterModes = (name: string) => {
     const updatedList: parameterSetup[] = parameterModes.filter(
       (mode: parameterSetup) => {
-        return mode.mode !== name;
+        return mode.name !== name;
       }
     );
 
@@ -151,23 +185,24 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
       //   .required("Parameter mode is required"),
     }),
     onSubmit: (values, actions) => {
-      console.log("works");
-      //   addTest({
-      //     testGate: values.testGate,
-      //     material: values.material,
-      //   })
-      //     .unwrap()
-      //     .then((payload) => {
-      //       if (payload.status == "S1000") {
-      //         actions.setSubmitting(false);
-      //         actions.resetForm();
-      //         setOpenSuccess(true);
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       actions.setSubmitting(false);
-      //       setOpenFail(true);
-      //     });
+      console.log(parameterModes);
+      addTest({
+        testGate: values.testGate,
+        material: values.material,
+        parameterModes: parameterModes,
+      })
+        .unwrap()
+        .then((payload) => {
+          if (payload.status == "S1000") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setOpenSuccess(true);
+          }
+        })
+        .catch((error) => {
+          actions.setSubmitting(false);
+          setOpenFail(true);
+        });
     },
   });
 
@@ -193,11 +228,44 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
         </IconButton>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={{ my: 3 }}>
-            <Typography
-              color="textSecondary"
-              gutterBottom
-              variant="body2"
-            ></Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: "#fff3e0",
+                  width: "40px",
+                  height: "40px",
+                  padding: 1,
+                  mr: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <BugReportIcon sx={{ width: "20px", color: "#ffb74d" }} />
+              </Box>
+              <Typography
+                fontWeight={"bold"}
+                color="textSecondary"
+                sx={{
+                  textAlign: "left",
+                  fontSize: "1.1rem",
+                  color: "#424242",
+                  margin: 0,
+                }}
+                gutterBottom
+                variant="body2"
+              >
+                Create new tests
+                {/* {localStorage.getItem("user")} */}
+              </Typography>
+            </Box>
           </Box>
 
           <Container
@@ -220,7 +288,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                       fontWeight: "normal",
                     }}
                   >
-                    Plant 01
+                    {plant != "" ? plant : ""}
                   </StyledTableCell>
                 </StyledTableRow>
                 <StyledTableRow>
@@ -238,7 +306,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                       fontWeight: "normal",
                     }}
                   >
-                    Customer 01
+                    {customer != "" ? customer : ""}
                   </StyledTableCell>
                 </StyledTableRow>
                 <StyledTableRow>
@@ -256,7 +324,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                       fontWeight: "normal",
                     }}
                   >
-                    Style 01
+                    {style != "" ? style : ""}
                   </StyledTableCell>
                 </StyledTableRow>
               </TableHead>
@@ -287,6 +355,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
               options={materials}
               onChange={(value: { value: any }) => {
                 formik.setFieldValue("material", value.value);
+                setMaterial(value.value);
               }}
               name="material"
               className={"input"}
@@ -379,7 +448,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                       >
                         {parameterModes.map((value: parameterSetup) => (
                           <ListItem
-                            key={value.mode}
+                            key={value.name}
                             disableGutters
                             sx={{
                               backgroundColor: "#e0e0e0",
@@ -392,7 +461,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                               <IconButton
                                 aria-label="comment"
                                 onClick={() => {
-                                  removeParameterModes(value.mode);
+                                  removeParameterModes(value.name);
                                 }}
                               >
                                 <DeleteIcon sx={{ color: "white" }} />
@@ -402,9 +471,9 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                             <ListItemText
                               primary={`Parameter mode ${
                                 parameterModes.findIndex(
-                                  (object) => object.mode === value.mode
+                                  (object) => object.name === value.name
                                 ) + 1
-                              }:  ${value.mode}`}
+                              }:  ${value.name}`}
                             />
                           </ListItem>
                         ))}
