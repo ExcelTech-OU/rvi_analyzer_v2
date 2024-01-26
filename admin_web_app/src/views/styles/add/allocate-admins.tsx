@@ -23,6 +23,7 @@ import {
   useAddCustomerMutation,
 } from "../../../services/customer_service";
 import { List } from "reselect/es/types";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
 import {
@@ -157,11 +158,46 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
         </IconButton>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={{ my: 3 }}>
-            <Typography
-              color="textSecondary"
-              gutterBottom
-              variant="body2"
-            ></Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: "#fff3e0",
+                  width: "40px",
+                  height: "40px",
+                  padding: 1,
+                  mr: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <AdminPanelSettingsIcon
+                  sx={{ width: "20px", color: "#ffb74d" }}
+                />
+              </Box>
+              <Typography
+                fontWeight={"bold"}
+                color="textSecondary"
+                sx={{
+                  textAlign: "left",
+                  fontSize: "1.1rem",
+                  color: "#424242",
+                  margin: 0,
+                }}
+                gutterBottom
+                variant="body2"
+              >
+                Allocate admins
+                {/* {localStorage.getItem("user")} */}
+              </Typography>
+            </Box>
           </Box>
 
           {/* <TextField

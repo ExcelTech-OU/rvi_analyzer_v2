@@ -36,6 +36,7 @@ import {
 import * as Yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
+import BugReportIcon from "@mui/icons-material/BugReport";
 import AddIcon from "@mui/icons-material/Add";
 import { useAddStyleMutation } from "../../../services/styles_service";
 import { useAddTestMutation } from "../../../services/test_service";
@@ -227,11 +228,44 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
         </IconButton>
         <form onSubmit={formik.handleSubmit}>
           <Box sx={{ my: 3 }}>
-            <Typography
-              color="textSecondary"
-              gutterBottom
-              variant="body2"
-            ></Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: "#fff3e0",
+                  width: "40px",
+                  height: "40px",
+                  padding: 1,
+                  mr: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <BugReportIcon sx={{ width: "20px", color: "#ffb74d" }} />
+              </Box>
+              <Typography
+                fontWeight={"bold"}
+                color="textSecondary"
+                sx={{
+                  textAlign: "left",
+                  fontSize: "1.1rem",
+                  color: "#424242",
+                  margin: 0,
+                }}
+                gutterBottom
+                variant="body2"
+              >
+                Create new tests
+                {/* {localStorage.getItem("user")} */}
+              </Typography>
+            </Box>
           </Box>
 
           <Container

@@ -23,10 +23,10 @@ public class TestController {
         return testService.addTest(testDto, auth);
     }
 
-//    @GetMapping(path = "/rvi/analyzer/v1/tests")
-//    public Mono<ResponseEntity<MaterialResponse>> getTests(@RequestHeader("Authorization") String auth) {
-//        return materialService.getMaterials(auth);
-//    }
+    @GetMapping(path = "/rvi/analyzer/v1/tests")
+    public Mono<ResponseEntity<TestResponse>> getTests(@RequestHeader("Authorization") String auth) {
+        return testService.getTests(auth);
+    }
 
 //    @GetMapping(path = "/rvi/analyzer/v1/material")
 //    public Mono<MaterialDto> getMaterialInfo(@RequestBody MaterialDto materialDto) {

@@ -89,42 +89,41 @@ public class TestService {
                         .build());
     }
 
-//    public Mono<ResponseEntity<MaterialResponse>> getMaterials(String auth) {
-//        log.info("get materials request received with jwt [{}]", auth);
-//        return userRepository.findByUsername(jwtUtils.getUsername(auth))
-//                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
-//                        .flatMap(userRoles -> {
-//                            if (userRoles.contains(UserRoles.GET_ALL_CUSTOMERS)) {
-//                                return materialRepository.findAll()
-//                                        .map(material -> {
-//                                            return MaterialDto.builder()
-//                                                    ._id(material.get_id())
-//                                                    .plant(material.getPlant())
-//                                                    .customer(material.getCustomer())
-//                                                    .style(material.getStyle())
-//                                                    .name(material.getName())
-//                                                    .createdBy(material.getCreatedBy())
-//                                                    .createdDateTime(material.getCreatedDateTime())
-//                                                    .build();
-//                                        })
-//                                        .collectList()
-//                                        .flatMap(materialDtos -> Mono.just(ResponseEntity.ok(MaterialResponse.builder()
-//                                                .status("S1000")
-//                                                .statusDescription("Success")
-//                                                .materials(materialDtos)
-//                                                .build()
-//                                        )));
-//                            } else {
-//                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MaterialResponse.builder()
-//                                        .status("E1200")
-//                                        .statusDescription("You are not authorized to use this service").build()));
-//                            }
-//                        })
-//                )
-//                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MaterialResponse.builder()
-//                        .status("E1000")
-//                        .statusDescription("Failed").build())));
-//    }
+    public Mono<ResponseEntity<TestResponse>> getTests(String auth) {
+        log.info("get tests request received with jwt [{}]", auth);
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.GET_ALL_CUSTOMERS)) {
+                                return testRepository.findAll()
+                                        .map(test -> {
+                                            return TestDto.builder()
+                                                    ._id(test.get_id())
+                                                    .testGate(test.getTestGate())
+                                                    .material(test.getMaterial())
+                                                    .parameterModes(test.getParameterModes())
+                                                    .createdBy(test.getCreatedBy())
+                                                    .createdDateTime(test.getCreatedDateTime())
+                                                    .build();
+                                        })
+                                        .collectList()
+                                        .flatMap(testDtos -> Mono.just(ResponseEntity.ok(TestResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .tests(testDtos)
+                                                .build()
+                                        )));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(TestResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
+                )
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(TestResponse.builder()
+                        .status("E1000")
+                        .statusDescription("Failed").build())));
+    }
 //
 //    public Mono<MaterialDto> getMaterialByName(String name) {
 //        return Mono.just(name)

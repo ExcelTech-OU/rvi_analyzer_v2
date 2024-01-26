@@ -24,17 +24,21 @@ import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
 import { AddTestModel } from "../add/add-test";
 import { Style, useGetStyleQuery } from "../../../services/styles_service";
+import {
+  ParameterMode,
+  Test,
+  useGetTestQuery,
+} from "../../../services/test_service";
 
 const columns: GridColDef[] = [
-  { field: "parameterMode", headerName: "Parameter Mode", width: 200 },
-  {
-    field: "parameters",
-    headerName: "parameters",
-    width: 200,
-  },
   {
     field: "testGate",
     headerName: "Test Gate",
+    width: 200,
+  },
+  {
+    field: "parameterModes",
+    headerName: "Parameter Modes",
     width: 200,
   },
   {
@@ -55,14 +59,14 @@ const columns: GridColDef[] = [
 ];
 
 export default function TestList() {
-  const { data, error, isLoading } = useGetStyleQuery("");
+  const { data, error, isLoading } = useGetTestQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   const [users, setUsers] = useState<any>([]);
   var userRoles: string | string[] = [];
   var admin = "";
-  var styleList: List<Style> | undefined = [];
-  styleList = data?.styles;
+  var testsList: List<Test> | undefined = [];
+  testsList = data?.tests;
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
@@ -178,25 +182,30 @@ export default function TestList() {
                                 {
                                   // users
                                   //   .filter((user: User) => {
-                                  styleList.map((item: Style, index: any) => {
+                                  testsList.map((item: Test, index: any) => {
                                     return (
                                       <StyledTableRow
-                                        id={item.name}
+                                        id={item.testGate}
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}
                                       >
                                         <StyledTableCell align={"left"}>
-                                          {item.name}
+                                          {item.testGate}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
-                                          UN-ASSIGNED
+                                          {item.parameterModes.map(
+                                            (object: ParameterMode) => {
+                                              return (
+                                                <Typography>
+                                                  {object.name}
+                                                </Typography>
+                                              );
+                                            }
+                                          )}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
-                                          {item.plant}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
-                                          {item.customer}
+                                          {item.material}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {item.createdBy}

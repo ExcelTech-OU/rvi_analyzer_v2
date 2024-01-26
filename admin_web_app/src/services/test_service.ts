@@ -11,6 +11,8 @@ export interface Test {
     material: string
     testGate: string
     parameterModes: List<ParameterMode>
+    createdBy: string,
+    createdDateTime: string
 }
 
 export interface ParameterMode{
