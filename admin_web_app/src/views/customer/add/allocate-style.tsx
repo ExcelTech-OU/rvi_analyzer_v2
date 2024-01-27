@@ -17,6 +17,8 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import Lottie from "react-lottie";
+import animationData from "../../animations/active.json";
 import { useFormik } from "formik";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import * as Yup from "yup";
@@ -180,6 +182,41 @@ export function AllocateStyleModel({ open, changeOpenStatus }: AddPlantProps) {
               >
                 Allocate customers
                 {/* {localStorage.getItem("user")} */}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              {/* <CircleIcon
+                  sx={{ color: "#00e676", width: "14px", mx: "5px" }}
+                /> */}
+              <Box
+                sx={{
+                  width: "20px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  ml: 4,
+                }}
+              >
+                <Lottie
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                  options={{
+                    animationData,
+                    loop: true,
+                    autoplay: true,
+                  }}
+                />
+              </Box>
+              <Typography sx={{ fontSize: "0.9rem", color: "#bdbdbd" }}>
+                {localStorage.getItem("user")} is active
               </Typography>
             </Box>
           </Box>

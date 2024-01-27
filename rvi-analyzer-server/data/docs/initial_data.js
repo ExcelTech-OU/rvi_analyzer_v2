@@ -15,8 +15,8 @@ db.group.insertMany([
 
 db.role.insertMany([
   {
-    'role-id': 'create_styles',
-    'role-name': 'CREATE_STYLES'
+    'role-id': 'create_style',
+    'role-name': 'CREATE_STYLE'
   },
   {
     'role-id': 'get_styles',
@@ -25,6 +25,30 @@ db.role.insertMany([
   {
      'role-id': 'get_all_styles',
      'role-name': 'GET_ALL_STYLES'
+  },
+  {
+     'role-id': 'create_test',
+     'role-name': 'CREATE_TEST'
+  },
+  {
+     'role-id': 'get_tests',
+     'role-name': 'GET_TESTS'
+  },
+  {
+     'role-id': 'get_all_tests',
+     'role-name': 'GET_ALL_TESTS'
+  },
+  {
+     'role-id': 'create_material',
+     'role-name': 'CREATE_MATERIAL'
+  },
+  {
+     'role-id': 'get_materials',
+     'role-name': 'GET_MATERIALS'
+  },
+  {
+     'role-id': 'get_all_materials',
+     'role-name': 'GET_ALL_MATERIALS'
   },
   {
     'role-id': 'login_web',
@@ -54,6 +78,14 @@ db.role.insertMany([
     'role-id' : 'create_plant',
     'role-name': 'CREATE_PLANT'
    },
+  {
+       'role-id' : 'allocate_customers',
+       'role-name': 'ALLOCATE_CUSTOMERS'
+  },
+  {
+      'role-id' : 'allocate_admins',
+      'role-name': 'ALLOCATE_ADMINS'
+  },
   {
     'role-id': 'reset_password',
     'role-name': 'RESET_PASSWORD'
@@ -185,10 +217,18 @@ db.groupRole.insertMany([
     'create_user',
     'create_customer',
     'create_plant',
+    'create_material',
+    'create_style',
+    'create_test',
+    'allocate_customers',
+    'allocate_admins',
     'update_admin_user',
     'get_all_plants',
     'get_all_users',
     'get_all_customers',
+    'get_all_styles',
+    'get_all_tests',
+    'get_all_materials',
     'create_admin',
     'update_customer',
     'reset_password',
@@ -199,6 +239,7 @@ db.groupRole.insertMany([
     'group-id': 'admin_group',
     'role-ids': [ 'login_web',
     'create_user',
+    'create_test'
     'reset_password',
      'get_mode_one',
      'get_mode_two',
@@ -208,6 +249,7 @@ db.groupRole.insertMany([
      'get_mode_six',
      'share_report',
      'get_users',
+     'get_tests',
      'update_user',
      'get_devices']
   },

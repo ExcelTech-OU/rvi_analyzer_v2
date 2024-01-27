@@ -19,7 +19,6 @@ public class TestController {
 
     @PostMapping(path = "/register/test")
     public Mono<NewTestResponse> addTest(@RequestBody TestDto testDto, @RequestHeader("Authorization") String auth) {
-        System.out.println(testDto.getTestGate() + ", 01");
         return testService.addTest(testDto, auth);
     }
 
