@@ -51,9 +51,9 @@ public class UserService {
                 .map(users -> users.stream().map(user -> user.getUsername()).collect(Collectors.toList()));
     }
 
-    //    public Mono<NewUserResponse> addUser(UserDto userDto, String jwt) {
-    //to create super admin un-comment bellow lines
-    public Mono<NewUserResponse> addUser(UserDto userDto) {
+    public Mono<NewUserResponse> addUser(UserDto userDto, String jwt) {
+        //to create super admin un-comment bellow lines
+//    public Mono<NewUserResponse> addUser(UserDto userDto) {
         return Mono.just(userDto)
                 .doOnNext(userDto1 -> log.info("User add request received [{}]", userDto))
                 .flatMap(request -> userRepository.findByUsername(request.getUsername()))
@@ -62,9 +62,9 @@ public class UserService {
                         .statusDescription("User Already exists")
                         .build()))
                 .switchIfEmpty(
-//                        createUser(userDto, jwtUtils.getUsername(jwt))
+                        createUser(userDto, jwtUtils.getUsername(jwt))
                         //to create super admin un-comment bellow lines
-                        createUser(userDto, "SUPER_USER")
+//                        createUser(userDto, "SUPER_USER")
                 )
                 .doOnError(e ->
                         NewUserResponse.builder()
@@ -74,24 +74,24 @@ public class UserService {
     }
 
     private Mono<NewUserResponse> createUser(UserDto userDto, String username) {
-//        return userRepository.findByUsername(username)
-//                .flatMap(creatingUser -> userGroupRoleService.getUserRolesByUserGroup(creatingUser.getGroup())
-//                        .flatMap(userRoles -> {
-//                            log.info(userDto.getGroup());
-//                            if (userDto.getGroup().equals("TOP_ADMIN") && userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
-//                                return save(userDto, username);
-//                            } else if (userDto.getGroup().equals("ADMIN") && userRoles.contains(UserRoles.CREATE_ADMIN)) {
-//                                return save(userDto, username);
-//                            } else if (userDto.getGroup().equals("USER") && userRoles.contains(UserRoles.CREATE_USER)) {
-//                                return save(userDto, username);
-//                            } else {
-//                                return Mono.just(NewUserResponse.builder()
-//                                        .status("E1200")
-//                                        .statusDescription("You are not authorized to use this service").build());
-//                            }
-//                        }));
+        return userRepository.findByUsername(username)
+                .flatMap(creatingUser -> userGroupRoleService.getUserRolesByUserGroup(creatingUser.getGroup())
+                        .flatMap(userRoles -> {
+                            log.info(userDto.getGroup());
+                            if (userDto.getGroup().equals("TOP_ADMIN") && userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
+                                return save(userDto, username);
+                            } else if (userDto.getGroup().equals("ADMIN") && userRoles.contains(UserRoles.CREATE_ADMIN)) {
+                                return save(userDto, username);
+                            } else if (userDto.getGroup().equals("USER") && userRoles.contains(UserRoles.CREATE_USER)) {
+                                return save(userDto, username);
+                            } else {
+                                return Mono.just(NewUserResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build());
+                            }
+                        }));
         //to create super admin un-comment bellow lines
-        return save(userDto, username);
+//        return save(userDto, username);
     }
 
     private Mono<NewUserResponse> save(UserDto userDto, String username) {
