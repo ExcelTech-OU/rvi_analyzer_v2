@@ -2,6 +2,7 @@ package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.StyleDto;
+import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.entiy.Style;
 import com.rvi.analyzer.rvianalyzerserver.mappers.StyleMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.StyleRepository;
@@ -69,8 +70,6 @@ public class StyleService {
                     style.setCustomer(styleDto.getCustomer() != null ? styleDto.getCustomer() : "UN-ASSIGNED");
                     style.setPlant(styleDto.getPlant() != null ? styleDto.getPlant() : "UN-ASSIGNED");
                     style.setAdmin(styleDto.getAdmin() != null ? styleDto.getAdmin() : new ArrayList<>());
-//                    style.setPlant("UN-ASSIGNED");
-//                    style.setCustomer("UN-ASSIGNED");
                     style.setCreatedBy(username);
                     style.setCreatedDateTime(LocalDateTime.now());
                 })
@@ -166,8 +165,28 @@ public class StyleService {
         return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.GET_ALL_CUSTOMERS)) {
+                            if (userRoles.contains(UserRoles.GET_ALL_USERS)) {
                                 return styleRepository.findAll()
+                                        .map(style -> {
+                                            return StyleDto.builder()
+                                                    ._id(style.get_id())
+                                                    .plant(style.getPlant())
+                                                    .customer(style.getCustomer())
+                                                    .name(style.getName())
+                                                    .admin(style.getAdmin())
+                                                    .createdBy(style.getCreatedBy())
+                                                    .createdDateTime(style.getCreatedDateTime())
+                                                    .build();
+                                        })
+                                        .collectList()
+                                        .flatMap(styleDtos -> Mono.just(ResponseEntity.ok(StyleResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .styles(styleDtos)
+                                                .build()
+                                        )));
+                            } else if (userRoles.contains(UserRoles.GET_USERS)) {
+                                return styleRepository.findByCreatedBy(requestedUser.getUsername())
                                         .map(style -> {
                                             return StyleDto.builder()
                                                     ._id(style.get_id())
