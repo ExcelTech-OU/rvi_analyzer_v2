@@ -15,12 +15,12 @@ public class UserController {
     final private UserService userService;
 
     @PostMapping(path = "/register/user")
-    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String auth) {
-        return userService.addUser(userDto, auth);
-        //to create super admin un-comment bellow lines
-//    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto) {
-//        System.out.println("controller :" + userDto.getUsername());
-//        return userService.addUser(userDto);
+//    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String auth) {
+//        return userService.addUser(userDto, auth);
+    //to create super admin un-comment bellow lines
+    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto) {
+        System.out.println("controller :" + userDto.getUsername());
+        return userService.addUser(userDto);
     }
 
     @PostMapping(path = "/login/user")
