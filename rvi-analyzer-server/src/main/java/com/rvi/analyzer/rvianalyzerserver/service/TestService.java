@@ -34,7 +34,6 @@ public class TestService {
     final private TestMapper testMapper;
 
     public Mono<NewTestResponse> addTest(TestDto testDto, String jwt) {
-        System.out.println(testDto.getTestGate() + " , 02");
         return Mono.just(testDto)
                 .doOnNext(testDto1 -> log.info("Test add request received [{}]", testDto1))
                 .flatMap(request -> testRepository.findByTestGate(request.getTestGate()))
@@ -53,13 +52,11 @@ public class TestService {
     }
 
     private Mono<NewTestResponse> createTest(TestDto testDto, String username) {
-        System.out.println(testDto.getTestGate() + ", 03");
         return userRepository.findByUsername(username)
                 .flatMap(creatingStyle -> userGroupRoleService.getUserRolesByUserGroup(creatingStyle.getGroup())
                         .flatMap(userRoles -> {
                             log.info(testDto.getTestGate());
                             if (userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
-                                System.out.println(testDto.getTestGate() + ", 04");
                                 return save(testDto, username);
                             } else {
                                 return Mono.just(NewTestResponse.builder()
@@ -70,7 +67,6 @@ public class TestService {
     }
 
     private Mono<NewTestResponse> save(TestDto testDto, String username) {
-        System.out.println(testDto.getTestGate() + ", 05");
         return Mono.just(testDto)
                 .map(testMapper::testDtoToTest)
                 .doOnNext(test -> {
