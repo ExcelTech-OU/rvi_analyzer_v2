@@ -110,7 +110,7 @@ class ModeSettingsPage extends StatelessWidget {
               isThirdAddButtonPressed = true;
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => SoSettingPage()),
+                MaterialPageRoute(builder: (context) => SOSettingPage()),
               );
             } else if (label == "Production Order" &&
                 !isFourthAddButtonPreseed) {

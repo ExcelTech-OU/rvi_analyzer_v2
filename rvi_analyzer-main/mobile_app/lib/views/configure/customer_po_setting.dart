@@ -216,7 +216,7 @@ class _PoSettingPageState extends State<PoSettingPage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SoSettingPage(),
+                      builder: (context) => SOSettingPage(),
                     ),
                   );
                 }
