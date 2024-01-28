@@ -223,7 +223,7 @@ class _RMTrackingPageState extends State<RMTrackingPage> {
                         return AlertDialog(
                           title: Text("Error"),
                           content: Text(
-                              "Please select a Production Order from the list"),
+                              "Please select a Production Order from the list or Enter UID"),
                           actions: [
                             ElevatedButton(
                               onPressed: () {
