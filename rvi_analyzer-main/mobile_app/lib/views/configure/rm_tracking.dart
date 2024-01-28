@@ -204,49 +204,72 @@ class _RMTrackingPageState extends State<RMTrackingPage> {
               ),
             ),
             SizedBox(height: 20),
-            // Save/Next Button
-            ElevatedButton(
-              onPressed: () async {
-                if (!settingsSaved) {
-                  // Save button logic
-                  if (validateInput()) {
-                    await saveToLocalStorage();
-                    setState(() {
-                      settingsSaved = true;
-                    });
-                    showSuccessDialog(); // Show success message
-                  } else {
-                    // Show error message for empty fields
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text("Error"),
-                          content: Text(
-                              "Please select a Production Order from the list or Enter UID"),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text("OK"),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                } else {
-                  // Next button logic
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ModeSettingsPage(),
+            // Save/Next and Scan/Enter ID Buttons in a Row (Switched positions)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Rectangle button for Scan/Enter ID (Switched position)
+                Container(
+                  width: 120.0,
+                  height: 40.0,
+                  decoration: BoxDecoration(
+                    color: Colors.blue, // Set the background color
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      // Add logic for Scan/Enter ID button
+                    },
+                    child: Text(
+                      'Scan/Enter ID',
+                      style: TextStyle(color: Colors.white),
                     ),
-                  );
-                }
-              },
-              child: Text(settingsSaved ? "Next" : "Save"),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (!settingsSaved) {
+                      // Save button logic
+                      if (validateInput()) {
+                        await saveToLocalStorage();
+                        setState(() {
+                          settingsSaved = true;
+                        });
+                        showSuccessDialog(); // Show success message
+                      } else {
+                        // Show error message for empty fields
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Error"),
+                              content: Text(
+                                  "Please select a Production Order from the list or Enter UID"),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text("OK"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    } else {
+                      // Next button logic
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ModeSettingsPage(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(settingsSaved ? "Next" : "Save"),
+                ),
+              ],
             ),
           ],
         ),

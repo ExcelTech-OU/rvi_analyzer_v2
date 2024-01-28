@@ -60,6 +60,7 @@ dependencies:
   flutter_speed_dial: ^7.0.0
   connectivity_plus: ^4.0.1
   shared_preferences: ^2.2.2
+  image_picker: ^0.10.0
 
 dev_dependencies:
   flutter_test:
