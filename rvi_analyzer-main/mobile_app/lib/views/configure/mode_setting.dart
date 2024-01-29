@@ -84,7 +84,7 @@ class ModeSettingsPage extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(width: 8.0), // Add space between rectangle and button
+        SizedBox(width: 8.0),
         ElevatedButton(
           onPressed: () {
             // Add your logic here when the "Add" button is pressed

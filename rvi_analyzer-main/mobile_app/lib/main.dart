@@ -8,7 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:rvi_analyzer/domain/common_response.dart';
-
+import 'package:http/http.dart' as htpp;
 import 'package:rvi_analyzer/repository/adapter/common_adapter.dart';
 import 'package:rvi_analyzer/repository/adapter/connected_devices_info_adapter.dart';
 import 'package:rvi_analyzer/repository/adapter/login_info_adapter.dart';

@@ -15,8 +15,7 @@ class RMTrackingPage extends StatefulWidget {
 }
 
 class _RMTrackingPageState extends State<RMTrackingPage> {
-  // Define variables to hold the values
-  String rmValue = ''; // Set a default value
+  String rmValue = '';
   String plantValue = '';
   String customerValue = '';
   String styleValue = '';
@@ -103,21 +102,21 @@ class _RMTrackingPageState extends State<RMTrackingPage> {
           ),
         ),
       ),
-      backgroundColor: Colors.cyan, // Set background color to blue
+      backgroundColor: Colors.cyan,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Display assigned values in a fixed-size box at the top of the page
+              // Display assigned values
               Container(
-                width: double.infinity, // Set to take up the full width
+                width: double.infinity,
                 padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey), // Border color ash
+                  border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(8.0),
-                  color: Colors.white, // Box background color white
+                  color: Colors.white,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +139,7 @@ class _RMTrackingPageState extends State<RMTrackingPage> {
                   border: Border.all(
                     color: Color.fromARGB(255, 158, 158, 158),
                   ),
-                  color: Colors.grey[300], // Set the background color
+                  color: Colors.grey[300],
                 ),
                 child: DropdownButton<String>(
                   value: productionOrder,
@@ -198,7 +197,7 @@ class _RMTrackingPageState extends State<RMTrackingPage> {
                 width: 120.0,
                 height: 40.0,
                 decoration: BoxDecoration(
-                  color: Colors.blue, // Set the background color
+                  color: Colors.blue,
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: TextButton(
@@ -218,7 +217,7 @@ class _RMTrackingPageState extends State<RMTrackingPage> {
                 ),
               ),
               SizedBox(height: 20),
-              // Save/Next and Scan/Enter ID Buttons in a Row (Switched positions)
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
