@@ -4,8 +4,7 @@ import 'package:http/http.dart' as http;
 class RMService {
   // Function to get plant, customer, and style based on RM value from API
   static Future<Map<String, String>> getRMValues(String rm) async {
-    final String apiUrl =
-        'your_api_url_here'; // Replace with your actual API URL
+    final String apiUrl = '';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
