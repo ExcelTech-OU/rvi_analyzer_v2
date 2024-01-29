@@ -74,7 +74,6 @@ export default function UserList() {
   var userList: List<User> | undefined = [];
   userList = data?.users;
 
-  console.log("loads");
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
     admin = "ADMIN";
