@@ -86,11 +86,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [customer, setCustomer] = useState("");
   const [plant, setPlant] = useState("");
   const [style, setStyle] = useState("");
-  let materials: Option[] = [];
-
-  // useEffect(() => {
-  //   formik.handleChange;
-  // }, [parameterModes]);
+  let materials: any = [];
 
   materials = materialData?.materials.map((material: Material) => ({
     value: material.name,
@@ -98,17 +94,15 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   }));
 
   useEffect(() => {
-    console.log(
-      materialData?.materials.find((item) => item.name === material)?.plant
-    );
     setPlant(
-      materialData?.materials.find((item) => item.name === material)?.plant
+      materialData?.materials.find((item: any) => item.name === material)?.plant
     );
     setStyle(
-      materialData?.materials.find((item) => item.name === material)?.style
+      materialData?.materials.find((item: any) => item.name === material)?.style
     );
     setCustomer(
-      materialData?.materials.find((item) => item.name === material)?.customer
+      materialData?.materials.find((item: any) => item.name === material)
+        ?.customer
     );
   }, [material]);
   // const materials = [
@@ -142,7 +136,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
       parameterMode != ""
     ) {
       setParameterModeError("");
-      const newParameterModes: parameterSetup = [
+      const newParameterModes: any = [
         ...parameterModes,
         { parameter: parameter, name: parameterMode },
       ];
@@ -197,6 +191,11 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
             actions.setSubmitting(false);
             actions.resetForm();
             setOpenSuccess(true);
+            setParameterModes([]);
+            setPlant("");
+            setCustomer("");
+            setStyle("");
+            setParameter(null);
           }
         })
         .catch((error) => {
@@ -205,6 +204,13 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
         });
     },
   });
+
+  // useEffect(() => {
+  //   if (formik.isSubmitting || formik.isValid) {
+  //     // Force re-render after submission or validation
+  //     formik.setFieldValue("material", "");
+  //   }
+  // }, [formik.isSubmitting, formik.isValid]);
 
   return (
     <Dialog
@@ -431,7 +437,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                   >
                     Testing Setup
                   </Typography>
-                  <Box sx={{ py: 2 }}>
+                  <Box sx={{ py: 0 }}>
                     <Container
                       style={{
                         display: "flex",
