@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rvi_analyzer/views/configure/configure_left_panel.dart';
+import 'package:rvi_analyzer/views/configure/qr_scanner.dart'; // Assuming you have a QRScanner widget
 import 'package:rvi_analyzer/views/configure/mode_setting.dart';
 
 void main() {
@@ -66,44 +68,24 @@ class _RMTrackingPageState extends State<RMTrackingPage> {
     });
   }
 
-  // Function to validate input
-  bool validateInput() {
-    return customerPoNumber.isNotEmpty &&
-        productionOrder.isNotEmpty &&
-        uid.isNotEmpty &&
-        rmValue.isNotEmpty &&
-        plantValue.isNotEmpty &&
-        soNumber.isNotEmpty &&
-        customerValue.isNotEmpty &&
-        styleValue.isNotEmpty;
+  // Placeholder function for QR code update
+  void setQRCode(String? qrCode) {
+    // Implement the logic to handle the scanned QR code
   }
 
-  // Function to save to local storage
+  // Placeholder function for validation
+  bool validateInput() {
+    return true; // Implement your validation logic
+  }
+
+  // Placeholder function for saving to local storage
   Future<void> saveToLocalStorage() async {
-    // Add logic to save to local storage
+    // Implement the logic to save to local storage
     // Example: SharedPreferences, database, etc.
-    // For simplicity, let's print a message
-    print('Saved to local storage');
   }
 
   void showSuccessDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Success"),
-          content: Text("Settings saved successfully."),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
+    // Implement the logic to show the success dialog
   }
 
   @override
@@ -211,28 +193,35 @@ class _RMTrackingPageState extends State<RMTrackingPage> {
                 ),
               ),
               SizedBox(height: 20),
+              // QR Scan button
+              Container(
+                width: 120.0,
+                height: 40.0,
+                decoration: BoxDecoration(
+                  color: Colors.blue, // Set the background color
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            QRScanner(updateQRCode: setQRCode),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'QR Scan',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
               // Save/Next and Scan/Enter ID Buttons in a Row (Switched positions)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Rectangle button for Scan/Enter ID (Switched position)
-                  Container(
-                    width: 120.0,
-                    height: 40.0,
-                    decoration: BoxDecoration(
-                      color: Colors.blue, // Set the background color
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: TextButton(
-                      onPressed: () {
-                        // Add logic for Scan/Enter ID button
-                      },
-                      child: Text(
-                        'Scan/Enter ID',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
                   ElevatedButton(
                     onPressed: () async {
                       if (!settingsSaved) {
