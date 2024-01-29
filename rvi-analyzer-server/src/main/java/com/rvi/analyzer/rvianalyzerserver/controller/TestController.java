@@ -26,9 +26,4 @@ public class TestController {
     public Mono<ResponseEntity<TestResponse>> getTests(@RequestHeader("Authorization") String auth) {
         return testService.getTests(auth);
     }
-
-//    @GetMapping(path = "/rvi/analyzer/v1/material")
-//    public Mono<MaterialDto> getMaterialInfo(@RequestBody MaterialDto materialDto) {
-//        return materialService.getMaterialByName(materialDto.getName());
-//    }
 }

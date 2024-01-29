@@ -66,21 +66,25 @@ const columns: GridColDef[] = [
 
 export default function UserList() {
   const { data, error, isLoading } = useGetUsersQuery("");
-  const [pageCount, setPageCount] = React.useState(1);
-  const [page, setPage] = React.useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
   const [users, setUsers] = useState<any>([]);
   var userRoles: string | string[] = [];
   var admin = "";
   var userList: List<User> | undefined = [];
   userList = data?.users;
-  const [isUsersAvailable, setIsUsersAvailable] = useState(false);
 
-  useEffect(() => {
-    if (data?.users?.length != 0) {
-      setIsUsersAvailable(true);
-      console.log("users available");
-    }
-  }, []);
+  const startIndex = page * rowsPerPage;
+  const endIndex = Math.min(startIndex + rowsPerPage, data?.users.length);
+  const visibleData = data?.users.slice(startIndex, endIndex);
+  // const [isUsersAvailable, setIsUsersAvailable] = useState(false);
+
+  // useEffect(() => {
+  //   if (data?.users?.length != 0) {
+  //     setIsUsersAvailable(true);
+  //     console.log("users available");
+  //   }
+  // }, []);
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
@@ -197,7 +201,7 @@ export default function UserList() {
                                   // users
                                   //   .filter((user: User) => {
                                   userList
-                                    .filter((user) => {
+                                    .filter((user: User) => {
                                       if (admin === "ADMIN") {
                                         return user.group === "USER";
                                       } else {
@@ -207,7 +211,8 @@ export default function UserList() {
                                     .map((item: User, index: any) => {
                                       return (
                                         <StyledTableRow
-                                          id={item.username}
+                                          key={item.username}
+                                          // id={index}
                                           hover
                                           role="checkbox"
                                           tabIndex={-1}
@@ -285,7 +290,8 @@ export default function UserList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            count={pageCount}
+                            // count={pageCount}
+                            count={Math.ceil(data?.users.length / rowsPerPage)}
                             sx={{ mt: 2 }}
                             variant="outlined"
                             shape="rounded"

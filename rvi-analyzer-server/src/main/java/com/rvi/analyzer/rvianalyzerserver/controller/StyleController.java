@@ -21,13 +21,13 @@ public class StyleController {
 
     @PostMapping(path = "/allocate/style/admin")
     public Mono<ResponseEntity<CommonResponse>> allocateAdmin(@RequestBody UpdateStyle updateStyle, @RequestHeader("Authorization") String auth) {
-        System.out.println(updateStyle.getAdmin());
+//        System.out.println(updateStyle.getAdmin());
         return styleService.allocateAdmin(updateStyle, auth);
     }
 
     @PostMapping(path = "/allocate/style")
     public Mono<ResponseEntity<CommonResponse>> allocateStyle(@RequestBody UpdateStyle updateStyle, @RequestHeader("Authorization") String auth) {
-        System.out.println(updateStyle.getAdmin());
+//        System.out.println(updateStyle.getAdmin());
         return styleService.updateStyle(updateStyle, auth);
     }
 
