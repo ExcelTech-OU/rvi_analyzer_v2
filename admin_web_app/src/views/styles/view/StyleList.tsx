@@ -222,40 +222,46 @@ export default function StyleList() {
                                 {
                                   // users
                                   //   .filter((user: User) => {
-                                  styleList.map((item: Style, index: any) => {
-                                    return (
-                                      <StyledTableRow
-                                        id={item.name}
-                                        hover
-                                        role="checkbox"
-                                        tabIndex={-1}
-                                        // sx={{ width: 100 }}
-                                      >
-                                        <StyledTableCell align={"left"}>
-                                          {item.name}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
-                                          {item.customer}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
-                                          {item.plant}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
-                                          {item.admin.map((object: String) => {
-                                            return (
-                                              <Typography>{object}</Typography>
-                                            );
-                                          })}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
-                                          {item.createdBy}
-                                        </StyledTableCell>
-                                      </StyledTableRow>
-                                    );
-                                    // <StyledTableCell align={"left"}>
-                                    //       {item.createdDateTime}
-                                    //     </StyledTableCell>
-                                  })
+                                  styleList
+                                    .map((item: Style, index: any) => {
+                                      return (
+                                        <StyledTableRow
+                                          id={item.name}
+                                          hover
+                                          role="checkbox"
+                                          tabIndex={-1}
+                                          // sx={{ width: 100 }}
+                                        >
+                                          <StyledTableCell align={"left"}>
+                                            {item.name}
+                                          </StyledTableCell>
+                                          <StyledTableCell align={"left"}>
+                                            {item.customer}
+                                          </StyledTableCell>
+                                          <StyledTableCell align={"left"}>
+                                            {item.plant}
+                                          </StyledTableCell>
+                                          <StyledTableCell align={"left"}>
+                                            {item.admin.map(
+                                              (object: String) => {
+                                                return (
+                                                  <Typography>
+                                                    {object}
+                                                  </Typography>
+                                                );
+                                              }
+                                            )}
+                                          </StyledTableCell>
+                                          <StyledTableCell align={"left"}>
+                                            {item.createdBy}
+                                          </StyledTableCell>
+                                        </StyledTableRow>
+                                      );
+                                      // <StyledTableCell align={"left"}>
+                                      //       {item.createdDateTime}
+                                      //     </StyledTableCell>
+                                    })
+                                    .reverse()
                                 }
                               </TableBody>
                             </Table>

@@ -157,8 +157,8 @@ export default function CustomerList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data?.customers.map(
-                                  (customer: Customer, index: any) => {
+                                {data?.customers
+                                  .map((customer: Customer, index: any) => {
                                     return (
                                       <StyledTableRow
                                         id={customer.name}
@@ -180,8 +180,8 @@ export default function CustomerList() {
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );
-                                  }
-                                )}
+                                  })
+                                  .reverse()}
                               </TableBody>
                             </Table>
                           </TableContainer>

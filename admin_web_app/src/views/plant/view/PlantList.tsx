@@ -163,8 +163,8 @@ export default function PlantList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data?.plants.map(
-                                  (plant: Plant, index: any) => {
+                                {data?.plants
+                                  .map((plant: Plant, index: any) => {
                                     return (
                                       <StyledTableRow
                                         id={plant.name}
@@ -186,8 +186,8 @@ export default function PlantList() {
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );
-                                  }
-                                )}
+                                  })
+                                  .reverse()}
                               </TableBody>
                             </Table>
                           </TableContainer>

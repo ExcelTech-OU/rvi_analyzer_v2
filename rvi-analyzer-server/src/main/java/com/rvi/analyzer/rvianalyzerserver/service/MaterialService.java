@@ -91,7 +91,7 @@ public class MaterialService {
         return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.GET_ALL_CUSTOMERS)) {
+                            if (userRoles.contains(UserRoles.LOGIN_WEB)) {
                                 return materialRepository.findAll()
                                         .map(material -> {
                                             return MaterialDto.builder()

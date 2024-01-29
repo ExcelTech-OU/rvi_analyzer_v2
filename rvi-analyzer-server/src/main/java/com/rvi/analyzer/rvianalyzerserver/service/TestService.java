@@ -56,7 +56,7 @@ public class TestService {
                 .flatMap(creatingStyle -> userGroupRoleService.getUserRolesByUserGroup(creatingStyle.getGroup())
                         .flatMap(userRoles -> {
                             log.info(testDto.getTestGate());
-                            if (userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
+                            if (userRoles.contains(UserRoles.LOGIN_WEB)) {
                                 return save(testDto, username);
                             } else {
                                 return Mono.just(NewTestResponse.builder()
@@ -90,7 +90,7 @@ public class TestService {
         return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.GET_ALL_CUSTOMERS)) {
+                            if (userRoles.contains(UserRoles.LOGIN_WEB)) {
                                 return testRepository.findAll()
                                         .map(test -> {
                                             return TestDto.builder()
