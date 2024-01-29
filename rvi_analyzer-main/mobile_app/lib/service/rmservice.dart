@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class RMService {
-  // Function to get plant, customer, and style based on RM value
+  // Function to get plant, customer, and style based on RM value from API
   static Future<Map<String, String>> getRMValues(String rm) async {
-    final String apiUrl = '';
+    final String apiUrl =
+        'your_api_url_here'; // Replace with your actual API URL
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -13,7 +14,6 @@ class RMService {
         final Map<String, dynamic> jsonData = json.decode(response.body);
 
         // Extract data from JSON and use it as needed
-        // For example, you could update the UI based on the fetched data
         final String plant = jsonData['plant'] ?? '';
         final String customer = jsonData['customer'] ?? '';
         final String style = jsonData['style'] ?? '';
@@ -35,7 +35,7 @@ class RMService {
     }
   }
 
-  // Local hardcoded values for RM
+  // Local hardcoded values for RM (for testing purposes)
   static Map<String, String> getLocalRMValues(String rm) {
     switch (rm) {
       case 'RM 1':

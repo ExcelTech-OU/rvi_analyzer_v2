@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:rvi_analyzer/service/rmservice.dart';
 import 'package:rvi_analyzer/views/configure/so_setting.dart';
 
+void main() {
+  runApp(MaterialApp(
+    home: PoSettingPage(),
+  ));
+}
+
 class PoSettingPage extends StatefulWidget {
   @override
   _PoSettingPageState createState() => _PoSettingPageState();
@@ -17,9 +23,9 @@ class _PoSettingPageState extends State<PoSettingPage> {
 
   // Function to update values based on the selected RM
   void updateValues(String rm) {
+    // Use the function directly, as it's not an asynchronous operation
+    Map<String, String> rmValues = RMService.getLocalRMValues(rm);
     setState(() {
-      Map<String, String> rmValues =
-          RMService.getRMValues(rm) as Map<String, String>;
       plantValue = rmValues['plant'] ?? '';
       customerValue = rmValues['customer'] ?? '';
       styleValue = rmValues['style'] ?? '';
@@ -34,6 +40,7 @@ class _PoSettingPageState extends State<PoSettingPage> {
   }
 
   Future<void> saveToLocalStorage() async {
+    // Add logic to save to local storage
     print('Saved to local storage');
   }
 
@@ -115,6 +122,7 @@ class _PoSettingPageState extends State<PoSettingPage> {
                   if (newValue != null) {
                     setState(() {
                       rmValue = newValue;
+                      // Call the function to update values based on the selected RM
                       updateValues(rmValue);
                     });
                   }
@@ -196,10 +204,4 @@ class _PoSettingPageState extends State<PoSettingPage> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: PoSettingPage(),
-  ));
 }
