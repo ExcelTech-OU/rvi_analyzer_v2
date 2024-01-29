@@ -73,6 +73,14 @@ export default function UserList() {
   var admin = "";
   var userList: List<User> | undefined = [];
   userList = data?.users;
+  const [isUsersAvailable, setIsUsersAvailable] = useState(false);
+
+  useEffect(() => {
+    if (data?.users?.length != 0) {
+      setIsUsersAvailable(true);
+      console.log("users available");
+    }
+  }, []);
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
@@ -269,6 +277,7 @@ export default function UserList() {
                                         </StyledTableRow>
                                       );
                                     })
+                                    .reverse()
                                 }
                               </TableBody>
                             </Table>

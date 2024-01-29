@@ -208,6 +208,8 @@ export const DashboardSidebar = ({
       item.title !== "Customers" &&
       item.title !== "Plants" &&
       item.title !== "Styles"
+    //  &&
+    // item.title !== "Testing"
   );
 
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"), {
