@@ -14,6 +14,58 @@ db.group.insertMany([
 ])
 
 db.role.insertMany([
+{
+    'role-id': 'create_test',
+    'role-name': 'CREATE_TEST'
+  },
+  {
+    'role-id': 'get_all_tests',
+    'role-name': 'GET_ALL_TESTS'
+  },
+  {
+    'role-id': 'get_tests',
+    'role-name': 'GET_TESTS'
+  },
+  {
+    'role-id': 'create_style',
+    'role-name': 'CREATE_STYLE'
+  },
+  {
+    'role-id': 'get_all_styles',
+    'role-name': 'GET_ALL_STYLES'
+  },
+  {
+    'role-id': 'create_plant',
+    'role-name': 'CREATE_PLANT'
+  },
+  {
+      'role-id': 'get_plants',
+      'role-name': 'GET_PLANTS'
+    },
+    {
+      'role-id': 'get_all_plants',
+      'role-name': 'GET_ALL_PLANTS'
+    },
+  {
+    'role-id': 'create_material',
+    'role-name': 'CREATE_MATERIAL'
+  },
+  {
+    'role-id': 'get_all_materials',
+    'role-name': 'GET_ALL_MATERIALS'
+  },
+  {
+    'role-id': 'allocate_customer',
+    'role-name': 'ALLOCATE_CUSTOMER'
+  },
+  {
+    'role-id': 'update_style',
+    'role-name': 'UPDATE_STYLE'
+  },
+  {
+    'role-id': 'allocate_admin',
+    'role-name': 'ALLOCATE_ADMIN'
+  },
   {
     'role-id': 'login_web',
     'role-name': 'LOGIN_WEB'
@@ -166,38 +218,44 @@ db.role.insertMany([
 ])
 
 db.groupRole.insertMany([
-  {
+{
     'group-id': 'top_admin_group',
     'role-ids': [ 'login_web',
     'create_top_admin',
     'create_user',
     'create_customer',
     'create_plant',
+    'create_material',
     'update_admin_user',
     'get_all_plants',
     'get_all_users',
     'get_all_customers',
+    'get_all_tests',
+    'get_all_materials',
     'create_admin',
     'update_customer',
+    'update_style',
     'reset_password',
     'update_device',
     'get_devices']
   },
-  {
+{
     'group-id': 'admin_group',
     'role-ids': [ 'login_web',
     'create_user',
     'reset_password',
-     'get_mode_one',
-     'get_mode_two',
-     'get_mode_three',
-     'get_mode_four',
-     'get_mode_five',
-     'get_mode_six',
-     'share_report',
-     'get_users',
-     'update_user',
-     'get_devices']
+    'get_tests',
+    'get_all_materials',
+    'get_mode_one',
+    'get_mode_two',
+    'get_mode_three',
+    'get_mode_four',
+    'get_mode_five',
+    'get_mode_six',
+    'share_report',
+    'get_users',
+    'update_user',
+    'get_devices']
   },
   {
     'group-id': 'user_group',
