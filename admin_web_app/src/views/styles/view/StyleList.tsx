@@ -223,7 +223,7 @@ export default function StyleList() {
                                   .map((item: Style, index: any) => {
                                     return (
                                       <StyledTableRow
-                                        id={item.name}
+                                        id={index}
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}

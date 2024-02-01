@@ -5,6 +5,7 @@ import com.rvi.analyzer.rvianalyzerserver.entiy.Test;
 import com.rvi.analyzer.rvianalyzerserver.entiy.User;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface TestRepository extends ReactiveMongoRepository<Test, String> {
@@ -18,4 +19,15 @@ public interface TestRepository extends ReactiveMongoRepository<Test, String> {
                     """
     )
     Mono<Test> findByTestGate(String testGate);
+
+    @Query(
+            value = """
+                    {
+                        "created-by" : {
+                            $eq: ?0
+                        }
+                    }
+                    """
+    )
+    Flux<Test> findByCreatedBy(String createdBy);
 }

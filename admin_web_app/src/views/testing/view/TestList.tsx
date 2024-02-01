@@ -188,7 +188,7 @@ export default function TestList() {
                                   .map((item: Test, index: any) => {
                                     return (
                                       <StyledTableRow
-                                        id={item.testGate}
+                                        key={index}
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}

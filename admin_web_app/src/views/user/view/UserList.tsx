@@ -72,7 +72,7 @@ export default function UserList() {
   var userRoles: string | string[] = [];
   var admin = "";
   // var userList: List<User> | undefined = [];
-  // const [userList, setUserList] = useState<any>([]);
+  const [userList, setUserList] = useState<List<User>>([]);
 
   // userList = data?.users;
 
@@ -82,32 +82,33 @@ export default function UserList() {
   const [isUsersAvailable, setIsUsersAvailable] = useState(false);
 
   // useEffect(() => {
-  //   if (data?.users?.length != 0) {
+  //   if (data?.users?.length > 0) {
   //     setIsUsersAvailable(true);
   //   }
   // }, [isUsersAvailable]);
 
-  // useEffect(() => {
-  //   const newUsers: any = [
-  //     ...userList,
-  //     data?.users.map((user: User) => {
-  //       return {
-  //         username: user.username,
-  //         group: user.group,
-  //         status: user.status,
-  //         supervisor: user.supervisor,
-  //         passwordType: user.passwordType,
-  //         createdBy: user.createdBy,
-  //         createdDateTime: user.createdDateTime,
-  //         lastUpdatedDateTime: user.lastUpdatedDateTime,
-  //       };
-  //     }),
-  //   ];
-  //   console.log(newUsers);
-  //   setUserList(newUsers);
-  //   console.log(userList);
-  //   // console.log("users available");
-  // }, [isUsersAvailable]);
+  useEffect(() => {
+    if (data?.users?.length > 0) {
+      const newUsers: any = [
+        ...userList,
+        data?.users.map((user: User) => {
+          return {
+            username: user.username,
+            group: user.group,
+            status: user.status,
+            supervisor: user.supervisor,
+            passwordType: user.passwordType,
+            createdBy: user.createdBy,
+            createdDateTime: user.createdDateTime,
+            lastUpdatedDateTime: user.lastUpdatedDateTime,
+          };
+        }),
+      ];
+      console.log(newUsers);
+      setUserList(newUsers);
+      console.log(userList);
+    }
+  }, []);
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
@@ -231,8 +232,8 @@ export default function UserList() {
                                   .map((item: User, index: any) => {
                                     return (
                                       <StyledTableRow
-                                        key={item.username}
-                                        // id={index}
+                                        key={index}
+                                        id={item.username}
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}

@@ -48,7 +48,7 @@ public class UserService {
                 .doOnNext(s -> log.info("Finding users by userName [{}]", s))
                 .flatMapMany(userRepository::findByCreatedBy)
                 .collectList()
-                .map(users -> users.stream().map(user -> user.getUsername()).collect(Collectors.toList()));
+                .map(users -> users.stream().map(User::getUsername).collect(Collectors.toList()));
     }
 
     public Mono<NewUserResponse> addUser(UserDto userDto, String jwt) {
