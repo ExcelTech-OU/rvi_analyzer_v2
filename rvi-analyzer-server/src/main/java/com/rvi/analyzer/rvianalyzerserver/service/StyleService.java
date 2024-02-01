@@ -52,7 +52,7 @@ public class StyleService {
                 .flatMap(creatingStyle -> userGroupRoleService.getUserRolesByUserGroup(creatingStyle.getGroup())
                         .flatMap(userRoles -> {
                             log.info(styleDto.getName());
-                            if (userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
+                            if (userRoles.contains(UserRoles.CREATE_STYLE)) {
                                 return save(styleDto, username);
                             } else {
                                 return Mono.just(NewStyleResponse.builder()
@@ -86,7 +86,7 @@ public class StyleService {
         return userRepository.findByUsername(jwtUtils.getUsername(jwt))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
+                            if (userRoles.contains(UserRoles.ALLOCATE_ADMIN)) {
                                 return styleRepository.findByName(updateStyle.getName())
                                         .flatMap(style -> {
                                             List<String> admins = style.getAdmin();
@@ -122,7 +122,7 @@ public class StyleService {
         return userRepository.findByUsername(jwtUtils.getUsername(jwt))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
+                            if (userRoles.contains(UserRoles.UPDATE_STYLE)) {
                                 return styleRepository.findByName(updateStyle.getName())
                                         .flatMap(style -> {
                                             List<String> admins = style.getAdmin();
@@ -165,7 +165,7 @@ public class StyleService {
         return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.GET_ALL_USERS)) {
+                            if (userRoles.contains(UserRoles.GET_ALL_STYLES)) {
                                 return styleRepository.findAll()
                                         .map(style -> {
                                             return StyleDto.builder()
@@ -185,7 +185,7 @@ public class StyleService {
                                                 .styles(styleDtos)
                                                 .build()
                                         )));
-                            } else if (userRoles.contains(UserRoles.GET_USERS)) {
+                            } else if (userRoles.contains(UserRoles.GET_STYLES)) {
                                 return styleRepository.findByCreatedBy(requestedUser.getUsername())
                                         .map(style -> {
                                             return StyleDto.builder()

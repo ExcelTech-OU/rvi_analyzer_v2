@@ -70,8 +70,8 @@ export default function TestList() {
   const [users, setUsers] = useState<any>([]);
   var userRoles: string | string[] = [];
   var admin = "";
-  var testsList: List<Test> | undefined = [];
-  testsList = data?.tests;
+  // var testsList: List<Test> | undefined = [];
+  // testsList = data?.tests;
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
@@ -184,57 +184,53 @@ export default function TestList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {
-                                  // users
-                                  //   .filter((user: User) => {
-                                  testsList
-                                    .map((item: Test, index: any) => {
-                                      return (
-                                        <StyledTableRow
-                                          id={item.testGate}
-                                          hover
-                                          role="checkbox"
-                                          tabIndex={-1}
-                                        >
-                                          <StyledTableCell align={"left"}>
-                                            {item.testGate}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.parameterModes.map(
-                                              (object: ParameterMode) => {
-                                                return (
-                                                  <Typography>
-                                                    {object.name}
-                                                  </Typography>
-                                                );
-                                              }
-                                            )}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.parameterModes.map(
-                                              (object: ParameterMode) => {
-                                                return (
-                                                  <Typography>
-                                                    {object.parameter}
-                                                  </Typography>
-                                                );
-                                              }
-                                            )}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.material}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.createdBy}
-                                          </StyledTableCell>
-                                          <StyledTableCell align={"left"}>
-                                            {item.createdDateTime}
-                                          </StyledTableCell>
-                                        </StyledTableRow>
-                                      );
-                                    })
-                                    .reverse()
-                                }
+                                {data?.tests
+                                  .map((item: Test, index: any) => {
+                                    return (
+                                      <StyledTableRow
+                                        key={index}
+                                        hover
+                                        role="checkbox"
+                                        tabIndex={-1}
+                                      >
+                                        <StyledTableCell align={"left"}>
+                                          {item.testGate}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.parameterModes.map(
+                                            (object: ParameterMode) => {
+                                              return (
+                                                <Typography>
+                                                  {object.name}
+                                                </Typography>
+                                              );
+                                            }
+                                          )}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.parameterModes.map(
+                                            (object: ParameterMode) => {
+                                              return (
+                                                <Typography>
+                                                  {object.parameter}
+                                                </Typography>
+                                              );
+                                            }
+                                          )}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.material}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.createdBy}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.createdDateTime}
+                                        </StyledTableCell>
+                                      </StyledTableRow>
+                                    );
+                                  })
+                                  .reverse()}
                               </TableBody>
                             </Table>
                           </TableContainer>

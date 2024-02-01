@@ -53,7 +53,7 @@ public class MaterialService {
                 .flatMap(creatingStyle -> userGroupRoleService.getUserRolesByUserGroup(creatingStyle.getGroup())
                         .flatMap(userRoles -> {
                             log.info(materialDto.getName());
-                            if (userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
+                            if (userRoles.contains(UserRoles.CREATE_MATERIAL)) {
                                 return save(materialDto, username);
                             } else {
                                 return Mono.just(NewMaterialResponse.builder()
@@ -91,7 +91,7 @@ public class MaterialService {
         return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.LOGIN_WEB)) {
+                            if (userRoles.contains(UserRoles.GET_ALL_MATERIALS)) {
                                 return materialRepository.findAll()
                                         .map(material -> {
                                             return MaterialDto.builder()

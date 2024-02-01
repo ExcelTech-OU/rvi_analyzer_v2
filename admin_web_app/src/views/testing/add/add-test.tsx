@@ -69,7 +69,7 @@ interface Option {
 export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openFail, setOpenFail] = useState(false);
-  const [formReset, setFormReset] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
   const theme = useTheme();
   const {
     data: materialData,
@@ -83,10 +83,18 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [parameter, setParameter] = useState(null);
   const [parameterMode, setParameterMode] = useState("");
   const [parameterModeError, setParameterModeError] = useState("");
-  const [customer, setCustomer] = useState("");
-  const [plant, setPlant] = useState("");
-  const [style, setStyle] = useState("");
+  const [customer, setCustomer] = useState<any>("");
+  const [plant, setPlant] = useState<any>("");
+  const [style, setStyle] = useState<any>("");
+  const [responseFeedback, setResponseFeedback] = useState<String>("");
   let materials: any = [];
+
+  useEffect(() => {
+    console.log(responseFeedback);
+    if (responseFeedback != "") {
+      setAlertOpen(true);
+    }
+  }, [responseFeedback]);
 
   materials = materialData?.materials.map((material: Material) => ({
     value: material.name,
@@ -117,6 +125,10 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
     setOpenSuccess(false);
   };
 
+  // const handleAlert = () => {
+  //   setAlertOpen(false);
+  // };
+
   const handleCloseFail = () => {
     setOpenFail(false);
   };
@@ -144,8 +156,6 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
     } else if (parameterModes.some((object) => object.name === parameterMode)) {
       setParameterModeError("Mode is already added");
     }
-
-    // console.log(parameter + ", " + parameterMode);
   };
 
   const removeParameterModes = (name: string) => {
@@ -157,10 +167,6 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
 
     setParameterModes(updatedList);
   };
-
-  // const removePrameterModes = (name: String) => {
-  //   setParameterModes(parameterModes.filter((mode) => mode.mode !== name));
-  // };
 
   const formik = useFormik({
     initialValues: {
@@ -179,7 +185,6 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
       //   .required("Parameter mode is required"),
     }),
     onSubmit: (values, actions) => {
-      console.log(parameterModes);
       addTest({
         testGate: values.testGate,
         material: values.material,
@@ -187,10 +192,11 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
       })
         .unwrap()
         .then((payload) => {
+          setResponseFeedback(String(payload.statusDescription));
           if (payload.status == "S1000") {
             actions.setSubmitting(false);
             actions.resetForm();
-            setOpenSuccess(true);
+            // setOpenSuccess(true);
             setParameterModes([]);
             setPlant("");
             setCustomer("");
@@ -200,7 +206,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
         })
         .catch((error) => {
           actions.setSubmitting(false);
-          setOpenFail(true);
+          // setOpenFail(true);
         });
     },
   });
@@ -452,37 +458,39 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                           maxWidth: 360,
                         }}
                       >
-                        {parameterModes.map((value: parameterSetup) => (
-                          <ListItem
-                            key={value.name}
-                            disableGutters
-                            sx={{
-                              backgroundColor: "#e0e0e0",
-                              color: "white",
-                              mt: 1,
-                              borderRadius: "6px",
-                              padding: 1,
-                            }}
-                            secondaryAction={
-                              <IconButton
-                                aria-label="comment"
-                                onClick={() => {
-                                  removeParameterModes(value.name);
-                                }}
-                              >
-                                <DeleteIcon sx={{ color: "white" }} />
-                              </IconButton>
-                            }
-                          >
-                            <ListItemText
-                              primary={`Parameter mode ${
-                                parameterModes.findIndex(
-                                  (object) => object.name === value.name
-                                ) + 1
-                              }:  ${value.name}`}
-                            />
-                          </ListItem>
-                        ))}
+                        {parameterModes.map(
+                          (value: parameterSetup, index: any) => (
+                            <ListItem
+                              key={index}
+                              disableGutters
+                              sx={{
+                                backgroundColor: "#e0e0e0",
+                                color: "white",
+                                mt: 1,
+                                borderRadius: "6px",
+                                padding: 1,
+                              }}
+                              secondaryAction={
+                                <IconButton
+                                  aria-label="comment"
+                                  onClick={() => {
+                                    removeParameterModes(value.name);
+                                  }}
+                                >
+                                  <DeleteIcon sx={{ color: "white" }} />
+                                </IconButton>
+                              }
+                            >
+                              <ListItemText
+                                primary={`Parameter mode ${
+                                  parameterModes.findIndex(
+                                    (object) => object.name === value.name
+                                  ) + 1
+                                }:  ${value.name}`}
+                              />
+                            </ListItem>
+                          )
+                        )}
                       </List>
                     </Container>
                     <TextField
@@ -583,6 +591,23 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
             Saving failed
           </Alert>
         </Snackbar>
+        {/* <Snackbar
+          open={alertOpen}
+          autoHideDuration={6000}
+          onClose={() => {
+            handleAlert;
+            console.log("test");
+          }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={handleAlert}
+            severity={responseFeedback === "Success" ? "success" : "error"}
+            sx={{ width: "100%" }}
+          >
+            {responseFeedback}
+          </Alert>
+        </Snackbar> */}
       </DialogContent>
     </Dialog>
   );

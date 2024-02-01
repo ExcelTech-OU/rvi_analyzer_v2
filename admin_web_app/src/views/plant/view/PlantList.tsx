@@ -167,7 +167,7 @@ export default function PlantList() {
                                   .map((plant: Plant, index: any) => {
                                     return (
                                       <StyledTableRow
-                                        id={plant.name}
+                                        key={index}
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}

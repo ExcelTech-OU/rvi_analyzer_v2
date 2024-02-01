@@ -56,7 +56,7 @@ public class TestService {
                 .flatMap(creatingStyle -> userGroupRoleService.getUserRolesByUserGroup(creatingStyle.getGroup())
                         .flatMap(userRoles -> {
                             log.info(testDto.getTestGate());
-                            if (userRoles.contains(UserRoles.LOGIN_WEB)) {
+                            if (userRoles.contains(UserRoles.CREATE_TEST)) {
                                 return save(testDto, username);
                             } else {
                                 return Mono.just(NewTestResponse.builder()
@@ -90,8 +90,27 @@ public class TestService {
         return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.LOGIN_WEB)) {
+                            if (userRoles.contains(UserRoles.GET_ALL_TESTS)) {
                                 return testRepository.findAll()
+                                        .map(test -> {
+                                            return TestDto.builder()
+                                                    ._id(test.get_id())
+                                                    .testGate(test.getTestGate())
+                                                    .material(test.getMaterial())
+                                                    .parameterModes(test.getParameterModes())
+                                                    .createdBy(test.getCreatedBy())
+                                                    .createdDateTime(test.getCreatedDateTime())
+                                                    .build();
+                                        })
+                                        .collectList()
+                                        .flatMap(testDtos -> Mono.just(ResponseEntity.ok(TestResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .tests(testDtos)
+                                                .build()
+                                        )));
+                            } else if (userRoles.contains(UserRoles.GET_TESTS)) {
+                                return testRepository.findByCreatedBy(requestedUser.getUsername())
                                         .map(test -> {
                                             return TestDto.builder()
                                                     ._id(test.get_id())
@@ -120,11 +139,4 @@ public class TestService {
                         .status("E1000")
                         .statusDescription("Failed").build())));
     }
-//
-//    public Mono<MaterialDto> getMaterialByName(String name) {
-//        return Mono.just(name)
-//                .doOnNext(uName -> log.info("Finding material for name [{}]", uName))
-//                .flatMap(materialRepository::findByName)
-//                .map(materialMapper::materialToMaterialDto);
-//    }
 }

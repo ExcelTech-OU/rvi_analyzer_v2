@@ -161,7 +161,7 @@ export default function CustomerList() {
                                   .map((customer: Customer, index: any) => {
                                     return (
                                       <StyledTableRow
-                                        id={customer.name}
+                                        key={index}
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}

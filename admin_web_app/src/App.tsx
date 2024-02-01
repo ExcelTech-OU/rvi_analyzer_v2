@@ -41,8 +41,6 @@ function App({ children }: AppProps) {
   const [roles] = useGetRolesMutation();
   const dispatch = useDispatch();
 
-  console.log(isUser);
-
   useEffect(() => {
     if (isToken) {
       roles({})
