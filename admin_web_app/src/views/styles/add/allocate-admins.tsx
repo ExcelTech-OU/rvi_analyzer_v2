@@ -77,7 +77,6 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
     error: plantError,
     isLoading: plantLoading,
   } = useGetPlantQuery("");
-  // const [customerList, setCustomerList] = useState([]);
 
   const styles = styleData?.styles.map((object: Style) => {
     return { value: object.name, label: object.name };
@@ -207,9 +206,6 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
                 alignItems: "center",
               }}
             >
-              {/* <CircleIcon
-                  sx={{ color: "#00e676", width: "14px", mx: "5px" }}
-                /> */}
               <Box
                 sx={{
                   width: "20px",

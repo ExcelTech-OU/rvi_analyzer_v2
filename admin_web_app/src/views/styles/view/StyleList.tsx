@@ -54,11 +54,6 @@ const columns: GridColDef[] = [
     headerName: "Created By",
     width: 180,
   },
-  // {
-  //   field: "createdDateTime",
-  //   headerName: "Created Date",
-  //   width: 250,
-  // },
 ];
 
 export default function StyleList() {
@@ -72,8 +67,6 @@ export default function StyleList() {
   const [users, setUsers] = useState<any>([]);
   var userRoles: string | string[] = [];
   var admin = "";
-  // var styleList: List<Style> | undefined = [];
-  // styleList = styleData?.styles;
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
@@ -250,9 +243,6 @@ export default function StyleList() {
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );
-                                    // <StyledTableCell align={"left"}>
-                                    //       {item.createdDateTime}
-                                    //     </StyledTableCell>
                                   })
                                   .reverse()}
                               </TableBody>

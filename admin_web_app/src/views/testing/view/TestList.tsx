@@ -70,8 +70,6 @@ export default function TestList() {
   const [users, setUsers] = useState<any>([]);
   var userRoles: string | string[] = [];
   var admin = "";
-  // var testsList: List<Test> | undefined = [];
-  // testsList = data?.tests;
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {

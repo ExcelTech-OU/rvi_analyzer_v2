@@ -68,10 +68,8 @@ export default function UserList() {
   const { data, error, isLoading } = useGetUsersQuery("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
-  // const [users, setUsers] = useState<any>([]);
   var userRoles: string | string[] = [];
   var admin = "";
-  // var userList: List<User> | undefined = [];
   const [userList, setUserList] = useState<List<User>>([]);
 
   // userList = data?.users;
@@ -80,12 +78,6 @@ export default function UserList() {
   const endIndex = Math.min(startIndex + rowsPerPage, data?.users.length);
   const visibleData = data?.users.slice(startIndex, endIndex);
   const [isUsersAvailable, setIsUsersAvailable] = useState(false);
-
-  // useEffect(() => {
-  //   if (data?.users?.length > 0) {
-  //     setIsUsersAvailable(true);
-  //   }
-  // }, [isUsersAvailable]);
 
   useEffect(() => {
     if (data?.users?.length > 0) {
@@ -309,7 +301,6 @@ export default function UserList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            // count={pageCount}
                             count={Math.ceil(data?.users.length / rowsPerPage)}
                             sx={{ mt: 2 }}
                             variant="outlined"

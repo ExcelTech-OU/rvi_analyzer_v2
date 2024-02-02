@@ -30,7 +30,6 @@ import { AllocateStyleModel } from "../../customer/add/allocate-style";
 
 const columns: GridColDef[] = [
   { field: "plantName", headerName: "Plant name", width: 250 },
-  // { field: "customers", headerName: "Customers", width: 250 },
   {
     field: "createdBy",
     headerName: "Created by",
@@ -175,9 +174,6 @@ export default function PlantList() {
                                         <StyledTableCell align={"left"}>
                                           {plant.name}
                                         </StyledTableCell>
-                                        {/* <StyledTableCell align={"left"}>
-                                          {plant.createdBy}
-                                        </StyledTableCell> */}
                                         <StyledTableCell align={"left"}>
                                           {plant.createdBy}
                                         </StyledTableCell>

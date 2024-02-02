@@ -113,21 +113,12 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
         ?.customer
     );
   }, [material]);
-  // const materials = [
-  //   { value: "Material 01", label: "Material 01" },
-  //   { value: "Material 02", label: "Material 02" },
-  //   { value: "Material 03", label: "Material 03" },
-  // ];
 
   const [addTest] = useAddTestMutation();
 
   const handleCloseSuccess = () => {
     setOpenSuccess(false);
   };
-
-  // const handleAlert = () => {
-  //   setAlertOpen(false);
-  // };
 
   const handleCloseFail = () => {
     setOpenFail(false);
@@ -137,7 +128,6 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
     setParameter(event.target.value);
     // formik.handleChange;
     if (event.target.value != null) {
-      // console.log(event.target.value);
       setIsParameterSet(true);
     }
   };
@@ -196,7 +186,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
           if (payload.status == "S1000") {
             actions.setSubmitting(false);
             actions.resetForm();
-            // setOpenSuccess(true);
+            setOpenSuccess(true);
             setParameterModes([]);
             setPlant("");
             setCustomer("");
@@ -206,17 +196,10 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
         })
         .catch((error) => {
           actions.setSubmitting(false);
-          // setOpenFail(true);
+          setOpenFail(true);
         });
     },
   });
-
-  // useEffect(() => {
-  //   if (formik.isSubmitting || formik.isValid) {
-  //     // Force re-render after submission or validation
-  //     formik.setFieldValue("material", "");
-  //   }
-  // }, [formik.isSubmitting, formik.isValid]);
 
   return (
     <Dialog
@@ -407,7 +390,6 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                 onChange={(event) => {
                   handleParameters(event);
                 }}
-                // value={formik.values.parameterMode}
                 value={parameter}
               >
                 <FormControlLabel value="V" control={<Radio />} label="V" />
@@ -552,11 +534,6 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
               size="large"
               type="submit"
               variant="contained"
-              // onClick={(e) => {
-              //   parameter === null
-              //     ? setParameterError("Parameter is required")
-              //     : setParameterError("");
-              // }}
             >
               ADD
             </Button>
@@ -591,23 +568,6 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
             Saving failed
           </Alert>
         </Snackbar>
-        {/* <Snackbar
-          open={alertOpen}
-          autoHideDuration={6000}
-          onClose={() => {
-            handleAlert;
-            console.log("test");
-          }}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert
-            onClose={handleAlert}
-            severity={responseFeedback === "Success" ? "success" : "error"}
-            sx={{ width: "100%" }}
-          >
-            {responseFeedback}
-          </Alert>
-        </Snackbar> */}
       </DialogContent>
     </Dialog>
   );
