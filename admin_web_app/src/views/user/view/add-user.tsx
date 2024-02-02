@@ -53,18 +53,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   var userRoles: string | string[] = [];
   var filterUsers: User[] = [];
   var admin = "";
-  // const admin_options = [
-  //   { value: "TOP_ADMIN", label: "TOP_ADMIN" },
-  //   { value: "ADMIN", label: "ADMIN" },
-  //   { value: "USER", label: "USER" },
-  // ];
   let admin_options: Option[] = [];
-
-  // admin_options = data?.users.filter((user) => {
-  //   if (user.group === "ADMIN") {
-  //     return { value: "TOP_ADMIN", label: "TOP_ADMIN" };
-  //   }
-  // });
 
   admin_options = data?.users
     .filter((admin) => {
@@ -76,14 +65,6 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
       value: user.username,
       label: user.username,
     }));
-
-  // if (open != null) {
-  //   setFormReset(open);
-  // }
-
-  // useEffect(() => {
-  //   formik.resetForm();
-  // }, [formReset]);
 
   //filters users according to admin's permissions
   if (localStorage.getItem("roles") === null) {
@@ -103,19 +84,6 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
       admin = "ADMIN";
     }
   }
-
-  // const loadOptionsUserGroup = (
-  //   searchValue: string,
-  //   callback: (arg0: User[] | undefined) => void
-  // ) => {
-  //   setTimeout(() => {
-  //     const filteredOptions = data?.users.filter((item) => {
-  //       item.username.includes(searchValue);
-  //     });
-  //     console.log("loadOptions", searchValue, filteredOptions);
-  //     callback(filteredOptions);
-  //   }, 2000);
-  // };
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -284,9 +252,6 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                   alignItems: "center",
                 }}
               >
-                {/* <CircleIcon
-                  sx={{ color: "#00e676", width: "14px", mx: "5px" }}
-                /> */}
                 <Box
                   sx={{
                     width: "20px",
@@ -341,7 +306,6 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                   label="Group"
                   value={formik.values.group}
                   name="group"
-                  // onChange={formik.handleChange}
                   onChange={(event) => {
                     formik.handleChange(event);
                     handleSupervisor(event.target.value);
@@ -388,34 +352,6 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                   formik.touched.supervisor && formik.errors.supervisor
                 )}
               >
-                {/* <InputLabel id="demo-simple-select-helper-label">
-                  Supervisor
-                </InputLabel>
-                <Select
-                  fullWidth
-                  labelId="demo-simple-select-label"
-                  id="supervisor"
-                  label="Supervisor"
-                  value={formik.values.supervisor}
-                  name="supervisor"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                >
-                  {data?.users
-                    .filter((user) => {
-                      if (admin === "TOP_ADMIN") {
-                        return user.group === "ADMIN";
-                      }
-                    })
-                    .map((item: User, index: any) => {
-                      return (
-                        <MenuItem value={item.username}>
-                          {item.username}
-                        </MenuItem>
-                      );
-                    })}
-                </Select> */}
-
                 <CustomSelect
                   id="supervisor"
                   options={admin_options}
@@ -526,9 +462,6 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                   alignItems: "center",
                 }}
               >
-                {/* <CircleIcon
-                  sx={{ color: "#00e676", width: "14px", mx: "5px" }}
-                /> */}
                 <Box
                   sx={{
                     width: "20px",

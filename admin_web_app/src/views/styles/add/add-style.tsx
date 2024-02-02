@@ -53,7 +53,6 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
     error: plantError,
     isLoading: plantLoading,
   } = useGetPlantQuery("");
-  // const [customerList, setCustomerList] = useState([]);
 
   const customers = customerData?.customers.map((object: Customer) => {
     return { value: object.name, label: object.name };
@@ -75,19 +74,13 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
   const formik = useFormik({
     initialValues: {
       name: "",
-      // customer: "",
-      // plant: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().max(255).required("Style name is required"),
-      // customer: Yup.string().max(255).required("Customer is required"),
-      // plant: Yup.string().max(255).required("Plant is required"),
     }),
     onSubmit: (values, actions) => {
       addStyle({
         name: values.name,
-        // customer: values.customer,
-        // plant: values.plant,
       })
         .unwrap()
         .then((payload) => {
@@ -178,50 +171,6 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
             error={Boolean(formik.touched.name && formik.errors.name)}
             helperText={formik.touched.name && formik.errors.name}
           />
-
-          {/* <FormControl
-            sx={{ mt: 1 }}
-            fullWidth
-            error={Boolean(formik.touched.customer && formik.errors.customer)}
-          >
-            <CustomSelect
-              id="customer"
-              options={customers}
-              placeholder="Customer"
-              onChange={(value: { value: any }) => {
-                formik.setFieldValue("customer", value.value);
-              }}
-              name="customer"
-              className={"input"}
-              value={formik.values.customer}
-              onBlur={formik}
-            />
-            <FormHelperText>
-              {formik.touched.customer && formik.errors.customer}
-            </FormHelperText>
-          </FormControl>
-
-          <FormControl
-            sx={{ mt: 1 }}
-            fullWidth
-            error={Boolean(formik.touched.plant && formik.errors.plant)}
-          >
-            <CustomSelect
-              id="plant"
-              options={plants}
-              placeholder="Plant"
-              onChange={(value: { value: any }) => {
-                formik.setFieldValue("plant", value.value);
-              }}
-              name="plant"
-              className={"input"}
-              value={formik.values.plant}
-              onBlur={formik}
-            />
-            <FormHelperText>
-              {formik.touched.plant && formik.errors.plant}
-            </FormHelperText>
-          </FormControl> */}
 
           <Box sx={{ py: 2 }}>
             <Button

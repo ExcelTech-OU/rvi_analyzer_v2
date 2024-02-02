@@ -191,9 +191,6 @@ export function AllocateStyleModel({ open, changeOpenStatus }: AddPlantProps) {
                 alignItems: "center",
               }}
             >
-              {/* <CircleIcon
-                  sx={{ color: "#00e676", width: "14px", mx: "5px" }}
-                /> */}
               <Box
                 sx={{
                   width: "20px",
