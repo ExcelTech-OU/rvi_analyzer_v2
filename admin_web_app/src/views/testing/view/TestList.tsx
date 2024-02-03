@@ -64,12 +64,26 @@ const columns: GridColDef[] = [
 ];
 
 export default function TestList() {
-  const { data, error, isLoading } = useGetTestQuery("");
+  var { data, error, isLoading } = useGetTestQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
-  const [users, setUsers] = useState<any>([]);
+  const [testList, setTestsList] = useState<any>([]);
   var userRoles: string | string[] = [];
+  const [open, setOpen] = useState(false);
   var admin = "";
+
+  // const fetchData = async () => {
+  //   const newList: Test[] = data?.tests;
+  //   setTestsList(newList);
+  // };
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, [open]);
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
@@ -94,7 +108,6 @@ export default function TestList() {
     setPage(value);
   };
 
-  const [open, setOpen] = useState(false);
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -182,7 +195,7 @@ export default function TestList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data?.tests
+                                {data!.tests
                                   .map((item: Test, index: any) => {
                                     return (
                                       <StyledTableRow

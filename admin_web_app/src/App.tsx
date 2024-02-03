@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import { Box, Container } from "@mui/system";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "./store/hooks";
 import Login from "./views/auth/login/login";
@@ -40,6 +40,7 @@ function App({ children }: AppProps) {
   const currentYear = new Date().getFullYear();
   const [roles] = useGetRolesMutation();
   const dispatch = useDispatch();
+  const [isReloaded, setIsReloaded] = useState(false);
 
   useEffect(() => {
     if (isToken) {
