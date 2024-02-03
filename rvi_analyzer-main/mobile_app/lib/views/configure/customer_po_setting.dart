@@ -21,9 +21,7 @@ class _PoSettingPageState extends State<PoSettingPage> {
   String customerPoNumber = '';
   bool settingsSaved = false;
 
-  // Function to update values based on the selected RM
   void updateValues(String rm) {
-    // Use the function directly, as it's not an asynchronous operation
     Map<String, String> rmValues = RMService.getLocalRMValues(rm);
     setState(() {
       plantValue = rmValues['plant'] ?? '';
@@ -34,13 +32,13 @@ class _PoSettingPageState extends State<PoSettingPage> {
 
   bool validateInput() {
     return customerPoNumber.isNotEmpty &&
+        rmValue.isNotEmpty &&
         plantValue.isNotEmpty &&
         customerValue.isNotEmpty &&
         styleValue.isNotEmpty;
   }
 
   Future<void> saveToLocalStorage() async {
-    // Add logic to save to local storage
     print('Saved to local storage');
   }
 
@@ -122,7 +120,6 @@ class _PoSettingPageState extends State<PoSettingPage> {
                   if (newValue != null) {
                     setState(() {
                       rmValue = newValue;
-                      // Call the function to update values based on the selected RM
                       updateValues(rmValue);
                     });
                   }
