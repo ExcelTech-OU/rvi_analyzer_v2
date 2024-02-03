@@ -64,9 +64,9 @@ export default function StyleList() {
   } = useGetStyleQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
-  const [users, setUsers] = useState<any>([]);
   var userRoles: string | string[] = [];
   var admin = "";
+  const [open, setOpen] = useState(false);
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
@@ -91,7 +91,6 @@ export default function StyleList() {
     setPage(value);
   };
 
-  const [open, setOpen] = useState(false);
   const [openAdminAllocation, setOpenAdminAllocation] = useState(false);
   if (styleLoading) {
     return <div>Loading...</div>;

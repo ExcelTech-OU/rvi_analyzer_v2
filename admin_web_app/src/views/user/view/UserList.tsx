@@ -70,7 +70,22 @@ export default function UserList() {
   const [page, setPage] = useState(1);
   var userRoles: string | string[] = [];
   var admin = "";
-  const [userList, setUserList] = useState<List<User>>([]);
+  const [userList, setUserList] = useState<any>([]);
+  const [isUsersUpdated, setIsUsersUpdated] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  // const fetchData = async () => {
+  //   const newUsers: User[] = data?.users;
+  //   setUserList(newUsers);
+  // };
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, [open]);
 
   // userList = data?.users;
 
@@ -79,28 +94,18 @@ export default function UserList() {
   const visibleData = data?.users.slice(startIndex, endIndex);
   const [isUsersAvailable, setIsUsersAvailable] = useState(false);
 
-  useEffect(() => {
-    if (data?.users?.length > 0) {
-      const newUsers: any = [
-        ...userList,
-        data?.users.map((user: User) => {
-          return {
-            username: user.username,
-            group: user.group,
-            status: user.status,
-            supervisor: user.supervisor,
-            passwordType: user.passwordType,
-            createdBy: user.createdBy,
-            createdDateTime: user.createdDateTime,
-            lastUpdatedDateTime: user.lastUpdatedDateTime,
-          };
-        }),
-      ];
-      console.log(newUsers);
-      setUserList(newUsers);
-      console.log(userList);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const newUsers: any = data?.users;
+  //   setUserList(newUsers);
+  //   setIsUsersUpdated(true);
+  //   console.log("data is fetched");
+  // }, []);
+
+  // useEffect(() => {
+  //   if (isUsersUpdated) {
+  //     console.log(userList);
+  //   }
+  // }, [isUsersUpdated]);
 
   //get user roles from local storage
   if (localStorage.getItem("roles") === null) {
@@ -125,7 +130,6 @@ export default function UserList() {
     setPage(value);
   };
 
-  const [open, setOpen] = useState(false);
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -213,7 +217,7 @@ export default function UserList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data?.users
+                                {data!.users
                                   .filter((user: User) => {
                                     if (admin === "ADMIN") {
                                       return user.group === "USER";
@@ -221,7 +225,7 @@ export default function UserList() {
                                       return user;
                                     }
                                   })
-                                  .map((item: User, index: any) => {
+                                  .map((item: any, index: any) => {
                                     return (
                                       <StyledTableRow
                                         key={index}
