@@ -1,25 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
-import 'package:rvi_analyzer/repository/entity/common_entity.dart';
-import 'package:rvi_analyzer/repository/entity/login_info.dart';
-import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
-import 'package:rvi_analyzer/repository/login_repo.dart';
-import 'package:rvi_analyzer/service/common_service.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
-import 'package:rvi_analyzer/service/mode_service.dart';
-import 'package:rvi_analyzer/views/common/form_eliments/dropdown.dart';
-import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
-import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/views/configure/mode_setting.dart';
+import 'package:rvi_analyzer/views/configure/qr_scanner.dart';
 
 class ConfigureRightPanelType01 extends ConsumerStatefulWidget {
   final ScanResult sc;
   final GlobalKey<FormState> keyForm;
   final void Function() updateTestId;
+
   const ConfigureRightPanelType01({
     Key? key,
     required this.sc,
@@ -37,24 +28,17 @@ class _ConfigureRightPanelType01State
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
   bool showResult = false;
-
-  void updateSessionID() {
-    DateTime now = DateTime.now();
-    int milliseconds = now.millisecondsSinceEpoch;
-
-    ref.watch(deviceDataMap[widget.sc.device.id.id]!).sessionIdController.text =
-        "S_$milliseconds";
-  }
-
-  void setDropDownValue(String? val) {
-    if (val != null && val == "Resistance") {
-      ref.read(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode01 = true;
-    } else {
-      ref.read(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode01 =
-          false;
-    }
-    ref.read(deviceDataMap[widget.sc.device.id.id]!).updateStatus();
-  }
+  String qrCode = '';
+  String parameterMode01Value = '';
+  String parameterMode02Value = '';
+  String parameterMode03Value = '';
+  String parameterMode04Value = '';
+  String plantValue = '';
+  String customerValue = '';
+  String styleValue = '';
+  String rm = '';
+  String customerpo = '';
+  String sono = '';
 
   @override
   Widget build(BuildContext context) {
@@ -65,721 +49,474 @@ class _ConfigureRightPanelType01State
 
     return SizedBox(
       width: isLandscape ? (width / 3) * 2 - 32 : width,
-      child: SizedBox(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 5,
-                offset: const Offset(0, 0.5), // changes position of shadow
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 5,
+              offset: const Offset(0, 0.5), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Mode 01",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.settings,
+                      color: Colors.black54,
+                    ),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ModeSettingsPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 2.0,
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              getScrollView(),
+              const SizedBox(
+                height: 30.0,
               ),
             ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Mode 01",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54,
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.settings,
-                        color: Colors.black54,
-                      ),
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ModeSettingsPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 2.0,
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                getScrollView(),
-                const SizedBox(
-                  height: 30.0,
-                ),
-              ],
-            ),
           ),
         ),
       ),
     );
   }
 
-  String getVoltage() {
-    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).started) {
-      if (ref
-              .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
-              .currentProtocol ==
-          1) {
-        return (ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
-            .voltage
-            .toString());
-      }
-    }
-    return "00";
-  }
-
-  String getCurrent() {
-    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).started) {
-      if (ref
-              .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
-              .currentProtocol ==
-          1) {
-        return (ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
-            .current
-            .toString());
-      }
-    }
-    return "00";
-  }
-
-  String getResistance() {
-    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).started) {
-      if (ref
-              .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
-              .currentProtocol ==
-          1) {
-        return ((double.parse(ref
-                    .watch(deviceDataMap[widget.sc.device.id.id]!)
-                    .voltageControllerMode01
-                    .text) /
-                ref
-                    .watch(ref
-                        .watch(deviceDataMap[widget.sc.device.id.id]!)
-                        .streamData)
-                    .current)
-            .toStringAsFixed(3));
-      }
-    }
-    return "00";
-  }
-
-  String getTemp() {
-    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).started) {
-      if (ref
-              .watch(
-                  ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
-              .currentProtocol ==
-          1) {
-        return (ref
-            .watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData)
-            .temperature
-            .toString());
-      }
-    }
-    return "00";
-  }
-
-  Future<void> saveMode() async {
-    ref.read(deviceDataMap[widget.sc.device.id.id]!).mode01SaveClicked = true;
-    double current = ref
-        .read(ref.read(deviceDataMap[widget.sc.device.id.id]!).streamData)
-        .current;
-
-    double resistance = double.parse(getResistance());
-
-    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode01) {
-      if (double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                  .minResistanceRangeControllerMode01
-                  .text) <
-              resistance &&
-          resistance <
-              double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                  .maxResistanceRangeControllerMode01
-                  .text)) {
-        ref.read(deviceDataMap[widget.sc.device.id.id]!).mode01Passed = true;
-      } else {
-        ref.read(deviceDataMap[widget.sc.device.id.id]!).mode01Passed = false;
-      }
-    } else {
-      if (double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                  .minCurrentRangeControllerMode01
-                  .text) <
-              current &&
-          current <
-              double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                  .maxCurrentRangeControllerMode01
-                  .text)) {
-        ref.read(deviceDataMap[widget.sc.device.id.id]!).mode01Passed = true;
-      } else {
-        ref.read(deviceDataMap[widget.sc.device.id.id]!).mode01Passed = false;
-      }
-    }
-
-    setState(() {
-      showResult = true;
-    });
-
-    final loginInfoRepo = LoginInfoRepository();
-
-    List<LoginInfo> infos = await loginInfoRepo.getAllLoginInfos();
-
-    ModeOne modeOne = ModeOne(
-        createdBy: infos.first.username,
-        defaultConfigurations: DefaultConfiguration(
-            customerName: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .customerNameController
-                .text,
-            operatorId: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .operatorIdController
-                .text,
-            batchNo: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .batchNoController
-                .text,
-            serialNo: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .serialNoController
-                .text,
-            sessionId: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .sessionIdController
-                .text),
-        sessionConfigurationModeOne: SessionConfigurationModeOne(
-            voltage: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .voltageControllerMode01
-                .text,
-            maxCurrent: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .maxCurrentControllerMode01
-                .text,
-            passMinCurrent: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .minCurrentRangeControllerMode01
-                .text,
-            passMaxCurrent: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .maxCurrentRangeControllerMode01
-                .text),
-        results: [
-          SessionResult(
-              testId: ref
-                  .read(deviceDataMap[widget.sc.device.id.id]!)
-                  .testIdController
-                  .text,
-              readings: [
-                Reading(
-                    temperature: getTemp(),
-                    current: getCurrent(),
-                    voltage: getVoltage(),
-                    result: ref
-                            .read(deviceDataMap[widget.sc.device.id.id]!)
-                            .mode01Passed
-                        ? "PASS"
-                        : "FAIL",
-                    readAt:
-                        DateTime.now().toUtc().toString().replaceAll(" ", "T"))
-              ])
-        ],
-        status: "ACTIVE");
-
-    saveModeOne(modeOne, infos.first.username)
-        .then((value) => {
-              if (value.status == "S1000")
-                {
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                        getSnackBar(context, Colors.green, "Saving Success"))
-                }
-              else if (value.status == "E2000")
-                {showLogoutPopup(context, ref)}
-              else
-                {
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(getSnackBar(context, Colors.red,
-                        "Remote submit failed. Check internet connection"))
-                },
-              ref
-                  .read(deviceDataMap[widget.sc.device.id.id]!)
-                  .mode01SaveClicked = false
-            })
-        .onError((error, stackTrace) => {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(getSnackBar(context, Colors.red,
-                    "Remote submit failed. Check internet connection")),
-              ref
-                  .read(deviceDataMap[widget.sc.device.id.id]!)
-                  .mode01SaveClicked = false
-            });
-    widget.updateTestId();
-  }
-
   Widget getScrollView() {
-    return Form(
-      key: _formKey,
-      onChanged: () {},
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: TextInput(
-                    data: TestInputData(
-                        inputType: TextInputType.number,
-                        controller: ref
-                            .read(deviceDataMap[widget.sc.device.id.id]!)
-                            .voltageControllerMode01,
-                        validatorFun: (val) {
-                          if (val!.isEmpty) {
-                            return "Voltage cannot be empty";
-                          } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
-                              .hasMatch(val)) {
-                            return "Only allowed numbers";
-                          } else if (!RegExp(
-                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1})?$")
-                              .hasMatch(val)) {
-                            return "Voltage ONLY allowed one Place Value";
-                          } else {
-                            null;
-                          }
-                        },
-                        labelText: 'Voltage (V)',
-                        enabled: !ref
-                            .watch(deviceDataMap[widget.sc.device.id.id]!)
-                            .started)),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                flex: 1,
-                child: TextInput(
-                    data: TestInputData(
-                        inputType: TextInputType.number,
-                        controller: ref
-                            .read(deviceDataMap[widget.sc.device.id.id]!)
-                            .maxCurrentControllerMode01,
-                        validatorFun: (val) {
-                          if (val!.isEmpty) {
-                            return "Max current cannot be empty";
-                          } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
-                              .hasMatch(val)) {
-                            return "Only allowed numbers";
-                          } else if (!RegExp(
-                                  r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
-                              .hasMatch(val)) {
-                            return "Current ONLY allowed two Place Value";
-                          } else {
-                            null;
-                          }
-                        },
-                        labelText: 'Max current (A)',
-                        enabled: !ref
-                            .watch(deviceDataMap[widget.sc.device.id.id]!)
-                            .started)),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          const Text(
-            'Select type : ',
-            style: TextStyle(fontSize: 15, color: Colors.grey),
-          ),
-          const SizedBox(
-            height: 5.0,
-          ),
-          CustomDropDwn(
-              data: CustomDropDwnData(
-                  inputs: ["Current", "Resistance"],
-                  updateSelectedIndex: setDropDownValue)),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Text(
-            ref.watch(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode01
-                ? 'Resistance Range : '
-                : 'Current Range : ',
-            style: const TextStyle(fontSize: 15, color: Colors.grey),
-          ),
-          const SizedBox(
-            height: 5.0,
-          ),
-          ref.watch(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode01
-              ? Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: TextInput(
-                          data: TestInputData(
-                              controller: ref
-                                  .read(deviceDataMap[widget.sc.device.id.id]!)
-                                  .minResistanceRangeControllerMode01,
-                              inputType: TextInputType.number,
-                              validatorFun: (val) {
-                                if (val!.isEmpty) {
-                                  return "Min Resistance cannot be empty";
-                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
-                                    .hasMatch(val)) {
-                                  return "Only allowed numbers";
-                                } else if (!RegExp(
-                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
-                                    .hasMatch(val)) {
-                                  return "Resistance ONLY allowed two Place Value";
-                                } else {
-                                  null;
-                                }
-                              },
-                              labelText: 'Min \u2126')),
+    return SingleChildScrollView(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black54,
+                      width: 2.0,
                     ),
-                    const SizedBox(
-                      width: 5,
+                  ),
+                  child: SizedBox(
+                    width: 325.0,
+                    height: 200.0,
+                    child: Center(
+                      child: Text(
+                        'Customer: $customerValue\nPlant: $plantValue\nStyle: $styleValue\nRM: $rm\nCustomer PO: $customerpo\nSO NO: $sono ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.0,
+                        ),
+                      ),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: TextInput(
-                          data: TestInputData(
-                              inputType: TextInputType.number,
-                              controller: ref
-                                  .read(deviceDataMap[widget.sc.device.id.id]!)
-                                  .maxResistanceRangeControllerMode01,
-                              validatorFun: (val) {
-                                if (val!.isEmpty) {
-                                  return "Max resistance cannot be empty";
-                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
-                                    .hasMatch(val)) {
-                                  return "Only allowed numbers";
-                                } else if (!RegExp(
-                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
-                                    .hasMatch(val)) {
-                                  return "Resistance ONLY allowed two Place Value";
-                                } else {
-                                  null;
-                                }
-                              },
-                              labelText: 'Max \u2126')),
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: TextInput(
-                          data: TestInputData(
-                              controller: ref
-                                  .read(deviceDataMap[widget.sc.device.id.id]!)
-                                  .minCurrentRangeControllerMode01,
-                              inputType: TextInputType.number,
-                              validatorFun: (val) {
-                                if (val!.isEmpty) {
-                                  return "Min current cannot be empty";
-                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
-                                    .hasMatch(val)) {
-                                  return "Only allowed numbers";
-                                } else if (!RegExp(
-                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
-                                    .hasMatch(val)) {
-                                  return "Current ONLY allowed two Place Value";
-                                } else {
-                                  null;
-                                }
-                              },
-                              labelText: 'Min (A)')),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: TextInput(
-                          data: TestInputData(
-                              inputType: TextInputType.number,
-                              controller: ref
-                                  .read(deviceDataMap[widget.sc.device.id.id]!)
-                                  .maxCurrentRangeControllerMode01,
-                              validatorFun: (val) {
-                                if (val!.isEmpty) {
-                                  return "Max current cannot be empty";
-                                } else if (!RegExp(r"^(?=\D*(?:\d\D*){1,12}$)")
-                                    .hasMatch(val)) {
-                                  return "Only allowed numbers";
-                                } else if (!RegExp(
-                                        r"^(?=\D*(?:\d\D*){1,12}$)\d+(?:\.\d{1,2})?$")
-                                    .hasMatch(val)) {
-                                  return "Current ONLY allowed two Place Value";
-                                } else {
-                                  null;
-                                }
-                              },
-                              labelText: 'Max (A)')),
-                    ),
-                  ],
+                  ),
                 ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          const Text(
-            'Current Readings : ',
-            style: TextStyle(fontSize: 15, color: Colors.grey),
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: TextInput(
-                    data: TestInputData(
-                        controller: ref
-                            .read(deviceDataMap[widget.sc.device.id.id]!)
-                            .currentReadingVoltageControllerMode01,
-                        inputType: TextInputType.number,
-                        enabled: false,
-                        validatorFun: (val) {
-                          null;
-                        },
-                        labelText: 'Current : ${getCurrent()} A')),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                flex: 1,
-                child: TextInput(
-                    data: TestInputData(
-                        inputType: TextInputType.number,
-                        controller: ref
-                            .read(deviceDataMap[widget.sc.device.id.id]!)
-                            .currentReadingTemControllerMode01,
-                        enabled: false,
-                        validatorFun: (val) {
-                          null;
-                        },
-                        labelText: 'Temp : ${getTemp()} \u2103')),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          TextInput(
-              data: TestInputData(
-                  controller: ref
-                      .read(deviceDataMap[widget.sc.device.id.id]!)
-                      .currentReadingResistanceControllerMode01,
-                  enabled: false,
-                  validatorFun: (val) {
-                    null;
-                  },
-                  labelText: 'Resistance : ${getResistance()} \u2126')),
-          const SizedBox(
-            height: 10,
-          ),
-          ref.watch(deviceDataMap[widget.sc.device.id.id]!).started &&
-                  showResult
-              ? Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 55,
-                        child: CupertinoButton(
-                          disabledColor: ref
-                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                                  .mode01Passed
-                              ? Colors.green
-                              : Colors.red,
-                          color: Colors.cyan,
-                          onPressed: null,
-                          child: Text(
-                            ref
-                                    .watch(
-                                        deviceDataMap[widget.sc.device.id.id]!)
-                                    .mode01Passed
-                                ? 'PASS'
-                                : 'FAIL',
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black54,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: 200.0,
+                    height: 25.0,
+                    child: Center(
+                      child: Text(
+                        'Text ',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black54,
+                      width: 2.0,
+                    ),
+                  ),
+                  width: 120.0,
+                  height: 40.0,
+                  child: DropdownButton<String>(
+                    value: parameterMode01Value,
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          parameterMode01Value = newValue;
+                        });
+                      }
+                    },
+                    items: <String>[
+                      '',
+                      'Option 1',
+                      'Option 2',
+                      'Option 3',
+                      'Option 4',
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                            color: Colors.black,
                           ),
                         ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black54,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: 200.0,
+                    height: 25.0,
+                    child: Center(
+                      child: Text(
+                        'Production Order',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ],
-                )
-              : const SizedBox.shrink(),
-          const SizedBox(
-            height: 15,
-          ),
-          ref.watch(deviceDataMap[widget.sc.device.id.id]!).started
-              ? Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 55,
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.all(0),
-                          disabledColor: Colors.grey,
-                          color: Colors.orange,
-                          onPressed: ref
-                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                                  .mode01SaveClicked
-                              ? null
-                              : () {
-                                  blue.stop(widget.sc.device);
-                                  ref
-                                          .read(deviceDataMap[
-                                              widget.sc.device.id.id]!)
-                                          .started =
-                                      !ref
-                                          .read(deviceDataMap[
-                                              widget.sc.device.id.id]!)
-                                          .started;
-                                  ref
-                                      .read(deviceDataMap[
-                                          widget.sc.device.id.id]!)
-                                      .updateStatus();
-                                  setState(() {
-                                    showResult = false;
-                                  });
-                                  updateSessionID();
-                                },
-                          child: const Text(
-                            'Stop',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black54,
+                      width: 2.0,
+                    ),
+                  ),
+                  width: 120.0,
+                  height: 40.0,
+                  child: DropdownButton<String>(
+                    value: parameterMode02Value,
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          parameterMode02Value = newValue;
+                        });
+                      }
+                    },
+                    items: <String>[
+                      '',
+                      'Option 1',
+                      'Option 2',
+                      'Option 3',
+                      'Option 4',
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                            color: Colors.black,
                           ),
                         ),
-                      ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black54,
+                      width: 2.0,
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 55,
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.all(0),
-                          disabledColor: Colors.grey,
-                          color: Colors.green,
-                          onPressed: ref
-                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                                  .mode01SaveClicked
-                              ? null
-                              : () {
-                                  saveMode();
-                                },
-                          child: ref
-                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                                  .mode01SaveClicked
-                              ? const SpinKitWave(
-                                  color: Colors.white,
-                                  size: 20.0,
-                                )
-                              : const Text(
-                                  'Save',
-                                  style: TextStyle(
-                                      color: Color.fromARGB(255, 231, 230, 230),
-                                      fontWeight: FontWeight.bold),
-                                ),
+                  ),
+                  child: SizedBox(
+                    width: 200.0,
+                    height: 25.0,
+                    child: Center(
+                      child: Text(
+                        'Production ID',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 55,
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.all(0),
-                          disabledColor: Colors.grey,
-                          color: Colors.cyan,
-                          onPressed: () {
-                            if (widget.keyForm.currentState!.validate() &&
-                                _formKey.currentState!.validate()) {
-                              blue.runMode01(
-                                  widget.sc.device,
-                                  (double.parse(ref
-                                              .read(deviceDataMap[
-                                                  widget.sc.device.id.id]!)
-                                              .voltageControllerMode01
-                                              .text) *
-                                          10)
-                                      .toInt(),
-                                  (double.parse(ref
-                                              .read(deviceDataMap[
-                                                  widget.sc.device.id.id]!)
-                                              .maxCurrentControllerMode01
-                                              .text) *
-                                          100)
-                                      .toInt());
-                              ref
-                                      .read(deviceDataMap[widget.sc.device.id.id]!)
-                                      .started =
-                                  !ref
-                                      .read(deviceDataMap[
-                                          widget.sc.device.id.id]!)
-                                      .started;
-
-                              ref
-                                  .read(deviceDataMap[widget.sc.device.id.id]!)
-                                  .updateStatus();
-                            }
-                          },
-                          child: const Text(
-                            'Start',
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Container(
+                  width: 120.0,
+                  height: 40.0,
+                  decoration: BoxDecoration(
+                    color: Colors.cyan,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QRScanner(
+                            updateQRCode: setQRCode,
                           ),
                         ),
+                      );
+                    },
+                    child: Text(
+                      'QR Scan',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black54,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: 200.0,
+                    height: 25.0,
+                    child: Center(
+                      child: Text(
+                        'Parameter Mode 03',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    )
-                  ],
-                )
-        ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Container(
+                  width: 120.0,
+                  height: 40.0,
+                  child: TextFormField(
+                    onChanged: (value) {
+                      setState(() {
+                        parameterMode03Value = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Value',
+                      fillColor: Colors.grey[300],
+                      filled: true,
+                      border: OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black54,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: 200.0,
+                    height: 25.0,
+                    child: Center(
+                      child: Text(
+                        'Parameter Mode 04',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Container(
+                  width: 120.0,
+                  height: 40.0,
+                  child: TextFormField(
+                    onChanged: (value) {
+                      setState(() {
+                        parameterMode04Value = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Value',
+                      fillColor: Colors.grey[300],
+                      filled: true,
+                      border: OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black54,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: 200.0,
+                    height: 25.0,
+                    child: Center(
+                      child: Text(
+                        'Save',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Container(
+                  width: 120.0,
+                  height: 40.0,
+                  child: ElevatedButton(
+                    onPressed: onSaveButtonPressed,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: Text(
+                      'Save',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  void updateSessionID() {
+    DateTime now = DateTime.now();
+    int milliseconds = now.millisecondsSinceEpoch;
+
+    ref.watch(deviceDataMap[widget.sc.device.id.id]!).sessionIdController.text =
+        "S_$milliseconds";
+  }
+
+  void onSaveButtonPressed() {
+    print('Save button pressed!');
+    print('Parameter Mode 01: $parameterMode01Value');
+    print('Parameter Mode 02: $parameterMode02Value');
+    print('Parameter Mode 03: $parameterMode03Value');
+    print('Parameter Mode 04: $parameterMode04Value');
+    // Add any additional save logic you need
+  }
+
+  void setQRCode(String? code) {
+    if (code != null) {
+      setState(() {
+        qrCode = code;
+      });
+    }
   }
 }
