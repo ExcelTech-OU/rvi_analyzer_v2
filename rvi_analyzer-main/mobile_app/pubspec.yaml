@@ -60,6 +60,9 @@ dependencies:
   flutter_speed_dial: ^7.0.0
   connectivity_plus: ^4.0.1
   shared_preferences: ^2.2.2
+  dropdown_search: ^5.0.6
+  get_it: ^7.6.7
+  mobile_scanner: ^3.4.1
   
 
 dev_dependencies:

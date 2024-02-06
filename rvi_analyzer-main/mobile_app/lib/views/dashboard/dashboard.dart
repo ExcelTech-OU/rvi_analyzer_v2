@@ -21,6 +21,7 @@ import 'package:rvi_analyzer/views/history/modes/mode_six_view.dart';
 import 'package:rvi_analyzer/views/history/modes/mode_three_view.dart';
 import 'package:rvi_analyzer/views/history/modes/mode_two_view.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:rvi_analyzer/views/rm_tracking/add_rm.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   int initialIndex = 0;
@@ -236,8 +237,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                                                             scanResult:
                                                                                 i,
                                                                           ),
-                                                                        Row(
-                                                                          children: const [
+                                                                        const Row(
+                                                                          children: [
                                                                             Expanded(
                                                                               flex: 2,
                                                                               child: Divider(
@@ -315,17 +316,23 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                                     List<LoginInfo> infos =
                                                         await loginInfoRepo
                                                             .getAllLoginInfos();
-
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
                                                             builder:
                                                                 (context) =>
-                                                                    ModeOneView(
-                                                                      username: infos
-                                                                          .first
-                                                                          .username,
-                                                                    )));
+                                                                    AddRm()));
+
+                                                    // Navigator.push(
+                                                    //     context,
+                                                    //     MaterialPageRoute(
+                                                    //         builder:
+                                                    //             (context) =>
+                                                    //                 ModeOneView(
+                                                    //                   username: infos
+                                                    //                       .first
+                                                    //                       .username,
+                                                    //                 )));
                                                   }),
                                               SpeedDialChild(
                                                   child: const Text(
@@ -452,23 +459,6 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                             ],
                                             direction: SpeedDialDirection.left,
                                           ),
-
-                                          // ElevatedButton(
-                                          //   onPressed: () {
-                                          //     // Navigator.push(
-                                          //     //     context,
-                                          //     //     MaterialPageRoute(
-                                          //     //         builder: (context) =>
-                                          //     //             ModeTwoView(
-                                          //     //               username:
-                                          //     //                   "rukM@gmail.com",
-                                          //     //             )));
-                                          //   },
-                                          //   child: const Icon(
-                                          //     Icons.settings,
-                                          //     color: Colors.white,
-                                          //   ),
-                                          // ),
                                         )
                                       ],
                                     ),
@@ -583,8 +573,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                                                                         scanResult:
                                                                             i,
                                                                       ),
-                                                                    Row(
-                                                                      children: const [
+                                                                    const Row(
+                                                                      children: [
                                                                         Expanded(
                                                                           flex:
                                                                               2,

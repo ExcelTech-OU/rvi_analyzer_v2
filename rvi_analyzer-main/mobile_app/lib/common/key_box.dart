@@ -71,3 +71,7 @@ const String enabledK = 'enabled';
 const String profile01K = "profile_01";
 const String profile02K = "profile_02";
 const String profile03K = "profile_03";
+
+const String uidCameraZoomLevel = "UID_CAMERA_ZOOM_LEVEL";
+const String uidCameraFlashStatus = "UID_CAMERA_FLASH_STATUS";
+const String uidCameraScanAreaScale = "UID_CAMERA_SCAN_AREA_SCALE";

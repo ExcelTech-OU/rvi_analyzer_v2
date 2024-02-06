@@ -34,6 +34,7 @@ import 'package:rvi_analyzer/service/mode_service.dart';
 
 import 'package:rvi_analyzer/views/auth/sign_in/sign_in.dart';
 import 'package:rvi_analyzer/views/dashboard/dashboard.dart';
+import 'package:rvi_analyzer/views/service_locator.dart';
 import 'package:rvi_analyzer/views/splash/splash_screen.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,6 +45,7 @@ Future<void> main() async {
   final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
   registerAdapters();
+  setup();
   runApp(const ProviderScope(child: AchillesUIApp()));
 }
 
@@ -100,11 +102,9 @@ class _AchillesUIAppState extends State<AchillesUIApp> {
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       if (result == ConnectivityResult.mobile) {
-        print("MOBILE");
         submitLocalSessions();
         // I am connected to a mobile network.
       } else if (result == ConnectivityResult.wifi) {
-        print("WIFI");
         submitLocalSessions();
         // I am connected to a wifi network.
       } else if (result == ConnectivityResult.ethernet) {
@@ -114,9 +114,7 @@ class _AchillesUIAppState extends State<AchillesUIApp> {
         // Note for iOS and macOS:
         // There is no separate network interface type for [vpn].
         // It returns [other] on any device (also simulator)
-      } else if (result == ConnectivityResult.none) {
-        print("NONE");
-      }
+      } else if (result == ConnectivityResult.none) {}
     });
   }
 

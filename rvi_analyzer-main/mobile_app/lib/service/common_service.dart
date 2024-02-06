@@ -7,11 +7,161 @@ import 'package:http/http.dart' as http;
 import 'package:rvi_analyzer/providers/connected_devices_provider.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/service/login_service.dart';
+import 'package:rvi_analyzer/views/service_locator.dart';
 import 'package:rvi_analyzer/views/splash/splash_screen.dart';
 
 import '../common/config.dart';
 import '../common/key_box.dart';
 import '../domain/validate_response.dart';
+
+class CommonService {
+  Future<List<String>> getPlants(String regex) async {
+    List<String> plants = [
+      "helloo",
+      "world",
+      "helloo",
+      "world",
+      "helloo",
+      "world"
+    ];
+    const storage = FlutterSecureStorage();
+    String? jwt = await storage.read(key: jwtK);
+    // final response = await http.post(
+    //   Uri.parse('$baseUrl$userUsernameValidatePath'),
+    //   headers: <String, String>{
+    //     contentTypeK: contentTypeJsonK,
+    //     authorizationK: '$bearerK $jwt',
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     usernameK: username,
+    //   }),
+    // );
+    return plants;
+  }
+
+  Future<List<String>> getCustomers(String regex) async {
+    List<String> cus = [
+      "helloo",
+      "world",
+      "helloo",
+      "world",
+      "helloo",
+      "world"
+    ];
+    const storage = FlutterSecureStorage();
+    String? jwt = await storage.read(key: jwtK);
+    // final response = await http.post(
+    //   Uri.parse('$baseUrl$userUsernameValidatePath'),
+    //   headers: <String, String>{
+    //     contentTypeK: contentTypeJsonK,
+    //     authorizationK: '$bearerK $jwt',
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     usernameK: username,
+    //   }),
+    // );
+    return cus;
+  }
+
+  Future<List<String>> getStyles(String regex) async {
+    List<String> styles = [
+      "helloo",
+      "world",
+      "helloo",
+      "world",
+      "helloo",
+      "world"
+    ];
+    const storage = FlutterSecureStorage();
+    String? jwt = await storage.read(key: jwtK);
+    // final response = await http.post(
+    //   Uri.parse('$baseUrl$userUsernameValidatePath'),
+    //   headers: <String, String>{
+    //     contentTypeK: contentTypeJsonK,
+    //     authorizationK: '$bearerK $jwt',
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     usernameK: username,
+    //   }),
+    // );
+    return styles;
+  }
+
+  Future<List<String>> getRm(String regex) async {
+    List<String> rm = ["helloo", "world", "helloo", "world", "helloo", "world"];
+    const storage = FlutterSecureStorage();
+    String? jwt = await storage.read(key: jwtK);
+    // final response = await http.post(
+    //   Uri.parse('$baseUrl$userUsernameValidatePath'),
+    //   headers: <String, String>{
+    //     contentTypeK: contentTypeJsonK,
+    //     authorizationK: '$bearerK $jwt',
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     usernameK: username,
+    //   }),
+    // );
+    return rm;
+  }
+
+  Future<List<String>> getCustomerPo(String regex) async {
+    List<String> cusPo = [
+      "helloo",
+      "world",
+      "helloo",
+      "world",
+      "helloo",
+      "world"
+    ];
+    const storage = FlutterSecureStorage();
+    String? jwt = await storage.read(key: jwtK);
+    // final response = await http.post(
+    //   Uri.parse('$baseUrl$userUsernameValidatePath'),
+    //   headers: <String, String>{
+    //     contentTypeK: contentTypeJsonK,
+    //     authorizationK: '$bearerK $jwt',
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     usernameK: username,
+    //   }),
+    // );
+    return cusPo;
+  }
+
+  Future<List<String>> getSoNumbers(String regex) async {
+    List<String> so = ["helloo", "world", "helloo", "world", "helloo", "world"];
+    const storage = FlutterSecureStorage();
+    String? jwt = await storage.read(key: jwtK);
+    // final response = await http.post(
+    //   Uri.parse('$baseUrl$userUsernameValidatePath'),
+    //   headers: <String, String>{
+    //     contentTypeK: contentTypeJsonK,
+    //     authorizationK: '$bearerK $jwt',
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     usernameK: username,
+    //   }),
+    // );
+    return so;
+  }
+
+  Future<List<String>> getProductionOrders(String regex) async {
+    List<String> po = ["helloo", "world", "helloo", "world", "helloo", "world"];
+    const storage = FlutterSecureStorage();
+    String? jwt = await storage.read(key: jwtK);
+    // final response = await http.post(
+    //   Uri.parse('$baseUrl$userUsernameValidatePath'),
+    //   headers: <String, String>{
+    //     contentTypeK: contentTypeJsonK,
+    //     authorizationK: '$bearerK $jwt',
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     usernameK: username,
+    //   }),
+    // );
+    return po;
+  }
+}
 
 Future<ValidateResponse> validatePassword(String password) async {
   const storage = FlutterSecureStorage();
