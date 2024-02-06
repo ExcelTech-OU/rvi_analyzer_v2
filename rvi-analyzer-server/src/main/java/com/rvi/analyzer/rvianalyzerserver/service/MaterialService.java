@@ -2,8 +2,6 @@ package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.StyleDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.mappers.MaterialMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.MaterialRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
@@ -15,10 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.function.BooleanSupplier;
 
-import static org.yaml.snakeyaml.DumperOptions.ScalarStyle.createStyle;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +26,9 @@ public class MaterialService {
     final private JwtUtils jwtUtils;
     final private UserGroupRoleService userGroupRoleService;
     final private MaterialMapper materialMapper;
+    final private PlantService plantService;
+    final private CustomerService customerService;
+    final private StyleService styleService;
 
     public Mono<NewMaterialResponse> addMaterial(MaterialDto materialDto, String jwt) {
         return Mono.just(materialDto)
@@ -128,5 +128,9 @@ public class MaterialService {
                 .doOnNext(uName -> log.info("Finding material for name [{}]", uName))
                 .flatMap(materialRepository::findByName)
                 .map(materialMapper::materialToMaterialDto);
+    }
+
+    public Mono<Boolean> existsMaterialByName(String name) {
+        return materialRepository.findByName(name).hasElement();
     }
 }

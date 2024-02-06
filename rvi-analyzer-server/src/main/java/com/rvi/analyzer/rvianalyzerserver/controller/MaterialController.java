@@ -1,12 +1,8 @@
 package com.rvi.analyzer.rvianalyzerserver.controller;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.CustomersResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.MaterialResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.NewMaterialResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.NewStyleResponse;
 import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.StyleDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.service.MaterialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,4 +28,10 @@ public class MaterialController {
     public Mono<MaterialDto> getMaterialInfo(@RequestBody MaterialDto materialDto) {
         return materialService.getMaterialByName(materialDto.getName());
     }
+
+    @GetMapping(path = "/rvi/analyzer/v1/checkMaterial")
+    public Mono<Boolean> checkMaterialExists(@RequestBody MaterialDto materialDto) {
+        return materialService.existsMaterialByName(materialDto.getName());
+    }
+
 }
