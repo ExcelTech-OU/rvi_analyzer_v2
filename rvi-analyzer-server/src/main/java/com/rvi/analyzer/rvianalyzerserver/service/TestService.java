@@ -65,7 +65,7 @@ public class TestService {
                                             return save(testDto, username);
                                         })
                                         .switchIfEmpty(Mono.just(NewTestResponse.builder()
-                                                .status("E1200")
+                                                .status("E1000")
                                                 .statusDescription("Material is not available")
                                                 .build()));
                             } else {

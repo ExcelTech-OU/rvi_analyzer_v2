@@ -63,15 +63,15 @@ public class MaterialService {
                                                                     return save(materialDto, username);
                                                                 })
                                                                 .switchIfEmpty(Mono.just(NewMaterialResponse.builder()
-                                                                        .status("E1200")
+                                                                        .status("E1000")
                                                                         .statusDescription("Style is not available").build()));
                                                     })
                                                     .switchIfEmpty(Mono.just(NewMaterialResponse.builder()
-                                                            .status("E1200")
+                                                            .status("E1000")
                                                             .statusDescription("Customer is not available").build()));
                                         })
                                         .switchIfEmpty(Mono.just(NewMaterialResponse.builder()
-                                                .status("E1200")
+                                                .status("E1000")
                                                 .statusDescription("Plant is not available").build()));
                             } else {
                                 return Mono.just(NewMaterialResponse.builder()
