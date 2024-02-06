@@ -2,6 +2,7 @@ package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.CustomerPODto;
+import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
 import com.rvi.analyzer.rvianalyzerserver.mappers.CustomerPOMapper;
 import com.rvi.analyzer.rvianalyzerserver.mappers.StyleMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.CustomerPORepository;
@@ -67,7 +68,6 @@ public class CustomerPOService {
                         }));
     }
 
-    //
     private Mono<NewCustomerPOResponse> save(CustomerPODto customerPODto, String username) {
         return Mono.just(customerPODto)
                 .map(customerPOMapper::customerPODtoToCustomerPO)
@@ -118,5 +118,12 @@ public class CustomerPOService {
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CustomerPOResponse.builder()
                         .status("E1000")
                         .statusDescription("Failed").build())));
+    }
+
+    public Mono<CustomerPODto> getCustomerPOByName(String name) {
+        return Mono.just(name)
+                .doOnNext(uName -> log.info("Finding customer PO for name [{}]", uName))
+                .flatMap(customerPORepository::findByName)
+                .map(customerPOMapper::customerPOToCustomerPODto);
     }
 }

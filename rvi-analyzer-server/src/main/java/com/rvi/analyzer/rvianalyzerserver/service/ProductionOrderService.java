@@ -30,6 +30,7 @@ public class ProductionOrderService {
     final private ProductionOrderMapper productionOrderMapper;
     final private JwtUtils jwtUtils;
     final private UserGroupRoleService userGroupRoleService;
+    final private SONumberService soNumberService;
 
     public Mono<NewProductionOrderResponse> addProductionOrder(ProductionOrderDto productionOrderDto, String jwt) {
         return Mono.just(productionOrderDto)
@@ -55,7 +56,13 @@ public class ProductionOrderService {
                         .flatMap(userRoles -> {
                             log.info(productionOrderDto.getOrderId());
                             if (userRoles.contains(UserRoles.CREATE_PRODUCTION_ORDER)) {
-                                return save(productionOrderDto, username);
+                                return soNumberService.getSONumberBySONumber(productionOrderDto.getSoNumber())
+                                        .flatMap(soNumberDto -> {
+                                            return save(productionOrderDto, username);
+                                        })
+                                        .switchIfEmpty(Mono.just(NewProductionOrderResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("SO Number is not available").build()));
                             } else {
                                 return Mono.just(NewProductionOrderResponse.builder()
                                         .status("E1200")
@@ -122,5 +129,12 @@ public class ProductionOrderService {
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ProductionOrderResponse.builder()
                         .status("E1000")
                         .statusDescription("Failed").build())));
+    }
+
+    public Mono<ProductionOrderDto> getProductionOrderByOrderId(String name) {
+        return Mono.just(name)
+                .doOnNext(uName -> log.info("Finding production order for name [{}]", uName))
+                .flatMap(productionOrderRepository::findByOrderId)
+                .map(productionOrderMapper::productionOrderToProductionOrderDto);
     }
 }

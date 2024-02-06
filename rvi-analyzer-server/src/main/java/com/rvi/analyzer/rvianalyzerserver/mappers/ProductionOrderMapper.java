@@ -11,5 +11,5 @@ public interface ProductionOrderMapper {
     @Mapping(target = "createdBy", ignore = true)
     ProductionOrder productionOrderDtoToProductionOrder(ProductionOrderDto productionOrderDto);
 
-    ProductionOrderDto productionOrderToProductionOrderDto(SONumber soNumber);
+    ProductionOrderDto productionOrderToProductionOrderDto(ProductionOrder productionOrder);
 }
