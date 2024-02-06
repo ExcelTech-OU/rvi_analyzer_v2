@@ -3,6 +3,7 @@ package com.rvi.analyzer.rvianalyzerserver.service;
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.CustomerPODto;
 import com.rvi.analyzer.rvianalyzerserver.dto.SONumberDto;
+import com.rvi.analyzer.rvianalyzerserver.dto.TestDto;
 import com.rvi.analyzer.rvianalyzerserver.entiy.SONumber;
 import com.rvi.analyzer.rvianalyzerserver.mappers.CustomerPOMapper;
 import com.rvi.analyzer.rvianalyzerserver.mappers.SONumberMapper;
@@ -30,6 +31,7 @@ public class SONumberService {
     final private SONumberMapper soNumberMapper;
     final private JwtUtils jwtUtils;
     final private UserGroupRoleService userGroupRoleService;
+    final private CustomerPOService customerPOService;
 
     public Mono<NewSONumberResponse> addSONumber(SONumberDto soNumberDto, String jwt) {
         return Mono.just(soNumberDto)
@@ -55,7 +57,13 @@ public class SONumberService {
                         .flatMap(userRoles -> {
                             log.info(soNumberDto.getSoNumber());
                             if (userRoles.contains(UserRoles.CREATE_SO_NUMBER)) {
-                                return save(soNumberDto, username);
+                                return customerPOService.getCustomerPOByName(soNumberDto.getCustomerPO())
+                                        .flatMap(customerPODto -> {
+                                            return save(soNumberDto, username);
+                                        })
+                                        .switchIfEmpty(Mono.just(NewSONumberResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("Customer PO is not available").build()));
                             } else {
                                 return Mono.just(NewSONumberResponse.builder()
                                         .status("E1200")
@@ -122,5 +130,12 @@ public class SONumberService {
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(SONumberResponse.builder()
                         .status("E1000")
                         .statusDescription("Failed").build())));
+    }
+
+    public Mono<SONumberDto> getSONumberBySONumber(String name) {
+        return Mono.just(name)
+                .doOnNext(uName -> log.info("Finding SO number for name [{}]", uName))
+                .flatMap(soNumberRepository::findBySONumber)
+                .map(soNumberMapper::soNumberToSONumberDto);
     }
 }

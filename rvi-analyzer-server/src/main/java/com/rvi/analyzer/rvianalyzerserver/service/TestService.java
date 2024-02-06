@@ -149,4 +149,11 @@ public class TestService {
                         .status("E1000")
                         .statusDescription("Failed").build())));
     }
+
+    public Mono<TestDto> getTestByTestGate(String name) {
+        return Mono.just(name)
+                .doOnNext(uName -> log.info("Finding test for name [{}]", uName))
+                .flatMap(testRepository::findByTestGate)
+                .map(testMapper::testToTestDto);
+    }
 }
