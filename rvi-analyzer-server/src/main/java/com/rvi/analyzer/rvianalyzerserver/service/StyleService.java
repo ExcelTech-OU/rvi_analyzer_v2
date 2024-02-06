@@ -1,6 +1,7 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
+import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.StyleDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.entiy.Style;
@@ -215,5 +216,12 @@ public class StyleService {
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(StyleResponse.builder()
                         .status("E1000")
                         .statusDescription("Failed").build())));
+    }
+
+    public Mono<StyleDto> getStyleByName(String name) {
+        return Mono.just(name)
+                .doOnNext(uName -> log.info("Finding style for name [{}]", uName))
+                .flatMap(styleRepository::findByName)
+                .map(styleMapper::styleToStyleDto);
     }
 }

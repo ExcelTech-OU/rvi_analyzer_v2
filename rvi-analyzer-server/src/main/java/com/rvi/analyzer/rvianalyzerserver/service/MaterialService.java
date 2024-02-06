@@ -54,7 +54,25 @@ public class MaterialService {
                         .flatMap(userRoles -> {
                             log.info(materialDto.getName());
                             if (userRoles.contains(UserRoles.CREATE_MATERIAL)) {
-                                return save(materialDto, username);
+                                return plantService.getPlantByName(materialDto.getPlant())
+                                        .flatMap(plantDto -> {
+                                            return customerService.getCustomerByName(materialDto.getCustomer())
+                                                    .flatMap(customerDto -> {
+                                                        return styleService.getStyleByName(materialDto.getStyle())
+                                                                .flatMap(styleDto -> {
+                                                                    return save(materialDto, username);
+                                                                })
+                                                                .switchIfEmpty(Mono.just(NewMaterialResponse.builder()
+                                                                        .status("E1200")
+                                                                        .statusDescription("Style is not available").build()));
+                                                    })
+                                                    .switchIfEmpty(Mono.just(NewMaterialResponse.builder()
+                                                            .status("E1200")
+                                                            .statusDescription("Customer is not available").build()));
+                                        })
+                                        .switchIfEmpty(Mono.just(NewMaterialResponse.builder()
+                                                .status("E1200")
+                                                .statusDescription("Plant is not available").build()));
                             } else {
                                 return Mono.just(NewMaterialResponse.builder()
                                         .status("E1200")
@@ -71,9 +89,6 @@ public class MaterialService {
                     material.setCustomer(materialDto.getCustomer() != null ? materialDto.getCustomer() : "UN-ASSIGNED");
                     material.setPlant(materialDto.getPlant() != null ? materialDto.getPlant() : "UN-ASSIGNED");
                     material.setStyle(materialDto.getStyle() != null ? materialDto.getStyle() : "UN-ASSIGNED");
-//                    material.setAdmin(styleDto.getAdmin() != null ? styleDto.getAdmin() : new ArrayList<>());
-//                    style.setPlant("UN-ASSIGNED");
-//                    style.setCustomer("UN-ASSIGNED");
                     material.setCreatedBy(username);
                     material.setCreatedDateTime(LocalDateTime.now());
                 })
