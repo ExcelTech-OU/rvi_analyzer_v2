@@ -2,6 +2,7 @@ package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.CustomerDto;
+import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.PlantDto;
 import com.rvi.analyzer.rvianalyzerserver.entiy.Customer;
 import com.rvi.analyzer.rvianalyzerserver.mappers.CustomerMapper;
@@ -119,30 +120,10 @@ public class CustomerService {
                         .statusDescription("Failed").build())));
     }
 
-//    public Mono<ResponseEntity<CommonResponse>> updateCustomer(CustomerUpdateRequest request, String auth) {
-//        log.info("update customer request received  [{}] ", request);
-//        return userRepository.findByUsername(jwtUtils.getUsername(auth))
-//                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
-//                        .flatMap(userRoles -> userRepository.findByUsername(request.getAdmin())
-//                                .flatMap(user -> {
-//                                    if (Objects.equals("TOP_ADMIN", user.getGroup()) && userRoles.contains(UserRoles.UPDATE_CUSTOMER)) {
-//                                        return customerRepository.findByName(request.getName())
-//                                                .flatMap(customer1 -> {
-//                                                    customer1.setPlant(request.getPlant());
-//                                                    return customerRepository.save(customer1).flatMap(
-//                                                            customerDtos -> Mono.just(ResponseEntity.ok(CommonResponse.success()))
-//                                                    ).switchIfEmpty(Mono.just(ResponseEntity.ok(CommonResponse.fail())));
-//                                                });
-//                                    } else {
-//                                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
-//                                                .status("E1200")
-//                                                .statusDescription("You are not authorized to use this service").build()));
-//                                    }
-//                                })
-//                                .switchIfEmpty(Mono.just(ResponseEntity.ok(CommonResponse.fail()))))
-//                )
-//                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.builder()
-//                        .status("E1000")
-//                        .statusDescription("Failed").build())));
-//    }
+    public Mono<CustomerDto> getCustomerByName(String name) {
+        return Mono.just(name)
+                .doOnNext(uName -> log.info("Finding customer for name [{}]", uName))
+                .flatMap(customerRepository::findByName)
+                .map(customerMapper::customerToCustomerDto);
+    }
 }

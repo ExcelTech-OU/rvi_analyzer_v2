@@ -4,6 +4,7 @@ import com.rvi.analyzer.rvianalyzerserver.domain.NewPlantResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.NewUserResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.PlantResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.UserRoles;
+import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.PlantDto;
 import com.rvi.analyzer.rvianalyzerserver.entiy.User;
 import com.rvi.analyzer.rvianalyzerserver.mappers.PlantMapper;
@@ -117,5 +118,12 @@ public class PlantService {
                 .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(PlantResponse.builder()
                         .status("E1000")
                         .statusDescription("Failed").build())));
+    }
+
+    public Mono<PlantDto> getPlantByName(String name) {
+        return Mono.just(name)
+                .doOnNext(uName -> log.info("Finding plant for name [{}]", uName))
+                .flatMap(plantRepository::findByName)
+                .map(plantMapper::plantToPlantDto);
     }
 }

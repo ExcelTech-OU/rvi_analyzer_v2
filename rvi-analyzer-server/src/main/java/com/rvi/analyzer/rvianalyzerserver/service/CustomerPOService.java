@@ -26,6 +26,7 @@ public class CustomerPOService {
     final private CustomerPOMapper customerPOMapper;
     final private JwtUtils jwtUtils;
     final private UserGroupRoleService userGroupRoleService;
+    final private MaterialService materialService;
 
     public Mono<NewCustomerPOResponse> addCustomerPO(CustomerPODto customerPODto, String jwt) {
         return Mono.just(customerPODto)
@@ -51,7 +52,13 @@ public class CustomerPOService {
                         .flatMap(userRoles -> {
                             log.info(customerPODto.getName());
                             if (userRoles.contains(UserRoles.CREATE_CUSTOMER_PO)) {
-                                return save(customerPODto, username);
+                                return materialService.getMaterialByName(customerPODto.getRawMaterial())
+                                        .flatMap(materialDto -> {
+                                            return save(customerPODto, username);
+                                        })
+                                        .switchIfEmpty(Mono.just(NewCustomerPOResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("Material is not available").build()));
                             } else {
                                 return Mono.just(NewCustomerPOResponse.builder()
                                         .status("E1200")
