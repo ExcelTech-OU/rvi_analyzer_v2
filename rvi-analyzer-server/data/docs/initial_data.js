@@ -15,6 +15,10 @@ db.group.insertMany([
 
 db.role.insertMany([
 {
+    'role-id': 'create_rm_tracking',
+    'role-name': 'CREATE_RM_TRACKING'
+  },
+{
     'role-id': 'create_rm',
     'role-name': 'CREATE_RM'
   },
@@ -33,6 +37,10 @@ db.role.insertMany([
 {
     'role-id': 'get_all_rm',
     'role-name': 'GET_ALL_RM'
+  },
+  {
+      'role-id': 'get_all_rm_tracking',
+      'role-name': 'GET_ALL_RM_TRACKING'
   },
 {
     'role-id': 'get_all_customer_po',
@@ -280,6 +288,7 @@ db.groupRole.insertMany([
     'group-id': 'admin_group',
     'role-ids': [ 'login_web',
     'login_app',
+    'create_rm_tracking',
     'create_rm',
     'create_customer_po',
     'create_so_number',
@@ -287,6 +296,7 @@ db.groupRole.insertMany([
     'create_user',
     'create_test',
     'reset_password',
+    'get_all_rm_tracking',
     'get_all_rm',
     'get_all_customer_po',
     'get_all_so_number',

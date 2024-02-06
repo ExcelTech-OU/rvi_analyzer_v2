@@ -61,8 +61,8 @@ public class ProductionOrderService {
                                             return save(productionOrderDto, username);
                                         })
                                         .switchIfEmpty(Mono.just(NewProductionOrderResponse.builder()
-                                                .status("E1200")
-                                                .statusDescription("You are not authorized to use this service").build()));
+                                                .status("E1000")
+                                                .statusDescription("SO Number is not available").build()));
                             } else {
                                 return Mono.just(NewProductionOrderResponse.builder()
                                         .status("E1200")
