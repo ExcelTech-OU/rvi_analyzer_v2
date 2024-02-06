@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static org.yaml.snakeyaml.DumperOptions.ScalarStyle.createStyle;
 
@@ -32,6 +33,8 @@ public class TestService {
     final private JwtUtils jwtUtils;
     final private UserGroupRoleService userGroupRoleService;
     final private TestMapper testMapper;
+    final private MaterialService materialService;
+    private boolean booleanValue;
 
     public Mono<NewTestResponse> addTest(TestDto testDto, String jwt) {
         return Mono.just(testDto)
@@ -57,7 +60,14 @@ public class TestService {
                         .flatMap(userRoles -> {
                             log.info(testDto.getTestGate());
                             if (userRoles.contains(UserRoles.CREATE_TEST)) {
-                                return save(testDto, username);
+                                return materialService.getMaterialByName(testDto.getMaterial())
+                                        .flatMap(materialDto -> {
+                                            return save(testDto, username);
+                                        })
+                                        .switchIfEmpty(Mono.just(NewTestResponse.builder()
+                                                .status("E1200")
+                                                .statusDescription("Material is not available")
+                                                .build()));
                             } else {
                                 return Mono.just(NewTestResponse.builder()
                                         .status("E1200")
