@@ -1,13 +1,12 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
-import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.StyleDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.TestDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
+import com.rvi.analyzer.rvianalyzerserver.dto.*;
+import com.rvi.analyzer.rvianalyzerserver.entiy.Parameter;
 import com.rvi.analyzer.rvianalyzerserver.mappers.MaterialMapper;
 import com.rvi.analyzer.rvianalyzerserver.mappers.TestMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.MaterialRepository;
+import com.rvi.analyzer.rvianalyzerserver.repository.ParameterRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.TestRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
 import com.rvi.analyzer.rvianalyzerserver.security.JwtUtils;
@@ -16,10 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static org.yaml.snakeyaml.DumperOptions.ScalarStyle.createStyle;
@@ -34,9 +35,13 @@ public class TestService {
     final private UserGroupRoleService userGroupRoleService;
     final private TestMapper testMapper;
     final private MaterialService materialService;
+    final private ParameterService parameterService;
+    final private ParameterRepository parameterRepository;
+    private String jwt;
     private boolean booleanValue;
 
     public Mono<NewTestResponse> addTest(TestDto testDto, String jwt) {
+        this.jwt = jwt;
         return Mono.just(testDto)
                 .doOnNext(testDto1 -> log.info("Test add request received [{}]", testDto1))
                 .flatMap(request -> testRepository.findByTestGate(request.getTestGate()))

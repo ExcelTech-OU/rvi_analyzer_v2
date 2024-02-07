@@ -12,11 +12,13 @@ import { plantApi } from '../services/plant_service'
 import { styleApi } from '../services/styles_service'
 import { materialApi } from '../services/material_service'
 import { testApi } from '../services/test_service'
+import { parameterApi } from '../services/parameter_service'
 
 export const store = configureStore({
     reducer: {
         [loginApi.reducerPath]: loginApi.reducer,
         // [signUpApi.reducerPath]: signUpApi.reducer,
+        [parameterApi.reducerPath]: parameterApi.reducer,
         [customerApi.reducerPath]: customerApi.reducer,
         [styleApi.reducerPath]: styleApi.reducer,
         [materialApi.reducerPath]: materialApi.reducer,
@@ -32,6 +34,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(loginApi.middleware)
             // .concat(signUpApi.middleware)
+            .concat(parameterApi.middleware)
             .concat(plantApi.middleware)
             .concat(materialApi.middleware)
             .concat(customerApi.middleware)
