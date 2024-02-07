@@ -53,7 +53,7 @@ public class ParameterService {
                 .flatMap(creatingStyle -> userGroupRoleService.getUserRolesByUserGroup(creatingStyle.getGroup())
                         .flatMap(userRoles -> {
                             log.info(parameterDto.getName());
-                            if (userRoles.contains(UserRoles.CREATE_MATERIAL)) {
+                            if (userRoles.contains(UserRoles.CREATE_PARAMETER)) {
                                 return save(parameterDto, username);
                             } else {
                                 return Mono.just(NewParameterResponse.builder()
@@ -85,7 +85,7 @@ public class ParameterService {
         return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.GET_ALL_MATERIALS)) {
+                            if (userRoles.contains(UserRoles.GET_ALL_PARAMETER)) {
                                 return parameterRepository.findAll()
                                         .map(parameter -> {
                                             return ParameterDto.builder()
