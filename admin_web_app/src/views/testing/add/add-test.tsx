@@ -43,6 +43,10 @@ import { useAddTestMutation } from "../../../services/test_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
 import CustomSelect from "../../user/view/custom-select";
 import { useGetMaterialQuery } from "../../../services/material_service";
+import {
+  Parameter,
+  useGetParametersQuery,
+} from "../../../services/parameter_service";
 
 type AddStyleProps = {
   open: boolean;
@@ -76,6 +80,11 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
     error: materialError,
     isLoading: materialLoading,
   } = useGetMaterialQuery("");
+  const {
+    data: parameterData,
+    error: parameterError,
+    isLoading: parameterLoading,
+  } = useGetParametersQuery("");
   const [material, setMaterial] = useState("");
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [isParameterSet, setIsParameterSet] = useState(false);
@@ -392,25 +401,15 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
                 }}
                 value={parameter}
               >
-                <FormControlLabel value="V" control={<Radio />} label="V" />
-                <FormControlLabel value="I" control={<Radio />} label="I" />
-                <FormControlLabel value="R" control={<Radio />} label="R" />
-                <FormControlLabel value="T" control={<Radio />} label="T" />
-                <FormControlLabel
-                  value="V & R"
-                  control={<Radio />}
-                  label="V & R"
-                />
-                <FormControlLabel
-                  value="I & R"
-                  control={<Radio />}
-                  label="I & R"
-                />
-                <FormControlLabel
-                  value="T & I"
-                  control={<Radio />}
-                  label="T & I"
-                />
+                {parameterData?.parameters.map((parameter: Parameter) => {
+                  return (
+                    <FormControlLabel
+                      value={parameter.name}
+                      control={<Radio />}
+                      label={parameter.name}
+                    />
+                  );
+                })}
               </RadioGroup>
               {isParameterSet ? (
                 <Box

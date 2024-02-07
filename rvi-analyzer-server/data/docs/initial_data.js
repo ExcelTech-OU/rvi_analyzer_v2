@@ -15,9 +15,17 @@ db.group.insertMany([
 
 db.role.insertMany([
 {
+    'role-id': 'create_parameter',
+    'role-name': 'CREATE_PARAMETER'
+  },
+{
     'role-id': 'create_rm_tracking',
     'role-name': 'CREATE_RM_TRACKING'
   },
+  {
+      'role-id': 'create_test_result',
+      'role-name': 'CREATE_TEST_RESULT'
+    },
 {
     'role-id': 'create_rm',
     'role-name': 'CREATE_RM'
@@ -34,6 +42,14 @@ db.role.insertMany([
     'role-id': 'create_production_order',
     'role-name': 'CREATE_PRODUCTION_ORDER'
   },
+  {
+        'role-id': 'get_all_parameter',
+        'role-name': 'GET_ALL_PARAMETER'
+    },
+  {
+      'role-id': 'get_all_test_result',
+      'role-name': 'GET_ALL_TEST_RESULT'
+    },
 {
     'role-id': 'get_all_rm',
     'role-name': 'GET_ALL_RM'
@@ -288,6 +304,9 @@ db.groupRole.insertMany([
     'group-id': 'admin_group',
     'role-ids': [ 'login_web',
     'login_app',
+    'create_material',
+    'create_parameter',
+    'create_test_result',
     'create_rm_tracking',
     'create_rm',
     'create_customer_po',
@@ -296,6 +315,8 @@ db.groupRole.insertMany([
     'create_user',
     'create_test',
     'reset_password',
+    'get_all_parameter',
+    'get_all_test_result',
     'get_all_rm_tracking',
     'get_all_rm',
     'get_all_customer_po',

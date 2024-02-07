@@ -54,7 +54,7 @@ public class TestResultService {
                 .flatMap(creatingStyle -> userGroupRoleService.getUserRolesByUserGroup(creatingStyle.getGroup())
                         .flatMap(userRoles -> {
                             log.info(testResultDto.getProductId());
-                            if (userRoles.contains(UserRoles.CREATE_TEST)) {
+                            if (userRoles.contains(UserRoles.CREATE_TEST_RESULT)) {
                                 return testService.getTestByTestGate(testResultDto.getTestGate())
                                         .flatMap(testDto -> {
                                             return productionOrderService.getProductionOrderByOrderId(testResultDto.getProductionOrder())
@@ -70,7 +70,6 @@ public class TestResultService {
                                                 .status("E1000")
                                                 .statusDescription("Test is not available")
                                                 .build()));
-//                                return save(testResultDto, username);
                             } else {
                                 return Mono.just(NewTestResultResponse.builder()
                                         .status("E1200")
@@ -107,7 +106,7 @@ public class TestResultService {
         return userRepository.findByUsername(jwtUtils.getUsername(auth))
                 .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.GET_TESTS)) {
+                            if (userRoles.contains(UserRoles.GET_ALL_TEST_RESULT)) {
                                 return testResultRepository.findAll()
                                         .map(testResult -> {
                                             return TestResultDto.builder()
