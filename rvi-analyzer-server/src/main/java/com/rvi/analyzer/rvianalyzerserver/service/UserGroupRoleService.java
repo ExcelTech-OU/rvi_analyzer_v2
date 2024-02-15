@@ -5,8 +5,8 @@ import com.rvi.analyzer.rvianalyzerserver.entiy.Role;
 import com.rvi.analyzer.rvianalyzerserver.repository.GroupRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.GroupRoleRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.RoleRepository;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -14,11 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 @Slf4j
 public class UserGroupRoleService {
+    @Autowired
     private GroupRepository groupRepository;
+    @Autowired
     private RoleRepository roleRepository;
+    @Autowired
     private GroupRoleRepository groupRoleRepository;
 
     Mono<List<UserRoles>> getUserRolesByUserGroup(String userGroup) {
@@ -26,7 +29,7 @@ public class UserGroupRoleService {
         return groupRepository.getGroupByGroupName(userGroup)
                 .flatMap(group -> {
                     log.info("Found User Group [{}]", group.getGroupName());
-                    return groupRoleRepository.getGroupRoleByGroupId(group.getGroupId())
+                    return groupRoleRepository.getGroupRoleByGroupId(String.valueOf(group.getGroupId()))
                             .flatMap(groupRole ->
                                     roleRepository.getRolesByRoleIds(groupRole.getRoleIds())
                                             .collectList()

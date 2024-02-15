@@ -10,18 +10,14 @@ import org.springframework.data.relational.core.mapping.Table;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "DefaultConfiguration")
-public class DefaultConfiguration {
+@Table(name = "ParameterMode")
+public class ParameterMode {
     @Id
     private Long _id;
     @Column
-    private String customerName;
+    private Long testId;
     @Column
-    private String operatorId;
+    private String name;
     @Column
-    private String serialNo;
-    @Column
-    private String batchNo;
-    @Column
-    private String sessionId;
+    private String parameter;
 }

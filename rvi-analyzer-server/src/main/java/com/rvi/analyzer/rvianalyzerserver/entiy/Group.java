@@ -1,18 +1,18 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import lombok.*;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Document
-@Builder
+@Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "Group")
 public class Group {
-    @Field(name = "group-id")
+    @Column
     private String groupId;
-    @Field(name = "group-name")
+    @Column
     private String groupName;
 }

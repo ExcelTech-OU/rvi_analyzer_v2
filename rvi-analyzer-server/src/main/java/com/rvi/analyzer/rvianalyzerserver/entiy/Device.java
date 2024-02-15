@@ -1,29 +1,33 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
-@Document
-@Builder
+@Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "Device")
 public class Device {
-    private String _id;
+    @Id
+    private Long _id;
+    @Column
     private String name;
-    @Field(name = "created-by")
+    @Column
     private String createdBy;
-    @Field(name = "assign-to")
+    @Column
     private String assignTo;
-    @Field(name = "mac-address")
+    @Column
     private String macAddress;
+    @Column
     private String status;
-    @Field(name = "created-date")
+    @Column
     @CreatedDate
     private LocalDateTime createdDateTime;
 }

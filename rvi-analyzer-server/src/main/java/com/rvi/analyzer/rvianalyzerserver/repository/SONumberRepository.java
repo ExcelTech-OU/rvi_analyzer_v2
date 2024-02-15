@@ -1,34 +1,14 @@
 package com.rvi.analyzer.rvianalyzerserver.repository;
 
-import com.rvi.analyzer.rvianalyzerserver.entiy.Material;
 import com.rvi.analyzer.rvianalyzerserver.entiy.SONumber;
-import com.rvi.analyzer.rvianalyzerserver.entiy.Test;
-import com.rvi.analyzer.rvianalyzerserver.entiy.User;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface SONumberRepository extends ReactiveMongoRepository<SONumber, String> {
-    @Query(
-            value = """
-                    {
-                        "soNumber" : {
-                            $eq: ?0
-                        }
-                    }
-                    """
-    )
-    Mono<SONumber> findBySONumber(String number);
+@Repository
+public interface SONumberRepository extends R2dbcRepository<SONumber, Integer> {
+    Mono<SONumber> findBysoNumber(String number);
 
-    @Query(
-            value = """
-                    {
-                        "created-by" : {
-                            $eq: ?0
-                        }
-                    }
-                    """
-    )
-    Flux<SONumber> findByCreatedBy(String createdBy);
+    Flux<SONumber> findBycreatedBy(String createdBy);
 }

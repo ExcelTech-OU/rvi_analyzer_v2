@@ -1,22 +1,29 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
-@Document
-@Builder
+@Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "Reading")
 public class Reading {
+    @Id
+    private Long _id;
+    @Column
     private String temperature;
-    private String current;
+    @Column
+    private String readingCurrent;
+    @Column
     private String voltage;
-    @Field(name = "read-at")
+    @Column
     private LocalDateTime readAt;
+    @Column
     private String result;
 }

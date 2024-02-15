@@ -36,6 +36,7 @@ public class SpringSecurity {
                 .pathMatchers(HttpMethod.POST, "/login/**").permitAll()
                 .pathMatchers(HttpMethod.GET, "/report/**").permitAll()
                 .pathMatchers(HttpMethod.POST, "/report/**").permitAll()
+                .pathMatchers(HttpMethod.GET, "/rvi/analyzer/v1/user/userInfo").permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .addFilterAt(new JwtAuthenticationFilter(jwtUtils), SecurityWebFiltersOrder.AUTHENTICATION)
@@ -56,10 +57,10 @@ public class SpringSecurity {
 
     @Bean
     public ReactiveUserDetailsService userDetailsService(UserRepository users) {
-        return (username) -> users.findByUsername(username)
+        return (username) -> users.findByusername(username)
                 .map(u -> User.withUsername(u.getUsername())
                         .password(u.getPassword())
-                        .authorities(List.of(u.getGroup()).toArray(new String[0]))
+                        .authorities(List.of(u.getUserGroup()).toArray(new String[0]))
                         .accountExpired(false)
                         .credentialsExpired(false)
                         .disabled(!u.getStatus().equals("ACTIVE"))

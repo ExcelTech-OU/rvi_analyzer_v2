@@ -1,35 +1,38 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Document
-@Builder
+@Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "ModeOne")
 public class ModeOne {
-
-    private String _id;
-    @Field(name = "created-by")
+    @Id
+    private Long _id;
+    @Column
     private String createdBy;
-    @Field(name = "default-configurations")
+    @Column
     private DefaultConfiguration defaultConfigurations;
-    @Field(name = "session-configurations")
+    @Column
     private SessionConfigurationModeOne sessionConfigurationModeOne;
+    @Column
     private List<SessionResult> results;
+    @Column
     private String status;
-    @Field(name = "created-date")
+    @Column
     @CreatedDate
     private LocalDateTime createdDateTime;
-    @Field(name = "last-updated-date")
+    @Column
     @LastModifiedDate
     private LocalDateTime lastUpdatedDateTime;
 }

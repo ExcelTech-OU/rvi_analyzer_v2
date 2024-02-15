@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtUtils {
+    public static final String HEADER_PREFIX = "Bearer ";
     private static final String AUTHORITIES_KEY = "roles";
     @Autowired
     JwtProperties jwtProperties;
     private SecretKey secretKey;
-    public static final String HEADER_PREFIX = "Bearer ";
 
     @PostConstruct
     protected void init() {
@@ -39,7 +39,7 @@ public class JwtUtils {
     public String createToken(com.rvi.analyzer.rvianalyzerserver.entiy.User user) {
 
         String username = user.getUsername();
-        Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(List.of(user.getGroup()).toString());
+        Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(List.of(user.getUserGroup()).toString());
 
         Claims claims = Jwts.claims().setSubject(username);
         claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")));

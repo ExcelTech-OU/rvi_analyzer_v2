@@ -1,46 +1,24 @@
 package com.rvi.analyzer.rvianalyzerserver.repository;
 
 import com.rvi.analyzer.rvianalyzerserver.entiy.User;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface UserRepository extends ReactiveMongoRepository<User, String> {
+@Repository
+public interface UserRepository extends R2dbcRepository<User, Integer> {
+    @Query("""
+            SELECT `_id`, `username`, `password`, `supervisor`, `passwordType`, `userGroup`, `status`, `createdBy`, `createdDateTime`, `lastUpdatedDateTime`
+            FROM `User`
+            WHERE `username` = :username;
+            """)
+    Mono<User> findByusername(String username);
 
-    @Query(
-            value = """
-    {
-        "username" : {
-            $eq: ?0
-        }
-    }
-    """
-    )
-    Mono<User> findByUsername(String username);
+//    Flux<User> findByUserNamePattern(String pattern);
 
-    @Query(
-            value = """
-    {
-        "username" : {
-            $regex: .*?0.*
-        }
-    }
-    """
-    )
-    Flux<User> findByUserNamePattern(String pattern);
+    Flux<User> findBycreatedBy(String createdBy);
 
-    @Query(
-            value = """
-    {
-        "created-by" : {
-            $eq: ?0
-        }
-    }
-    """
-    )
-    Flux<User> findByCreatedBy(String createdBy);
-
-    @Query(value = "{ 'created-by': ?0 }", count = true)
-    Mono<Long> countUsersByUsername(String username);
+//    Mono<Long> countUsersByUsername(String username);
 }

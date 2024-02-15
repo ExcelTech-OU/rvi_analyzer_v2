@@ -3,24 +3,25 @@ package com.rvi.analyzer.rvianalyzerserver.controller;
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.service.UserService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
+//@RequestMapping("/user")
 public class UserController {
-
-    final private UserService userService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping(path = "/register/user")
-    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String auth) {
-        return userService.addUser(userDto, auth);
-        //to create super admin un-comment bellow lines
-//    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto) {
-//        System.out.println("controller :" + userDto.getUsername());
-//        return userService.addUser(userDto);
+//    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String auth) {
+//        return userService.addUser(userDto, auth);
+    //to create super admin un-comment bellow lines
+    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto) {
+        return userService.save(userDto, "SUPER_USER");
+//        return null;
     }
 
     @PostMapping(path = "/login/user")
@@ -48,14 +49,21 @@ public class UserController {
         return userService.resetPassword(auth, request);
     }
 
-    @PostMapping(path = "/rvi/analyzer/v1/user/getUserNames")
-    public Mono<ResponseEntity<GetUserNamesResponse>> getUserNames(@RequestBody GetUserNamesRequest request, @RequestHeader("Authorization") String auth) {
-        return userService.getUserNames(request);
-    }
+//    @PostMapping(path = "/rvi/analyzer/v1/user/getUserNames")
+//    public Mono<ResponseEntity<GetUserNamesResponse>> getUserNames(@RequestBody GetUserNamesRequest request, @RequestHeader("Authorization") String auth) {
+//        return userService.getUserNames(request);
+//    }
 
-    @GetMapping(path = "/rvi/analyzer/v1/user/{userName}")
-    public Mono<UserDto> getUserInfo(@PathVariable String userName) {
-        return userService.getUserByUsername(userName);
+//    @GetMapping(path = "/rvi/analyzer/v1/user/{userName}")
+//    public Mono<UserDto> getUserInfo(@PathVariable String userName) {
+//        System.out.println(userName);
+//        return userService.getUserByUsername(userName);
+//    }
+
+    @GetMapping(path = "/rvi/analyzer/v1/user/userInfo")
+    public Mono<UserDto> getUserInfo(@RequestBody UserDto userDto) {
+        System.out.println(userDto.getUsername());
+        return userService.getUserByUsername(userDto.getUsername());
     }
 
     @GetMapping(path = "/rvi/analyzer/v1/users")

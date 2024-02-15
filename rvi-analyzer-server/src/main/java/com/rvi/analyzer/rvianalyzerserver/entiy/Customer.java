@@ -1,27 +1,34 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
-@Builder
+@Data
 @Getter
 @Setter
-@Document
-@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "Customer")
 public class Customer {
-    private String _id;
+    @Id
+    private Long _id;
+    @Column
     private String name;
+    @Column
     private String createdBy;
+    @Column
     private String status;
     //    private String plant;
-    @Field(name = "created-date")
+    @Column
+    @CreatedDate
     private LocalDateTime createdDateTime;
-    @Field(name = "last-updated-date")
+    @Column
+    @LastModifiedDate
     private LocalDateTime lastUpdatedDateTime;
 }

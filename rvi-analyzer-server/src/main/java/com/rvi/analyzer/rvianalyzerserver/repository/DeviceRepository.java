@@ -1,41 +1,26 @@
 package com.rvi.analyzer.rvianalyzerserver.repository;
 
 import com.rvi.analyzer.rvianalyzerserver.entiy.Device;
-import com.rvi.analyzer.rvianalyzerserver.entiy.User;
-import org.springframework.data.mongodb.repository.Aggregation;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface DeviceRepository extends ReactiveMongoRepository<Device, String> {
+@Repository
+public interface DeviceRepository extends R2dbcRepository<Device, Integer> {
+    Mono<Device> findBymacAddress(String mac);
 
-    @Query(
-            value = """
-    {
-        "mac-address" : {
-            "$eq" : ?0
-        }
-    }
-    """
-    )
-    Mono<Device> findByMacAddress(String mac);
-
-
-//    @Aggregation("{'created-by': ?3}")
-    @Query(
-            value = """
-    {
-        "assign-to" : {
-            "$eq" : ?3
-        }
-    }
-    """
-    )
+    @Query("""
+            SELECT *
+            FROM Device d
+            WHERE (name LIKE CONCAT('%', :name, '%') OR :name IS NULL)
+              AND (status = :status OR :status IS NULL)
+              AND (createdBy = :username OR :username IS NULL)
+            ORDER BY createdDateTime DESC
+            LIMIT :limit OFFSET :offset;
+            """)
     Flux<Device> findDevicesByNameStatusPageUserName(String name, String status, String page, String username);
-
-
-    @Query(value = "{ 'assign-to': ?0 }", count = true)
-    Mono<Long> countDevicesByUsername(String username);
+//    Mono<Long> countDevicesByUsername(String username);
 
 }

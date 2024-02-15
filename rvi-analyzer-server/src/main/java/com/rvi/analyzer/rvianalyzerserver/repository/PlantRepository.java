@@ -1,31 +1,14 @@
 package com.rvi.analyzer.rvianalyzerserver.repository;
 
 import com.rvi.analyzer.rvianalyzerserver.entiy.Plant;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface PlantRepository extends ReactiveMongoRepository<Plant, String> {
-    @Query(
-            value = """
-                    {
-                        "name" : {
-                            $eq: ?0
-                        }
-                    }
-                    """
-    )
-    Mono<Plant> findByName(String name);
+@Repository
+public interface PlantRepository extends R2dbcRepository<Plant, Integer> {
+    Mono<Plant> findByname(String name);
 
-    @Query(
-            value = """
-                    {
-                        "created-by" : {
-                            $eq: ?0
-                        }
-                    }
-                    """
-    )
-    Flux<Plant> findByCreatedBy(String createdBy);
+    Flux<Plant> findBycreatedBy(String createdBy);
 }

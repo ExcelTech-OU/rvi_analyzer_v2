@@ -1,21 +1,25 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Document
-@Builder
+@Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "SessionConfigurationModeTwo")
 public class SessionConfigurationModeTwo {
-    private String current;
-    @Field(name = "max-voltage")
+    @Id
+    private Long _id;
+    @Column
+    private String readingCurrent;
+    @Column
     private String maxVoltage;
-    @Field(name = "pass-min-voltage")
+    @Column
     private String passMinVoltage;
-    @Field(name = "pass-max-voltage")
+    @Column
     private String passMaxVoltage;
 }

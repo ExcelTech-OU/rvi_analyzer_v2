@@ -1,23 +1,52 @@
 package com.rvi.analyzer.rvianalyzerserver;
 
-import com.rvi.analyzer.rvianalyzerserver.dto.PlantDto;
-import com.rvi.analyzer.rvianalyzerserver.entiy.Customer;
-import com.rvi.analyzer.rvianalyzerserver.repository.DeviceRepository;
-import com.rvi.analyzer.rvianalyzerserver.service.CustomerService;
-import com.rvi.analyzer.rvianalyzerserver.service.MaterialService;
+import com.rvi.analyzer.rvianalyzerserver.entiy.User;
+import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
+import com.rvi.analyzer.rvianalyzerserver.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @SpringBootTest
 class RviAnalyzerServerApplicationTests {
     @Autowired
-    private DeviceRepository deviceRepository;
+    private UserRepository userRepository;
 
-//    @Test
-//    void display() {
-//        customerService.savePlant("Plant 10", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b3BBZG1pbkBnbWFpbC5jb20iLCJyb2xlcyI6IltUT1BfQURNSU5dIiwiaWF0IjoxNzA0ODY2ODY5LCJleHAiOjE3MDQ4NzI4Njl9.j24dVfG-H4mlEUblRl7LLm6O8hkR7KqQLW1dqi4t6qk");
-//    }
+    @Autowired
+    private UserService userService;
+
+    //User.builder()
+//        .username("topAdmin@gmail.com")
+//                .lastUpdatedDateTime(LocalDateTime.now())
+//            .createdDateTime(LocalDateTime.now())
+//            .createdBy("SUPER_ADMIN")
+//                .password("password")
+//                .userGroup("TOP_ADMIN")
+//                .status("ACTIVE")
+//                .supervisor("EMPTY")
+//                .passwordType("DEFAULT")
+//                .build()
+    @Transactional
+    @Test
+    void display() {
+        User user = User.builder()
+                .username("topAdmin@gmail.com")
+                .lastUpdatedDateTime(LocalDateTime.now())
+                .createdDateTime(LocalDateTime.now())
+                .createdBy("SUPER_ADMIN")
+                .password("password")
+                .userGroup("TOP_ADMIN")
+                .status("ACTIVE")
+                .supervisor("EMPTY")
+                .passwordType("DEFAULT")
+                .build();
+
+        userRepository.save(user)
+                .subscribe(); // Ensure the save operation completes within the transaction
+    }
 
 //    @Test
 //    void contextLoads() {

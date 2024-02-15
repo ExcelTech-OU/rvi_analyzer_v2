@@ -1,19 +1,19 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.UserRoles;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import lombok.*;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Document
-@Builder
+@Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "Role")
 public class Role {
-    @Field(name = "role-id")
-    private String roleId;
-    @Field(name = "role-name")
+    @Column
+    private Long roleId;
+    @Column
     private UserRoles roleName;
 }

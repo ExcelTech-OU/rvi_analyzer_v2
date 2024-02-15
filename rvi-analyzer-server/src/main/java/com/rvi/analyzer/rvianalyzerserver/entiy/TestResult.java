@@ -1,35 +1,39 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import com.rvi.analyzer.rvianalyzerserver.dto.ParameterModeDto;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Document
-@Builder
+@Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "TestResult")
 public class TestResult {
-
-    private String _id;
+    @Id
+    private Long _id;
+    @Column
     private String testGate;
+    @Column
     private String productionOrder;
+    @Column
     private String productId;
+    @Column
     private String mode01;
+    @Column
     private String mode02;
+    @Column
     private String mode03;
+    @Column
     private String mode04;
-
-    @Field(name = "created-by")
+    @Column
     private String createdBy;
-    @Field(name = "created-date")
+    @Column
     @CreatedDate
     private LocalDateTime createdDateTime;
 }
