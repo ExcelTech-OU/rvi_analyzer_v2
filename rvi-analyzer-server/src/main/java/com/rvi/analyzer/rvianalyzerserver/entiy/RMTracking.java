@@ -1,29 +1,29 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.annotation.LastModifiedDate;
+ // import org.springframework.data.mongodb.core.mapping.Document;
+ // import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Data
+ // @Document
+@Builder
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "RMTracking")
 public class RMTracking {
-    @Id
-    private Long _id;
-    @Column
+
+    private String _id;
     private String userId;
-    @Column
     private String productionOrder;
-    @Column
+
+    // @Field(name = "created-by")
     private String createdBy;
-    @Column
+    // @Field(name = "created-date")
     @CreatedDate
     private LocalDateTime createdDateTime;
 

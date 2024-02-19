@@ -1,20 +1,26 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.List;
-
-@Data
+@Table(name = "group_role")
+@Builder
 @Getter
 @Setter
-@AllArgsConstructor
+@Entity
 @NoArgsConstructor
-@Table(name = "GroupRole")
+@AllArgsConstructor
 public class GroupRole {
-    @Column
-    private Long groupId;
-    @Column
-    private List<String> roleIds;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 }

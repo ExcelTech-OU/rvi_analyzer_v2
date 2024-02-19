@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtUtils {
-    public static final String HEADER_PREFIX = "Bearer ";
     private static final String AUTHORITIES_KEY = "roles";
     @Autowired
     JwtProperties jwtProperties;
     private SecretKey secretKey;
+    public static final String HEADER_PREFIX = "Bearer ";
 
     @PostConstruct
     protected void init() {

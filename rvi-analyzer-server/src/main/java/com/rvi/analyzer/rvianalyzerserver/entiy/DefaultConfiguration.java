@@ -1,27 +1,22 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import lombok.Builder;
+import lombok.Data;
+ // import org.springframework.data.mongodb.core.mapping.Document;
+ // import org.springframework.data.mongodb.core.mapping.Field;
 
+ // @Document
+@Builder
 @Data
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "DefaultConfiguration")
 public class DefaultConfiguration {
-    @Id
-    private Long _id;
-    @Column
+    // @Field(name = "customer-name")
     private String customerName;
-    @Column
+    // @Field(name = "operator-id")
     private String operatorId;
-    @Column
+    // @Field(name = "serial-no")
     private String serialNo;
-    @Column
+    // @Field(name = "batch-no")
     private String batchNo;
-    @Column
+    // @Field(name = "session-id")
     private String sessionId;
 }

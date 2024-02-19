@@ -1,39 +1,34 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+ // import org.springframework.data.mongodb.core.mapping.Document;
+ // import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
-@Data
+ // @Document
+@Builder
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "Report")
 public class Report {
-    @Id
-    private Long _id;
-    @Column
+    // @Field(name = "created-by")
     private String createdBy;
-    @Column
     private String password;
-    @Column
+    // @Field(name = "session-id")
     private String sessionId;
-    @Column
+    // @Field("mode-type")
     private int modeType;
-    @Column
+    // @Field(name = "test-id")
     private String testId;
-    @Column
+    // @Field(name = "url-hash")
     private String urlHash;
-    @Column
     private String status;
-    @Column
+    // @Field("access-attempts")
     private int accessAttempts;
-    @Column
+    // @Field(name = "created-date")
     @CreatedDate
     private LocalDateTime createdDateTime;
 }

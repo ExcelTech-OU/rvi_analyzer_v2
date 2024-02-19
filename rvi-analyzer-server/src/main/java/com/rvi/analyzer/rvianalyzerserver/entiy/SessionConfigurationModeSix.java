@@ -1,23 +1,20 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+ // import org.springframework.data.mongodb.core.mapping.Document;
+ // import org.springframework.data.mongodb.core.mapping.Field;
 
-@Data
+ // @Document
+@Builder
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "SessionConfigurationModeSix")
 public class SessionConfigurationModeSix {
-    @Id
-    private Long _id;
-    @Column
+    // @Field(name = "fixed-current")
     private String fixedCurrent;
-    @Column
+    // @Field(name = "max-voltage")
     private String maxVoltage;
-    @Column
+    // @Field(name = "time-duration")
     private String timeDuration;
 }

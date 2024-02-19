@@ -1,14 +1,34 @@
-package com.rvi.analyzer.rvianalyzerserver.repository;
-
-import com.rvi.analyzer.rvianalyzerserver.entiy.RMTracking;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-@Repository
-public interface RMTrackingRepository extends R2dbcRepository<RMTracking, Integer> {
-    Mono<RMTracking> findByuserId(String name);
-
-    Flux<RMTracking> findBycreatedBy(String createdBy);
-}
+//package com.rvi.analyzer.rvianalyzerserver.repository;
+//
+//import com.rvi.analyzer.rvianalyzerserver.entiy.RMTracking;
+//import com.rvi.analyzer.rvianalyzerserver.entiy.Style;
+//import com.rvi.analyzer.rvianalyzerserver.entiy.User;
+// // import org.springframework.data.mongodb.repository.Query;
+// // import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+//import reactor.core.publisher.Flux;
+//import reactor.core.publisher.Mono;
+//
+//public interface RMTrackingRepository extends ReactiveMongoRepository<RMTracking, String> {
+//
+//    @Query(
+//            value = """
+//                    {
+//                        "userId" : {
+//                            $eq: ?0
+//                        }
+//                    }
+//                    """
+//    )
+//    Mono<RMTracking> findByUserId(String name);
+//
+//    @Query(
+//            value = """
+//                    {
+//                        "created-by" : {
+//                            $eq: ?0
+//                        }
+//                    }
+//                    """
+//    )
+//    Flux<RMTracking> findByCreatedBy(String createdBy);
+//}

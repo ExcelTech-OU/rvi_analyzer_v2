@@ -1,47 +1,56 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
-import org.springframework.format.annotation.DateTimeFormat;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Table(name = "user")
 @Data
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@Table(name = "User")
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
+
     @Id
-    @Column("_id")
-    private int _id;
-    @Column("username")
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
+    private String id;
     private String username;
-    @Column("password")
     private String password;
-    @Column("supervisor")
     private String supervisor;
-
-    @Column("passwordType")
+    @Column(name = "password-type")
     private String passwordType;
-    @Column("userGroup")
-    private String userGroup;
-    @Column("status")
+
+    @OneToOne
+    @JoinColumn(
+            name = "group_id",
+            referencedColumnName = "group_id"
+    )
+    private Group userGroup;
+
     private String status;
-    @Column("createdBy")
+    @Column(name = "created-by")
     private String createdBy;
-
-    //    @CreatedDate
-    @Column("createdDateTime")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(
+            name = "created-date",
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+    )
     private LocalDateTime createdDateTime;
-
-    //    @LastModifiedDate
-    @Column("lastUpdatedDateTime")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(
+            name = "last-updated-date",
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+    )
     private LocalDateTime lastUpdatedDateTime;
 }

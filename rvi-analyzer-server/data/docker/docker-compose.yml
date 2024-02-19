@@ -1,17 +1,8 @@
 version: "3.9"
 
 services:
-  #  rvi-analyzer-mongo:
-  #    image: mongo:6.0.5
-  #    restart: always
-  #    ports:
-  #      - "27017:27017"
-
-  rvi-analyzer-mysql:
-    image: mysql:8.0.36
-    environment:
-      MYSQL_ROOT_PASSWORD: "rvi_analyzer"
-      MYSQL_DATABASE: "rvi_analyzer"
+  rvi-analyzer-mongo:
+    image: mongo:6.0.5
     restart: always
     ports:
-      - "3306:3306"
+      - "27017:27017"

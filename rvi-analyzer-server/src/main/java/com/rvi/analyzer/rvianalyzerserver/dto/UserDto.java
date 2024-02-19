@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class UserDto {
     private String username;
-    private String userGroup;
-    private String password;
+    private String group;
     private String status;
     private String passwordType;
     private String createdBy;

@@ -2,6 +2,7 @@ package com.rvi.analyzer.rvianalyzerserver.dto;
 
 import lombok.Builder;
 import lombok.Data;
+ // import org.springframework.data.mongodb.core.mapping.Field;
 
 @Builder
 @Data

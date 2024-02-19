@@ -1,19 +1,27 @@
 package com.rvi.analyzer.rvianalyzerserver.entiy;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.UserRoles;
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
-@Data
+import java.util.List;
+
+@Table(name = "user_role")
+@Builder
 @Getter
 @Setter
-@AllArgsConstructor
+@Entity
 @NoArgsConstructor
-@Table(name = "Role")
+@AllArgsConstructor
 public class Role {
-    @Column
-    private Long roleId;
-    @Column
+
+    @Id
+    @Column(name = "role_id")
+    private String id;
+
+    @Enumerated(EnumType.STRING)
     private UserRoles roleName;
+
+    @OneToMany(mappedBy = "role")
+    private List<GroupRole> groupRole;
 }

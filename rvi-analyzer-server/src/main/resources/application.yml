@@ -1,0 +1,35 @@
+server:
+  port: 7550
+
+spring:
+    datasource:
+        url: jdbc:mysql://localhost:3306/rvi_analyzer?useSSL=false
+        username: root
+        password: password
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: none
+        show-sql: true
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL8Dialect
+                format_sql: true
+                use_sql_comments: true
+                jdbc:
+                    time_zone: UTC
+
+jwt:
+  secretKey: "thisWasSecurityKeyUsedForMakingJWTKeys"
+  validityInMs: 6000000
+  password:
+    encoder:
+      secret: rviAnalyzerKey
+      iteration: 33
+      key-length: 256
+
+report:
+  server:
+    base:
+      url: http://localhost:3001/
+

@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -36,7 +37,6 @@ public class SpringSecurity {
                 .pathMatchers(HttpMethod.POST, "/login/**").permitAll()
                 .pathMatchers(HttpMethod.GET, "/report/**").permitAll()
                 .pathMatchers(HttpMethod.POST, "/report/**").permitAll()
-                .pathMatchers(HttpMethod.GET, "/rvi/analyzer/v1/user/userInfo").permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .addFilterAt(new JwtAuthenticationFilter(jwtUtils), SecurityWebFiltersOrder.AUTHENTICATION)
@@ -57,7 +57,7 @@ public class SpringSecurity {
 
     @Bean
     public ReactiveUserDetailsService userDetailsService(UserRepository users) {
-        return (username) -> users.findByusername(username)
+        return (username) -> Mono.just(users.findByUsername(username))
                 .map(u -> User.withUsername(u.getUsername())
                         .password(u.getPassword())
                         .authorities(List.of(u.getUserGroup()).toArray(new String[0]))

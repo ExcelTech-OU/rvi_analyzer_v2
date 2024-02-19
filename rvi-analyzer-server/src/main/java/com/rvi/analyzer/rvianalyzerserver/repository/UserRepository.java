@@ -1,24 +1,21 @@
 package com.rvi.analyzer.rvianalyzerserver.repository;
 
 import com.rvi.analyzer.rvianalyzerserver.entiy.User;
-import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Repository
-public interface UserRepository extends R2dbcRepository<User, Integer> {
-    @Query("""
-            SELECT `_id`, `username`, `password`, `supervisor`, `passwordType`, `userGroup`, `status`, `createdBy`, `createdDateTime`, `lastUpdatedDateTime`
-            FROM `User`
-            WHERE `username` = :username;
-            """)
-    Mono<User> findByusername(String username);
+public interface UserRepository extends JpaRepository<User, String> {
 
-//    Flux<User> findByUserNamePattern(String pattern);
+    User findByUsername(String username);
 
-    Flux<User> findBycreatedBy(String createdBy);
+    List<User> findByUsernameContaining(String username);
 
-//    Mono<Long> countUsersByUsername(String username);
+    List<User> findByCreatedBy(String createdBy);
+
+    @Query("SELECT COUNT(u) FROM User u WHERE u.createdBy like %:username%")
+    Long countUsersByCreatedBy(String username);
 }
