@@ -4,6 +4,7 @@ import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -11,16 +12,16 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-
-    final private UserService userService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping(path = "/register/user")
     public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String auth) {
         return userService.addUser(userDto, auth);
         //to create super admin un-comment bellow lines
 //    public Mono<NewUserResponse> addUser(@RequestBody UserDto userDto) {
-//        System.out.println("controller :" + userDto.getUsername());
-//        return userService.addUser(userDto);
+//        return userService.save(userDto, "SUPER_USER");
+//        return null;
     }
 
     @PostMapping(path = "/login/user")
