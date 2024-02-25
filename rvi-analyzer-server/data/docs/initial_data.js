@@ -277,6 +277,7 @@ db.groupRole.insertMany([
 {
     'group-id': 'top_admin_group',
     'role-ids': [ 'login_web',
+    'login_app',
     'create_top_admin',
     'create_user',
     'create_customer',
