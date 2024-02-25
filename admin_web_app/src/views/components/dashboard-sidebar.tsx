@@ -24,6 +24,8 @@ import BugReport from "@mui/icons-material/BugReport";
 import HardwareIcon from "@mui/icons-material/Hardware";
 import AddIcon from "@mui/icons-material/Add";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
+import CableIcon from "@mui/icons-material/Cable";
 import { NavItem } from "./nav-item";
 import {
   Add,
@@ -170,6 +172,44 @@ const items = [
       },
     ],
   },
+  {
+    href: "#",
+    icon: <BatteryChargingFullIcon fontSize="small" />,
+    title: "Battery Tests",
+    childs: [
+      {
+        href: "/battery_srilanka",
+        icon: <ListAlt fontSize="small" />,
+        title: "Battery Tests (Sri Lanka)",
+        childs: [],
+      },
+      {
+        href: "/pcb_china",
+        icon: <ListAlt fontSize="small" />,
+        title: "Battery Tests (China)",
+        childs: [],
+      },
+    ],
+  },
+  {
+    href: "#",
+    icon: <CableIcon fontSize="small" />,
+    title: "PCB Tests",
+    childs: [
+      {
+        href: "/pcb_srilanka",
+        icon: <ListAlt fontSize="small" />,
+        title: "PCB Tests (Sri Lanka)",
+        childs: [],
+      },
+      {
+        href: "/pcb_china",
+        icon: <ListAlt fontSize="small" />,
+        title: "PCB Tests (China)",
+        childs: [],
+      },
+    ],
+  },
 ];
 
 type DashboardSidebarData = {
@@ -246,15 +286,17 @@ export const DashboardSidebar = ({
                   childs={item.childs}
                 />
               ))
-            : items.map((item) => (
-                <NavItem
-                  key={item.title}
-                  icon={item.icon}
-                  href={item.href}
-                  title={item.title}
-                  childs={item.childs}
-                />
-              ))}
+            : items
+                .filter((item) => item.title !== "Sessions")
+                .map((item) => (
+                  <NavItem
+                    key={item.title}
+                    icon={item.icon}
+                    href={item.href}
+                    title={item.title}
+                    childs={item.childs}
+                  />
+                ))}
         </Box>
 
         <Divider sx={{ borderColor: "#2D3748" }} />

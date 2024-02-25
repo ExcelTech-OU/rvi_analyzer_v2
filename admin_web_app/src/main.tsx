@@ -24,6 +24,10 @@ import DeviceList from "./views/device/view/DeviceList";
 import StyleList from "./views/styles/view/StyleList";
 import SignUp from "./views/auth/sign_up/sign_up";
 import TestList from "./views/testing/view/TestList";
+import { Pcb_srilanka } from "./views/datagrid/pcb_srilanka";
+import { Pcb_china } from "./views/datagrid/pcb_china";
+import { Battery_srilanka } from "./views/datagrid/battery_srilanka";
+import { Battery_china } from "./views/datagrid/battery_china";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -48,6 +52,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path="/questions" element={<QuestionList />} />
               <Route path="/login" element={<Login />} />
               <Route path="/password-reset" element={<PasswordReset />} />
+              <Route path="/pcb_srilanka" element={<Pcb_srilanka />} />
+              <Route path="/pcb_china" element={<Pcb_china />} />
+              <Route path="/battery_srilanka" element={<Battery_srilanka />} />
+              <Route path="/battery_china" element={<Battery_china />} />
               {/* <Route path="/sign-up" element={<SignUp />} /> */}
               <Route path="*" element={<Dashboard />} />
             </Routes>
