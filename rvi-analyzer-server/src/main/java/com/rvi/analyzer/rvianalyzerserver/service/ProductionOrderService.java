@@ -1,16 +1,13 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.*;
-import com.rvi.analyzer.rvianalyzerserver.dto.CustomerPODto;
+import com.rvi.analyzer.rvianalyzerserver.domain.NewProductionOrderResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.ProductionOrderResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.UserRoles;
 import com.rvi.analyzer.rvianalyzerserver.dto.ProductionOrderDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.SONumberDto;
 import com.rvi.analyzer.rvianalyzerserver.entiy.ProductionOrder;
-import com.rvi.analyzer.rvianalyzerserver.entiy.SONumber;
-import com.rvi.analyzer.rvianalyzerserver.mappers.CustomerPOMapper;
 import com.rvi.analyzer.rvianalyzerserver.mappers.ProductionOrderMapper;
-import com.rvi.analyzer.rvianalyzerserver.mappers.SONumberMapper;
-import com.rvi.analyzer.rvianalyzerserver.mappers.StyleMapper;
-import com.rvi.analyzer.rvianalyzerserver.repository.*;
+import com.rvi.analyzer.rvianalyzerserver.repository.ProductionOrderRepository;
+import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
 import com.rvi.analyzer.rvianalyzerserver.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +89,7 @@ public class ProductionOrderService {
                 .map(soNumber -> NewProductionOrderResponse.builder()
                         .status("S1000")
                         .statusDescription("Success")
-                        .orderId(soNumber.getSoNumber())
+                        .orderId(soNumber.getOrderId())
                         .build());
     }
 

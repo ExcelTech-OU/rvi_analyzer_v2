@@ -1,9 +1,8 @@
 package com.rvi.analyzer.rvianalyzerserver.controller;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.*;
-import com.rvi.analyzer.rvianalyzerserver.dto.CustomerPODto;
+import com.rvi.analyzer.rvianalyzerserver.domain.NewSONumberResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.SONumberResponse;
 import com.rvi.analyzer.rvianalyzerserver.dto.SONumberDto;
-import com.rvi.analyzer.rvianalyzerserver.service.CustomerPOService;
 import com.rvi.analyzer.rvianalyzerserver.service.SONumberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +23,10 @@ public class SONumberController {
     @GetMapping(path = "/rvi/analyzer/v1/soNumbers")
     public Mono<ResponseEntity<SONumberResponse>> getSONumbers(@RequestHeader("Authorization") String auth) {
         return soNumberService.getSONumbers(auth);
+    }
+
+    @GetMapping(path = "/rvi/analyzer/v1/soNumber/{soNumber}")
+    public Mono<SONumberDto> getSONumberInfo(@PathVariable String soNumber) {
+        return soNumberService.getSONumberBySONumber(soNumber);
     }
 }
