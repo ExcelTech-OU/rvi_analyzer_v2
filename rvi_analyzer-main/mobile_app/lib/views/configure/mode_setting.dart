@@ -17,7 +17,7 @@ class ModeSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             'Setting',
             style: TextStyle(
@@ -50,7 +50,7 @@ class ModeSettingsPage extends StatelessWidget {
                   // Label row 4
                   buildLabelRow(context, "Production Order"),
 
-                  SizedBox(
+                  const SizedBox(
                     height: 16.0,
                   ), // Add some space between the rectangles and the "Next" button
                 ],

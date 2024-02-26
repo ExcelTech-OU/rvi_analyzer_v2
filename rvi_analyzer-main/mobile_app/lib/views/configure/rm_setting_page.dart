@@ -3,8 +3,10 @@ import 'package:rvi_analyzer/views/configure/customer_po_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RmSettingPage extends StatefulWidget {
+  const RmSettingPage({Key? key}) : super(key: key);
+
   @override
-  _RmSettingPageState createState() => _RmSettingPageState();
+  State<RmSettingPage> createState() => _RmSettingPageState();
 }
 
 class _RmSettingPageState extends State<RmSettingPage> {
@@ -18,7 +20,7 @@ class _RmSettingPageState extends State<RmSettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             'Setting',
             style: TextStyle(
@@ -29,7 +31,7 @@ class _RmSettingPageState extends State<RmSettingPage> {
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(
                 context); // Use Navigator.pop instead of Navigator.pushReplacement
@@ -124,8 +126,8 @@ class _RmSettingPageState extends State<RmSettingPage> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text("Error"),
-                            content: Text("RM field cannot be empty."),
+                            title: const Text("Error"),
+                            content: const Text("RM field cannot be empty."),
                             actions: [
                               ElevatedButton(
                                 onPressed: () {
@@ -174,7 +176,7 @@ class _RmSettingPageState extends State<RmSettingPage> {
       ),
       child: Container(
         width: 400.0,
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 16.0,
           vertical: 8.0,
         ),
@@ -184,16 +186,16 @@ class _RmSettingPageState extends State<RmSettingPage> {
           children: [
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(width: 8.0),
+            const SizedBox(width: 8.0),
             Container(
               height: 40.0,
               width: 250.0,
-              padding: EdgeInsets.symmetric(horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.0),
                 border: Border.all(
@@ -204,9 +206,9 @@ class _RmSettingPageState extends State<RmSettingPage> {
                 children: [
                   DropdownButton<String>(
                     value: selectedOption,
-                    icon: Icon(Icons.arrow_drop_down),
-                    style: TextStyle(color: Colors.black),
-                    underline: SizedBox(),
+                    icon: const Icon(Icons.arrow_drop_down),
+                    style: const TextStyle(color: Colors.black),
+                    underline: const SizedBox(),
                     onChanged: (String? newValue) => onChanged(newValue),
                     items: options.map<DropdownMenuItem<String>>(
                       (String option) {
@@ -234,7 +236,7 @@ class _RmSettingPageState extends State<RmSettingPage> {
       ),
       child: Container(
         width: 400.0,
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 16.0,
           vertical: 8.0,
         ),
@@ -244,20 +246,20 @@ class _RmSettingPageState extends State<RmSettingPage> {
           children: [
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(width: 8.0),
+            const SizedBox(width: 8.0),
             Expanded(
               child: Container(
                 height: 40.0,
-                padding: EdgeInsets.symmetric(horizontal: 5.0),
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.0),
                   border: Border.all(
-                    color: Color.fromARGB(255, 158, 158, 158),
+                    color: const Color.fromARGB(255, 158, 158, 158),
                   ),
                 ),
                 child: TextField(
@@ -267,7 +269,7 @@ class _RmSettingPageState extends State<RmSettingPage> {
                     });
                     print('Entered $value for $label');
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                   ),
                 ),
@@ -281,7 +283,7 @@ class _RmSettingPageState extends State<RmSettingPage> {
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: RmSettingPage(),
   ));
 }

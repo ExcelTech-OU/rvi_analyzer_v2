@@ -3,9 +3,8 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-class RMService {
-  // Function to get plant, customer, and style based on RM value from API
-  static Future<Map<String, String>> getRMValues(String rm) async {
+class PlantService {
+  static Future<Map<String, String>> getPlants(String plants) async {
     const storage = FlutterSecureStorage();
     final String apiUrl = '';
 

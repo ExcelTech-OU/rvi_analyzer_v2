@@ -28,3 +28,7 @@ const String questionsPath = "resource/questions";
 const String saveBeforeTreatmentDataPath = "user/before/session/start";
 const String userSaveFeedbackPath = "user/save/feedback";
 const String userHistoryPath = "user/history";
+const String rawMaterialAddPath = "/register/material";
+const String getAllRawMaterialsPath = "/rvi/analyzer/v1/materials";
+const String getRawMaterialPath = "/rvi/analyzer/v1/material";
+const String checkMaterialPath = "/rvi/analyzer/v1/checkMaterial";

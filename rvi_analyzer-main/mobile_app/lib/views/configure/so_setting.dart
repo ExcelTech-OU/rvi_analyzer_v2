@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:rvi_analyzer/views/configure/production_order.dart';
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: SOSettingPage(),
   ));
 }
 
 class SOSettingPage extends StatefulWidget {
+  const SOSettingPage({Key? key}) : super(key: key);
+
   @override
-  _SOSettingPageState createState() => _SOSettingPageState();
+  State<SOSettingPage> createState() => _SOSettingPageState();
 }
 
 class _SOSettingPageState extends State<SOSettingPage> {
@@ -78,14 +80,14 @@ class _SOSettingPageState extends State<SOSettingPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Success"),
-          content: Text("Settings saved successfully."),
+          title: const Text("Success"),
+          content: const Text("Settings saved successfully."),
           actions: [
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         );
@@ -97,9 +99,9 @@ class _SOSettingPageState extends State<SOSettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
-            'Setting',
+            'SO Settings',
             style: TextStyle(
               fontSize: 30.0,
               fontWeight: FontWeight.bold,
@@ -107,139 +109,245 @@ class _SOSettingPageState extends State<SOSettingPage> {
             ),
           ),
         ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(
+                context); // Use Navigator.pop instead of Navigator.pushReplacement
+          },
+        ),
       ),
-      backgroundColor: Colors.cyan, // Set background color to blue
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
             children: [
-              // Display assigned values in a fixed-size box at the top of the page
-              Container(
-                width: double.infinity, // Set to take up the full width
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey), // Border color ash
-                  borderRadius: BorderRadius.circular(8.0),
-                  color: Colors.white, // Box background color white
-                ),
+              Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text('RM: $rmValue'),
-                    Text('Plant: $plantValue'),
-                    Text('Customer: $customerValue'),
-                    Text('Style: $styleValue'),
+                    // Display assigned values in a fixed-size box at the top of the page
+                    Card(
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Container(
+                        width: 400.0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('RM: '),
+                                Text(
+                                  rmValue,
+                                  style: const TextStyle(color: Colors.grey),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Plant: '),
+                                Text(
+                                  plantValue,
+                                  style: const TextStyle(color: Colors.grey),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Customer: '),
+                                Text(
+                                  customerValue,
+                                  style: const TextStyle(color: Colors.grey),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Style: '),
+                                Text(
+                                  styleValue,
+                                  style: const TextStyle(color: Colors.grey),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // DropdownButton to select RM
+                    Card(
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Container(
+                        width: 400.0,
+                        height: 60,
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Customer PO',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Container(
+                              height: 40.0,
+                              width: 200.0,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5.0),
+                                border: Border.all(
+                                  color:
+                                      const Color.fromARGB(255, 158, 158, 158),
+                                ),
+                              ),
+                              child: DropdownButton<String>(
+                                value: customerPoNumber,
+                                icon: const Icon(Icons.arrow_drop_down),
+                                style: const TextStyle(color: Colors.black),
+                                underline: const SizedBox(),
+                                onChanged: (String? newValue) {
+                                  if (newValue != null) {
+                                    setState(() {
+                                      customerPoNumber = newValue;
+                                      // Call the function to update values based on the selected RM
+                                      updateValues(customerPoNumber);
+                                    });
+                                  }
+                                },
+                                items: <String>[
+                                  'Customer PO 1',
+                                  'Customer PO 2',
+                                  'Customer PO 3'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Text box for entering Customer PO number
+                    Card(
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Container(
+                        width: 400.0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                        height: 60.0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "SO No",
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 8.0),
+                            Expanded(
+                              child: Container(
+                                height: 40.0,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(
+                                    color: const Color.fromARGB(
+                                        255, 158, 158, 158),
+                                  ),
+                                ),
+                                child: TextFormField(
+                                  onChanged: (value) {
+                                    setState(() {
+                                      soNumber = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
-              // DropdownButton to select RM
-              Container(
-                width: 250.0,
-                padding: EdgeInsets.symmetric(horizontal: 12.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.0),
-                  border: Border.all(
-                    color: Color.fromARGB(255, 158, 158, 158),
-                  ),
-                  color: Colors.grey[300], // Set the background color
-                ),
-                child: DropdownButton<String>(
-                  value: customerPoNumber,
-                  icon: Icon(Icons.arrow_drop_down),
-                  style: TextStyle(color: Colors.black),
-                  underline: SizedBox(),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      setState(() {
-                        customerPoNumber = newValue;
-                        // Call the function to update values based on the selected RM
-                        updateValues(customerPoNumber);
-                      });
-                    }
-                  },
-                  items: <String>[
-                    'Customer PO 1',
-                    'Customer PO 2',
-                    'Customer PO 3'
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-              SizedBox(height: 20),
-              // Text box for entering Customer PO number
-              Container(
-                width: 250.0,
-                child: TextFormField(
-                  onChanged: (value) {
-                    setState(() {
-                      soNumber = value;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'SO NO', // Changed label text
-                    fillColor: Colors.grey[300], // Set the background color
-                    filled: true,
-                    border: OutlineInputBorder(),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              // Save/Next Button
-              ElevatedButton(
-                onPressed: () async {
-                  if (!settingsSaved) {
-                    // Save button logic
-                    if (validateInput()) {
-                      await saveToLocalStorage();
-                      setState(() {
-                        settingsSaved = true;
-                      });
-                      showSuccessDialog(); // Show success message
+              Positioned(
+                bottom: 16.0,
+                right: 16.0,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (!settingsSaved) {
+                      // Save button logic
+                      if (validateInput()) {
+                        await saveToLocalStorage();
+                        setState(() {
+                          settingsSaved = true;
+                        });
+                        showSuccessDialog(); // Show success message
+                      } else {
+                        // Show error message for empty fields
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Error"),
+                              content: const Text(
+                                  "Please Select PO Number value from the list"),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
                     } else {
-                      // Show error message for empty fields
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Error"),
-                            content: Text(
-                                "Please Select PO Number value from the list"),
-                            actions: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("OK"),
-                              ),
-                            ],
-                          );
-                        },
+                      // Next button logic
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductionOrderPage(),
+                        ),
                       );
                     }
-                  } else {
-                    // Next button logic
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductionOrderPage(),
-                      ),
-                    );
-                  }
-                },
-                child: Text(settingsSaved ? "Next" : "Save"),
+                  },
+                  child: Text(settingsSaved ? "Next" : "Save"),
+                ),
               ),
             ],
           ),

@@ -1,15 +1,12 @@
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:rvi_analyzer/views/auth/sign_in/reset_password.dart';
-import 'package:rvi_analyzer/views/common/form_eliments/check_box_with_label.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
-import 'package:rvi_analyzer/views/dashboard/dashboard.dart';
 import 'package:rvi_analyzer/service/login_service.dart';
+import 'package:rvi_analyzer/views/auth/sign_in/reset_password.dart';
+import 'package:rvi_analyzer/views/common/form_eliments/check_box_with_label.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rvi_analyzer/views/dashboard/dashboard.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -20,20 +17,11 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
-  // final _secureStorage = FlutterSecureStorage();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   bool signInPressed = false;
   bool termsAndConditionValue = false;
   bool privacyPolicyValue = false;
-  // SharedPreferences logindata();
-  // bool newuser;
-
-  // void initState(){
-  //   super.initState()
-  //   check_if_already_login();
-  // }
-
   int selectedId = 0;
 
   var isValid = false;
@@ -61,8 +49,6 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    // const storage = FlutterSecureStorage();
-    // debugPrint(storage.read(key: 'jwt') as String?);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     var isLandscape =
@@ -70,6 +56,7 @@ class _SignInState extends State<SignIn> {
 
     return WillPopScope(
       onWillPop: () async {
+        print("loged out");
         return false;
       },
       child: Scaffold(
@@ -427,31 +414,6 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  // Future<void> _saveRolesToStorage(List<String> roles) async {
-  //   await _secureStorage.write(key: 'userRoles', value: roles.join(','));
-  // }
-
-  // Future<List<String>> _getRolesFromStorage() async {
-  //   String? rolesString = await _secureStorage.read(key: 'userRoles');
-  //   return rolesString?.split(',') ?? [];
-  // }
-
-  // Future<void> _saveTokenToStorage(String token) async {
-  //   await _secureStorage.write(key: 'authToken', value: token);
-  // }
-
-  // Future<String?> _getTokenFromStorage() async {
-  //   return await _secureStorage.read(key: 'auth Token');
-  // }
-
-  // Future<void> _saveLoginInfo(String jwt) async {
-  //   await _secureStorage.write(key: 'jwt', value: jwt);
-  // }
-
-  // Future<String?> _getJwtFromStorage() async {
-  //   return await _secureStorage.read(key: 'jwt');
-  // }
-
   void nativeLogin(BuildContext context) {
     if (true) {
       setState(() {
@@ -462,8 +424,6 @@ class _SignInState extends State<SignIn> {
           .then((value) => {
                 if (value.state == "S1000")
                   {
-                    // _saveRolesToStorage(value.roles),
-                    // _saveLoginInfo(value.jwt),
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -511,31 +471,5 @@ class _SignInState extends State<SignIn> {
         return <Set<void>>{};
       });
     }
-
-    //   Future<void> saveTokenToSharedPreferences(String token) async {
-    //   SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   prefs.setString('jwt', token);
-    // }
-    // Future<String?> getTokenFromSharedPreferences() async {
-    //   SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   return prefs.getString('jwt');
-    // }
-    // Future<void> checkLoggedInStatus() async {
-    //   String? token = await getTokenFromSharedPreferences();
-    //   if (token != null) {
-    //     Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(
-    //         builder: (context) => DashboardPage(initialIndex: 0),
-    //       ),
-    //     );
-    //   }
-    // }
-
-    // @override
-    // void initState() {
-    //   super.initState();
-    //   checkLoggedInStatus();
-    // }
   }
 }

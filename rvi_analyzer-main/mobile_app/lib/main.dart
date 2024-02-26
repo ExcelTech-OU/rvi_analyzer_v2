@@ -1,14 +1,13 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
-import 'package:rvi_analyzer/common/theme.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:rvi_analyzer/common/theme.dart';
 import 'package:rvi_analyzer/domain/common_response.dart';
-import 'package:http/http.dart' as htpp;
 import 'package:rvi_analyzer/repository/adapter/common_adapter.dart';
 import 'package:rvi_analyzer/repository/adapter/connected_devices_info_adapter.dart';
 import 'package:rvi_analyzer/repository/adapter/login_info_adapter.dart';
@@ -31,12 +30,9 @@ import 'package:rvi_analyzer/repository/entity/mode_two_entity.dart';
 import 'package:rvi_analyzer/repository/login_repo.dart';
 import 'package:rvi_analyzer/repository/modes_info_repo.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
-
 import 'package:rvi_analyzer/views/auth/sign_in/sign_in.dart';
 import 'package:rvi_analyzer/views/dashboard/dashboard.dart';
-import 'package:rvi_analyzer/views/service_locator.dart';
 import 'package:rvi_analyzer/views/splash/splash_screen.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -45,7 +41,6 @@ Future<void> main() async {
   final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
   registerAdapters();
-  setup();
   runApp(const ProviderScope(child: AchillesUIApp()));
 }
 
@@ -102,9 +97,11 @@ class _AchillesUIAppState extends State<AchillesUIApp> {
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       if (result == ConnectivityResult.mobile) {
+        print("MOBILE");
         submitLocalSessions();
         // I am connected to a mobile network.
       } else if (result == ConnectivityResult.wifi) {
+        print("WIFI");
         submitLocalSessions();
         // I am connected to a wifi network.
       } else if (result == ConnectivityResult.ethernet) {
@@ -114,7 +111,9 @@ class _AchillesUIAppState extends State<AchillesUIApp> {
         // Note for iOS and macOS:
         // There is no separate network interface type for [vpn].
         // It returns [other] on any device (also simulator)
-      } else if (result == ConnectivityResult.none) {}
+      } else if (result == ConnectivityResult.none) {
+        print("NONE");
+      }
     });
   }
 

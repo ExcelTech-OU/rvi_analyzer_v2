@@ -10,7 +10,7 @@ import 'package:rvi_analyzer/views/service_locator.dart';
 import 'package:rvi_analyzer/views/utils/common_utils.dart';
 
 class AddRm extends StatefulWidget {
-  AddRm({Key? key}) : super(key: key);
+  const AddRm({Key? key}) : super(key: key);
 
   @override
   State<AddRm> createState() => _AddRmState();

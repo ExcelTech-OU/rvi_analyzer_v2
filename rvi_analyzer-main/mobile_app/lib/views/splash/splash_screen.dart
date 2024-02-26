@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rvi_analyzer/service/login_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
+import 'package:rvi_analyzer/service/login_service.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
-  SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();

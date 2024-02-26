@@ -1,6 +1,7 @@
 const String jwtK = 'jwt';
 const String rolesK = 'roles';
 const String userK = "user";
+const String userTypeK = "userType";
 const String contentTypeK = 'Content-Type';
 const String authorizationK = 'Authorization';
 const String contentTypeJsonK = 'application/json; charset=UTF-8';
