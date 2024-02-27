@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import React, { useState } from "react";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-export default function DatePickerComponent({ label, onChange }) {
+interface DatePickerComponentProps {
+  label: string;
+  onChange: (date: any) => void;
+}
+
+export default function DatePickerComponent({
+  label,
+  onChange,
+}: DatePickerComponentProps) {
   const [selectedDate, setSelectedDate] = useState(null);
 
   const handleDateChange = (date: React.SetStateAction<null>) => {
@@ -13,7 +21,11 @@ export default function DatePickerComponent({ label, onChange }) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DatePicker label={label} value={selectedDate} onChange={handleDateChange} />
+      <DatePicker
+        label={label}
+        value={selectedDate}
+        onChange={handleDateChange}
+      />
     </LocalizationProvider>
   );
 }

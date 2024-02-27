@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Dialog,
@@ -8,13 +7,13 @@ import {
   Grid,
   Card,
   CardContent,
-  Typography
-} from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { collection, getDocs } from 'firebase/firestore';
-import TableSearchForm from '../components/table_search_form';
-import { db } from './firebase_config';
-import BasicDateRangePicker from './date_range_picker';
+  Typography,
+} from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { collection, getDocs } from "firebase/firestore";
+import TableSearchForm from "../components/table_search_form";
+import { db } from "./firebase_config";
+import BasicDateRangePicker from "./date_range_picker";
 
 interface Row {
   id: string;
@@ -26,7 +25,6 @@ interface Row {
   UID: string;
   LED_status: string;
   time: string;
-  
 }
 
 interface YourDocumentData {
@@ -49,14 +47,17 @@ interface DatasetTableProps {
   collection2: string;
 }
 
-const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) => {
+const BatteryTest: React.FC<DatasetTableProps> = ({
+  collection1,
+  collection2,
+}) => {
   const [rows, setRows] = useState<Row[]>([]);
   const [filteredRows, setFilteredRows] = useState<Row[]>([]);
   const [editOpen, setEditOpen] = useState(false);
-  const [selectedColumn, setSelectedColumn] = useState('');
+  const [selectedColumn, setSelectedColumn] = useState("");
   const [date, setDate] = React.useState<Date | null>(null);
-  const [filterType, setFilterType] = React.useState('CREATED_BY');
-  const [filterValue, setFilterValue] = React.useState('');
+  const [filterType, setFilterType] = React.useState("CREATED_BY");
+  const [filterValue, setFilterValue] = React.useState("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
 
@@ -68,15 +69,15 @@ const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) 
     const updatedRows1 = data1.docs.map((doc) => {
       const docData = doc.data() as YourDocumentData;
       const timeInMilliseconds =
-      docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
+        docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
       const dateValue = new Date(timeInMilliseconds).toLocaleDateString();
       const timeValue = new Date(timeInMilliseconds).toLocaleTimeString();
-        
+
       return {
         ...docData,
         id: doc.id,
         time: timeValue,
-        date: dateValue
+        date: dateValue,
       };
     });
 
@@ -84,15 +85,15 @@ const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) 
     const updatedRows2 = data2.docs.map((doc) => {
       const docData = doc.data() as YourDocumentData;
       const timeInMilliseconds =
-      docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
+        docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
       const dateValue = new Date(timeInMilliseconds).toLocaleDateString();
       const timeValue = new Date(timeInMilliseconds).toLocaleTimeString();
-        
+
       return {
         ...docData,
         id: doc.id,
         time: timeValue,
-        date: dateValue
+        date: dateValue,
       };
     });
 
@@ -101,20 +102,20 @@ const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) 
     const uniqueUIDs = new Set<string>();
 
     const uniqueRows = combinedRows.filter((row) => {
-      if (row.LED_status == "Pass"){
+      if (row.LED_status == "Pass") {
         if (!uniqueUIDs.has(row.UID)) {
           uniqueUIDs.add(row.UID);
           return true;
         }
         return false;
-      }else{
+      } else {
         return true;
       }
-      
     });
 
-
-    const sortedRows = uniqueRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    const sortedRows = uniqueRows.sort(
+      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
+    );
     setRows(sortedRows);
   };
 
@@ -141,54 +142,98 @@ const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) 
     //   });
   };
 
-  const setSearchParams = (date: Date | null, filterType: string, filterValue: string) => {
+  const setSearchParams = (
+    date: Date | null,
+    filterType: string,
+    filterValue: string
+  ) => {
     setFilterType(filterType);
     setFilterValue(filterValue);
     setDate(date);
     setPage(1);
   };
 
-
-  
   const handleFilter = (): void => {
     const searchTerm = filterValue.toLowerCase();
     const filteredData = rows.filter((row) => {
       const isDateInRange =
         (!startingDate || new Date(row.time) >= new Date(startingDate)) &&
         (!finishingDate || new Date(row.time) <= new Date(finishingDate));
-  
+
       return (
         (!searchTerm || // Check for other conditions if needed
           Object.values(row).some((value, index) => {
             if (
-              (typeof value === 'string' || typeof value === 'number') &&
+              (typeof value === "string" || typeof value === "number") &&
               columns[index].field === selectedColumn
             ) {
               const stringValue = String(value).toLowerCase();
               return stringValue.includes(searchTerm);
             }
             return false;
-          })) && isDateInRange
+          })) &&
+        isDateInRange
       );
     });
-  
+
     setFilteredRows(filteredData);
   };
-  
 
-  const handleColumnChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const handleColumnChange = (
+    event: React.ChangeEvent<{ value: unknown }>
+  ): void => {
     setSelectedColumn(event.target.value as string);
   };
 
   const columns = [
-    { field: 'id', headerName: 'id', flex: 1, headerClassName: 'customDataGridHeader' },
-    { field: 'CI', headerName: 'CI', flex: 1, headerClassName: 'customDataGridHeader' },
-    { field: 'CV', headerName: 'CV', flex: 1, headerClassName: 'customDataGridHeader' },
-    { field: 'DI', headerName: 'DI', flex: 1, headerClassName: 'customDataGridHeader' },
-    { field: 'UID', headerName: 'UID', flex: 1, headerClassName: 'customDataGridHeader' },
-    { field: 'LED_status', headerName: 'LED_status', flex: 1, headerClassName: 'customDataGridHeader' },
-    { field: 'date', headerName: 'date', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'time', headerName: 'time', flex:1, headerClassName: 'customDataGridHeader' },
+    {
+      field: "id",
+      headerName: "id",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "CI",
+      headerName: "CI",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "CV",
+      headerName: "CV",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "DI",
+      headerName: "DI",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "UID",
+      headerName: "UID",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "LED_status",
+      headerName: "LED_status",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "date",
+      headerName: "date",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "time",
+      headerName: "time",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
     // {
     //   field: 'actions',
     //   headerName: 'Actions',
@@ -218,87 +263,153 @@ const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) 
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
     setStartingDate(date);
     console.log(startingDate);
-    
   };
 
   const handleFinishingDateChange = (date: React.SetStateAction<null>) => {
     setFinishingDate(date);
     console.log(finishingDate);
-    
   };
 
-  const passData = rows.filter((item) => item.LED_status === 'Pass');
-  const failData = rows.filter((item) => item.LED_status === 'Fail');
+  const passData = rows.filter((item) => item.LED_status === "Pass");
+  const failData = rows.filter((item) => item.LED_status === "Fail");
 
   console.log(passData.length);
   console.log(failData.length);
-  
-  
 
   return (
     <div>
- <Grid container spacing={4} justifyContent="center" style={{ padding: '20px' }}>
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Card sx={{ backgroundColor: "#FFFFFF", boxShadow: "1px 1px 10px 10px #e8e8e8", display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-          <CardContent>
-            <Typography variant="h6" component="div">
-              Number of Data: {rows.length}
-            </Typography>
-          </CardContent>
-        </Card>
+      <Grid
+        container
+        spacing={4}
+        justifyContent="center"
+        style={{ padding: "20px" }}
+      >
+        <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Card
+            sx={{
+              backgroundColor: "#FFFFFF",
+              boxShadow: "1px 1px 10px 10px #e8e8e8",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <CardContent>
+              <Typography variant="h6" component="div">
+                Number of Data: {rows.length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Card
+            sx={{
+              backgroundColor: "#FFFFFF",
+              boxShadow: "1px 1px 10px 10px #e8e8e8",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <CardContent>
+              <Typography variant="h6" component="div">
+                Number of Pass Data: {passData.length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Card
+            sx={{
+              backgroundColor: "#FFFFFF",
+              boxShadow: "1px 1px 10px 10px #e8e8e8",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <CardContent>
+              <Typography variant="h6" component="div">
+                Number of Fail Data: {failData.length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Card sx={{ backgroundColor: "#FFFFFF", boxShadow: "1px 1px 10px 10px #e8e8e8", display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-          <CardContent>
-            <Typography variant="h6" component="div">
-              Number of Pass Data: {passData.length}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Card sx={{ backgroundColor: "#FFFFFF", boxShadow: "1px 1px 10px 10px #e8e8e8", display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-          <CardContent>
-            <Typography variant="h6" component="div">
-              Number of Fail Data: {failData.length}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
-      <Card sx={{ maxWidth: 1600, backgroundColor: "#FFFFFF", boxShadow: "1px 1px 10px 10px #e8e8e8", display: 'flex', flexDirection: 'column', alignItems:'center' }}>
-      <style>{`
+      <Card
+        sx={{
+          maxWidth: 1600,
+          backgroundColor: "#FFFFFF",
+          boxShadow: "1px 1px 10px 10px #e8e8e8",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <style>{`
           .customDataGridHeader {
             background-color: #9e9e9e;
             color: white;
           }
         `}</style>
-        <div style={{ height: 600, width: '95%', display: 'flex', alignItems:'center' }}>
-            <DataGrid
-              rows={filteredRows.length > 0 ? filteredRows : rows}
-              columns={columns}
-              getRowId={(row) => row.id}
-              pageSize={10}
-              rowsPerPageOptions={[5, 10, 20]}
-              components={{
-                Toolbar: (props) => (
-                  <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', padding: '8px', marginRight:'10px' }}>
-                    <GridToolbar {...props}/>
-                    <div style={{ marginRight: '10px' }}> {/* Adjust the margin as needed */}
-                      <BasicDateRangePicker label="Starting Date" onChange={handleStartingDateChange} />
-                    </div>
-  
-                    <div style={{ marginRight: '10px' }}> {/* Adjust the margin as needed */}
-                      <BasicDateRangePicker label="Finishing Date" onChange={handleFinishingDateChange} />
-                    </div>
-  
-                    <Button onClick={handleFilter} variant="contained" className='customDataGridHeader'>
-                      Filter
-                    </Button>
+        <div
+          style={{
+            height: 600,
+            width: "95%",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <DataGrid
+            rows={filteredRows.length > 0 ? filteredRows : rows}
+            columns={columns}
+            getRowId={(row) => row.id}
+            pageSize={10}
+            rowsPerPageOptions={[5, 10, 20]}
+            components={{
+              Toolbar: (props) => (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    padding: "8px",
+                    marginRight: "10px",
+                  }}
+                >
+                  <GridToolbar {...props} />
+                  <div style={{ marginRight: "10px" }}>
+                    {" "}
+                    {/* Adjust the margin as needed */}
+                    <BasicDateRangePicker
+                      label="Starting Date"
+                      onChange={handleStartingDateChange}
+                    />
                   </div>
-                ),
-              }}
-            />
+
+                  <div style={{ marginRight: "10px" }}>
+                    {" "}
+                    {/* Adjust the margin as needed */}
+                    <BasicDateRangePicker
+                      label="Finishing Date"
+                      onChange={handleFinishingDateChange}
+                    />
+                  </div>
+
+                  <Button
+                    onClick={handleFilter}
+                    variant="contained"
+                    className="customDataGridHeader"
+                  >
+                    Filter
+                  </Button>
+                </div>
+              ),
+            }}
+          />
         </div>
       </Card>
 

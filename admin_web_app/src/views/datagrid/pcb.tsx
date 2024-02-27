@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import {
-  Button,
-  Dialog,
-  Box,
-  Card,
-  Grid,
-} from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { collection, getDocs } from 'firebase/firestore';
-import TableSearchForm from '../components/table_search_form';
-import { db } from './firebase_config';
-import BasicDateRangePicker from './date_range_picker';
+import React, { useState, useEffect } from "react";
+import { Button, Dialog, Box, Card, Grid } from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { collection, getDocs } from "firebase/firestore";
+import TableSearchForm from "../components/table_search_form";
+import { db } from "./firebase_config";
+import BasicDateRangePicker from "./date_range_picker";
 
 interface Row {
   id: string;
@@ -43,14 +36,17 @@ interface DatasetTableProps {
   collection2: string;
 }
 
-const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 }) => {
+const DatasetTable: React.FC<DatasetTableProps> = ({
+  collection1,
+  collection2,
+}) => {
   const [rows, setRows] = useState<Row[]>([]);
   const [filteredRows, setFilteredRows] = useState<Row[]>([]);
   const [editOpen, setEditOpen] = useState(false);
-  const [selectedColumn, setSelectedColumn] = useState('');
+  const [selectedColumn, setSelectedColumn] = useState("");
   const [date, setDate] = React.useState<Date | null>(null);
-  const [filterType, setFilterType] = React.useState('CREATED_BY');
-  const [filterValue, setFilterValue] = React.useState('');
+  const [filterType, setFilterType] = React.useState("CREATED_BY");
+  const [filterValue, setFilterValue] = React.useState("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
 
@@ -62,16 +58,15 @@ const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 })
     const updatedRows1 = data1.docs.map((doc) => {
       const docData = doc.data() as YourDocumentData;
       const timeInMilliseconds =
-      docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
+        docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
       const dateValue = new Date(timeInMilliseconds).toLocaleDateString();
       const timeValue = new Date(timeInMilliseconds).toLocaleTimeString();
-        
-        
+
       return {
         ...docData,
         id: doc.id,
         time: timeValue,
-        date: dateValue
+        date: dateValue,
       };
     });
 
@@ -79,15 +74,15 @@ const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 })
     const updatedRows2 = data2.docs.map((doc) => {
       const docData = doc.data() as YourDocumentData;
       const timeInMilliseconds =
-      docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
+        docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
       const dateValue = new Date(timeInMilliseconds).toLocaleDateString();
       const timeValue = new Date(timeInMilliseconds).toLocaleTimeString();
-        
+
       return {
         ...docData,
         id: doc.id,
         time: timeValue,
-        date: dateValue
+        date: dateValue,
       };
     });
 
@@ -103,8 +98,9 @@ const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 })
       return false;
     });
 
-
-    const sortedRows = uniqueRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    const sortedRows = uniqueRows.sort(
+      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
+    );
     setRows(sortedRows);
   };
 
@@ -131,55 +127,104 @@ const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 })
     //   });
   };
 
-  const setSearchParams = (date: Date | null, filterType: string, filterValue: string) => {
+  const setSearchParams = (
+    date: Date | null,
+    filterType: string,
+    filterValue: string
+  ) => {
     setFilterType(filterType);
     setFilterValue(filterValue);
     setDate(date);
     setPage(1);
   };
 
-
-  
   const handleFilter = (): void => {
     const searchTerm = filterValue.toLowerCase();
     const filteredData = rows.filter((row) => {
       const isDateInRange =
         (!startingDate || new Date(row.time) >= new Date(startingDate)) &&
         (!finishingDate || new Date(row.time) <= new Date(finishingDate));
-  
+
       return (
         (!searchTerm || // Check for other conditions if needed
           Object.values(row).some((value, index) => {
             if (
-              (typeof value === 'string' || typeof value === 'number') &&
+              (typeof value === "string" || typeof value === "number") &&
               columns[index].field === selectedColumn
             ) {
               const stringValue = String(value).toLowerCase();
               return stringValue.includes(searchTerm);
             }
             return false;
-          })) && isDateInRange
+          })) &&
+        isDateInRange
       );
     });
-  
+
     setFilteredRows(filteredData);
   };
-  
 
-  const handleColumnChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const handleColumnChange = (
+    event: React.ChangeEvent<{ value: unknown }>
+  ): void => {
     setSelectedColumn(event.target.value as string);
   };
 
   const columns = [
-    { field: 'id', headerName: 'id', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'LED_C', headerName: 'LED_C', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'HNLV', headerName: 'HNLV', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'HLV', headerName: 'HLV', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'MAC_adress', headerName: 'MAC_adress', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'date', headerName: 'date', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'time', headerName: 'time', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'LED_V', headerName: 'LED_V', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'HLC', headerName: 'HLC', flex:1, headerClassName: 'customDataGridHeader' },
+    {
+      field: "id",
+      headerName: "id",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "LED_C",
+      headerName: "LED_C",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "HNLV",
+      headerName: "HNLV",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "HLV",
+      headerName: "HLV",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "MAC_adress",
+      headerName: "MAC_adress",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "date",
+      headerName: "date",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "time",
+      headerName: "time",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "LED_V",
+      headerName: "LED_V",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "HLC",
+      headerName: "HLC",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
     // {
     //   field: 'actions',
     //   headerName: 'Actions',
@@ -209,25 +254,39 @@ const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 })
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
     setStartingDate(date);
     console.log(startingDate);
-    
   };
 
   const handleFinishingDateChange = (date: React.SetStateAction<null>) => {
     setFinishingDate(date);
     console.log(finishingDate);
-    
   };
 
   return (
     <div>
-      <Card sx={{ maxWidth: 1600, backgroundColor: "#FFFFFF", boxShadow: "1px 1px 10px 10px #e8e8e8", display: 'flex', flexDirection: 'column', alignItems:'center' }}>
+      <Card
+        sx={{
+          maxWidth: 1600,
+          backgroundColor: "#FFFFFF",
+          boxShadow: "1px 1px 10px 10px #e8e8e8",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         <style>{`
           .customDataGridHeader {
             background-color: #9e9e9e;
             color: white;
           }
         `}</style>
-        <div style={{ height: 600, width: '95%', display: 'flex', alignItems:'center' }}>
+        <div
+          style={{
+            height: 600,
+            width: "95%",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           <DataGrid
             rows={filteredRows.length > 0 ? filteredRows : rows}
             columns={columns}
@@ -236,17 +295,39 @@ const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 })
             rowsPerPageOptions={[5, 10, 20]}
             components={{
               Toolbar: (props) => (
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', padding: '8px', marginRight:'10px' }}>
-                  <GridToolbar {...props}/>
-                  <div style={{ marginRight: '10px' }}> {/* Adjust the margin as needed */}
-                    <BasicDateRangePicker label="Starting Date" onChange={handleStartingDateChange} />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    padding: "8px",
+                    marginRight: "10px",
+                  }}
+                >
+                  <GridToolbar {...props} />
+                  <div style={{ marginRight: "10px" }}>
+                    {" "}
+                    {/* Adjust the margin as needed */}
+                    <BasicDateRangePicker
+                      label="Starting Date"
+                      onChange={handleStartingDateChange}
+                    />
                   </div>
 
-                  <div style={{ marginRight: '10px' }}> {/* Adjust the margin as needed */}
-                    <BasicDateRangePicker label="Finishing Date" onChange={handleFinishingDateChange} />
+                  <div style={{ marginRight: "10px" }}>
+                    {" "}
+                    {/* Adjust the margin as needed */}
+                    <BasicDateRangePicker
+                      label="Finishing Date"
+                      onChange={handleFinishingDateChange}
+                    />
                   </div>
 
-                  <Button onClick={handleFilter} variant="contained" className='customDataGridHeader'>
+                  <Button
+                    onClick={handleFilter}
+                    variant="contained"
+                    className="customDataGridHeader"
+                  >
                     Filter
                   </Button>
                 </div>
@@ -255,10 +336,10 @@ const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 })
           />
         </div>
       </Card>
-        {/* Edit Dialog */}
-        <Dialog open={editOpen} onClose={() => setEditOpen(false)}>
-          {/* ... rest of the code */}
-        </Dialog>
+      {/* Edit Dialog */}
+      <Dialog open={editOpen} onClose={() => setEditOpen(false)}>
+        {/* ... rest of the code */}
+      </Dialog>
     </div>
   );
 };

@@ -223,15 +223,13 @@ export const DashboardSidebar = ({
 }: DashboardSidebarData) => {
   var userRoles: string | string[] = [];
   var admin = "";
+  var roles = localStorage.getItem("roles");
 
   //get user roles from local storage
-  if (localStorage.getItem("roles") === null) {
+  if (roles === null) {
     console.log("roles empty");
   } else {
-    userRoles = localStorage
-      .getItem("roles")
-      .split(",")
-      .map((item) => item.trim());
+    userRoles = roles.split(",").map((item) => item.trim());
     if (
       userRoles.includes("CREATE_TOP_ADMIN") &&
       userRoles.includes("CREATE_ADMIN")

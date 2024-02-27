@@ -25,7 +25,7 @@ export interface SimpleUser {
 
 export const loginApi = createApi({
     reducerPath: 'loginApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://127.0.0.1:7550/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://rvi.v2.exceltch.com/rvi-analyzer-api/' }),
     tagTypes: ['loginRequest'],
     endpoints: (build) => ({
         login: build.mutation<LoginResponse, {}>({

@@ -71,6 +71,7 @@ export default function TestList() {
   var userRoles: string | string[] = [];
   const [open, setOpen] = useState(false);
   var admin = "";
+  var roles = localStorage.getItem("roles");
 
   // const fetchData = async () => {
   //   const newList: Test[] = data?.tests;
@@ -86,14 +87,11 @@ export default function TestList() {
   // }, [open]);
 
   //get user roles from local storage
-  if (localStorage.getItem("roles") === null) {
+  if (roles === null) {
     admin = "ADMIN";
     console.log("roles empty");
   } else {
-    userRoles = localStorage
-      .getItem("roles")
-      .split(",")
-      .map((item) => item.trim());
+    userRoles = roles.split(",").map((item) => item.trim());
     if (
       userRoles.includes("CREATE_TOP_ADMIN") &&
       userRoles.includes("CREATE_ADMIN")

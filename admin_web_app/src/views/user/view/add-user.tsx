@@ -53,7 +53,8 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   var userRoles: string | string[] = [];
   var filterUsers: User[] = [];
   var admin = "";
-  let admin_options: Option[] = [];
+  let admin_options: any = [];
+  var roles = localStorage.getItem("roles");
 
   admin_options = data?.users
     .filter((admin) => {
@@ -67,14 +68,11 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
     }));
 
   //filters users according to admin's permissions
-  if (localStorage.getItem("roles") === null) {
+  if (roles === null) {
     admin = "ADMIN";
     console.log("roles empty");
   } else {
-    userRoles = localStorage
-      .getItem("roles")
-      .split(",")
-      .map((item) => item.trim());
+    userRoles = roles.split(",").map((item) => item.trim());
     if (
       userRoles.includes("CREATE_TOP_ADMIN") &&
       userRoles.includes("CREATE_ADMIN")
