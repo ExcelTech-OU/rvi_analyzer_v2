@@ -73,6 +73,10 @@ export default function UserList() {
   const [userList, setUserList] = useState<any>([]);
   const [isUsersUpdated, setIsUsersUpdated] = useState(false);
   const [open, setOpen] = useState(false);
+  var roles = localStorage.getItem("roles");
+  // var dataUsers: List<User> = [];
+
+  // dataUsers = data?.users;
 
   // const fetchData = async () => {
   //   const newUsers: User[] = data?.users;
@@ -89,10 +93,11 @@ export default function UserList() {
 
   // userList = data?.users;
 
-  const startIndex = page * rowsPerPage;
-  const endIndex = Math.min(startIndex + rowsPerPage, data?.users.length);
-  const visibleData = data?.users.slice(startIndex, endIndex);
-  const [isUsersAvailable, setIsUsersAvailable] = useState(false);
+  //pagination
+  // const startIndex = page * rowsPerPage;
+  // const endIndex = Math.min(startIndex + rowsPerPage, dataUsers.length);
+  // const visibleData = data?.users.slice(startIndex, endIndex);
+  // const [isUsersAvailable, setIsUsersAvailable] = useState(false);
 
   // useEffect(() => {
   //   const newUsers: any = data?.users;
@@ -108,14 +113,11 @@ export default function UserList() {
   // }, [isUsersUpdated]);
 
   //get user roles from local storage
-  if (localStorage.getItem("roles") === null) {
+  if (roles === null) {
     admin = "ADMIN";
     console.log("roles empty");
   } else {
-    userRoles = localStorage
-      .getItem("roles")
-      .split(",")
-      .map((item) => item.trim());
+    userRoles = roles.split(",").map((item) => item.trim());
     if (
       userRoles.includes("CREATE_TOP_ADMIN") &&
       userRoles.includes("CREATE_ADMIN")
@@ -305,7 +307,7 @@ export default function UserList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            count={Math.ceil(data?.users.length / rowsPerPage)}
+                            // count={Math.ceil(data?.users.length / rowsPerPage)}
                             sx={{ mt: 2 }}
                             variant="outlined"
                             shape="rounded"

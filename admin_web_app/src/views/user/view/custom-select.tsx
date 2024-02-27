@@ -1,6 +1,18 @@
 import React, { useState } from "react";
 import Select from "react-select";
 import { useFormik } from "formik";
+
+interface CustomSelectProps {
+  onChange: any;
+  options: any;
+  value: any;
+  className: any;
+  name: any;
+  id: any;
+  onBlur: any;
+  placeholder: any;
+}
+
 export default ({
   onChange,
   options,
@@ -10,7 +22,7 @@ export default ({
   id,
   onBlur,
   placeholder,
-}) => {
+}: CustomSelectProps) => {
   const defaultValue = (options: any[], values: any) => {
     return options ? options.find((option) => option.value === value) : "";
   };
@@ -31,7 +43,7 @@ export default ({
   // };
 
   const customStyles = {
-    control: (styles) => ({
+    control: (styles: any) => ({
       ...styles,
       // backgroundColor: "#1769aa",
       paddingTop: 10,
