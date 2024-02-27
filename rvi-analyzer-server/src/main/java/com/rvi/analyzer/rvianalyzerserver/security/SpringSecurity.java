@@ -39,6 +39,7 @@ public class SpringSecurity {
                 .pathMatchers(HttpMethod.POST, "/allocate/**").permitAll()
                 .pathMatchers(HttpMethod.GET, "/rvi/analyzer/v1/**").permitAll()
                 .pathMatchers(HttpMethod.POST, "/rvi/analyzer/v1/**").permitAll()
+                .pathMatchers(HttpMethod.POST, "/delete/**").permitAll()
 //                .pathMatchers(HttpMethod.POST, "/rvi/analyzer/v1/session/get/**").permitAll()
 //                .pathMatchers(HttpMethod.GET, "/rvi/analyzer/v1/session/get/last/**").permitAll()
 //                .pathMatchers(HttpMethod.POST, "/rvi/analyzer/v1/session/add/**").permitAll()

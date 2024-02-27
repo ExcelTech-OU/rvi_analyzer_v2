@@ -1,9 +1,7 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
-import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.StyleDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.UserDto;
 import com.rvi.analyzer.rvianalyzerserver.entiy.Style;
 import com.rvi.analyzer.rvianalyzerserver.mappers.StyleMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.StyleRepository;
@@ -223,5 +221,33 @@ public class StyleService {
                 .doOnNext(uName -> log.info("Finding style for name [{}]", uName))
                 .flatMap(styleRepository::findByName)
                 .map(styleMapper::styleToStyleDto);
+    }
+
+    public Mono<CommonResponse> deleteStyleByName(String auth, String name) {
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.CREATE_STYLE)) {
+                                return styleRepository.findByName(name)
+                                        .flatMap(style -> styleRepository.deleteById(style.get_id())
+                                                .thenReturn(CommonResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Style deleted successfully")
+                                                        .build()))
+                                        .switchIfEmpty(Mono.just(CommonResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("Style was not available")
+                                                .build()));
+                            } else {
+                                return Mono.just(CommonResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to delete styles")
+                                        .build());
+                            }
+                        }))
+                .defaultIfEmpty(CommonResponse.builder()
+                        .status("E1200")
+                        .statusDescription("Invalid authentication")
+                        .build());
     }
 }

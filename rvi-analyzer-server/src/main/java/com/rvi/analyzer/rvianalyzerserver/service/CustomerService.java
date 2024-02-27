@@ -2,24 +2,18 @@ package com.rvi.analyzer.rvianalyzerserver.service;
 
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.CustomerDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
-import com.rvi.analyzer.rvianalyzerserver.dto.PlantDto;
-import com.rvi.analyzer.rvianalyzerserver.entiy.Customer;
 import com.rvi.analyzer.rvianalyzerserver.mappers.CustomerMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.CustomerRepository;
-import com.rvi.analyzer.rvianalyzerserver.repository.PlantRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
 import com.rvi.analyzer.rvianalyzerserver.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -125,5 +119,33 @@ public class CustomerService {
                 .doOnNext(uName -> log.info("Finding customer for name [{}]", uName))
                 .flatMap(customerRepository::findByName)
                 .map(customerMapper::customerToCustomerDto);
+    }
+
+    public Mono<CommonResponse> deleteCustomerByName(String auth, String name) {
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.CREATE_CUSTOMER)) {
+                                return customerRepository.findByName(name)
+                                        .flatMap(customer -> customerRepository.deleteById(customer.get_id())
+                                                .thenReturn(CommonResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Customer deleted successfully")
+                                                        .build()))
+                                        .switchIfEmpty(Mono.just(CommonResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("Customer was not available")
+                                                .build()));
+                            } else {
+                                return Mono.just(CommonResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to delete customers")
+                                        .build());
+                            }
+                        }))
+                .defaultIfEmpty(CommonResponse.builder()
+                        .status("E1200")
+                        .statusDescription("Invalid authentication")
+                        .build());
     }
 }

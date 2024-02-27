@@ -1,5 +1,6 @@
 package com.rvi.analyzer.rvianalyzerserver.controller;
 
+import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.MaterialResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.NewMaterialResponse;
 import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
@@ -34,4 +35,8 @@ public class MaterialController {
         return materialService.existsMaterialByName(materialDto.getName());
     }
 
+    @PostMapping(path = "/delete/customer/{name}")
+    public Mono<CommonResponse> deleteMaterial(@RequestHeader("Authorization") String auth, @PathVariable String name) {
+        return materialService.deleteMaterialByName(auth, name);
+    }
 }
