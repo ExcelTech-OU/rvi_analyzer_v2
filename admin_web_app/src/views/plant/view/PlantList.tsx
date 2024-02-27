@@ -22,11 +22,13 @@ import { List } from "reselect/es/types";
 import React, { useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { AddUserModel } from "../../user/view/add-user";
 import { Plant, useGetPlantQuery } from "../../../services/plant_service";
 import { AddPlantModel } from "../add/add-plant";
 import { AllocateStyleModel } from "../../customer/add/allocate-style";
+import { id } from "date-fns/locale";
 
 const columns: GridColDef[] = [
   { field: "plantName", headerName: "Plant name", width: 250 },
@@ -40,6 +42,11 @@ const columns: GridColDef[] = [
     headerName: "Created date & time",
     width: 250,
   },
+  {
+    field: "action",
+    headerName: "Action",
+    width: 250,
+  },
 ];
 
 export default function PlantList() {
@@ -49,6 +56,10 @@ export default function PlantList() {
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
+  };
+
+  const hanldleDelete = (name: String) => {
+    console.log(name);
   };
 
   const [open, setOpen] = useState(false);
@@ -179,6 +190,29 @@ export default function PlantList() {
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {plant.createdDateTime}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          <Box
+                                            display="flex"
+                                            justifyContent="flex-center"
+                                          >
+                                            <Button
+                                              variant="contained"
+                                              startIcon={<DeleteIcon />}
+                                              sx={{
+                                                backgroundColor: "#f50057",
+                                                mx: 1,
+                                                "&:hover": {
+                                                  backgroundColor: "#ab003c",
+                                                },
+                                              }}
+                                              onClick={(event) =>
+                                                hanldleDelete(plant.name)
+                                              }
+                                            >
+                                              Delete
+                                            </Button>
+                                          </Box>
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );

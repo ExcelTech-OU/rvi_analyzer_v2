@@ -1,6 +1,9 @@
 package com.rvi.analyzer.rvianalyzerserver.controller;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.*;
+import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.NewStyleResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.StyleResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.UpdateStyle;
 import com.rvi.analyzer.rvianalyzerserver.dto.StyleDto;
 import com.rvi.analyzer.rvianalyzerserver.service.StyleService;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +35,10 @@ public class StyleController {
     @GetMapping(path = "/rvi/analyzer/v1/styles")
     public Mono<ResponseEntity<StyleResponse>> getStyles(@RequestHeader("Authorization") String auth) {
         return styleService.getStyles(auth);
+    }
+
+    @PostMapping(path = "/delete/style/{name}")
+    public Mono<CommonResponse> deleteStyle(@RequestHeader("Authorization") String auth, @PathVariable String name) {
+        return styleService.deleteStyleByName(auth, name);
     }
 }

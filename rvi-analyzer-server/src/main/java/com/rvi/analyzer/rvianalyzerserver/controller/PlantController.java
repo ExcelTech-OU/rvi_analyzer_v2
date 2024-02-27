@@ -1,5 +1,6 @@
 package com.rvi.analyzer.rvianalyzerserver.controller;
 
+import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.NewPlantResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.PlantResponse;
 import com.rvi.analyzer.rvianalyzerserver.dto.PlantDto;
@@ -23,5 +24,10 @@ public class PlantController {
     @GetMapping(path = "/rvi/analyzer/v1/plants")
     public Mono<ResponseEntity<PlantResponse>> getPlants(@RequestHeader("Authorization") String auth) {
         return plantService.getPlants(auth);
+    }
+
+    @PostMapping(path = "/delete/plant/{name}")
+    public Mono<CommonResponse> deletePlant(@RequestHeader("Authorization") String auth, @PathVariable String name) {
+        return plantService.deletePlantByName(auth, name);
     }
 }

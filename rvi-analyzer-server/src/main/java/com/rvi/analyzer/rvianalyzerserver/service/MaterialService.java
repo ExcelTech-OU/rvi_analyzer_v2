@@ -1,6 +1,9 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
-import com.rvi.analyzer.rvianalyzerserver.domain.*;
+import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.MaterialResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.NewMaterialResponse;
+import com.rvi.analyzer.rvianalyzerserver.domain.UserRoles;
 import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
 import com.rvi.analyzer.rvianalyzerserver.mappers.MaterialMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.MaterialRepository;
@@ -12,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-
-import java.util.function.BooleanSupplier;
 
 import java.time.LocalDateTime;
 
@@ -147,5 +148,33 @@ public class MaterialService {
 
     public Mono<Boolean> existsMaterialByName(String name) {
         return materialRepository.findByName(name).hasElement();
+    }
+
+    public Mono<CommonResponse> deleteMaterialByName(String auth, String name) {
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.CREATE_CUSTOMER)) {
+                                return materialRepository.findByName(name)
+                                        .flatMap(material -> materialRepository.deleteById(material.get_id())
+                                                .thenReturn(CommonResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Material deleted successfully")
+                                                        .build()))
+                                        .switchIfEmpty(Mono.just(CommonResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("Material was not available")
+                                                .build()));
+                            } else {
+                                return Mono.just(CommonResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to delete materials")
+                                        .build());
+                            }
+                        }))
+                .defaultIfEmpty(CommonResponse.builder()
+                        .status("E1200")
+                        .statusDescription("Invalid authentication")
+                        .build());
     }
 }

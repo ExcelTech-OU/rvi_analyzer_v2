@@ -1,12 +1,10 @@
 package com.rvi.analyzer.rvianalyzerserver.service;
 
+import com.rvi.analyzer.rvianalyzerserver.domain.CommonResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.NewPlantResponse;
-import com.rvi.analyzer.rvianalyzerserver.domain.NewUserResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.PlantResponse;
 import com.rvi.analyzer.rvianalyzerserver.domain.UserRoles;
-import com.rvi.analyzer.rvianalyzerserver.dto.MaterialDto;
 import com.rvi.analyzer.rvianalyzerserver.dto.PlantDto;
-import com.rvi.analyzer.rvianalyzerserver.entiy.User;
 import com.rvi.analyzer.rvianalyzerserver.mappers.PlantMapper;
 import com.rvi.analyzer.rvianalyzerserver.repository.PlantRepository;
 import com.rvi.analyzer.rvianalyzerserver.repository.UserRepository;
@@ -126,4 +124,69 @@ public class PlantService {
                 .flatMap(plantRepository::findByName)
                 .map(plantMapper::plantToPlantDto);
     }
+
+//    public Mono<CommonResponse> deletePlantByName(String auth, String name) {
+//        return Mono.just(name)
+//                .doOnNext(uName -> log.info("Finding and deleting plant for name [{}]", uName))
+//                .flatMap(plantRepository::findByName)
+//                .switchIfEmpty(Mono.empty())
+//                .flatMap(plant -> plantRepository.deleteById(plant.get_id()))
+//                .then(Mono.just(CommonResponse.builder()
+//                        .status("S1000")
+//                        .statusDescription("Plant deleted successfully")
+//                        .build()))
+//                .defaultIfEmpty(CommonResponse.builder()
+//                        .status("E1000")
+//                        .statusDescription("Plant was not available")
+//                        .build());
+//    }
+
+//    public Mono<CommonResponse> deletePlantByName(String auth, String name) {
+//        return Mono.just(name)
+//                .flatMap(plantName -> plantRepository.findByName(plantName)
+//                        .doOnNext(plant -> log.info("Deleting plant: {}", plant))
+//                        .flatMap(plant -> plantRepository.deleteById(plant.get_id()) // Delete without intermediate Mono
+//                                .thenReturn(CommonResponse.builder() // Return CommonResponse directly
+//                                        .status("S1000")
+//                                        .statusDescription("Plant deleted successfully")
+//                                        .build())) // Return CommonResponse directly
+//                        .switchIfEmpty(Mono.just(CommonResponse.builder() // Plant not found
+//                                .status("E1000")
+//                                .statusDescription("Plant was not available")
+//                                .build())))
+//                .defaultIfEmpty(CommonResponse.builder() // No response for successful deletion of non-existent plant
+//                        .status("E1000")
+//                        .statusDescription("Plant was not available")
+//                        .build());
+//    }
+
+    public Mono<CommonResponse> deletePlantByName(String auth, String name) {
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.CREATE_PLANT)) {
+                                return plantRepository.findByName(name)
+                                        .flatMap(plant -> plantRepository.deleteById(plant.get_id())
+                                                .thenReturn(CommonResponse.builder()
+                                                        .status("S1000")
+                                                        .statusDescription("Plant deleted successfully")
+                                                        .build()))
+                                        .switchIfEmpty(Mono.just(CommonResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("Plant was not available")
+                                                .build()));
+                            } else {
+                                return Mono.just(CommonResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to delete plants")
+                                        .build());
+                            }
+                        }))
+                .defaultIfEmpty(CommonResponse.builder()
+                        .status("E1200")
+                        .statusDescription("Invalid authentication")
+                        .build());
+    }
+
+
 }
