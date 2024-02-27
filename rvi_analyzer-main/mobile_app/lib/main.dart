@@ -31,7 +31,10 @@ import 'package:rvi_analyzer/repository/login_repo.dart';
 import 'package:rvi_analyzer/repository/modes_info_repo.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/auth/sign_in/sign_in.dart';
+import 'package:rvi_analyzer/views/configure/gt_testing_page.dart';
+import 'package:rvi_analyzer/views/configure/rm_tracking.dart';
 import 'package:rvi_analyzer/views/dashboard/dashboard.dart';
+import 'package:rvi_analyzer/views/rm_tracking/add_rm.dart';
 import 'package:rvi_analyzer/views/splash/splash_screen.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -245,6 +248,8 @@ class _AchillesUIAppState extends State<AchillesUIApp> {
       title: 'RVI Analyzer',
       theme: customDarkTheme(),
       routes: {
+        '/gt': (BuildContext context) => GtTestingPage(),
+        '/rm': (BuildContext context) => AddRm(),
         '/': (BuildContext context) => SplashScreen(),
         '/login': (BuildContext context) => const SignIn(),
         '/home': (BuildContext context) => DashboardPage(

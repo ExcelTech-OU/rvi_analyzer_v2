@@ -18,21 +18,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   _SplashScreenState() {
     Timer(const Duration(milliseconds: 1500), () {
       setState(() {
-        isLogout().then((isLogout) => isLogout
-            ? {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/login', (route) => false)
-              }
-            : {
-                checkJwt().then((value) => {
-                      if (value.status == "S1000")
-                        {Navigator.pushReplacementNamed(context, "/home")}
-                      else if (value.status == "E2500")
-                        {showNoInternetPopup(context, ref)}
-                      else
-                        {showLogoutPopup(context, ref)}
-                    })
-              });
+        // isLogout().then((isLogout) => isLogout
+        //     ? {
+        //         Navigator.of(context)
+        //             .pushNamedAndRemoveUntil('/login', (route) => false)
+        //       }
+        //     : {
+        //         checkJwt().then((value) => {
+        //               if (value.status == "S1000")
+        //                 {Navigator.pushReplacementNamed(context, "/home")}
+        //               else if (value.status == "E2500")
+        //                 {showNoInternetPopup(context, ref)}
+        //               else
+        //                 {showLogoutPopup(context, ref)}
+        //             })
+        //       });
+        Navigator.of(context).pushNamedAndRemoveUntil('/gt', (route) => false);
       });
     });
 
