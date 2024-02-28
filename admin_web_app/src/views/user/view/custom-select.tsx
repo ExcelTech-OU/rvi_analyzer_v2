@@ -45,7 +45,6 @@ export default ({
   const customStyles = {
     control: (styles: any) => ({
       ...styles,
-      // backgroundColor: "#1769aa",
       paddingTop: 10,
       paddingBottom: 10,
       borderRadius: "8px",
