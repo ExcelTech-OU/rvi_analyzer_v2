@@ -205,6 +205,7 @@ class DeviceState extends ChangeNotifier {
       TextEditingController();
   TextEditingController currentReadingResistanceControllerMode07 =
       TextEditingController();
+  int selectedIndexMode07 = 1;
 
   bool saveClickedMode07 = false;
   bool passedMode07 = false;

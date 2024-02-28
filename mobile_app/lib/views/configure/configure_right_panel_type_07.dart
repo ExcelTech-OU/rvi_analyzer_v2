@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -6,11 +7,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/repository/entity/common_entity.dart';
 import 'package:rvi_analyzer/repository/entity/login_info.dart';
-import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_seven_entity.dart';
 import 'package:rvi_analyzer/repository/login_repo.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
 import 'package:rvi_analyzer/service/mode_service.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/dropdown.dart';
+import 'package:rvi_analyzer/views/common/form_eliments/dropdown_custom.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:rvi_analyzer/views/common/snack_bar.dart';
 import 'package:rvi_analyzer/service/common_service.dart';
@@ -36,7 +38,11 @@ class _ConfigureRightPanelType07State
     extends ConsumerState<ConfigureRightPanelType07> {
   Blue blue = Blue();
   final _formKey = GlobalKey<FormState>();
-  bool showResult = false;
+  HashMap<String, ScanResult> blueDeviceList = HashMap();
+  List<String> deviceNames = [];
+  List<String> deviceMacs = [];
+  bool scanClicked = false;
+  TextEditingController macController = TextEditingController();
 
   void updateSessionID() {
     DateTime now = DateTime.now();
@@ -47,70 +53,8 @@ class _ConfigureRightPanelType07State
   }
 
   void setDropDownValue(String? val) {
-    if (val != null && val == "Resistance") {
-      ref.read(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode01 = true;
-    } else {
-      ref.read(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode01 =
-          false;
-    }
-    ref.read(deviceDataMap[widget.sc.device.id.id]!).updateStatus();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    var isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
-
-    return SizedBox(
-      width: isLandscape ? (width / 3) * 2 - 32 : width,
-      child: SizedBox(
-        child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 5,
-                  offset: const Offset(0, 0.5), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Row(
-                    children: [
-                      Text(
-                        "Mode 07",
-                        style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 2.0,
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  getScrollView(),
-                  const SizedBox(
-                    height: 30.0,
-                  ),
-                ],
-              ),
-            )),
-      ),
-    );
+    int index = int.parse(val!);
+    macController.text = deviceMacs.length > index ? deviceMacs[index] : "";
   }
 
   String getVoltage() {
@@ -184,54 +128,13 @@ class _ConfigureRightPanelType07State
   }
 
   Future<void> saveMode() async {
-    ref.read(deviceDataMap[widget.sc.device.id.id]!).mode01SaveClicked = true;
-    double current = ref
-        .read(ref.read(deviceDataMap[widget.sc.device.id.id]!).streamData)
-        .current;
-
-    double resistance = double.parse(getResistance());
-
-    if (ref.watch(deviceDataMap[widget.sc.device.id.id]!).resSelectedMode01) {
-      if (double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                  .minResistanceRangeControllerMode01
-                  .text) <
-              resistance &&
-          resistance <
-              double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                  .maxResistanceRangeControllerMode01
-                  .text)) {
-        ref.read(deviceDataMap[widget.sc.device.id.id]!).mode01Passed = true;
-      } else {
-        ref.read(deviceDataMap[widget.sc.device.id.id]!).mode01Passed = false;
-      }
-    } else {
-      if (double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                  .minCurrentRangeControllerMode01
-                  .text) <
-              current &&
-          current <
-              double.parse(ref
-                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                  .maxCurrentRangeControllerMode01
-                  .text)) {
-        ref.read(deviceDataMap[widget.sc.device.id.id]!).mode01Passed = true;
-      } else {
-        ref.read(deviceDataMap[widget.sc.device.id.id]!).mode01Passed = false;
-      }
-    }
-
-    setState(() {
-      showResult = true;
-    });
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).saveClickedMode07 = true;
 
     final loginInfoRepo = LoginInfoRepository();
 
     List<LoginInfo> infos = await loginInfoRepo.getAllLoginInfos();
 
-    ModeOne modeOne = ModeOne(
+    ModeSeven modeSeven = ModeSeven(
         createdBy: infos.first.username,
         defaultConfigurations: DefaultConfiguration(
             customerName: ref
@@ -254,49 +157,44 @@ class _ConfigureRightPanelType07State
                 .read(deviceDataMap[widget.sc.device.id.id]!)
                 .sessionIdController
                 .text),
-        sessionConfigurationModeOne: SessionConfigurationModeOne(
-            voltage: ref
+        result: SessionResultModeSeven(
+            testId: ref
                 .read(deviceDataMap[widget.sc.device.id.id]!)
-                .voltageControllerMode01
+                .testIdController
                 .text,
-            maxCurrent: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .maxCurrentControllerMode01
-                .text,
-            passMinCurrent: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .minCurrentRangeControllerMode01
-                .text,
-            passMaxCurrent: ref
-                .read(deviceDataMap[widget.sc.device.id.id]!)
-                .maxCurrentRangeControllerMode01
-                .text),
-        results: [
-          SessionResult(
-              testId: ref
-                  .read(deviceDataMap[widget.sc.device.id.id]!)
-                  .testIdController
-                  .text,
-              readings: [
-                Reading(
-                    temperature: getTemp(),
-                    current: getCurrent(),
-                    voltage: getVoltage(),
-                    result: ref
+            reading: SessionSevenReading(
+                resistance: getResistance(),
+                current: getCurrent(),
+                voltage: getVoltage(),
+                macAddress: macController.text,
+                productionOrder: ref
+                    .read(deviceDataMap[widget.sc.device.id.id]!)
+                    .poNumberControllerMode7
+                    .text,
+                result: ref
                             .read(deviceDataMap[widget.sc.device.id.id]!)
-                            .mode01Passed
-                        ? "PASS"
-                        : "FAIL",
-                    readAt:
-                        DateTime.now().toUtc().toString().replaceAll(" ", "T"))
-              ])
-        ],
+                            .selectedIndexMode07 ==
+                        0
+                    ? "PASS"
+                    : "FAIL",
+                readAt:
+                    DateTime.now().toUtc().toString().replaceAll(" ", "T"))),
         status: "ACTIVE");
 
-    saveModeOne(modeOne, infos.first.username)
+    saveModeSeven(modeSeven, infos.first.username)
         .then((value) => {
               if (value.status == "S1000")
                 {
+                  setState(() {
+                    deviceMacs = [];
+                    deviceNames = [];
+                  }),
+                  macController.text = "",
+                  ref.read(deviceDataMap[widget.sc.device.id.id]!).started =
+                      !ref.read(deviceDataMap[widget.sc.device.id.id]!).started,
+                  ref
+                      .read(deviceDataMap[widget.sc.device.id.id]!)
+                      .updateStatus(),
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
                     ..showSnackBar(
@@ -308,21 +206,21 @@ class _ConfigureRightPanelType07State
                 {
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(getSnackBar(context, Colors.red,
-                        "Remote submit failed. Check internet connection"))
+                    ..showSnackBar(getSnackBar(
+                        context, Colors.red, "Remote submit failed."))
                 },
               ref
                   .read(deviceDataMap[widget.sc.device.id.id]!)
-                  .mode01SaveClicked = false
+                  .saveClickedMode07 = false
             })
         .onError((error, stackTrace) => {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
-                ..showSnackBar(getSnackBar(context, Colors.red,
-                    "Remote submit failed. Check internet connection")),
+                ..showSnackBar(
+                    getSnackBar(context, Colors.red, "Remote submit failed.")),
               ref
                   .read(deviceDataMap[widget.sc.device.id.id]!)
-                  .mode01SaveClicked = false
+                  .saveClickedMode07 = false
             });
     widget.updateTestId();
   }
@@ -372,10 +270,12 @@ class _ConfigureRightPanelType07State
             children: [
               Expanded(
                 flex: 6,
-                child: CustomDropDwn(
+                child: CustomDropDwn2(
                     data: CustomDropDwnData(
-                        inputs: ["Current", "Resistance"],
-                        updateSelectedIndex: setDropDownValue)),
+                        inputs: deviceNames,
+                        updateSelectedIndex: setDropDownValue,
+                        hindText: 'Select Device',
+                        customData: deviceMacs)),
               ),
               const SizedBox(
                 width: 5,
@@ -388,11 +288,45 @@ class _ConfigureRightPanelType07State
                         padding: const EdgeInsets.all(0),
                         disabledColor: Colors.grey,
                         color: Colors.orange,
-                        onPressed: null,
-                        child: const Icon(
-                          Icons.refresh,
-                          color: Colors.white,
-                        ))),
+                        onPressed: scanClicked ||
+                                ref
+                                    .watch(
+                                        deviceDataMap[widget.sc.device.id.id]!)
+                                    .started
+                            ? null
+                            : () async {
+                                setState(() {
+                                  scanClicked = true;
+                                  deviceNames = [];
+                                  deviceMacs = [];
+                                });
+                                macController.text = "";
+                                blueDeviceList = await blue.scanDevices();
+                                List<String> tmpDevices = [];
+                                List<String> tmpMacs = [];
+                                blueDeviceList.forEach((key, value) {
+                                  tmpDevices.add(value.device.name);
+                                  tmpMacs.add(value.device.id.id);
+                                });
+
+                                setState(() {
+                                  deviceNames = tmpDevices;
+                                  deviceMacs = tmpMacs;
+                                  scanClicked = false;
+                                });
+                                macController.text = deviceMacs.isNotEmpty
+                                    ? deviceMacs.first
+                                    : "";
+                              },
+                        child: scanClicked
+                            ? const SpinKitDoubleBounce(
+                                color: Colors.white,
+                                size: 30.0,
+                              )
+                            : const Icon(
+                                Icons.refresh,
+                                color: Colors.white,
+                              ))),
               )
             ],
           ),
@@ -412,15 +346,17 @@ class _ConfigureRightPanelType07State
                 flex: 1,
                 child: TextInput(
                     data: TestInputData(
-                        controller: ref
-                            .read(deviceDataMap[widget.sc.device.id.id]!)
-                            .currentReadingMacControllerMode07,
+                        controller: macController,
                         inputType: TextInputType.number,
                         enabled: false,
                         validatorFun: (val) {
-                          null;
+                          if (val!.isEmpty) {
+                            return "Select a device";
+                          } else {
+                            null;
+                          }
                         },
-                        labelText: 'MAC : ')),
+                        labelText: 'MAC : ${macController.text}')),
               ),
               const SizedBox(
                 width: 5,
@@ -509,53 +445,21 @@ class _ConfigureRightPanelType07State
                   activeFgColor: Colors.white,
                   inactiveBgColor: Colors.grey,
                   inactiveFgColor: Colors.white,
-                  initialLabelIndex: -1,
+                  initialLabelIndex: ref
+                      .read(deviceDataMap[widget.sc.device.id.id]!)
+                      .selectedIndexMode07,
                   totalSwitches: 2,
                   labels: const ['Passed', 'Failed'],
                   radiusStyle: true,
                   onToggle: (index) {
-                    print('switched to: $index');
+                    ref
+                        .read(deviceDataMap[widget.sc.device.id.id]!)
+                        .selectedIndexMode07 = index!;
                   },
                 ),
               ),
             ],
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          ref.watch(deviceDataMap[widget.sc.device.id.id]!).started &&
-                  showResult
-              ? Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 55,
-                        child: CupertinoButton(
-                          disabledColor: ref
-                                  .watch(deviceDataMap[widget.sc.device.id.id]!)
-                                  .mode01Passed
-                              ? Colors.green
-                              : Colors.red,
-                          color: Colors.cyan,
-                          onPressed: null,
-                          child: Text(
-                            ref
-                                    .watch(
-                                        deviceDataMap[widget.sc.device.id.id]!)
-                                    .mode01Passed
-                                ? 'PASS'
-                                : 'FAIL',
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 231, 230, 230),
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              : const SizedBox.shrink(),
           const SizedBox(
             height: 15,
           ),
@@ -572,10 +476,9 @@ class _ConfigureRightPanelType07State
                           color: Colors.orange,
                           onPressed: ref
                                   .watch(deviceDataMap[widget.sc.device.id.id]!)
-                                  .mode01SaveClicked
+                                  .saveClickedMode07
                               ? null
                               : () {
-                                  blue.stop(widget.sc.device);
                                   ref
                                           .read(deviceDataMap[
                                               widget.sc.device.id.id]!)
@@ -588,10 +491,6 @@ class _ConfigureRightPanelType07State
                                       .read(deviceDataMap[
                                           widget.sc.device.id.id]!)
                                       .updateStatus();
-                                  setState(() {
-                                    showResult = false;
-                                  });
-                                  updateSessionID();
                                 },
                           child: const Text(
                             'Stop',
@@ -615,14 +514,14 @@ class _ConfigureRightPanelType07State
                           color: Colors.green,
                           onPressed: ref
                                   .watch(deviceDataMap[widget.sc.device.id.id]!)
-                                  .mode01SaveClicked
+                                  .saveClickedMode07
                               ? null
                               : () {
                                   saveMode();
                                 },
                           child: ref
                                   .watch(deviceDataMap[widget.sc.device.id.id]!)
-                                  .mode01SaveClicked
+                                  .saveClickedMode07
                               ? const SpinKitWave(
                                   color: Colors.white,
                                   size: 20.0,
@@ -651,22 +550,6 @@ class _ConfigureRightPanelType07State
                           onPressed: () {
                             if (widget.keyForm.currentState!.validate() &&
                                 _formKey.currentState!.validate()) {
-                              blue.runMode01(
-                                  widget.sc.device,
-                                  (double.parse(ref
-                                              .read(deviceDataMap[
-                                                  widget.sc.device.id.id]!)
-                                              .voltageControllerMode01
-                                              .text) *
-                                          10)
-                                      .toInt(),
-                                  (double.parse(ref
-                                              .read(deviceDataMap[
-                                                  widget.sc.device.id.id]!)
-                                              .maxCurrentControllerMode01
-                                              .text) *
-                                          100)
-                                      .toInt());
                               ref
                                       .read(deviceDataMap[widget.sc.device.id.id]!)
                                       .started =
@@ -692,6 +575,62 @@ class _ConfigureRightPanelType07State
                   ],
                 )
         ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    var isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    return SizedBox(
+      width: isLandscape ? (width / 3) * 2 - 32 : width,
+      child: SizedBox(
+        child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 5,
+                  offset: const Offset(0, 0.5), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Text(
+                        "Mode 07",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 2.0,
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  getScrollView(),
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                ],
+              ),
+            )),
       ),
     );
   }

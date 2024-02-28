@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:rvi_analyzer/repository/entity/mode_five_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_four_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_one_entity.dart';
+import 'package:rvi_analyzer/repository/entity/mode_seven_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_six_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_three_entity.dart';
 import 'package:rvi_analyzer/repository/entity/mode_two_entity.dart';
@@ -50,6 +51,36 @@ Future<CommonResponse> saveModeOne(ModeOne modeOne, String username,
       await repo.saveOrUpdateModeOne(username, modeOne);
     }
 
+    return CommonResponse.fromDetails(
+        "E1000", "Cannot update the data. Please try again");
+  }
+}
+
+Future<CommonResponse> saveModeSeven(ModeSeven modeSeven, String username,
+    {bool needToSaveLocal = true}) async {
+  const storage = FlutterSecureStorage();
+
+  try {
+    String? jwt = await storage.read(key: jwtK);
+    final response = await http.post(
+      Uri.parse('$baseUrl$saveModeSevenPath'),
+      headers: <String, String>{
+        contentTypeK: contentTypeJsonK,
+        authorizationK: '$bearerK $jwt',
+      },
+      body: jsonEncode(modeSeven),
+    );
+
+    print(response.body);
+    if (response.statusCode == 200) {
+      return CommonResponse.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 401) {
+      return CommonResponse.fromDetails("E2000", "Session Expired");
+    } else {
+      return CommonResponse.fromDetails(
+          "E1000", "Cannot update the data. Please try again");
+    }
+  } catch (e) {
     return CommonResponse.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }

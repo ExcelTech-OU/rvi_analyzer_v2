@@ -1,27 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:rvi_analyzer/views/common/form_eliments/dropdown.dart';
 
-class CustomDropDwnData {
-  final List<String> inputs;
-  final void Function(String?) updateSelectedIndex;
-  String? hindText = "Please select one";
-  List<String>? customData = [];
-
-  CustomDropDwnData(
-      {required this.inputs,
-      required this.updateSelectedIndex,
-      this.hindText,
-      this.customData});
-}
-
-class CustomDropDwn extends StatefulWidget {
+class CustomDropDwn2 extends StatefulWidget {
   final CustomDropDwnData data;
-  const CustomDropDwn({Key? key, required this.data}) : super(key: key);
+  CustomDropDwn2({Key? key, required this.data}) : super(key: key);
 
   @override
-  State<CustomDropDwn> createState() => _CustomDropDwnState();
+  State<CustomDropDwn2> createState() => _CustomDropDwn2State();
 }
 
-class _CustomDropDwnState extends State<CustomDropDwn> {
+class _CustomDropDwn2State extends State<CustomDropDwn2> {
   String? _currentSelectedValue = null;
 
   @override
@@ -34,11 +22,6 @@ class _CustomDropDwnState extends State<CustomDropDwn> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.data.inputs.isEmpty) {
-      setState(() {
-        _currentSelectedValue = null;
-      });
-    }
     return FormField<String>(
       builder: (FormFieldState<String> state) {
         return InputDecorator(
@@ -58,7 +41,8 @@ class _CustomDropDwnState extends State<CustomDropDwn> {
                 setState(() {
                   _currentSelectedValue = newValue!;
                 });
-                widget.data.updateSelectedIndex(newValue);
+                widget.data.updateSelectedIndex(
+                    widget.data.inputs.indexOf(newValue!).toString());
               },
               items: widget.data.inputs.map((String value) {
                 return DropdownMenuItem<String>(
