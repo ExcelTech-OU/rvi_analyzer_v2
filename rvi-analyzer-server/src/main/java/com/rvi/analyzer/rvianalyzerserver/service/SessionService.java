@@ -718,56 +718,98 @@ public class SessionService {
                         .build())));
     }
 
-    public Mono<ResponseEntity<ModeSevenResponse>> getAllModeSeven(String pageNo, SessionSearchRequest request, String jwt) {
+//    public Mono<ResponseEntity<ModeSevenResponse>> getAllModeSeven(String pageNo, SessionSearchRequest request, String jwt) {
+//        return userService.getUser(jwtUtils.getUsername(jwt))
+//                .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+//                                .flatMap(userRoles -> {
+//                                    if (userRoles.contains(UserRoles.GET_MODE_SIX)) {
+//                                        return userService.getUsersByAdmin(user.getUsername())
+//                                                .filter(strings -> !strings.isEmpty())
+//                                                .flatMap(strings -> {
+//                                                    Query query = getFilters(strings, pageNo, request);
+//                                                    return modeSevenRepository.countByFilters(query)
+//                                                            .flatMap(aLong -> modeSevenRepository.findByFilters(query.skip((Integer.parseInt(pageNo) - 1) * 15L).limit(15))
+//                                                                    .flatMap(modeSeven -> {
+//                                                                        log.info("Mode seven found with id [{}]", modeSeven.get_id());
+//                                                                        // Map ModeSeven to ModeSevenDto considering only required attributes
+//                                                                        ModeSevenDto modeSevenDto = ModeSevenDto.builder()
+//                                                                                ._id(modeSeven.get_id())
+//                                                                                .macAddress(modeSeven.getMacAddress())
+//                                                                                .voltage(modeSeven.getVoltage())
+//                                                                                .current(modeSeven.getCurrent())
+//                                                                                .resistance(modeSeven.getResistance())
+//                                                                                .result(modeSeven.getResult())
+//                                                                                .customer(modeSeven.getCustomer())
+//                                                                                .serialNumber(modeSeven.getSerialNumber())
+//                                                                                .testId(modeSeven.getTestId())
+//                                                                                .createdDateTime(modeSeven.getCreatedDateTime())
+//                                                                                .build();
+//                                                                        return Mono.just(modeSevenDto);
+//                                                                    })
+//                                                                    .collectList()
+//                                                                    .flatMap(modeSevenDtos -> Mono.just(ResponseEntity.ok(ModeSevenResponse.builder()
+//                                                                            .status("S1000")
+//                                                                            .statusDescription("Success")
+//                                                                            .sessions(modeSevenDtos)
+////                                                                    .total(aLong.intValue())
+//                                                                            .build()))));
+//                                                })
+//                                                .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeSevenResponse.builder()
+//                                                        .status("S1000")
+//                                                        .statusDescription("Success")
+//                                                        .sessions(new ArrayList<>())
+////                                                .total(0)
+//                                                        .build())));
+//                                    } else {
+//                                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeSevenResponse.builder()
+//                                                .status("E1200")
+//                                                .statusDescription("You are not authorized to use this service").build()));
+//                                    }
+//                                })
+//                )
+//                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeSevenResponse.builder()
+//                        .status("E1220")
+//                        .statusDescription("Failed")
+//                        .build())));
+//    }
+
+    public Mono<ResponseEntity<ModeSixResponse>> getAllModeSeven(String pageNo, SessionSearchRequest request, String jwt) {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
-                                .flatMap(userRoles -> {
-                                    if (userRoles.contains(UserRoles.GET_MODE_SIX)) {
-                                        return userService.getUsersByAdmin(user.getUsername())
-                                                .filter(strings -> !strings.isEmpty())
-                                                .flatMap(strings -> {
-                                                    Query query = getFilters(strings, pageNo, request);
-                                                    return modeSevenRepository.countByFilters(query)
-                                                            .flatMap(aLong -> modeSevenRepository.findByFilters(query.skip((Integer.parseInt(pageNo) - 1) * 15L).limit(15))
-                                                                    .flatMap(modeSeven -> {
-                                                                        log.info("Mode seven found with id [{}]", modeSeven.get_id());
-                                                                        // Map ModeSeven to ModeSevenDto considering only required attributes
-                                                                        ModeSevenDto modeSevenDto = ModeSevenDto.builder()
-                                                                                ._id(modeSeven.get_id())
-                                                                                .macAddress(modeSeven.getMacAddress())
-                                                                                .voltage(modeSeven.getVoltage())
-                                                                                .current(modeSeven.getCurrent())
-                                                                                .resistance(modeSeven.getResistance())
-                                                                                .result(modeSeven.getResult())
-                                                                                .customer(modeSeven.getCustomer())
-                                                                                .serialNumber(modeSeven.getSerialNumber())
-                                                                                .testId(modeSeven.getTestId())
-                                                                                .createdDateTime(modeSeven.getCreatedDateTime())
-                                                                                .build();
-                                                                        return Mono.just(modeSevenDto);
-                                                                    })
-                                                                    .collectList()
-                                                                    .flatMap(modeSevenDtos -> Mono.just(ResponseEntity.ok(ModeSevenResponse.builder()
-                                                                            .status("S1000")
-                                                                            .statusDescription("Success")
-                                                                            .sessions(modeSevenDtos)
-//                                                                    .total(aLong.intValue())
-                                                                            .build()))));
-                                                })
-                                                .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeSevenResponse.builder()
-                                                        .status("S1000")
-                                                        .statusDescription("Success")
-                                                        .sessions(new ArrayList<>())
-//                                                .total(0)
-                                                        .build())));
-                                    } else {
-                                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeSevenResponse.builder()
-                                                .status("E1200")
-                                                .statusDescription("You are not authorized to use this service").build()));
-                                    }
-                                })
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.GET_MODE_SIX)) {
+                                return userService.getUsersByAdmin(user.getUsername())
+                                        .filter(strings -> !strings.isEmpty())
+                                        .flatMap(strings -> {
+                                            Query query = getFilters(strings, pageNo, request);
+                                            return modeSixRepository.countByFilters(query)
+                                                    .flatMap(aLong -> modeSixRepository.findByFilters(query.skip((Integer.parseInt(pageNo) - 1) * 15L).limit(15))
+                                                            .flatMap(modeSix -> {
+                                                                log.info("Mode six found with id [{}]", modeSix.getDefaultConfigurations().getSessionId());
+                                                                return Mono.just(modeSixMapper.modeSixToModeSixDto(modeSix));
+                                                            })
+                                                            .collectList()
+                                                            .flatMap(modeFourDtos -> Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
+                                                                    .status("S1000")
+                                                                    .statusDescription("Success")
+                                                                    .sessions(modeFourDtos)
+                                                                    .total(aLong.intValue())
+                                                                    .build()))));
+                                        })
+                                        .switchIfEmpty(Mono.just(ResponseEntity.ok(ModeSixResponse.builder()
+                                                .status("S1000")
+                                                .statusDescription("Success")
+                                                .sessions(new ArrayList<>())
+                                                .total(0)
+                                                .build())));
+                            } else {
+                                return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeSixResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to use this service").build()));
+                            }
+                        })
                 )
-                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeSevenResponse.builder()
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ModeSixResponse.builder()
                         .status("E1220")
                         .statusDescription("Failed")
                         .build())));

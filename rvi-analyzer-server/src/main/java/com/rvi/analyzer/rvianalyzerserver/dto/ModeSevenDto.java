@@ -15,7 +15,8 @@ public class ModeSevenDto {
     private String resistance;
     private String result;
     private String customer;
-    private String serialNumber;
     private String testId;
+    private String operatorId;
+    private String productionOrder;
     private LocalDateTime createdDateTime;
 }
