@@ -201,6 +201,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
             setPlant("");
             setCustomer("");
             setStyle("");
+            setMaterial("");
             setParameter(null);
           } else if (payload.status == "E1002") {
             actions.setSubmitting(false);

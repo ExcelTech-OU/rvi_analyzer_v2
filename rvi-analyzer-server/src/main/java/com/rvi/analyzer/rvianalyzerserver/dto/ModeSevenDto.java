@@ -3,6 +3,8 @@ package com.rvi.analyzer.rvianalyzerserver.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Data
 public class ModeSevenDto {
@@ -13,7 +15,7 @@ public class ModeSevenDto {
     private String resistance;
     private String result;
     private String customer;
-    private String soNumber;
-    private String test;
-    private String createdDateTime;
+    private String serialNumber;
+    private String testId;
+    private LocalDateTime createdDateTime;
 }

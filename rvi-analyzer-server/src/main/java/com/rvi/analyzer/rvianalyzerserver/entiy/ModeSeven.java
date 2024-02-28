@@ -23,8 +23,8 @@ public class ModeSeven {
     private String resistance;
     private String result;
     private String customer;
-    private String soNumber;
-    private String test;
+    private String serialNumber;
+    private String testId;
     @Field(name = "created-date")
     @CreatedDate
     private LocalDateTime createdDateTime;
