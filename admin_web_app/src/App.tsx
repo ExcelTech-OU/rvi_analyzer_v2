@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "./store/hooks";
 import Login from "./views/auth/login/login";
 import { DashboardLayout } from "./views/components/dashboard-layout";
-import { useGetRolesMutation } from "./services/user_service";
+import { useGetRolesMutation, userApi } from "./services/user_service";
 import { useDispatch } from "react-redux";
 import { logout, rolesGetSuccess } from "./views/auth/login/auth-slice";
 import SignUp from "./views/auth/sign_up/sign_up";
 import { Password } from "@mui/icons-material";
+import { deviceApi } from "./services/device_service";
+import { sessionApi } from "./services/sessions_service";
 
 type AppProps = {
   children: ReactNode;
@@ -53,6 +55,9 @@ function App({ children }: AppProps) {
         .catch((error) => {
           console.log(error);
           dispatch(logout());
+          dispatch(userApi.util.resetApiState());
+          dispatch(deviceApi.util.resetApiState());
+          dispatch(sessionApi.util.resetApiState());
           navigate("/login");
         });
     } else {

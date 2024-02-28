@@ -238,7 +238,7 @@ class _ConfigureRightPanelType07State
                 flex: 1,
                 child: TextInput(
                     data: TestInputData(
-                        inputType: TextInputType.number,
+                        inputType: TextInputType.text,
                         controller: ref
                             .read(deviceDataMap[widget.sc.device.id.id]!)
                             .poNumberControllerMode7,
@@ -301,7 +301,8 @@ class _ConfigureRightPanelType07State
                                   deviceMacs = [];
                                 });
                                 macController.text = "";
-                                blueDeviceList = await blue.scanDevices();
+                                blueDeviceList =
+                                    await blue.scanDevicesWithFilters("Magma");
                                 List<String> tmpDevices = [];
                                 List<String> tmpMacs = [];
                                 blueDeviceList.forEach((key, value) {

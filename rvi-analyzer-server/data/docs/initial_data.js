@@ -182,6 +182,10 @@ db.role.insertMany([
     'role-id': 's_mode_six',
     'role-name': 'SAVE_MODE_SIX'
   },
+    {
+      'role-id': 's_mode_seven',
+      'role-name': 'SAVE_MODE_SEVEN'
+    },
   {
       'role-id': 's_mode_seven',
       'role-name': 'SAVE_MODE_SEVEN'
@@ -351,6 +355,7 @@ db.groupRole.insertMany([
     's_mode_four',
     's_mode_five',
     's_mode_six',
+    's_mode_seven',
     'get_mode_one',
     'get_mode_two',
     'get_mode_three',
@@ -372,6 +377,7 @@ db.groupRole.insertMany([
     's_mode_four',
     's_mode_five',
     's_mode_six',
+    's_mode_seven',
     's_mode_seven',
     'get_last_mode_one',
     'get_last_mode_two',

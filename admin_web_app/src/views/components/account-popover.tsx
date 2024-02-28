@@ -3,6 +3,9 @@ import { Box, MenuItem, MenuList, Popover, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { logout } from "../auth/login/auth-slice";
 import { useNavigate } from "react-router-dom";
+import { userApi } from "../../services/user_service";
+import { deviceApi } from "../../services/device_service";
+import { sessionApi } from "../../services/sessions_service";
 
 export const AccountPopover = (props: any) => {
   const { anchorEl, onClose, open, ...other } = props;
@@ -11,6 +14,9 @@ export const AccountPopover = (props: any) => {
 
   const logoutUser = () => {
     dispatch(logout());
+    dispatch(userApi.util.resetApiState());
+    dispatch(deviceApi.util.resetApiState());
+    dispatch(sessionApi.util.resetApiState());
     navigate("/login");
     localStorage.removeItem("roles");
   };

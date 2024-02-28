@@ -26,6 +26,27 @@ class Blue {
     );
   }
 
+  Future<HashMap<String, ScanResult>> scanDevicesWithFilters(String filter) {
+    blueDeviceList = HashMap();
+    flutterBlue.startScan(timeout: const Duration(seconds: 5));
+    flutterBlue.scanResults.listen((results) {
+      for (ScanResult r in results) {
+        if (r.device.name.isNotEmpty) {
+          if (r.device.name.toLowerCase().contains(filter.toLowerCase())) {
+            blueDeviceList.putIfAbsent(r.device.name, () => r);
+          }
+        }
+      }
+    });
+
+    flutterBlue.stopScan();
+
+    return Future.delayed(
+      const Duration(seconds: 6),
+      () => blueDeviceList,
+    );
+  }
+
   Future<bool> write(BluetoothDevice device, List<int> data, String ServiceUUID,
       String charUUID) async {
     bool response = false;
