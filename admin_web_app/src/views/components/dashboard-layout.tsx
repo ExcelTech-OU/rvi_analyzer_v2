@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DashboardNavbar } from "./dashboard-navbar";
@@ -17,6 +17,8 @@ const DashboardLayoutRoot = styled("div")(({ theme }) => ({
 export const DashboardLayout = (props: any) => {
   const { children } = props;
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const [pageStatus, setPageStatus] = useState<number>(0);
 
   const handleOpen = () => {
     setSidebarOpen(true);

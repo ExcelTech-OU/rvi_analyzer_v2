@@ -1,6 +1,5 @@
 package com.rvi.analyzer.rvianalyzerserver.controller;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.rvi.analyzer.rvianalyzerserver.domain.*;
 import com.rvi.analyzer.rvianalyzerserver.dto.*;
 import com.rvi.analyzer.rvianalyzerserver.service.SessionService;
@@ -36,7 +35,7 @@ public class SessionController {
     @GetMapping(path = "/rvi/analyzer/v1/session/share/{mode}/{sessionId}")
     public Mono<ResponseEntity<ShareReportResponse>> shareReport(@PathVariable("mode") String mode,
                                                                  @PathVariable("sessionId") String sessionId,
-                                                              @RequestHeader("Authorization") String auth) {
+                                                                 @RequestHeader("Authorization") String auth) {
         return sessionService.shareReport(mode, sessionId, auth);
     }
 
@@ -130,6 +129,17 @@ public class SessionController {
         return sessionService.getLastModeSix(jwt);
     }
 
+    @PostMapping(path = "/rvi/analyzer/v1/session/add/seven")
+    public Mono<ResponseEntity<CommonResponse>> addModeSeven(@RequestBody ModeSevenDto modeSevenDto,
+                                                             @RequestHeader("Authorization") String jwt) {
+        return sessionService.addModeSeven(modeSevenDto, jwt);
+    }
+
+    @PostMapping(path = "/rvi/analyzer/v1/session/get/seven")
+    public Mono<ResponseEntity<ModeSevenResponse>> getModeSeven(@RequestHeader("Authorization") String jwt) {
+        return sessionService.getAllModeSeven(jwt);
+    }
+
     @GetMapping(path = "/report/status/{hash}")
     public Mono<ResponseEntity<CommonResponse>> checkReportStatus(@PathVariable("hash") String hash) {
         return sessionService.checkReportStatus(hash);
@@ -137,7 +147,7 @@ public class SessionController {
 
     @PostMapping(path = "/report/status/password/{hash}")
     public Mono<ResponseEntity<PasswordValidationReportResponse>> checkReportStatus(@PathVariable("hash") String hash,
-                                                                  @RequestBody ReportPasswordValidationRequest request) {
+                                                                                    @RequestBody ReportPasswordValidationRequest request) {
         return sessionService.checkReportPassword(hash, request);
     }
 }

@@ -195,13 +195,14 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
           setResponseFeedback(String(payload.statusDescription));
           if (payload.status == "S1000") {
             actions.setSubmitting(false);
-            actions.resetForm();
             setOpenSuccess(true);
             setParameterModes([]);
             setPlant("");
             setCustomer("");
             setStyle("");
+            setMaterial("");
             setParameter(null);
+            actions.resetForm();
           } else if (payload.status == "E1002") {
             actions.setSubmitting(false);
             actions.resetForm();

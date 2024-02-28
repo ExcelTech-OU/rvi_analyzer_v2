@@ -14,17 +14,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ModeSeven {
-
-    private String _id;
-    @Field(name = "mac-address")
-    private String macAddress;
-    private String voltage;
-    private String current;
-    private String resistance;
-    private String result;
-    private String customer;
-    private String soNumber;
-    private String test;
+    private String taskId;
+    private String createdBy;
+    private DefaultConfiguration defaultConfigurations;
+    private SessionResultModeSeven result;
+    private String status;
+    private LocalDateTime lastUpdatedDateTime;
     @Field(name = "created-date")
     @CreatedDate
     private LocalDateTime createdDateTime;

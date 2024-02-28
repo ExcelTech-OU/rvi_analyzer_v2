@@ -30,22 +30,9 @@ export default ({
   const [blur, setHandleBlur] = useState(false);
   const [focus, setHandleFocus] = useState(false);
 
-  // const handleBlur = () => {
-  //   setHandleFocus(false);
-  //   setHandleBlur(true);
-  //   console.log("on blur");
-  // };
-
-  // const handleFocus = () => {
-  //   setHandleBlur(false);
-  //   setHandleFocus(true);
-  //   console.log("on focus");
-  // };
-
   const customStyles = {
     control: (styles: any) => ({
       ...styles,
-      // backgroundColor: "#1769aa",
       paddingTop: 10,
       paddingBottom: 10,
       borderRadius: "8px",

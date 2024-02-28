@@ -318,7 +318,7 @@ export const DashboardSidebar = ({
         open
         PaperProps={{
           sx: {
-            width: 300,
+            width: 280,
             borderRightStyle: "dashed",
             borderColor: "#9d9e9d",
           },
