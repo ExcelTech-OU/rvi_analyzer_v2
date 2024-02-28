@@ -16,6 +16,11 @@ export interface Style {
     createdDateTime: string
 }
 
+export interface CommonResponse {
+    status: string,
+    statusDescription: string,
+}
+
 export interface StyleGetResponse {
     status: string,
     statusDescription: string,
@@ -25,7 +30,7 @@ export interface StyleGetResponse {
 export const styleApi = createApi({
     reducerPath: 'styleApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://rvi.v2.exceltch.com/rvi-analyzer-api/',
+        baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("jwt") as string;
             if (!headers.has("Authorization") && token) {
@@ -47,6 +52,16 @@ export const styleApi = createApi({
                     url: `register/style`,
                     method: 'POST',
                     body: body,
+                }
+            },
+            invalidatesTags: [{ type: 'styleList', id: "getStyles" }]
+        }),
+        deleteStyle: build.mutation<CommonResponse, { name: string }>({
+            query(data) {
+                return {
+                    url: `delete/style/${data.name}`,
+                    method: 'POST',
+                    body: {},
                 }
             },
             invalidatesTags: [{ type: 'styleList', id: "getStyles" }]
@@ -78,5 +93,6 @@ export const {
     useGetStyleQuery,
     useAddStyleMutation,
     useAllocateAdminMutation,
-    useAllocateStyleMutation
+    useAllocateStyleMutation,
+    useDeleteStyleMutation
 } = styleApi

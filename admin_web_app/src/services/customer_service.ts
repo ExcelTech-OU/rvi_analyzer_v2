@@ -7,6 +7,11 @@ export interface CustomerListResponse {
     customers: List<Customer>
 }
 
+export interface CommonResponse {
+    status: string,
+    statusDescription: string,
+}
+
 export interface Customer {
     name: string
     plant: string
@@ -24,7 +29,7 @@ export interface CustomerGetResponse {
 export const customerApi = createApi({
     reducerPath: 'customerApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://rvi.v2.exceltch.com/rvi-analyzer-api/',
+        baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("jwt") as string;
             if (!headers.has("Authorization") && token) {
@@ -39,6 +44,16 @@ export const customerApi = createApi({
             query: () => `rvi/analyzer/v1/customers`,
             providesTags: [{ type: 'customerList', id: "getCustomers" }]
 
+        }),
+        deleteCustomer: build.mutation<CommonResponse, { name: string }>({
+            query(data) {
+                return {
+                    url: `delete/customer/${data.name}`,
+                    method: 'POST',
+                    body: {},
+                }
+            },
+            invalidatesTags: [{ type: 'customerList', id: "getCustomers" }]
         }),
         addCustomer: build.mutation<CustomerGetResponse, {}>({
             query(body) {
@@ -56,4 +71,5 @@ export const customerApi = createApi({
 export const {
     useGetCustomerQuery,
     useAddCustomerMutation,
+    useDeleteCustomerMutation
 } = customerApi

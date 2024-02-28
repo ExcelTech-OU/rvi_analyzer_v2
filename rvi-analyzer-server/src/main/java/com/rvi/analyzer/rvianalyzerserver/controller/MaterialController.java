@@ -35,7 +35,7 @@ public class MaterialController {
         return materialService.existsMaterialByName(materialDto.getName());
     }
 
-    @PostMapping(path = "/delete/customer/{name}")
+    @PostMapping(path = "/delete/material/{name}")
     public Mono<CommonResponse> deleteMaterial(@RequestHeader("Authorization") String auth, @PathVariable String name) {
         return materialService.deleteMaterialByName(auth, name);
     }

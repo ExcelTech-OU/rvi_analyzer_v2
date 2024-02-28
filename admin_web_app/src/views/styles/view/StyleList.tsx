@@ -22,10 +22,15 @@ import { List } from "reselect/es/types";
 import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { AddStyleModel } from "../add/add-style";
-import { Style, useGetStyleQuery } from "../../../services/styles_service";
+import {
+  Style,
+  useDeleteStyleMutation,
+  useGetStyleQuery,
+} from "../../../services/styles_service";
 import {
   Customer,
   useGetCustomerQuery,
@@ -54,6 +59,11 @@ const columns: GridColDef[] = [
     headerName: "Created By",
     width: 180,
   },
+  {
+    field: "action",
+    headerName: "Action",
+    width: 250,
+  },
 ];
 
 export default function StyleList() {
@@ -68,6 +78,7 @@ export default function StyleList() {
   var admin = "";
   const [open, setOpen] = useState(false);
   var roles = localStorage.getItem("roles");
+  const [deleteStyle] = useDeleteStyleMutation();
 
   //get user roles from local storage
   if (roles === null) {
@@ -237,6 +248,46 @@ export default function StyleList() {
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {item.createdBy}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          <Box
+                                            display="flex"
+                                            justifyContent="flex-center"
+                                          >
+                                            <Button
+                                              variant="contained"
+                                              startIcon={<DeleteIcon />}
+                                              sx={{
+                                                backgroundColor: "#f50057",
+                                                mx: 1,
+                                                "&:hover": {
+                                                  backgroundColor: "#ab003c",
+                                                },
+                                              }}
+                                              onClick={() => {
+                                                deleteStyle({
+                                                  name: item.name,
+                                                })
+                                                  .unwrap()
+                                                  .then((payload) => {
+                                                    if (
+                                                      payload.status == "S1000"
+                                                    ) {
+                                                      // setOpenSuccess(true)
+                                                      console.log(
+                                                        "style deleted"
+                                                      );
+                                                    }
+                                                  })
+                                                  .catch((error) => {
+                                                    // setOpenFail(true)
+                                                    console.log("failed");
+                                                  });
+                                              }}
+                                            >
+                                              Delete
+                                            </Button>
+                                          </Box>
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );

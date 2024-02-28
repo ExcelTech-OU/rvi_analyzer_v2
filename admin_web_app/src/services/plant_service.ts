@@ -14,6 +14,11 @@ export interface Plant {
     lastUpdatedDateTime: boolean
 }
 
+export interface CommonResponse {
+    status: string,
+    statusDescription: string,
+}
+
 export interface PlantGetResponse {
     status: string,
     statusDescription: string,
@@ -23,7 +28,7 @@ export interface PlantGetResponse {
 export const plantApi = createApi({
     reducerPath: 'plantApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://rvi.v2.exceltch.com/rvi-analyzer-api/',
+        baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("jwt") as string;
             if (!headers.has("Authorization") && token) {
@@ -38,6 +43,16 @@ export const plantApi = createApi({
             query: () => `rvi/analyzer/v1/plants`,
             providesTags: [{ type: 'plantList', id: "getPlants" }]
 
+        }),
+        deletePlant: build.mutation<CommonResponse, { name: string }>({
+            query(data) {
+                return {
+                    url: `delete/plant/${data.name}`,
+                    method: 'POST',
+                    body: {},
+                }
+            },
+            invalidatesTags: [{ type: 'plantList', id: "getPlants" }]
         }),
         addPlant: build.mutation<PlantGetResponse, {}>({
             query(body) {
@@ -55,4 +70,5 @@ export const plantApi = createApi({
 export const {
     useGetPlantQuery,
     useAddPlantMutation,
+    useDeletePlantMutation,
 } = plantApi
