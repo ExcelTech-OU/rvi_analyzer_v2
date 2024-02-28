@@ -124,12 +124,18 @@ const items = [
         childs: []
       },
       {
-        href: '/pcb_china',
+        href: '/battery_china',
         icon: (<ListAlt fontSize="small" />),
         title: 'Battery Tests (China)',
         childs: []
       }
     ]
+  },
+  {
+    href: '/end/line/qc',
+    icon: (<DashboardIcon fontSize="small" />),
+    title: 'Dashboard',
+    childs: []
   }
 ];
 
