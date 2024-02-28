@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DashboardNavbar } from "./dashboard-navbar";
 import { DashboardSidebar } from "./dashboard-sidebar";
+import { ModeSeven, useGetGtTestsMutation } from "../../services/gt_service";
 
 const DashboardLayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
@@ -19,6 +20,12 @@ export const DashboardLayout = (props: any) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const [pageStatus, setPageStatus] = useState<number>(0);
+  const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
+
+  useEffect(() => {
+    getGtTests({});
+    console.log(data?.sessions);
+  }, []);
 
   const handleOpen = () => {
     setSidebarOpen(true);

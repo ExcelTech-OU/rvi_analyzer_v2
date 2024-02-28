@@ -31,7 +31,7 @@ import { UpdateEndLinePopup } from "./update-end-line-qc";
 import { useState, useEffect } from "react";
 import MyComponent from "../table_search_form_softmatter";
 import BasicDateRangePicker from "../datePicker";
-import { useGetGtTestsQuery } from "../../../services/gt_service";
+import { ModeSeven, useGetGtTestsQuery } from "../../../services/gt_service";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -320,6 +320,17 @@ export default function EndLineQcList() {
 
   const [startingDate, setStartingDate] = useState(null);
   const [finishingDate, setFinishingDate] = useState(null);
+  //   const {
+  //     data: adminData,
+  //     error: adminError,
+  //     isLoading: adminLoading,
+  //   } = useGetGtTestsQuery("");
+
+  //   useEffect(() => {
+  //     adminData?.sessions.map((item: ModeSeven) => {
+  //       console.log(item.defaultConfigurations.customerName);
+  //     });
+  //   }, []);
 
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
     setStartingDate(date);
