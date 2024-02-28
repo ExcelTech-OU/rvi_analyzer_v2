@@ -135,12 +135,10 @@ public class SessionController {
         return sessionService.addModeSeven(modeSevenDto, jwt);
     }
 
-//    @PostMapping(path = "/rvi/analyzer/v1/session/get/seven/{pageNo}")
-//    public Mono<ResponseEntity<ModeSevenResponse>> getModeSeven(@PathVariable("pageNo") String pageNo,
-//                                                                @RequestBody SessionSearchRequest request,
-//                                                                @RequestHeader("Authorization") String jwt) {
-//        return sessionService.getAllModeSeven(pageNo, request, jwt);
-//    }
+    @PostMapping(path = "/rvi/analyzer/v1/session/get/seven")
+    public Mono<ResponseEntity<ModeSevenResponse>> getModeSeven(@RequestHeader("Authorization") String jwt) {
+        return sessionService.getAllModeSeven(jwt);
+    }
 
     @GetMapping(path = "/report/status/{hash}")
     public Mono<ResponseEntity<CommonResponse>> checkReportStatus(@PathVariable("hash") String hash) {

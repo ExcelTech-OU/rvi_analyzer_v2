@@ -8,15 +8,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Document
 @Builder
 @Getter
 @Setter
 public class ModeSeven {
-
-    private String _id;
+    private String taskId;
     private String createdBy;
     private DefaultConfiguration defaultConfigurations;
     private SessionResultModeSeven result;

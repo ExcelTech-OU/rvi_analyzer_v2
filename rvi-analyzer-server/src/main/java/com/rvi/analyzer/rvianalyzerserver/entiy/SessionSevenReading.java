@@ -20,6 +20,7 @@ public class SessionSevenReading {
     private String voltage;
     private String resistance;
     private String result;
+    private String productionOrder;
     @Field(name = "read-at")
     private LocalDateTime readAt;
 }
