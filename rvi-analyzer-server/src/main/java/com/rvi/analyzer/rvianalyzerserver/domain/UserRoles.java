@@ -51,6 +51,7 @@ public enum UserRoles {
     GET_LAST_MODE_FIVE,
     GET_MODE_SIX,
     GET_LAST_MODE_SIX,
+    GET_MODE_SEVEN,
     SHARE_REPORT,
     GET_USERS,
     GET_CUSTOMERS,
