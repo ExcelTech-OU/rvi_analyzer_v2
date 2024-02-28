@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document
 @Builder
@@ -16,16 +17,11 @@ import java.time.LocalDateTime;
 public class ModeSeven {
 
     private String _id;
-    @Field(name = "mac-address")
-    private String macAddress;
-    private String voltage;
-    private String current;
-    private String resistance;
-    private String result;
-    private String customer;
-    private String testId;
-    private String operatorId;
-    private String productionOrder;
+    private String createdBy;
+    private DefaultConfiguration defaultConfigurations;
+    private List<SessionResultModeSeven> results;
+    private String status;
+    private LocalDateTime lastUpdatedDateTime;
     @Field(name = "created-date")
     @CreatedDate
     private LocalDateTime createdDateTime;

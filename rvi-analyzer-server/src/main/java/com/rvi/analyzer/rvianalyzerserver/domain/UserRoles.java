@@ -38,6 +38,7 @@ public enum UserRoles {
     SAVE_MODE_FOUR,
     SAVE_MODE_FIVE,
     SAVE_MODE_SIX,
+    SAVE_MODE_SEVEN,
     GET_MODE_ONE,
     GET_LAST_MODE_ONE,
     GET_MODE_TWO,
