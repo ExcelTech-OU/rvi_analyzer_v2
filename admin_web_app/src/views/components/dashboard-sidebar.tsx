@@ -216,6 +216,19 @@ const items = [
           },
         ],
       },
+      {
+        href: "#",
+        icon: <BatteryChargingFullIcon fontSize="small" />,
+        title: "Glove Testing",
+        childs: [
+          {
+            href: "/end/line/qc",
+            icon: <ListAlt fontSize="small" />,
+            title: "List",
+            childs: [],
+          },
+        ],
+      },
     ],
   },
 ];

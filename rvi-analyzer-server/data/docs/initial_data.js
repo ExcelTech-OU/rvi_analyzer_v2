@@ -183,6 +183,10 @@ db.role.insertMany([
     'role-name': 'SAVE_MODE_SIX'
   },
   {
+      'role-id': 's_mode_seven',
+      'role-name': 'SAVE_MODE_SEVEN'
+    },
+  {
     'role-id': 'get_mode_one',
     'role-name': 'GET_MODE_ONE'
   },
@@ -206,6 +210,10 @@ db.role.insertMany([
     'role-id': 'get_mode_six',
     'role-name': 'GET_MODE_SIX'
   },
+  {
+      'role-id': 'get_mode_seven',
+      'role-name': 'GET_MODE_SEVEN'
+    },
   {
     'role-id': 'share_report',
     'role-name': 'SHARE_REPORT'
@@ -299,6 +307,7 @@ db.groupRole.insertMany([
     'get_mode_four',
     'get_mode_five',
     'get_mode_six',
+    'get_mode_seven',
     'create_admin',
     'update_customer',
     'update_style',
@@ -348,6 +357,7 @@ db.groupRole.insertMany([
     'get_mode_four',
     'get_mode_five',
     'get_mode_six',
+    'get_mode_seven',
     'share_report',
     'get_users',
     'update_user',
@@ -362,11 +372,13 @@ db.groupRole.insertMany([
     's_mode_four',
     's_mode_five',
     's_mode_six',
+    's_mode_seven',
     'get_last_mode_one',
     'get_last_mode_two',
     'get_last_mode_three',
     'get_last_mode_four',
     'get_last_mode_five',
-    'get_last_mode_six']
+    'get_last_mode_six',
+    'get_mode_seven']
   }
 ])

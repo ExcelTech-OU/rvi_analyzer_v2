@@ -427,7 +427,7 @@ public class SessionService {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.SAVE_MODE_SIX)) {
+                            if (userRoles.contains(UserRoles.SAVE_MODE_SEVEN)) {
                                 return Mono.just(modeSevenDto)
                                         .doOnNext(modeSevenDto1 -> log.info("MOde seven add request received [{}]", modeSevenDto1))
                                         .flatMap(modeSevenDto1 -> saveModeSeven(modeSevenDto))
@@ -722,7 +722,7 @@ public class SessionService {
         return userService.getUser(jwtUtils.getUsername(jwt))
                 .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
                         .flatMap(userRoles -> {
-                            if (userRoles.contains(UserRoles.GET_MODE_SIX)) {
+                            if (userRoles.contains(UserRoles.GET_MODE_SEVEN)) {
                                 return userService.getUsersByAdmin(user.getUsername())
                                         .filter(strings -> !strings.isEmpty())
                                         .flatMap(strings -> modeSevenRepository.countByFilters(new Query())
