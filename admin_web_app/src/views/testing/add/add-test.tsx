@@ -97,6 +97,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [style, setStyle] = useState<any>("");
   const [responseFeedback, setResponseFeedback] = useState<String>("");
   let materials: any = [];
+  const [failMessage, setFailMessage] = useState("");
 
   useEffect(() => {
     console.log(responseFeedback);
@@ -201,6 +202,16 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
             setCustomer("");
             setStyle("");
             setParameter(null);
+          } else if (payload.status == "E1002") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Test already exists");
+            setOpenFail(true);
+          } else if (payload.status == "E1200") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Un-authorized");
+            setOpenFail(true);
           }
         })
         .catch((error) => {
@@ -564,7 +575,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
             severity="error"
             sx={{ width: "100%" }}
           >
-            Saving failed
+            {failMessage}
           </Alert>
         </Snackbar>
       </DialogContent>

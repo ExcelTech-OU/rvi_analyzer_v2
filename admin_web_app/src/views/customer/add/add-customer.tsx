@@ -38,6 +38,7 @@ export function AddCustomerModel({ open, changeOpenStatus }: AddCustomerProps) {
   const [formReset, setFormReset] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [failMessage, setFailMessage] = useState("");
 
   const [addCustomer] = useAddCustomerMutation();
 
@@ -66,6 +67,16 @@ export function AddCustomerModel({ open, changeOpenStatus }: AddCustomerProps) {
             actions.setSubmitting(false);
             actions.resetForm();
             setOpenSuccess(true);
+          } else if (payload.status == "E1002") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Customer already exists");
+            setOpenFail(true);
+          } else if (payload.status == "E1200") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Un-authorized");
+            setOpenFail(true);
           }
         })
         .catch((error) => {
@@ -189,7 +200,7 @@ export function AddCustomerModel({ open, changeOpenStatus }: AddCustomerProps) {
             severity="error"
             sx={{ width: "100%" }}
           >
-            Saving failed
+            {failMessage}
           </Alert>
         </Snackbar>
       </DialogContent>

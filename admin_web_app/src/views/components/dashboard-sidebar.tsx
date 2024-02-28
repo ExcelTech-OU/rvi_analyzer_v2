@@ -25,6 +25,7 @@ import HardwareIcon from "@mui/icons-material/Hardware";
 import AddIcon from "@mui/icons-material/Add";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import CableIcon from "@mui/icons-material/Cable";
 import { NavItem } from "./nav-item";
 import {
@@ -174,39 +175,46 @@ const items = [
   },
   {
     href: "#",
-    icon: <BatteryChargingFullIcon fontSize="small" />,
-    title: "Battery Tests",
+    icon: <SportsEsportsIcon fontSize="small" />,
+    title: "Gamer Tech",
     childs: [
       {
-        href: "/battery_srilanka",
-        icon: <ListAlt fontSize="small" />,
-        title: "Battery Tests (Sri Lanka)",
-        childs: [],
+        href: "#",
+        icon: <BatteryChargingFullIcon fontSize="small" />,
+        title: "Battery Tests",
+        childs: [
+          {
+            href: "/battery_srilanka",
+            icon: <ListAlt fontSize="small" />,
+            title: "Battery Tests (Sri Lanka)",
+            childs: [],
+          },
+          {
+            href: "/pcb_china",
+            icon: <ListAlt fontSize="small" />,
+            title: "Battery Tests (China)",
+            childs: [],
+          },
+        ],
       },
       {
-        href: "/pcb_china",
-        icon: <ListAlt fontSize="small" />,
-        title: "Battery Tests (China)",
-        childs: [],
-      },
-    ],
-  },
-  {
-    href: "#",
-    icon: <CableIcon fontSize="small" />,
-    title: "PCB Tests",
-    childs: [
-      {
-        href: "/pcb_srilanka",
-        icon: <ListAlt fontSize="small" />,
-        title: "PCB Tests (Sri Lanka)",
-        childs: [],
-      },
-      {
-        href: "/pcb_china",
-        icon: <ListAlt fontSize="small" />,
-        title: "PCB Tests (China)",
-        childs: [],
+        href: "#",
+        icon: <CableIcon fontSize="small" />,
+        title: "PCB Tests",
+        childs: [
+          {
+            href: "/pcb_srilanka",
+            icon: <ListAlt fontSize="small" />,
+            title: "PCB Tests (Sri Lanka)",
+            childs: [],
+          },
+          {
+            href: "/pcb_china",
+            icon: <ListAlt fontSize="small" />,
+            title: "PCB Tests (China)",
+            childs: [],
+          },
+        ],
       },
     ],
   },
@@ -262,6 +270,7 @@ export const DashboardSidebar = ({
           display: "flex",
           flexDirection: "column",
           height: "100%",
+          width: "100%",
         }}
       >
         <div>
@@ -273,7 +282,7 @@ export const DashboardSidebar = ({
             my: 3,
           }}
         />
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, marginY: 2 }}>
           {admin === "ADMIN"
             ? newList.map((item) => (
                 <NavItem
@@ -309,7 +318,7 @@ export const DashboardSidebar = ({
         open
         PaperProps={{
           sx: {
-            width: 250,
+            width: 300,
             borderRightStyle: "dashed",
             borderColor: "#9d9e9d",
           },
@@ -328,7 +337,7 @@ export const DashboardSidebar = ({
       open={open}
       PaperProps={{
         sx: {
-          width: 250,
+          width: 300,
           borderRightStyle: "dashed",
           borderColor: "#9d9e9d",
         },

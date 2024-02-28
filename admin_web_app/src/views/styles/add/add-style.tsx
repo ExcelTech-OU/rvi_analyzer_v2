@@ -42,6 +42,7 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
   const [formReset, setFormReset] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [failMessage, setFailMessage] = useState("");
   const {
     data: customerData,
     error: customerError,
@@ -88,6 +89,16 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
             actions.setSubmitting(false);
             actions.resetForm();
             setOpenSuccess(true);
+          } else if (payload.status == "E1002") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Style already exists");
+            setOpenFail(true);
+          } else if (payload.status == "E1200") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Un-authorized");
+            setOpenFail(true);
           }
         })
         .catch((error) => {
@@ -211,7 +222,7 @@ export function AddStyleModel({ open, changeOpenStatus }: AddStyleProps) {
             severity="error"
             sx={{ width: "100%" }}
           >
-            Saving failed
+            {failMessage}
           </Alert>
         </Snackbar>
       </DialogContent>
