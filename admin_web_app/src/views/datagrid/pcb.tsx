@@ -96,6 +96,8 @@ const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 })
 
     const uniqueMACs = new Set<string>();
 
+    const sortedRows = combinedRows.sort((a, b) => a.id.localeCompare(b.id));
+
     const uniqueRows = combinedRows.filter((row) => {
       if (!uniqueMACs.has(row.MAC_adress)) {
         uniqueMACs.add(row.MAC_adress);
@@ -104,8 +106,14 @@ const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 })
       return false;
     });
 
+    console.log(combinedRows);
+    
 
-    const sortedRows = uniqueRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    // const sortedRows = combinedRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    // const sortedRows = combinedRows.sort((a, b) => a.id - b.id);
+
+    console.log(sortedRows);
+
     setRows(sortedRows);
     setFilteredRows(sortedRows);
   };
@@ -166,14 +174,14 @@ const DatasetTable: React.FC<DatasetTableProps> = ({ collection1, collection2 })
 
   const columns = [
     { field: 'id', headerName: 'id', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'LED_C', headerName: 'LED_C', flex:1, headerClassName: 'customDataGridHeader' },
+    { field: 'MAC_adress', headerName: 'MAC_adress', flex:2, headerClassName: 'customDataGridHeader' },
     { field: 'HNLV', headerName: 'HNLV', flex:1, headerClassName: 'customDataGridHeader' },
     { field: 'HLV', headerName: 'HLV', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'MAC_adress', headerName: 'MAC_adress', flex:1, headerClassName: 'customDataGridHeader' },
+    { field: 'HLC', headerName: 'HLC', flex:1, headerClassName: 'customDataGridHeader' },
+    { field: 'LED_V', headerName: 'LED_V', flex:1, headerClassName: 'customDataGridHeader' },
+    { field: 'LED_C', headerName: 'LED_C', flex:1, headerClassName: 'customDataGridHeader' },
     { field: 'date', headerName: 'date', flex:1, headerClassName: 'customDataGridHeader' },
     { field: 'time', headerName: 'time', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'LED_V', headerName: 'LED_V', flex:1, headerClassName: 'customDataGridHeader' },
-    { field: 'HLC', headerName: 'HLC', flex:1, headerClassName: 'customDataGridHeader' },
     // {
     //   field: 'actions',
     //   headerName: 'Actions',

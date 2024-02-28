@@ -13,13 +13,15 @@ import { styled } from '@mui/material';
 // import { FullGarment, useGetAllELQCMutation, useGetELQCQuery } from "../../../services/softmatter_service";
 import {  useGetELQCQuery } from "../../../services/softmatter_service";
 import { format, parseISO } from "date-fns";
-import TableSearchFormSoftmatter from "../table_search_form_softmatter";
+// import TableSearchFormSoftmatter from "../table_search_form_softmatter";
 import SessionTimeoutPopup from "../../components/session_logout";
 import { handleGenerateExcelEndLineQc } from "./end_line_qc-excel";
 import { Download, Edit } from "@mui/icons-material";
 import { UpdateEndLinePopup } from "./update-end-line-qc";
 
 import { useState, useEffect } from 'react';
+import MyComponent from '../table_search_form_softmatter'
+import BasicDateRangePicker from '../datePicker';
 
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -189,7 +191,21 @@ export default function EndLineQcList() {
     const [open, setOpen] = React.useState(false);
 
     ///////////////////////
-    const [s_o, setS_O] = React.useState("");
+    const [values, setValues] = useState({
+        field1: '',
+        field2: '',
+      });
+    
+      const handleInputChange = (field: string, value: string) => {
+        setValues((prevValues) => ({
+          ...prevValues,
+          [field]: value,
+        }));
+      };
+
+      console.log("f1"+values.field1);
+      console.log("f2"+values.field2);
+      
     ///////////////////////
 
     const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
@@ -229,7 +245,7 @@ export default function EndLineQcList() {
               "settingsIdleCurrentMin": "230",
               "settingsNoiseMax": "0.0",
               "settingsNoiseMin": "0.0",
-              "soNumber": "1000887481_130",
+              "soNumber": "1003423456_130",
               "voltage": null,
               "_id": "65c5c6e101e02a4c2b0675e8"
             },
@@ -253,7 +269,7 @@ export default function EndLineQcList() {
               "settingsIdleCurrentMin": "230",
               "settingsNoiseMax": "0.0",
               "settingsNoiseMin": "0.0",
-              "soNumber": "1000887481_130",
+              "soNumber": "1044447481_130",
               "voltage": null,
               "_id": "65c5c6d201e02a4c2b0675e7"
             },
@@ -285,8 +301,25 @@ export default function EndLineQcList() {
         total: 10, // Replace with the actual total count for your dummy data
         totalSuccess: 8, // Replace with the actual total success count for your dummy data
     });
+    
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+
+
+    const [startingDate, setStartingDate] = useState(null);
+    const [finishingDate, setFinishingDate] = useState(null);
+  
+    const handleStartingDateChange = (date: React.SetStateAction<null>) => {
+      setStartingDate(date);
+      console.log(startingDate);
+      
+    };
+  
+    const handleFinishingDateChange = (date: React.SetStateAction<null>) => {
+      setFinishingDate(date);
+      console.log(finishingDate);
+      
+    };
     ///////////////////////////////
 
     // var { data, error, isLoading } = useGetELQCQuery({ data: { date: date, filterType: filterType, filterValue: filterValue }, page: page.toString() })
@@ -297,18 +330,15 @@ export default function EndLineQcList() {
         setPage(value);
     };
 
-    function setSearchParams(date: Date | null, filterType: string,  S_O:string) {
-        ////////
-        setS_O(S_O);
-        ////////
-        setFilterType(filterType);
-        // setFilterValue(filterValue);
-        setDate(date)
-        setPage(1)    
-
-        console.log(S_O);
+    // function setSearchParams(date: Date | null, filterType: string,  S_O:string) {
         
-    }
+    //     setFilterType(filterType);
+    //     setFilterValue(filterValue);
+    //     setDate(date)
+    //     setPage(1)    
+
+        
+    // }
 
     function openEditForm(params: FullGarment) {
         setSelect(params);
@@ -323,9 +353,10 @@ export default function EndLineQcList() {
     }, [data])
 
     function getSelectedList() {
-        return data!.endLIneQcs.filter((item, index) =>
-            selectedRows.includes(index)
-        );
+        // return data!.endLIneQcs.filter((item, index) =>
+        //     selectedRows.includes(index)
+        // );
+        return data;
     }
 
 
@@ -333,15 +364,6 @@ export default function EndLineQcList() {
     if (isLoading) {
         return <div>Loading...</div>
     }
-
-    if (error != null && 'status' in error) {
-        if (error.status == 401 && error.data == null) {
-            return <SessionTimeoutPopup />
-        }
-        else {
-            return <></>
-        }
-    } else {
         return <Box
             component="main"
             sx={{
@@ -362,7 +384,7 @@ export default function EndLineQcList() {
                                     <Grid container spacing={{ xs: 1, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                                         <Grid item xs={4} sm={6} md={6} >
                                             <Typography gutterBottom variant="h5" component="div" color="grey">
-                                                End Line QC
+                                                Gamertech testing
                                             </Typography>
 
                                         </Grid>
@@ -370,6 +392,7 @@ export default function EndLineQcList() {
                                             <Box display="flex" justifyContent="flex-end">
                                                 <Button variant="contained" startIcon={<Download />} color="success" onClick={() =>
                                                     handleGenerateExcelEndLineQc(getSelectedList())
+                                                    // console.log("Download list started")
                                                 } disabled={selectedRows.length == 0}>
                                                     Download selected
                                                 </Button>
@@ -378,6 +401,8 @@ export default function EndLineQcList() {
                                                     //     .then((payload) => {
                                                     //         handleGenerateExcelEndLineQc(payload.endLIneQcs)
                                                     //     });
+                                                    handleGenerateExcelEndLineQc(getSelectedList())
+                                                    console.log("Download started")
                                                 }
                                                 }>
                                                     Download
@@ -405,7 +430,18 @@ export default function EndLineQcList() {
                                             borderStyle: 'dashed'
                                         }}
                                     />
-                                    <TableSearchFormSoftmatter searchFun={setSearchParams}></TableSearchFormSoftmatter>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                                        <MyComponent initialValues={values} onInputChange={handleInputChange} />
+
+                                        <div style={{ marginLeft: '10px', marginRight: '10px' }}>
+                                            <BasicDateRangePicker label="Starting Date" onChange={handleStartingDateChange} />
+                                        </div>
+
+                                        <div style={{ marginRight: '10px' }}>
+                                            <BasicDateRangePicker label="Finishing Date" onChange={handleFinishingDateChange} />
+                                        </div>
+                                    </div>
+
                                     <Divider
                                         sx={{
                                             borderColor: 'grey',
@@ -431,6 +467,14 @@ export default function EndLineQcList() {
                                                 </TableHead>
                                                 <TableBody>
                                                     {data!.endLIneQcs
+                                                        .filter((item) => {
+                                                            const itemDate = new Date(item.createdDateTime);
+                                                            return (
+                                                                item.soNumber.includes(values.field1) && 
+                                                                item.flCurrent.includes(values.field2) &&
+                                                                (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+                                                                (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
+                                                            );})
                                                         .map((item, index) => {
                                                             return (
                                                                 <StyledTableRow hover role="checkbox" tabIndex={-1} key={index}
@@ -529,11 +573,8 @@ export default function EndLineQcList() {
                                 </CardContent>
                             </CardActionArea>
                         </Card>
-                        <UpdateEndLinePopup fullGarment={selectedId} open={confirmation} changeOpenStatus={setOpenConfirmation} />
-
                     </Box>
                 </>
             </Container>
         </Box>
-    }
 }

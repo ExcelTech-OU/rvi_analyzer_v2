@@ -52,6 +52,7 @@ interface DatasetTableProps {
 
 const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) => {
   const [rows, setRows] = useState<Row[]>([]);
+  const [uniqueRows, setUniqueRows] = useState<Row[]>([]);
   const [filteredRows, setFilteredRows] = useState<Row[]>([]);
   const [editOpen, setEditOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState('');
@@ -114,10 +115,11 @@ const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) 
       
     });
 
-
-    const sortedRows = uniqueRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    const sortedRows = combinedRows.sort((a, b) => a.id.localeCompare(b.id));
+    // const sortedRows = combinedRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
     setRows(sortedRows);
     setFilteredRows(sortedRows);
+    setUniqueRows(uniqueRows);
     
   };
 
@@ -177,11 +179,13 @@ const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) 
 
   const columns = [
     { field: 'id', headerName: 'id', flex: 1, headerClassName: 'customDataGridHeader' },
+    { field: 'UID', headerName: 'UID', flex: 1.5, headerClassName: 'customDataGridHeader' },
+    { field: 'IV', headerName: 'IV', flex: 1, headerClassName: 'customDataGridHeader' },
     { field: 'CI', headerName: 'CI', flex: 1, headerClassName: 'customDataGridHeader' },
     { field: 'CV', headerName: 'CV', flex: 1, headerClassName: 'customDataGridHeader' },
     { field: 'DI', headerName: 'DI', flex: 1, headerClassName: 'customDataGridHeader' },
-    { field: 'UID', headerName: 'UID', flex: 1, headerClassName: 'customDataGridHeader' },
-    { field: 'LED_status', headerName: 'LED_status', flex: 1, headerClassName: 'customDataGridHeader' },
+    { field: 'DV', headerName: 'DV', flex: 1, headerClassName: 'customDataGridHeader' },
+    { field: 'LED_status', headerName: 'LED_sequence', flex: 1.2, headerClassName: 'customDataGridHeader' },
     { field: 'date', headerName: 'date', flex:1, headerClassName: 'customDataGridHeader' },
     { field: 'time', headerName: 'time', flex:1, headerClassName: 'customDataGridHeader' },
     // {
@@ -213,17 +217,17 @@ const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) 
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
     
     setStartingDate(date);
-    console.log("fff"+startingDate);
+    // console.log("fff"+startingDate);
     
   };
 
   const handleFinishingDateChange = (date: React.SetStateAction<null>) => {
     setFinishingDate(date);
-    console.log(finishingDate);
+    // console.log(finishingDate);
     
   };
 
-  const passData = rows.filter((item) => item.LED_status === 'Pass');
+  const passData = uniqueRows.filter((item) => item.LED_status === 'Pass');
   const failData = rows.filter((item) => item.LED_status === 'Fail');
 
   console.log(passData.length);
@@ -233,7 +237,7 @@ const BatteryTest: React.FC<DatasetTableProps> = ({ collection1, collection2 }) 
 
   return (
     <div>
- <Grid container spacing={4} justifyContent="center" style={{ padding: '20px' }}>
+    <Grid container spacing={4} justifyContent="center" style={{ padding: '20px'}}>
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Card sx={{ backgroundColor: "#FFFFFF", boxShadow: "1px 1px 10px 10px #e8e8e8", display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
           <CardContent>
