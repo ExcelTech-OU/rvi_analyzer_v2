@@ -68,4 +68,9 @@ public class UserController {
     public Mono<ResponseEntity<CommonResponse>> updateUser(@RequestBody UserUpdateRequest request, @RequestHeader("Authorization") String auth) {
         return userService.updateUser(request, auth);
     }
+
+    @PostMapping(path = "/delete/user/{name}")
+    public Mono<CommonResponse> deleteUser(@RequestHeader("Authorization") String auth, @PathVariable String name) {
+        return userService.deleteUserByName(auth, name);
+    }
 }

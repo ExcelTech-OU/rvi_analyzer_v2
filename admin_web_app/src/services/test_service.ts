@@ -29,7 +29,7 @@ export interface TestGetResponse {
 export const testApi = createApi({
     reducerPath: 'testApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://rvi.v2.exceltch.com/rvi-analyzer-api/',
+        baseUrl: 'http://127.0.0.1:7550/',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("jwt") as string;
             if (!headers.has("Authorization") && token) {

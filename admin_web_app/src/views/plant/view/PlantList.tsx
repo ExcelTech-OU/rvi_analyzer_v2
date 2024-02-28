@@ -25,7 +25,11 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { AddUserModel } from "../../user/view/add-user";
-import { Plant, useGetPlantQuery } from "../../../services/plant_service";
+import {
+  Plant,
+  useDeletePlantMutation,
+  useGetPlantQuery,
+} from "../../../services/plant_service";
 import { AddPlantModel } from "../add/add-plant";
 import { AllocateStyleModel } from "../../customer/add/allocate-style";
 import { id } from "date-fns/locale";
@@ -53,6 +57,7 @@ export default function PlantList() {
   const { data, error, isLoading } = useGetPlantQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
+  const [deletePlant] = useDeletePlantMutation();
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -206,9 +211,26 @@ export default function PlantList() {
                                                   backgroundColor: "#ab003c",
                                                 },
                                               }}
-                                              onClick={(event) =>
-                                                hanldleDelete(plant.name)
-                                              }
+                                              onClick={() => {
+                                                deletePlant({
+                                                  name: plant.name,
+                                                })
+                                                  .unwrap()
+                                                  .then((payload) => {
+                                                    if (
+                                                      payload.status == "S1000"
+                                                    ) {
+                                                      // setOpenSuccess(true)
+                                                      console.log(
+                                                        "plant deleted"
+                                                      );
+                                                    }
+                                                  })
+                                                  .catch((error) => {
+                                                    // setOpenFail(true)
+                                                    console.log("failed");
+                                                  });
+                                              }}
                                             >
                                               Delete
                                             </Button>

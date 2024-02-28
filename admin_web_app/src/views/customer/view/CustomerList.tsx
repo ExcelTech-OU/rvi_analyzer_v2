@@ -19,10 +19,12 @@ import { useGetUsersQuery, User } from "../../../services/user_service";
 import {
   useGetCustomerQuery,
   Customer,
+  useDeleteCustomerMutation,
 } from "../../../services/customer_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
 import CustomizedMenusUsers from "../../user/view/custom-menu-user";
 import { List } from "reselect/es/types";
+import DeleteIcon from "@mui/icons-material/Delete";
 import React, { useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
@@ -35,12 +37,14 @@ const columns: GridColDef[] = [
   { field: "customer", headerName: "Customer", width: 250 },
   { field: "createdBy", headerName: "Created by", width: 250 },
   { field: "createdDate", headerName: "Created date & time", width: 250 },
+  { field: "action", headerName: "Action", width: 250 },
 ];
 
 export default function CustomerList() {
   const { data, error, isLoading } = useGetCustomerQuery("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
+  const [deleteCustomer] = useDeleteCustomerMutation();
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -173,6 +177,46 @@ export default function CustomerList() {
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {customer.createdDateTime}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          <Box
+                                            display="flex"
+                                            justifyContent="flex-center"
+                                          >
+                                            <Button
+                                              variant="contained"
+                                              startIcon={<DeleteIcon />}
+                                              sx={{
+                                                backgroundColor: "#f50057",
+                                                mx: 1,
+                                                "&:hover": {
+                                                  backgroundColor: "#ab003c",
+                                                },
+                                              }}
+                                              onClick={() => {
+                                                deleteCustomer({
+                                                  name: customer.name,
+                                                })
+                                                  .unwrap()
+                                                  .then((payload) => {
+                                                    if (
+                                                      payload.status == "S1000"
+                                                    ) {
+                                                      // setOpenSuccess(true)
+                                                      console.log(
+                                                        "customer deleted"
+                                                      );
+                                                    }
+                                                  })
+                                                  .catch((error) => {
+                                                    // setOpenFail(true)
+                                                    console.log("failed");
+                                                  });
+                                              }}
+                                            >
+                                              Delete
+                                            </Button>
+                                          </Box>
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );

@@ -229,11 +229,14 @@ public class StyleService {
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.CREATE_STYLE)) {
                                 return styleRepository.findByName(name)
-                                        .flatMap(style -> styleRepository.deleteById(style.get_id())
-                                                .thenReturn(CommonResponse.builder()
-                                                        .status("S1000")
-                                                        .statusDescription("Style deleted successfully")
-                                                        .build()))
+                                        .flatMap(style -> {
+                                            log.info("Style delete request received for style [{}]", style.getName());
+                                            return styleRepository.deleteById(style.get_id())
+                                                    .thenReturn(CommonResponse.builder()
+                                                            .status("S1000")
+                                                            .statusDescription("Style deleted successfully")
+                                                            .build());
+                                        })
                                         .switchIfEmpty(Mono.just(CommonResponse.builder()
                                                 .status("E1000")
                                                 .statusDescription("Style was not available")

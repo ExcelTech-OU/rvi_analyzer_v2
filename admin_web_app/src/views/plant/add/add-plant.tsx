@@ -34,6 +34,7 @@ export function AddPlantModel({ open, changeOpenStatus }: AddPlantProps) {
   const [formReset, setFormReset] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [failMessage, setFailMessage] = useState("");
 
   const [addPLant] = useAddPlantMutation();
 
@@ -62,10 +63,21 @@ export function AddPlantModel({ open, changeOpenStatus }: AddPlantProps) {
             actions.setSubmitting(false);
             actions.resetForm();
             setOpenSuccess(true);
+          } else if (payload.status == "E1002") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Plant already exists");
+            setOpenFail(true);
+          } else if (payload.status == "E1200") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Un-authorized");
+            setOpenFail(true);
           }
         })
         .catch((error) => {
           actions.setSubmitting(false);
+          setFailMessage("Saving failed");
           setOpenFail(true);
         });
     },
@@ -184,7 +196,7 @@ export function AddPlantModel({ open, changeOpenStatus }: AddPlantProps) {
             severity="error"
             sx={{ width: "100%" }}
           >
-            Saving failed
+            {failMessage}
           </Alert>
         </Snackbar>
       </DialogContent>

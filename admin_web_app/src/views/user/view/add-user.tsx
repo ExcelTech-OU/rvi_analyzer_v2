@@ -55,6 +55,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   var admin = "";
   let admin_options: any = [];
   var roles = localStorage.getItem("roles");
+  const [failMessage, setFailMessage] = useState("");
 
   admin_options = data?.users
     .filter((admin) => {
@@ -137,6 +138,16 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
             actions.resetForm();
             // actions.setFieldValue("supervisor", "Select...");
             setOpenSuccess(true);
+          } else if (payload.status == "E1002") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("User already exists");
+            setOpenFail(true);
+          } else if (payload.status == "E1200") {
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Un-authorized");
+            setOpenFail(true);
           }
         })
         .catch((error) => {
@@ -617,7 +628,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
             severity="error"
             sx={{ width: "100%" }}
           >
-            Saving failed
+            {failMessage}
           </Alert>
         </Snackbar>
       </DialogContent>

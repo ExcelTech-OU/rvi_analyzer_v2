@@ -127,11 +127,14 @@ public class CustomerService {
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.CREATE_CUSTOMER)) {
                                 return customerRepository.findByName(name)
-                                        .flatMap(customer -> customerRepository.deleteById(customer.get_id())
-                                                .thenReturn(CommonResponse.builder()
-                                                        .status("S1000")
-                                                        .statusDescription("Customer deleted successfully")
-                                                        .build()))
+                                        .flatMap(customer -> {
+                                            log.info("Customer delete request received for customer [{}]", customer.getName());
+                                            return customerRepository.deleteById(customer.get_id())
+                                                    .thenReturn(CommonResponse.builder()
+                                                            .status("S1000")
+                                                            .statusDescription("Customer deleted successfully")
+                                                            .build());
+                                        })
                                         .switchIfEmpty(Mono.just(CommonResponse.builder()
                                                 .status("E1000")
                                                 .statusDescription("Customer was not available")
