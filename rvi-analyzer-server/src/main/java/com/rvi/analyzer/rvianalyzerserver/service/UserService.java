@@ -400,4 +400,35 @@ public class UserService {
                         .status("E1000")
                         .statusDescription("Failed").build())));
     }
+
+    public Mono<CommonResponse> deleteUserByName(String auth, String name) {
+        return userRepository.findByUsername(jwtUtils.getUsername(auth))
+                .flatMap(requestedUser -> userGroupRoleService.getUserRolesByUserGroup(requestedUser.getGroup())
+                        .flatMap(userRoles -> {
+                            if (userRoles.contains(UserRoles.CREATE_USER) || userRoles.contains(UserRoles.CREATE_ADMIN) || userRoles.contains(UserRoles.CREATE_TOP_ADMIN)) {
+                                return userRepository.findByUsername(name)
+                                        .flatMap(user -> {
+                                            log.info("User delete request received for user [{}]", user.getUsername());
+                                            return userRepository.deleteById(user.get_id())
+                                                    .thenReturn(CommonResponse.builder()
+                                                            .status("S1000")
+                                                            .statusDescription("User deleted successfully")
+                                                            .build());
+                                        })
+                                        .switchIfEmpty(Mono.just(CommonResponse.builder()
+                                                .status("E1000")
+                                                .statusDescription("User was not available")
+                                                .build()));
+                            } else {
+                                return Mono.just(CommonResponse.builder()
+                                        .status("E1200")
+                                        .statusDescription("You are not authorized to delete users")
+                                        .build());
+                            }
+                        }))
+                .defaultIfEmpty(CommonResponse.builder()
+                        .status("E1200")
+                        .statusDescription("Invalid authentication")
+                        .build());
+    }
 }

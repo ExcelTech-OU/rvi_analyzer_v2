@@ -166,11 +166,14 @@ public class PlantService {
                         .flatMap(userRoles -> {
                             if (userRoles.contains(UserRoles.CREATE_PLANT)) {
                                 return plantRepository.findByName(name)
-                                        .flatMap(plant -> plantRepository.deleteById(plant.get_id())
-                                                .thenReturn(CommonResponse.builder()
-                                                        .status("S1000")
-                                                        .statusDescription("Plant deleted successfully")
-                                                        .build()))
+                                        .flatMap(plant -> {
+                                            log.info("Plant delete request received for plant [{}]", plant.getName());
+                                            return plantRepository.deleteById(plant.get_id())
+                                                    .thenReturn(CommonResponse.builder()
+                                                            .status("S1000")
+                                                            .statusDescription("Plant deleted successfully")
+                                                            .build());
+                                        })
                                         .switchIfEmpty(Mono.just(CommonResponse.builder()
                                                 .status("E1000")
                                                 .statusDescription("Plant was not available")
