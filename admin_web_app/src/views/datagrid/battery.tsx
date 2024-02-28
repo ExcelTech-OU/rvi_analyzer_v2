@@ -25,6 +25,7 @@ interface Row {
   UID: string;
   LED_status: string;
   time: string;
+  date: string;
 }
 
 interface YourDocumentData {
@@ -52,6 +53,7 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
   collection2,
 }) => {
   const [rows, setRows] = useState<Row[]>([]);
+  const [uniqueRows, setUniqueRows] = useState<Row[]>([]);
   const [filteredRows, setFilteredRows] = useState<Row[]>([]);
   const [editOpen, setEditOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("");
@@ -113,10 +115,11 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
       }
     });
 
-    const sortedRows = uniqueRows.sort(
-      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
-    );
+    const sortedRows = combinedRows.sort((a, b) => a.id.localeCompare(b.id));
+    // const sortedRows = combinedRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
     setRows(sortedRows);
+    setFilteredRows(sortedRows);
+    setUniqueRows(uniqueRows);
   };
 
   useEffect(() => {
@@ -157,24 +160,12 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     const searchTerm = filterValue.toLowerCase();
     const filteredData = rows.filter((row) => {
       const isDateInRange =
-        (!startingDate || new Date(row.time) >= new Date(startingDate)) &&
-        (!finishingDate || new Date(row.time) <= new Date(finishingDate));
+        (!startingDate || new Date(row.date) >= new Date(startingDate)) &&
+        (!finishingDate || new Date(row.date) <= new Date(finishingDate));
 
-      return (
-        (!searchTerm || // Check for other conditions if needed
-          Object.values(row).some((value, index) => {
-            if (
-              (typeof value === "string" || typeof value === "number") &&
-              columns[index].field === selectedColumn
-            ) {
-              const stringValue = String(value).toLowerCase();
-              return stringValue.includes(searchTerm);
-            }
-            return false;
-          })) &&
-        isDateInRange
-      );
+      return !searchTerm && isDateInRange;
     });
+    console.log(filteredData);
 
     setFilteredRows(filteredData);
   };
@@ -189,6 +180,18 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     {
       field: "id",
       headerName: "id",
+      flex: 1,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "UID",
+      headerName: "UID",
+      flex: 1.5,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "IV",
+      headerName: "IV",
       flex: 1,
       headerClassName: "customDataGridHeader",
     },
@@ -211,15 +214,15 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
       headerClassName: "customDataGridHeader",
     },
     {
-      field: "UID",
-      headerName: "UID",
+      field: "DV",
+      headerName: "DV",
       flex: 1,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "LED_status",
-      headerName: "LED_status",
-      flex: 1,
+      headerName: "LED_sequence",
+      flex: 1.2,
       headerClassName: "customDataGridHeader",
     },
     {
@@ -262,15 +265,15 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
 
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
     setStartingDate(date);
-    console.log(startingDate);
+    // console.log("fff"+startingDate);
   };
 
   const handleFinishingDateChange = (date: React.SetStateAction<null>) => {
     setFinishingDate(date);
-    console.log(finishingDate);
+    // console.log(finishingDate);
   };
 
-  const passData = rows.filter((item) => item.LED_status === "Pass");
+  const passData = uniqueRows.filter((item) => item.LED_status === "Pass");
   const failData = rows.filter((item) => item.LED_status === "Fail");
 
   console.log(passData.length);
@@ -347,67 +350,64 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "flex-start",
+          padding: "20px",
         }}
       >
         <style>{`
-          .customDataGridHeader {
-            background-color: #9e9e9e;
-            color: white;
-          }
-        `}</style>
+        .customDataGridHeader {
+          background-color: #9e9e9e;
+          color: white;
+        }
+      `}</style>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: "20px",
+          }}
+        >
+          <div style={{ marginRight: "10px" }}>
+            <BasicDateRangePicker
+              label="Starting Date"
+              onChange={handleStartingDateChange}
+            />
+          </div>
+
+          <div style={{ marginRight: "10px" }}>
+            <BasicDateRangePicker
+              label="Finishing Date"
+              onChange={handleFinishingDateChange}
+            />
+          </div>
+
+          <Button
+            onClick={handleFilter}
+            variant="contained"
+            className="customDataGridHeader"
+          >
+            Filter
+          </Button>
+        </div>
+
         <div
           style={{
             height: 600,
             width: "95%",
             display: "flex",
             alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <DataGrid
-            rows={filteredRows.length > 0 ? filteredRows : rows}
+            rows={filteredRows.length > 0 ? filteredRows : []}
             columns={columns}
             getRowId={(row) => row.id}
             pageSize={10}
             rowsPerPageOptions={[5, 10, 20]}
             components={{
-              Toolbar: (props) => (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    padding: "8px",
-                    marginRight: "10px",
-                  }}
-                >
-                  <GridToolbar {...props} />
-                  <div style={{ marginRight: "10px" }}>
-                    {" "}
-                    {/* Adjust the margin as needed */}
-                    <BasicDateRangePicker
-                      label="Starting Date"
-                      onChange={handleStartingDateChange}
-                    />
-                  </div>
-
-                  <div style={{ marginRight: "10px" }}>
-                    {" "}
-                    {/* Adjust the margin as needed */}
-                    <BasicDateRangePicker
-                      label="Finishing Date"
-                      onChange={handleFinishingDateChange}
-                    />
-                  </div>
-
-                  <Button
-                    onClick={handleFilter}
-                    variant="contained"
-                    className="customDataGridHeader"
-                  >
-                    Filter
-                  </Button>
-                </div>
-              ),
+              Toolbar: GridToolbar,
             }}
           />
         </div>
