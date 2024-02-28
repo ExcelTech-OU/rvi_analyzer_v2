@@ -15,7 +15,7 @@ import java.util.List;
 public class ModeSevenDto {
     private String createdBy;
     private DefaultConfiguration defaultConfigurations;
-    private List<SessionResultModeSeven> results;
+    private SessionResultModeSeven result;
     private String status;
     private String createdDateTime;
     private String lastUpdatedDateTime;

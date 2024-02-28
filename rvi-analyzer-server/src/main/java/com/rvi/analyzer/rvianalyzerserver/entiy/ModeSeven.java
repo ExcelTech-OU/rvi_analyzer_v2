@@ -19,7 +19,7 @@ public class ModeSeven {
     private String _id;
     private String createdBy;
     private DefaultConfiguration defaultConfigurations;
-    private List<SessionResultModeSeven> results;
+    private SessionResultModeSeven result;
     private String status;
     private LocalDateTime lastUpdatedDateTime;
     @Field(name = "created-date")

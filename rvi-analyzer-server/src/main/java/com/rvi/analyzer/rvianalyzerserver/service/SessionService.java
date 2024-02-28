@@ -431,17 +431,7 @@ public class SessionService {
                             if (userRoles.contains(UserRoles.SAVE_MODE_SEVEN)) {
                                 return Mono.just(modeSevenDto)
                                         .doOnNext(modeSevenDto1 -> log.info("MOde seven add request received [{}]", modeSevenDto1))
-                                        .flatMap(modeSevenDto1 -> modeSevenRepository.findBySessionID(modeSevenDto1.getDefaultConfigurations().getSessionId()))
-                                        .flatMap(modeSeven -> Mono.just(modeSeven)
-                                                .filter(seven -> seven.getResults().stream().anyMatch(i -> Objects.equals(i.getTestId(), modeSevenDto.getResults().get(0).getTestId())))
-                                                .flatMap(modeSeven1 ->
-                                                        Mono.just(ResponseEntity.ok(CommonResponse.builder()
-                                                                .status("E1010")
-                                                                .statusDescription("Mode Already exist with taskID")
-                                                                .build()))
-                                                ).switchIfEmpty(updateSessionSeven(modeSevenDto, modeSeven))
-                                        )
-                                        .switchIfEmpty(saveModeSeven(modeSevenDto, jwt))
+                                        .flatMap(modeSevenDto1 -> saveModeSeven(modeSevenDto))
                                         .doOnError(e ->
                                                 ResponseEntity.ok(CommonResponse.builder()
                                                         .status("E1000")
@@ -460,22 +450,7 @@ public class SessionService {
                         .build())));
     }
 
-    private Mono<ResponseEntity<CommonResponse>> updateSessionSeven(ModeSevenDto modeSevenDto, ModeSeven modeSeven) {
-        return Mono.just(modeSeven)
-                .doOnNext(modeSeven1 -> {
-                    modeSevenDto.getResults().get(0).getReading().setReadAt(LocalDateTime.now());
-                    modeSeven.getResults().add(modeSevenDto.getResults().get(0));
-                    modeSeven.setLastUpdatedDateTime(LocalDateTime.now());
-                })
-                .flatMap(modeSevenRepository::save)
-                .doOnSuccess(mOne -> log.info("Successfully updated the Mode Seven [{}]", mOne))
-                .map(device -> ResponseEntity.ok(CommonResponse.builder()
-                        .status("S1000")
-                        .statusDescription("Success")
-                        .build()));
-    }
-
-    private Mono<ResponseEntity<CommonResponse>> saveModeSeven(ModeSevenDto modeSevenDto, String jwt) {
+    private Mono<ResponseEntity<CommonResponse>> saveModeSeven(ModeSevenDto modeSevenDto) {
         return Mono.just(modeSevenMapper.modeSevenDtoToModeSeven(modeSevenDto))
                 .doOnNext(modeSeven -> {
                     modeSeven.setCreatedDateTime(LocalDateTime.now());
