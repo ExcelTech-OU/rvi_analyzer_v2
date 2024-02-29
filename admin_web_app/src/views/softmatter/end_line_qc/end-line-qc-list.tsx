@@ -102,12 +102,12 @@ const columns: GridColDef[] = [
   {
     field: "date",
     headerName: "Date",
-    width: 100,
+    width: 150,
   },
   {
     field: "time",
     headerName: "Time",
-    width: 100,
+    width: 150,
   },
 ];
 
@@ -118,6 +118,7 @@ export default function EndLineQcList() {
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   const [open, setOpen] = React.useState(false);
+  var filteredData = [];
   ///////////////////////
   const [values, setValues] = useState({
     field1: "",
@@ -131,6 +132,14 @@ export default function EndLineQcList() {
       [field]: value,
     }));
   };
+
+  function getSelectedList(): any {
+    return (
+      data?.sessions.filter((item, index) => selectedRows.includes(index)) || []
+    );
+  }
+
+  const [getAll] = useGetGtTestsMutation();
 
   ///////////////////////
 
@@ -226,7 +235,9 @@ export default function EndLineQcList() {
                           variant="contained"
                           startIcon={<Download />}
                           color="success"
-                          onClick={() => console.log("download")}
+                          onClick={() =>
+                            handleGenerateExcelEndLineQc(getSelectedList())
+                          }
                           disabled={selectedRows.length == 0}
                         >
                           Download selected
@@ -237,7 +248,45 @@ export default function EndLineQcList() {
                           startIcon={<GridOnIcon />}
                           color="success"
                           onClick={() => {
-                            console.log("Download started");
+                            getAll({
+                              data: {
+                                date: date,
+                                filterType: filterType,
+                                filterValue: filterValue,
+                              },
+                              page: "all",
+                            })
+                              .unwrap()
+                              .then((payload) => {
+                                filteredData = payload.sessions.filter(
+                                  (item) => {
+                                    const itemDate = new Date(
+                                      item.createdDateTime
+                                    );
+
+                                    const originalFilterCondition =
+                                      item.result.reading.macAddress.includes(
+                                        values.field1
+                                      ) &&
+                                      item.result.reading.productionOrder.includes(
+                                        values.field2
+                                      ) &&
+                                      item.result.reading.result.includes(
+                                        values.field3
+                                      ) &&
+                                      (!startingDate ||
+                                        new Date(itemDate) >=
+                                          new Date(startingDate)) &&
+                                      (!finishingDate ||
+                                        new Date(itemDate) <=
+                                          new Date(finishingDate));
+
+                                    return originalFilterCondition;
+                                  }
+                                );
+
+                                handleGenerateExcelEndLineQc(filteredData);
+                              });
                           }}
                         >
                           Download
@@ -251,7 +300,7 @@ export default function EndLineQcList() {
                           variant="h6"
                           component="div"
                           color="grey"
-                          sx={{ mr: 2 }}
+                          sx={{ mr: 4 }}
                         >
                           {"TOTAL : " + data?.total}
                         </Typography>
@@ -260,9 +309,14 @@ export default function EndLineQcList() {
                           variant="h6"
                           component="div"
                           color="grey"
-                          sx={{ mr: 2 }}
+                          sx={{ mr: 4 }}
                         >
-                          {"PASSED : " + "8"}
+                          PASSED :{" "}
+                          {data?.sessions
+                            ? data?.sessions.filter((item: ModeSeven) => {
+                                return item.result.reading.result !== "FAIL";
+                              }).length
+                            : 0}
                         </Typography>
                         <Typography
                           gutterBottom
@@ -270,7 +324,12 @@ export default function EndLineQcList() {
                           component="div"
                           color="grey"
                         >
-                          {"FAILED : " + "5"}
+                          FAILED :{" "}
+                          {data?.sessions
+                            ? data?.sessions.filter((item: ModeSeven) => {
+                                return item.result.reading.result === "FAIL";
+                              }).length
+                            : 0}
                         </Typography>
                       </Box>
                     </Grid>
@@ -394,10 +453,10 @@ export default function EndLineQcList() {
                                     {item.result.reading.result}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                    {item.createdDateTime}
+                                    {item.createdDateTime.split("T")[0]}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                    {item.createdDateTime}
+                                    {item.createdDateTime.split("T")[1]}
                                   </StyledTableCell>
                                 </StyledTableRow>
                               );
