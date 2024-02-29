@@ -12,10 +12,11 @@ import {
 import PasswordReset from "./reset-password";
 import { useLoginMutation } from "../../../services/login_service";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "./auth-slice";
 import { alignProperty } from "@mui/material/styles/cssUtils";
+import { useGetPOQuery } from "../../../services/po_service";
 
 export default function Login() {
   const [login] = useLoginMutation();
@@ -23,6 +24,7 @@ export default function Login() {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const [isReset, setReset] = useState(false);
+  const [failMessage, setFailMessage] = useState("");
 
   const handleClick = () => {
     setOpen(true);
@@ -65,18 +67,29 @@ export default function Login() {
           if (payload.state == "S1000") {
             setReset(false);
             dispatch(loginSuccess(payload));
-            // console.log(payload.jwt);
             localStorage.setItem("user", values.userName);
             navigate("/");
           } else if (payload.state == "S1010") {
-            // console.log(payload.jwt);
             setReset(true);
             navigate("/password-reset");
+          } else if (payload.state == "E1200") {
+            console.log(payload.state);
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Un-authorized");
+            setOpen(true);
+          } else if (payload.state == "E1000") {
+            console.log(payload.state);
+            actions.setSubmitting(false);
+            actions.resetForm();
+            setFailMessage("Login failed");
+            setOpen(true);
           }
         })
         .catch((error) => {
           actions.setSubmitting(false);
           actions.resetForm();
+          setFailMessage("Username or password is incorrect");
           setOpen(true);
         });
     },
@@ -143,47 +156,17 @@ export default function Login() {
             >
               Sign In
             </Button>
-            {/* <Box
-              sx={{
-                padding: 3,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                color="textSecondary"
-                variant="body1"
-                sx={{
-                  mr: 1,
-                  // backgroundColor: "blue",
-                }}
-              >
-                Don't have an account ?
-              </Typography>
-              <Typography
-                onClick={() => handleSignUp()}
-                variant="body1"
-                color="#4dabf5"
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": { color: "#1769aa", transitionDelay: "150ms" },
-                }}
-              >
-                Create account
-              </Typography>
-            </Box> */}
           </Box>
         </form>
       </Container>
       <Snackbar
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={4000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Login Failed! username or password incorrect
+          {failMessage}
         </Alert>
       </Snackbar>
     </Box>
