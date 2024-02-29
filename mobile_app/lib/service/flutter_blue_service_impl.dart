@@ -28,7 +28,7 @@ class Blue {
 
   Future<HashMap<String, ScanResult>> scanDevicesWithFilters(String filter) {
     blueDeviceList = HashMap();
-    flutterBlue.startScan(timeout: const Duration(seconds: 5));
+    flutterBlue.startScan(timeout: const Duration(seconds: 4));
     flutterBlue.scanResults.listen((results) {
       for (ScanResult r in results) {
         if (r.device.name.isNotEmpty) {
@@ -42,7 +42,7 @@ class Blue {
     flutterBlue.stopScan();
 
     return Future.delayed(
-      const Duration(seconds: 6),
+      const Duration(seconds: 4),
       () => blueDeviceList,
     );
   }
@@ -436,6 +436,46 @@ class Blue {
                   0x00,
                   0x00,
                   timeDuration,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00
+                ])
+                .then((value) => response = true)
+                .onError((error, stackTrace) => response = false);
+          }
+        }
+      }
+    }
+    return response;
+  }
+
+  Future<bool> runMode07(BluetoothDevice device) async {
+    List<BluetoothService> services = await device.discoverServices();
+    bool response = false;
+    for (var service in services) {
+      if (service.uuid.toString() == "f0002001-0451-4000-b000-000000000000") {
+        for (var element in service.characteristics) {
+          if (element.uuid.toString() ==
+              "f0002001-0451-4000-b000-000000000000") {
+            await element
+                .write([
+                  0x01,
+                  0x07,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
+                  0x00,
                   0x00,
                   0x00,
                   0x00,

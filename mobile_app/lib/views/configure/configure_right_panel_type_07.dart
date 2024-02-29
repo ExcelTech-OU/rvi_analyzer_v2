@@ -480,18 +480,36 @@ class _ConfigureRightPanelType07State
                                   .saveClickedMode07
                               ? null
                               : () {
-                                  ref
-                                          .read(deviceDataMap[
-                                              widget.sc.device.id.id]!)
-                                          .started =
-                                      !ref
-                                          .read(deviceDataMap[
-                                              widget.sc.device.id.id]!)
-                                          .started;
-                                  ref
-                                      .read(deviceDataMap[
-                                          widget.sc.device.id.id]!)
-                                      .updateStatus();
+                                  blue
+                                      .stop(widget.sc.device)
+                                      .then((value) => {
+                                            ref
+                                                    .read(deviceDataMap[widget
+                                                        .sc.device.id.id]!)
+                                                    .started =
+                                                !ref
+                                                    .read(deviceDataMap[widget
+                                                        .sc.device.id.id]!)
+                                                    .started,
+                                            ref
+                                                .read(deviceDataMap[
+                                                    widget.sc.device.id.id]!)
+                                                .updateStatus(),
+                                            ScaffoldMessenger.of(context)
+                                              ..hideCurrentSnackBar()
+                                              ..showSnackBar(getSnackBar(
+                                                  context,
+                                                  Colors.green,
+                                                  "Stopping Success"))
+                                          })
+                                      .onError((error, stackTrace) => {
+                                            ScaffoldMessenger.of(context)
+                                              ..hideCurrentSnackBar()
+                                              ..showSnackBar(getSnackBar(
+                                                  context,
+                                                  Colors.red,
+                                                  "Stop Failed"))
+                                          });
                                 },
                           child: const Text(
                             'Stop',
@@ -559,6 +577,8 @@ class _ConfigureRightPanelType07State
                                           widget.sc.device.id.id]!)
                                       .started;
 
+                              blue.runMode07(widget.sc.device);
+
                               ref
                                   .read(deviceDataMap[widget.sc.device.id.id]!)
                                   .updateStatus();
@@ -608,12 +628,22 @@ class _ConfigureRightPanelType07State
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
                       Text(
                         "Mode 07",
                         style: TextStyle(
                             fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Text(
+                        "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData).notifyData}]",
+                        style: const TextStyle(
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: Colors.black54),
                       ),
