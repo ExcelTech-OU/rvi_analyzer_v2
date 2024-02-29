@@ -9,20 +9,20 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import PasswordReset from "./reset-password";
-import { useLoginMutation } from "../../../services/login_service";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "./auth-slice";
 import { alignProperty } from "@mui/material/styles/cssUtils";
+import { useResetDefaultPasswordMutation } from "../../../services/user_service";
+import Login from "./login";
 
-export default function Login() {
-  const [login] = useLoginMutation();
+export default function Reset() {
+  const [reset] = useResetDefaultPasswordMutation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const [isReset, setReset] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   const handleClick = () => {
     setOpen(true);
@@ -41,49 +41,42 @@ export default function Login() {
 
   const formik = useFormik({
     initialValues: {
-      userName: "",
       password: "",
     },
     validationSchema: Yup.object({
-      userName: Yup.string()
-        .email("Must be a valid email")
-        .max(255)
-        .required("Email is required"),
       password: Yup.string().max(100).required("Password is required"),
     }),
     onSubmit: (values, actions) => {
-      login({
-        userName: values.userName,
+      reset({
         password: values.password,
         source: "WEB",
       })
         .unwrap()
         .then((payload) => {
-          console.log(payload.state);
-          localStorage.removeItem("jwt");
-          localStorage.setItem("jwt", payload.jwt);
-          if (payload.state == "S1000") {
-            setReset(false);
-            dispatch(loginSuccess(payload));
-            // console.log(payload.jwt);
-            localStorage.setItem("user", values.userName);
-            navigate("/");
-          } else if (payload.state == "S1010") {
-            // console.log(payload.jwt);
-            setReset(true);
+          if (payload.status == "S1000") {
+            // dispatch(loginSuccess(payload));
+            setResetSuccess(true);
+            console.log("success");
+            navigate("/login");
+          } else {
+            setResetSuccess(false);
+            setOpen(true);
+            console.log("failed");
             navigate("/password-reset");
           }
         })
         .catch((error) => {
+          setResetSuccess(false);
           actions.setSubmitting(false);
           actions.resetForm();
+          console.log(error);
           setOpen(true);
         });
     },
   });
 
-  return isReset ? (
-    <PasswordReset />
+  return resetSuccess ? (
+    <Login />
   ) : (
     <Box
       component="main"
@@ -99,14 +92,14 @@ export default function Login() {
         <form onSubmit={formik.handleSubmit}>
           <Box sx={{ my: 3 }}>
             <Typography color="textPrimary" variant="h4">
-              Sign in
+              Reset password
             </Typography>
             <Typography color="textSecondary" gutterBottom variant="body2">
-              Sign in to the RVI Analyzer admin panel
+              Reset your password for your account
             </Typography>
           </Box>
 
-          <TextField
+          {/* <TextField
             error={Boolean(formik.touched.userName && formik.errors.userName)}
             fullWidth
             helperText={formik.touched.userName && formik.errors.userName}
@@ -118,7 +111,7 @@ export default function Login() {
             type="email"
             value={formik.values.userName}
             variant="outlined"
-          />
+          /> */}
           <TextField
             error={Boolean(formik.touched.password && formik.errors.password)}
             fullWidth
@@ -141,7 +134,7 @@ export default function Login() {
               type="submit"
               variant="contained"
             >
-              Sign In
+              Reset password
             </Button>
             {/* <Box
               sx={{
@@ -183,7 +176,7 @@ export default function Login() {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Login Failed! username or password incorrect
+          Password reset Failed! please try again later
         </Alert>
       </Snackbar>
     </Box>

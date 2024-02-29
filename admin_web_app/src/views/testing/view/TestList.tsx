@@ -17,19 +17,39 @@ import {
 import { GridColDef } from "@mui/x-data-grid";
 import { useGetUsersQuery, User } from "../../../services/user_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
-import CustomizedMenusUsers from "./custom-menu-user";
+import CustomizedMenusUsers from "../../user/view/custom-menu-user";
 import { List } from "reselect/es/types";
 import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
-import { AddUserModel } from "./add-user";
+import { AddTestModel } from "../add/add-test";
+import { Style, useGetStyleQuery } from "../../../services/styles_service";
+import {
+  ParameterMode,
+  Test,
+  useGetTestQuery,
+} from "../../../services/test_service";
 
 const columns: GridColDef[] = [
-  { field: "email", headerName: "Email", width: 200 },
   {
-    field: "group",
-    headerName: "User Group",
-    width: 150,
+    field: "testGate",
+    headerName: "Test Gate",
+    width: 200,
+  },
+  {
+    field: "parameterModes",
+    headerName: "Parameter Modes",
+    width: 200,
+  },
+  {
+    field: "parameters",
+    headerName: "Parameters",
+    width: 200,
+  },
+  {
+    field: "material",
+    headerName: "Material",
+    width: 200,
   },
   {
     field: "createdBy",
@@ -37,50 +57,25 @@ const columns: GridColDef[] = [
     width: 180,
   },
   {
-    field: "supervisor",
-    headerName: "Supervisor",
-    width: 180,
-  },
-  {
     field: "createdDateTime",
     headerName: "Created Date",
     width: 250,
   },
-  {
-    field: "passwordType",
-    headerName: "Password Status",
-    width: 200,
-  },
-  {
-    field: "enabled",
-    headerName: "Status",
-    width: 200,
-  },
-  {
-    field: "actions",
-    headerName: "Actions",
-    type: "actions",
-    width: 200,
-  },
 ];
 
-export default function UserList() {
-  const { data, error, isLoading } = useGetUsersQuery("");
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [page, setPage] = useState(1);
+export default function TestList() {
+  var { data, error, isLoading } = useGetTestQuery("");
+  const [pageCount, setPageCount] = React.useState(1);
+  const [page, setPage] = React.useState(1);
+  const [testList, setTestsList] = useState<any>([]);
   var userRoles: string | string[] = [];
-  var admin = "";
-  const [userList, setUserList] = useState<any>([]);
-  const [isUsersUpdated, setIsUsersUpdated] = useState(false);
   const [open, setOpen] = useState(false);
+  var admin = "";
   var roles = localStorage.getItem("roles");
-  // var dataUsers: List<User> = [];
-
-  // dataUsers = data?.users;
 
   // const fetchData = async () => {
-  //   const newUsers: User[] = data?.users;
-  //   setUserList(newUsers);
+  //   const newList: Test[] = data?.tests;
+  //   setTestsList(newList);
   // };
 
   // useEffect(() => {
@@ -90,27 +85,6 @@ export default function UserList() {
   // useEffect(() => {
   //   fetchData();
   // }, [open]);
-
-  // userList = data?.users;
-
-  //pagination
-  // const startIndex = page * rowsPerPage;
-  // const endIndex = Math.min(startIndex + rowsPerPage, dataUsers.length);
-  // const visibleData = data?.users.slice(startIndex, endIndex);
-  // const [isUsersAvailable, setIsUsersAvailable] = useState(false);
-
-  // useEffect(() => {
-  //   const newUsers: any = data?.users;
-  //   setUserList(newUsers);
-  //   setIsUsersUpdated(true);
-  //   console.log("data is fetched");
-  // }, []);
-
-  // useEffect(() => {
-  //   if (isUsersUpdated) {
-  //     console.log(userList);
-  //   }
-  // }, [isUsersUpdated]);
 
   //get user roles from local storage
   if (roles === null) {
@@ -172,7 +146,7 @@ export default function UserList() {
                           component="div"
                           color="grey"
                         >
-                          Users
+                          Tests
                         </Typography>
                         <Box display="flex" justifyContent="flex-end">
                           <Button
@@ -219,83 +193,48 @@ export default function UserList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data!.users
-                                  .filter((user: User) => {
-                                    if (admin === "ADMIN") {
-                                      return user.group === "USER";
-                                    } else {
-                                      return user;
-                                    }
-                                  })
-                                  .map((item: any, index: any) => {
+                                {data!.tests
+                                  .map((item: Test, index: any) => {
                                     return (
                                       <StyledTableRow
                                         key={index}
-                                        id={item.username}
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}
                                       >
                                         <StyledTableCell align={"left"}>
-                                          {item.username}
+                                          {item.testGate}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
-                                          {item.group}
+                                          {item.parameterModes.map(
+                                            (object: ParameterMode) => {
+                                              return (
+                                                <Typography>
+                                                  {object.name}
+                                                </Typography>
+                                              );
+                                            }
+                                          )}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.parameterModes.map(
+                                            (object: ParameterMode) => {
+                                              return (
+                                                <Typography>
+                                                  {object.parameter}
+                                                </Typography>
+                                              );
+                                            }
+                                          )}
+                                        </StyledTableCell>
+                                        <StyledTableCell align={"left"}>
+                                          {item.material}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
                                           {item.createdBy}
                                         </StyledTableCell>
                                         <StyledTableCell align={"left"}>
-                                          {item.supervisor}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
                                           {item.createdDateTime}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
-                                          {item.passwordType == "PASSWORD" ? (
-                                            <Button
-                                              variant="contained"
-                                              color="success"
-                                            >
-                                              ACTIVE
-                                            </Button>
-                                          ) : item.passwordType == "DEFAULT" ? (
-                                            <Button
-                                              variant="contained"
-                                              color="warning"
-                                            >
-                                              DEFAULT
-                                            </Button>
-                                          ) : (
-                                            <Button
-                                              variant="contained"
-                                              color="error"
-                                            >
-                                              RESET
-                                            </Button>
-                                          )}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"left"}>
-                                          {item.status == "ACTIVE" ? (
-                                            <Button
-                                              variant="contained"
-                                              color="primary"
-                                            >
-                                              ACTIVE
-                                            </Button>
-                                          ) : (
-                                            <Button
-                                              variant="contained"
-                                              color="error"
-                                            >
-                                              TEMPORARY_BLOCKED
-                                            </Button>
-                                          )}
-                                        </StyledTableCell>
-                                        <StyledTableCell align={"right"}>
-                                          <CustomizedMenusUsers
-                                            user={item as User}
-                                          />
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     );
@@ -307,7 +246,7 @@ export default function UserList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            // count={Math.ceil(data?.users.length / rowsPerPage)}
+                            count={pageCount}
                             sx={{ mt: 2 }}
                             variant="outlined"
                             shape="rounded"
@@ -321,7 +260,7 @@ export default function UserList() {
                 </Box>
               </>
             </Container>
-            <AddUserModel open={open} changeOpenStatus={setOpen} />
+            <AddTestModel open={open} changeOpenStatus={setOpen} />
           </Box>
         )}
       </>

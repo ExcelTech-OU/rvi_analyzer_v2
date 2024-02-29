@@ -3,34 +3,36 @@ import { List } from 'reselect/es/types'
 // import { FullGarment } from '../../../services/softmatter_service';
 import { format, parseISO } from 'date-fns';
 
+import { ModeSeven } from '../../../services/gt_service';
+
 ///////////////////////
-interface FullGarment {
-    _id: string
-    dateCode: string
-    idleCurrent: string
-    settingsIdleCurrentMin: string
-    settingsIdleCurrentMax: string
-    idleCurrentStatus: string
-    flCurrent: string
-    settingsFLCurrentMin: string
-    settingsFLCurrentMax: string
-    flCurrentStatus: string
-    voltage: string
-    noiseIdle: string
-    settingsNoiseMin: string
-    settingsNoiseMax: string
-    noiseStatusIdle: string
-    noiseFL: string
-    noiseStatusFL: string
-    createdBy: string
-    soNumber: string
-    productionOrder: string
-    qrCode: string
-    createdDateTime: string
-}
+// interface FullGarment {
+//     _id: string
+//     dateCode: string
+//     idleCurrent: string
+//     settingsIdleCurrentMin: string
+//     settingsIdleCurrentMax: string
+//     idleCurrentStatus: string
+//     flCurrent: string
+//     settingsFLCurrentMin: string
+//     settingsFLCurrentMax: string
+//     flCurrentStatus: string
+//     voltage: string
+//     noiseIdle: string
+//     settingsNoiseMin: string
+//     settingsNoiseMax: string
+//     noiseStatusIdle: string
+//     noiseFL: string
+//     noiseStatusFL: string
+//     createdBy: string
+//     soNumber: string
+//     productionOrder: string
+//     qrCode: string
+//     createdDateTime: string
+// }
 ///////////////////////
 
-export function handleGenerateExcelEndLineQc(singleMotors: List<FullGarment>) {
+export function handleGenerateExcelEndLineQc(singleMotors: List<ModeSeven>) {
 
 
     // Create a new workbook
@@ -38,28 +40,28 @@ export function handleGenerateExcelEndLineQc(singleMotors: List<FullGarment>) {
 
     // Create a new worksheet 'NOISE_IDLE', 'SETTINGS_NOISE_MIN', 'SETTINGS_NOISE_MAX', 'NOISE_STATUS_IDLE', 'NOISE_FL', 'NOISE_STATUS_FL'
     const worksheet = XLSX.utils.aoa_to_sheet([
-        ['DATE_CODE', 'IDLE_CURRENT', 'SETTINGS_IDLE_CURRENT_MIN', 'SETTINGS_IDLE_CURRENT_MAX', 'IDLE_CURRENT_STATUS', 'FL_CURRENT', 'SETTINGS_FL_CURRENT_MIN', 'SETTINGS_FL_CURRENT_MAX', "FL_CURRENT_STATUS", 'VOLTAGE', 'SO_NUMBER', 'PRODUCTION_ORDER', 'QR_CODE', 'CREATED_DATE_TIME'],
+        ['CUSTOMER_ID', 'MAC_ADDRESS', 'PRODUCTION', 'OPERATOR_ID', 'VOLTAGE', 'CURRENT', 'RESISTANCE', 'LED_SEQUENCE', "DATE", 'TIME'],
         ...singleMotors.map((data) => [
-            data.dateCode,
-            data.idleCurrent,
-            data.settingsIdleCurrentMin,
-            data.settingsIdleCurrentMax,
-            data.idleCurrentStatus,
-            data.flCurrent,
-            data.settingsFLCurrentMin,
-            data.settingsFLCurrentMax,
-            data.flCurrentStatus,
-            data.voltage,
-            data.soNumber,
-            data.productionOrder,
-            data.qrCode,
+            data.defaultConfigurations.customerName,
+            data.result.reading.macAddress,
+            data.result.reading.productionOrder,
+            data.defaultConfigurations.operatorId,
+            data.result.reading.voltage,
+            data.result.reading.current,
+            data.result.reading.resistance,
+            data.result.reading.result,
+            data.createdDateTime.split('T')[0],
+            data.createdDateTime.split('T')[1],
+
+
             // data.noiseIdle,
             // data.settingsNoiseMin,
             // data.settingsNoiseMax,
             // data.noiseStatusIdle,
             // data.noiseFL,
             // data.noiseStatusFL,
-            format(parseISO(data.createdDateTime), 'yyyy-MM-dd hh:mm:ss a')
+
+            // format(parseISO(data.createdDateTime), 'yyyy-MM-dd hh:mm:ss a')
         ]),
     ]);
 

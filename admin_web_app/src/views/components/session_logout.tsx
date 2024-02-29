@@ -8,6 +8,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../auth/login/auth-slice';
+import { userApi } from '../../services/user_service';
+import { deviceApi } from '../../services/device_service';
+import { sessionApi } from '../../services/sessions_service';
 
 export default function SessionTimeoutPopup() {
     const [open, setOpen] = React.useState(false);
@@ -25,6 +28,9 @@ export default function SessionTimeoutPopup() {
 
     const logoutUser = () => {
         dispatch(logout());
+        dispatch(userApi.util.resetApiState());
+        dispatch(deviceApi.util.resetApiState());
+        dispatch(sessionApi.util.resetApiState());
         navigate('/login');
     }
 

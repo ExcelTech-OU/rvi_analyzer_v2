@@ -16,9 +16,9 @@ interface MyComponentProps {
 const MyComponent: React.FC<MyComponentProps> = ({ initialValues = {}, onInputChange }) => {
   const [fieldValues, setFieldValues] = useState<Record<string, string>>(initialValues);
 
-  const optionsField1 = ["00", "option2"];
-  const optionsField2 = ["54", "option2"];
-  const optionsPassFail = ["Pass", "Fail"];
+  const optionsField1 = ["A0:69:74:34:69:75", "C0:51:33:36:1B:45"];
+  const optionsField2 = ["g", "12345"];
+  const optionsPassFail = ["PASS", "FAIL"];
 
   const handleInputChangeLocal = (fieldName: string) => (event: ChangeEvent<HTMLInputElement | { value: string }>) => {
     const newValue = event.target.value;
@@ -56,12 +56,15 @@ const MyComponent: React.FC<MyComponentProps> = ({ initialValues = {}, onInputCh
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          label="Field 1"
+          label="MAC Address"
           variant="outlined"
           value={fieldValues.field1 || ''}
           onChange={handleSelectChange('field1')}
           style={selectFieldStyle}
         >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
           {optionsField1.map((option) => (
             <MenuItem key={option} value={option}>
               {option}
@@ -75,12 +78,15 @@ const MyComponent: React.FC<MyComponentProps> = ({ initialValues = {}, onInputCh
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          label="Field 2"
+          label="Production Order"
           variant="outlined"
           value={fieldValues.field2 || ''}
           onChange={handleSelectChange('field2')}
           style={selectFieldStyle}
         >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
           {optionsField2.map((option) => (
             <MenuItem key={option} value={option}>
               {option}
@@ -94,12 +100,15 @@ const MyComponent: React.FC<MyComponentProps> = ({ initialValues = {}, onInputCh
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          label="Field 3"
+          label="Result"
           variant="outlined"
           value={fieldValues.field3 || ''}
           onChange={handleSelectChange('field3')}
           style={selectFieldStyle}
         >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
           {optionsPassFail.map((option) => (
             <MenuItem key={option} value={option}>
               {option}
