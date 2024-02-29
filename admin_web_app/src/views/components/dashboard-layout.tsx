@@ -20,12 +20,6 @@ export const DashboardLayout = (props: any) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const [pageStatus, setPageStatus] = useState<number>(0);
-  const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
-
-  useEffect(() => {
-    getGtTests({});
-    console.log(data?.sessions);
-  }, []);
 
   const handleOpen = () => {
     setSidebarOpen(true);

@@ -320,17 +320,6 @@ export default function EndLineQcList() {
 
   const [startingDate, setStartingDate] = useState(null);
   const [finishingDate, setFinishingDate] = useState(null);
-  //   const {
-  //     data: adminData,
-  //     error: adminError,
-  //     isLoading: adminLoading,
-  //   } = useGetGtTestsQuery("");
-
-  //   useEffect(() => {
-  //     adminData?.sessions.map((item: ModeSeven) => {
-  //       console.log(item.defaultConfigurations.customerName);
-  //     });
-  //   }, []);
 
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
     setStartingDate(date);
@@ -422,11 +411,7 @@ export default function EndLineQcList() {
                           variant="contained"
                           startIcon={<Download />}
                           color="success"
-                          onClick={
-                            () =>
-                              handleGenerateExcelEndLineQc(getSelectedList())
-                            // console.log("Download list started")
-                          }
+                          onClick={() => console.log("download")}
                           disabled={selectedRows.length == 0}
                         >
                           Download selected
@@ -441,7 +426,7 @@ export default function EndLineQcList() {
                             //     .then((payload) => {
                             //         handleGenerateExcelEndLineQc(payload.endLIneQcs)
                             //     });
-                            handleGenerateExcelEndLineQc(getSelectedList());
+                            // handleGenerateExcelEndLineQc(getSelectedList());
                             console.log("Download started");
                           }}
                         >
@@ -627,10 +612,10 @@ export default function EndLineQcList() {
                                                                     </StyledTableCell> */}
 
                                   <StyledTableCell align={"left"}>
-                                    {format(
+                                    {/* {format(
                                       parseISO(item.createdDateTime),
                                       "yyyy-MM-dd hh:mm:ss a"
-                                    )}
+                                    )} */}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
                                     <Button
