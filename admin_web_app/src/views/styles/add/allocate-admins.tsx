@@ -53,6 +53,7 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
   const [style, setStyle] = useState("");
   const [admin, setAdmin] = useState("");
   const [allocateAdmin] = useAllocateAdminMutation();
+  const [submitted, setSubmitted] = useState(true);
 
   const {
     data: adminData,
@@ -109,8 +110,8 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
 
   const formik = useFormik({
     initialValues: {
-      style: "",
-      admin: "",
+      style: null,
+      admin: null,
     },
     validationSchema: Yup.object({
       admin: Yup.string().max(255).required("Admin is required"),
@@ -127,6 +128,9 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
           if (payload.status == "S1000") {
             actions.setSubmitting(false);
             actions.resetForm();
+            formik.setFieldValue("admin", "");
+            formik.setFieldValue("style", "");
+            setSubmitted(true);
             setOpenSuccess(true);
           }
         })
@@ -246,28 +250,53 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
             helperText={formik.touched.name && formik.errors.name}
           /> */}
 
-          <FormControl
-            sx={{ mt: 1 }}
-            fullWidth
-            error={Boolean(formik.touched.style && formik.errors.style)}
-          >
-            <CustomSelect
-              id="style"
-              options={styles}
-              placeholder="Style"
-              onChange={(value: { value: any }) => {
-                formik.setFieldValue("style", value.value);
-                setStyle(value.value);
-              }}
-              name="style"
-              className={"input"}
-              value={formik.values.style}
-              onBlur={formik}
-            />
-            <FormHelperText>
-              {formik.touched.style && formik.errors.style}
-            </FormHelperText>
-          </FormControl>
+          {submitted === true ? (
+            <FormControl
+              sx={{ mt: 1 }}
+              fullWidth
+              error={Boolean(formik.touched.style && formik.errors.style)}
+            >
+              <CustomSelect
+                id="style"
+                options={styles}
+                placeholder="Style"
+                onChange={(value: { value: any }) => {
+                  formik.setFieldValue("style", value.value);
+                  setStyle(value.value);
+                }}
+                name="style"
+                className={"input"}
+                value={formik.values.style}
+                onBlur={formik}
+              />
+              <FormHelperText>
+                {formik.touched.style && formik.errors.style}
+              </FormHelperText>
+            </FormControl>
+          ) : (
+            <FormControl
+              sx={{ mt: 1 }}
+              fullWidth
+              error={Boolean(formik.touched.style && formik.errors.style)}
+            >
+              <CustomSelect
+                id="style"
+                options={styles}
+                placeholder="Style"
+                onChange={(value: { value: any }) => {
+                  formik.setFieldValue("style", value.value);
+                  setStyle(value.value);
+                }}
+                name="style"
+                className={"input"}
+                value={formik.values.style}
+                onBlur={formik}
+              />
+              <FormHelperText>
+                {formik.touched.style && formik.errors.style}
+              </FormHelperText>
+            </FormControl>
+          )}
 
           <FormControl
             sx={{ mt: 1 }}

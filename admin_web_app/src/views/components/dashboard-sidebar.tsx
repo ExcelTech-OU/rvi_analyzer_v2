@@ -24,6 +24,7 @@ import BugReport from "@mui/icons-material/BugReport";
 import HardwareIcon from "@mui/icons-material/Hardware";
 import AddIcon from "@mui/icons-material/Add";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import SportsMmaIcon from "@mui/icons-material/SportsMma";
 import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import CableIcon from "@mui/icons-material/Cable";
@@ -218,7 +219,7 @@ const items = [
       },
       {
         href: "#",
-        icon: <BatteryChargingFullIcon fontSize="small" />,
+        icon: <SportsMmaIcon fontSize="small" />,
         title: "Glove Testing",
         childs: [
           {

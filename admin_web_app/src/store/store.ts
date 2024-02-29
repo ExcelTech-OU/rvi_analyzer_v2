@@ -13,6 +13,7 @@ import { styleApi } from '../services/styles_service'
 import { materialApi } from '../services/material_service'
 import { testApi } from '../services/test_service'
 import { parameterApi } from '../services/parameter_service'
+import { gtTestingApi } from '../services/gt_service'
 
 export const store = configureStore({
     reducer: {
@@ -29,6 +30,7 @@ export const store = configureStore({
         [dashboardApi.reducerPath]: dashboardApi.reducer,
         [sessionApi.reducerPath]: sessionApi.reducer,
         [questionsApi.reducerPath]: questionsApi.reducer,
+        [gtTestingApi.reducerPath]: gtTestingApi.reducer,
         loginStatus: loginSlice.reducer
     },
     middleware: (getDefaultMiddleware) =>
@@ -44,7 +46,8 @@ export const store = configureStore({
             .concat(userApi.middleware)
             .concat(dashboardApi.middleware)
             .concat(sessionApi.middleware)
-            .concat(questionsApi.middleware),
+            .concat(questionsApi.middleware)
+            .concat(gtTestingApi.middleware),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

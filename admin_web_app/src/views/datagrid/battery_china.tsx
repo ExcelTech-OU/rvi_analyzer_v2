@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import BatteryTest from "./battery";
+import { ModeSeven, useGetGtTestsMutation } from "../../services/gt_service";
 
 export const Battery_china = () => {
   return (
