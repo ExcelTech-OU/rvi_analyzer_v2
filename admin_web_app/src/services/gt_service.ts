@@ -4,7 +4,8 @@ import { List } from 'reselect/es/types'
 export interface TestListResponse {
     status: string
     statusDescription: string
-    materials: List<ModeSeven>
+    sessions: List<ModeSeven>
+    total: BigInteger
 }
 
 export interface ModeSeven {
@@ -53,14 +54,24 @@ export const gtTestingApi = createApi({
     }),
     tagTypes: ['gtTestList'],
     endpoints: (build) => ({
-        getGtTests: build.query<TestListResponse, {}>({
-            query: () => `rvi/analyzer/v1/session/get/seven`,
-            providesTags: [{ type: 'gtTestList', id: "getGtTests" }]
+        // getGtTests: build.query<TestListResponse, {}>({
+        //     query: () => `rvi/analyzer/v1/session/get/seven`,
+        //     providesTags: [{ type: 'gtTestList', id: "getGtTests" }]
 
+        // }),
+        getGtTests: build.mutation<TestListResponse, {}>({
+            query(data) {
+                return {
+                    url: `rvi/analyzer/v1/session/get/seven`,
+                    method: 'POST',
+                    body: {},
+                }
+            },
+            invalidatesTags: [{ type: 'gtTestList', id: "getGtTests" }]
         }),
     }),
 })
 
 export const {
-    useGetGtTestsQuery,
+    useGetGtTestsMutation,
 } = gtTestingApi

@@ -31,7 +31,7 @@ import { UpdateEndLinePopup } from "./update-end-line-qc";
 import { useState, useEffect } from "react";
 import MyComponent from "../table_search_form_softmatter";
 import BasicDateRangePicker from "../datePicker";
-import { useGetGtTestsQuery } from "../../../services/gt_service";
+import { ModeSeven, useGetGtTestsQuery } from "../../../services/gt_service";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -411,11 +411,7 @@ export default function EndLineQcList() {
                           variant="contained"
                           startIcon={<Download />}
                           color="success"
-                          onClick={
-                            () =>
-                              handleGenerateExcelEndLineQc(getSelectedList())
-                            // console.log("Download list started")
-                          }
+                          onClick={() => console.log("download")}
                           disabled={selectedRows.length == 0}
                         >
                           Download selected
@@ -430,7 +426,7 @@ export default function EndLineQcList() {
                             //     .then((payload) => {
                             //         handleGenerateExcelEndLineQc(payload.endLIneQcs)
                             //     });
-                            handleGenerateExcelEndLineQc(getSelectedList());
+                            // handleGenerateExcelEndLineQc(getSelectedList());
                             console.log("Download started");
                           }}
                         >
@@ -616,10 +612,10 @@ export default function EndLineQcList() {
                                                                     </StyledTableCell> */}
 
                                   <StyledTableCell align={"left"}>
-                                    {format(
+                                    {/* {format(
                                       parseISO(item.createdDateTime),
                                       "yyyy-MM-dd hh:mm:ss a"
-                                    )}
+                                    )} */}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
                                     <Button
