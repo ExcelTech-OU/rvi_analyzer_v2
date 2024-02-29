@@ -25,13 +25,13 @@ import { styled } from "@mui/material";
 // import TableSearchFormSoftmatter from "../table_search_form_softmatter";
 import SessionTimeoutPopup from "../../components/session_logout";
 import { handleGenerateExcelEndLineQc } from "./end_line_qc-excel";
-import { Download, Edit } from "@mui/icons-material";
-import { UpdateEndLinePopup } from "./update-end-line-qc";
+import { Download } from "@mui/icons-material";
 
 import { useState, useEffect } from "react";
 import MyComponent from "../table_search_form_softmatter";
 import BasicDateRangePicker from "../datePicker";
 import { ModeSeven, useGetGtTestsMutation } from "../../../services/gt_service";
+import { AnyObject } from "yup/lib/types";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -122,6 +122,7 @@ export default function EndLineQcList() {
   const [values, setValues] = useState({
     field1: "",
     field2: "",
+    field3: "",
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -136,7 +137,7 @@ export default function EndLineQcList() {
   const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
   const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
   const [feed, setFeed] = useState(false);
-  const [modeList, setModeList] = useState<ModeSeven[]>([]);
+  const [modeList, setModeList] = useState<any>([]);
 
   useEffect(() => {
     getGtTests({});
@@ -261,7 +262,7 @@ export default function EndLineQcList() {
                           color="grey"
                           sx={{ mr: 2 }}
                         >
-                          {/* {"PASSED : " + data?.totalSuccess} */}
+                          {"PASSED : " + "8"}
                         </Typography>
                         <Typography
                           gutterBottom
@@ -269,7 +270,7 @@ export default function EndLineQcList() {
                           component="div"
                           color="grey"
                         >
-                          {/* {"FAILED : " + (data?.total! - data?.totalSuccess!)} */}
+                          {"FAILED : " + "5"}
                         </Typography>
                       </Box>
                     </Grid>
@@ -332,55 +333,75 @@ export default function EndLineQcList() {
                           </StyledTableRow>
                         </TableHead>
                         <TableBody>
-                          {modeList.map((item: ModeSeven, index: any) => {
-                            return (
-                              <StyledTableRow
-                                hover
-                                role="checkbox"
-                                tabIndex={-1}
-                                key={index}
-                                onClick={() => handleRowClick(index)}
-                                selected={selectedRows.includes(index)}
-                              >
-                                <StyledTableCell align={"left"}>
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedRows.includes(index)}
-                                  />
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.defaultConfigurations.customerName}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.macAddress}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.productionOrder}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.defaultConfigurations.operatorId}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.voltage}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.current}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.resistance}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.result}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.createdDateTime}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.createdDateTime}
-                                </StyledTableCell>
-                              </StyledTableRow>
-                            );
-                          })}
+                          {modeList
+                            .filter((item: ModeSeven) => {
+                              const itemDate = new Date(item.createdDateTime);
+                              return (
+                                item.result.reading.macAddress.includes(
+                                  values.field1
+                                ) &&
+                                item.result.reading.productionOrder.includes(
+                                  values.field2
+                                ) &&
+                                item.result.reading.result.includes(
+                                  values.field3
+                                ) &&
+                                (!startingDate ||
+                                  new Date(itemDate) >=
+                                    new Date(startingDate)) &&
+                                (!finishingDate ||
+                                  new Date(itemDate) <= new Date(finishingDate))
+                              );
+                            })
+                            .map((item: ModeSeven, index: any) => {
+                              return (
+                                <StyledTableRow
+                                  hover
+                                  role="checkbox"
+                                  tabIndex={-1}
+                                  key={index}
+                                  onClick={() => handleRowClick(index)}
+                                  selected={selectedRows.includes(index)}
+                                >
+                                  <StyledTableCell align={"left"}>
+                                    <input
+                                      type="checkbox"
+                                      checked={selectedRows.includes(index)}
+                                    />
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.defaultConfigurations.customerName}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.macAddress}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.productionOrder}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.defaultConfigurations.operatorId}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.voltage}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.current}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.resistance}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.result}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.createdDateTime}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.createdDateTime}
+                                  </StyledTableCell>
+                                </StyledTableRow>
+                              );
+                            })}
                         </TableBody>
                       </Table>
                     </TableContainer>

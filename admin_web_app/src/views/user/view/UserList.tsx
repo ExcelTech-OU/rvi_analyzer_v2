@@ -23,12 +23,7 @@ import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
 import { AddUserModel } from "./add-user";
-import {
-  ModeSeven,
-  useGetGtTestsMutation,
-  useGetGtTestsQuery,
-} from "../../../services/gt_service";
-
+import { useGetPOQuery } from "../../../services/po_service";
 const columns: GridColDef[] = [
   { field: "email", headerName: "Email", width: 200 },
   {
@@ -79,6 +74,16 @@ export default function UserList() {
   const [isUsersUpdated, setIsUsersUpdated] = useState(false);
   const [open, setOpen] = useState(false);
   var roles = localStorage.getItem("roles");
+  // const {
+  //   data: orderData,
+  //   error: orderError,
+  //   isLoading: orderLoading,
+  // } = useGetPOQuery("");
+
+  // useEffect(() => {
+  //   console.log(orderData?.orders);
+  // }, [data]);
+
   // var dataUsers: List<User> = [];
 
   // dataUsers = data?.users;

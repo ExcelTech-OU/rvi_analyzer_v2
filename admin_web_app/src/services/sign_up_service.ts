@@ -27,7 +27,7 @@ export const signUpApi = createApi({
     reducerPath: 'signUpApi',
     baseQuery: fetchBaseQuery({ 
         // baseUrl: 'http://127.0.0.1:7550/'
-        baseUrl: 'http://127.0.0.1:7550/'
+        baseUrl: 'http://rvi.v2.exceltch.com/rvi-analyzer-api/'
      }),
     tagTypes: ['signUpRequest'],
     endpoints: (build) => ({
