@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import {
   TextField,
   MenuItem,
@@ -7,22 +7,39 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+import { Order, useGetPOQuery } from "../../services/po_service";
+import { List } from "reselect/es/types";
+import { ModeSeven, useGetGtTestsMutation } from "../../services/gt_service";
+
+var count = 0;
 
 interface MyComponentProps {
   initialValues?: Record<string, string>;
   onInputChange?: (field: string, value: string) => void;
+  orders: List<Order>;
+}
+
+interface MacAddress {
+  id: number;
+  macAddress: String;
 }
 
 const MyComponent: React.FC<MyComponentProps> = ({
   initialValues = {},
   onInputChange,
+  orders,
 }) => {
   const [fieldValues, setFieldValues] =
     useState<Record<string, string>>(initialValues);
-
-  const optionsField1 = ["A0:69:74:34:69:75", "C0:51:33:36:1B:45"];
-  const optionsField2 = ["g", "12345"];
-  const optionsPassFail = ["PASS", "FAIL"];
+  const {
+    data: poData,
+    error: poError,
+    isLoading: poLoading,
+  } = useGetPOQuery("");
+  const [poList, setPOList] = useState<any>([]);
+  const [macList, setMacList] = useState<any>([]);
+  const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
+  const [optionsField1, setOptionsField1] = useState<any>();
 
   const handleInputChangeLocal =
     (fieldName: string) =>
@@ -37,6 +54,43 @@ const MyComponent: React.FC<MyComponentProps> = ({
         onInputChange(fieldName, newValue);
       }
     };
+
+  const extractMacAddresses = () => {
+    // const macAddresses: String[] = [];
+    const macAddresses: MacAddress[] = [];
+    data?.sessions.forEach((session: ModeSeven) => {
+      if (session.result && session.result.reading) {
+        // macAddresses.push(session.result.reading.macAddress);
+        count = count + 1;
+        macAddresses.push({
+          id: count,
+          macAddress: session.result.reading.macAddress,
+        });
+      }
+    });
+    return macAddresses;
+  };
+
+  useEffect(() => {
+    if (poData && poData.orders) {
+      setPOList(poData.orders);
+    }
+  }, [poData]);
+
+  useEffect(() => {
+    getGtTests({});
+  }, []);
+
+  useEffect(() => {
+    setOptionsField1(extractMacAddresses());
+  }, [data]);
+
+  useEffect(() => {
+    console.log(macList);
+  }, [macList]);
+
+  const optionsField2 = poList;
+  const optionsPassFail = ["PASS", "FAIL"];
 
   const handleSelectChange =
     (fieldName: string) => (event: SelectChangeEvent<string>) => {
@@ -68,13 +122,20 @@ const MyComponent: React.FC<MyComponentProps> = ({
           value={fieldValues.field1 || ""}
           onChange={handleSelectChange("field1")}
           style={selectFieldStyle}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 150,
+              },
+            },
+          }}
         >
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {optionsField1.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
+          {extractMacAddresses().map((option: MacAddress) => (
+            <MenuItem key={option.id} value={option.macAddress}>
+              {option.macAddress}
             </MenuItem>
           ))}
         </Select>
@@ -94,9 +155,9 @@ const MyComponent: React.FC<MyComponentProps> = ({
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {optionsField2.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
+          {optionsField2.map((option: Order) => (
+            <MenuItem key={option.orderId} value={option.orderId}>
+              {option.orderId}
             </MenuItem>
           ))}
         </Select>

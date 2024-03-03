@@ -182,15 +182,14 @@ export default function StyleList() {
                         <Divider
                           sx={{
                             borderColor: "grey",
-                            my: 1.5,
+                            my: 1,
                             borderStyle: "dashed",
                           }}
                         />
-                        {/* <TableSearchForm searchFun={setSearchParams}></TableSearchForm> */}
                         <Divider
                           sx={{
                             borderColor: "grey",
-                            my: 1.5,
+                            my: 1,
                             borderStyle: "dashed",
                           }}
                         />
@@ -200,7 +199,7 @@ export default function StyleList() {
                             overflow: "hidden",
                           }}
                         >
-                          <TableContainer sx={{ maxHeight: 440 }}>
+                          <TableContainer sx={{ maxHeight: 300 }}>
                             <Table
                               stickyHeader
                               aria-label="sticky table"

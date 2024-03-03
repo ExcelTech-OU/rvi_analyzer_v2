@@ -32,6 +32,7 @@ import MyComponent from "../table_search_form_softmatter";
 import BasicDateRangePicker from "../datePicker";
 import { ModeSeven, useGetGtTestsMutation } from "../../../services/gt_service";
 import { AnyObject } from "yup/lib/types";
+import { useGetPOQuery } from "../../../services/po_service";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -118,8 +119,17 @@ export default function EndLineQcList() {
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
   const [open, setOpen] = React.useState(false);
+  const {
+    data: poData,
+    error: poError,
+    isLoading: poLoading,
+  } = useGetPOQuery("");
+  const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
+  const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
+  const [feed, setFeed] = useState(false);
+  const [modeList, setModeList] = useState<any>([]);
+  const [poList, setPOList] = useState<any>([]);
   var filteredData = [];
-  ///////////////////////
   const [values, setValues] = useState({
     field1: "",
     field2: "",
@@ -133,32 +143,26 @@ export default function EndLineQcList() {
     }));
   };
 
-  function getSelectedList(): any {
-    return (
-      data?.sessions.filter((item, index) => selectedRows.includes(index)) || []
-    );
-  }
-
-  const [getAll] = useGetGtTestsMutation();
-
-  ///////////////////////
-
-  const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
-  const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
-  const [feed, setFeed] = useState(false);
-  const [modeList, setModeList] = useState<any>([]);
-
   useEffect(() => {
     getGtTests({});
     setFeed(true);
   }, []);
 
   useEffect(() => {
-    console.log(data?.sessions);
     if (data && data.sessions) {
       setModeList(data.sessions);
     }
+    if (poData && poData.orders) {
+      setPOList(poData.orders);
+    }
   }, [data]);
+
+  function getSelectedList(): any {
+    return (
+      data?.sessions.filter((item, index) => selectedRows.includes(index)) || []
+    );
+  }
+  const [getAll] = useGetGtTestsMutation();
 
   const handleRowClick = (id: number) => {
     if (selectedRows.includes(id)) {
@@ -293,7 +297,13 @@ export default function EndLineQcList() {
                         </Button>
                       </Box>
                     </Grid>
-                    <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
+                    <Grid
+                      item
+                      xs={4}
+                      sm={8}
+                      md={12}
+                      sx={{ mt: 1, maxHeight: 300 }}
+                    >
                       <Box display="flex" justifyContent="flex-end">
                         <Typography
                           gutterBottom
@@ -351,6 +361,7 @@ export default function EndLineQcList() {
                     <MyComponent
                       initialValues={values}
                       onInputChange={handleInputChange}
+                      orders={poList}
                     />
 
                     <div style={{ marginLeft: "10px", marginRight: "10px" }}>

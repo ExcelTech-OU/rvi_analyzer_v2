@@ -51,6 +51,7 @@ export function AllocateStyleModel({ open, changeOpenStatus }: AddPlantProps) {
   const theme = useTheme();
   const [style, setStyle] = useState("");
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [submitted, setSubmitted] = useState(false);
 
   const {
     data: styleData,
@@ -112,6 +113,7 @@ export function AllocateStyleModel({ open, changeOpenStatus }: AddPlantProps) {
         .unwrap()
         .then((payload) => {
           if (payload.status == "S1000") {
+            setSubmitted(true);
             actions.setSubmitting(false);
             actions.resetForm();
             setOpenSuccess(true);
@@ -235,6 +237,7 @@ export function AllocateStyleModel({ open, changeOpenStatus }: AddPlantProps) {
               className={"input"}
               value={formik.values.style}
               onBlur={formik}
+              submitted={submitted}
             />
             <FormHelperText>
               {formik.touched.style && formik.errors.style}
@@ -257,6 +260,7 @@ export function AllocateStyleModel({ open, changeOpenStatus }: AddPlantProps) {
               className={"input"}
               value={formik.values.customer}
               onBlur={formik}
+              submitted={submitted}
             />
             <FormHelperText>
               {formik.touched.customer && formik.errors.customer}
@@ -279,6 +283,7 @@ export function AllocateStyleModel({ open, changeOpenStatus }: AddPlantProps) {
               className={"input"}
               value={formik.values.plant}
               onBlur={formik}
+              submitted={submitted}
             />
             <FormHelperText>
               {formik.touched.plant && formik.errors.plant}
