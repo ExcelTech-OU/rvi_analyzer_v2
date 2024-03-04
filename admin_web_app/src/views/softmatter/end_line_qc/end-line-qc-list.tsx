@@ -32,6 +32,7 @@ import MyComponent from "../table_search_form_softmatter";
 import BasicDateRangePicker from "../datePicker";
 import { ModeSeven, useGetGtTestsMutation } from "../../../services/gt_service";
 import { AnyObject } from "yup/lib/types";
+import { List } from "reselect/es/types";
 import { useGetPOQuery } from "../../../services/po_service";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -116,8 +117,6 @@ export default function EndLineQcList() {
   const [date, setDate] = React.useState<Date | null>(null);
   const [filterType, setFilterType] = React.useState("DATE_CODE");
   const [filterValue, setFilterValue] = React.useState("");
-  const [pageCount, setPageCount] = React.useState(1);
-  const [page, setPage] = React.useState(1);
   const [open, setOpen] = React.useState(false);
   const {
     data: poData,
@@ -127,14 +126,24 @@ export default function EndLineQcList() {
   const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
   const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
   const [feed, setFeed] = useState(false);
-  const [modeList, setModeList] = useState<any>([]);
   const [poList, setPOList] = useState<any>([]);
-  var filteredData = [];
+  var filteredData: ModeSeven[] = [];
   const [values, setValues] = useState({
     field1: "",
     field2: "",
     field3: "",
   });
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const [modesList, setModesList] = useState<List<ModeSeven>>([]);
+
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedModes = modesList.slice(startIndex, endIndex);
+  // var paginatedModes: ModeSeven[] = [];
+  // paginatedModes = modesList.slice(startIndex, endIndex);
+
+  useEffect(() => {}, [data]);
 
   const handleInputChange = (field: string, value: string) => {
     setValues((prevValues) => ({
@@ -143,23 +152,47 @@ export default function EndLineQcList() {
     }));
   };
 
+  // useEffect(() => {
+  //   if (data?.sessions) {
+  //     paginatedModes = data?.sessions
+  //       .filter((item: ModeSeven) => {
+  //         const itemDate = new Date(item.createdDateTime);
+  //         return (
+  //           item.result.reading.macAddress.includes(values.field1) &&
+  //           item.result.reading.productionOrder.includes(values.field2) &&
+  //           item.result.reading.result.includes(values.field3) &&
+  //           (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+  //           (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
+  //         );
+  //       })
+  //       .map((item) => ({
+  //         field1: item.result.reading.macAddress,
+  //         field2: item.result.reading.productionOrder,
+  //         field3: item.result.reading.result,
+  //         createdDateTime: item.createdDateTime,
+  //       }));
+
+  //     console.log(paginatedModes);
+  //   }
+  // }, [values]);
+
   useEffect(() => {
     getGtTests({});
     setFeed(true);
   }, []);
 
   useEffect(() => {
-    if (data && data.sessions) {
-      setModeList(data.sessions);
-    }
     if (poData && poData.orders) {
       setPOList(poData.orders);
+    }
+    if (data?.sessions) {
+      setModesList(data?.sessions);
     }
   }, [data]);
 
   function getSelectedList(): any {
     return (
-      data?.sessions.filter((item, index) => selectedRows.includes(index)) || []
+      paginatedModes.filter((item, index) => selectedRows.includes(index)) || []
     );
   }
   const [getAll] = useGetGtTestsMutation();
@@ -189,13 +222,6 @@ export default function EndLineQcList() {
     setPage(value);
   };
 
-  React.useEffect(() => {
-    if (data?.sessions != null) {
-      setPageCount(Math.trunc((Number(data.total) + 15 - 1) / 15));
-    }
-    setSelectedRows([]);
-  }, [data]);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -212,6 +238,7 @@ export default function EndLineQcList() {
             <Card
               sx={{
                 maxWidth: 1600,
+                maxHeight: "80vh",
                 backgroundColor: "#FFFFFF",
                 boxShadow: "1px 1px 10px 10px #e8e8e8",
               }}
@@ -236,6 +263,7 @@ export default function EndLineQcList() {
                     <Grid item xs={4} sm={2} md={6}>
                       <Box display="flex" justifyContent="flex-end">
                         <Button
+                          sx={{ padding: 2 }}
                           variant="contained"
                           startIcon={<Download />}
                           color="success"
@@ -244,10 +272,10 @@ export default function EndLineQcList() {
                           }
                           disabled={selectedRows.length == 0}
                         >
-                          Download selected
+                          Download Selected
                         </Button>
                         <Button
-                          sx={{ ml: 2 }}
+                          sx={{ ml: 2, padding: 2 }}
                           variant="contained"
                           startIcon={<GridOnIcon />}
                           color="success"
@@ -302,7 +330,7 @@ export default function EndLineQcList() {
                       xs={4}
                       sm={8}
                       md={12}
-                      sx={{ mt: 1, maxHeight: 300 }}
+                      sx={{ mt: 1, maxHeight: "100%" }}
                     >
                       <Box display="flex" justifyContent="flex-end">
                         <Typography
@@ -356,6 +384,9 @@ export default function EndLineQcList() {
                       display: "flex",
                       alignItems: "center",
                       marginBottom: "20px",
+                      width: "100%",
+                      overflowX: "auto",
+                      flexDirection: "row",
                     }}
                   >
                     <MyComponent
@@ -364,14 +395,20 @@ export default function EndLineQcList() {
                       orders={poList}
                     />
 
-                    <div style={{ marginLeft: "10px", marginRight: "10px" }}>
+                    <div
+                      style={{
+                        marginLeft: "10px",
+                        marginRight: "10px",
+                        width: "250px",
+                      }}
+                    >
                       <BasicDateRangePicker
                         label="Starting Date"
                         onChange={handleStartingDateChange}
                       />
                     </div>
 
-                    <div style={{ marginRight: "10px" }}>
+                    <div style={{ marginRight: "10px", width: "250px" }}>
                       <BasicDateRangePicker
                         label="Finishing Date"
                         onChange={handleFinishingDateChange}
@@ -403,7 +440,7 @@ export default function EndLineQcList() {
                           </StyledTableRow>
                         </TableHead>
                         <TableBody>
-                          {modeList
+                          {paginatedModes
                             .filter((item: ModeSeven) => {
                               const itemDate = new Date(item.createdDateTime);
                               return (
@@ -476,20 +513,16 @@ export default function EndLineQcList() {
                       </Table>
                     </TableContainer>
                   </Paper>
-                  {pageCount != 0 ? (
-                    <Box display="flex" justifyContent="flex-end">
-                      <Pagination
-                        count={pageCount}
-                        sx={{ mt: 2 }}
-                        variant="outlined"
-                        shape="rounded"
-                        page={page}
-                        onChange={handleChange}
-                      />
-                    </Box>
-                  ) : (
-                    <></>
-                  )}
+                  <Box display="flex" justifyContent="flex-end">
+                    <Pagination
+                      count={Math.ceil(modesList.length / rowsPerPage)}
+                      sx={{ mt: 2 }}
+                      variant="outlined"
+                      shape="rounded"
+                      page={page}
+                      onChange={handleChange}
+                    />
+                  </Box>
                 </CardContent>
               </CardActionArea>
             </Card>

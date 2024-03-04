@@ -134,6 +134,7 @@ export default function ModeSixList() {
                   <Card
                     sx={{
                       maxWidth: 1600,
+                      maxHeight: "80vh",
                       backgroundColor: "#FFFFFF",
                       boxShadow: "1px 1px 10px 10px #e8e8e8",
                     }}
@@ -166,7 +167,7 @@ export default function ModeSixList() {
                           }}
                         />
                         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-                          <TableContainer sx={{ maxHeight: 300 }}>
+                          <TableContainer sx={{ maxHeight: "100%" }}>
                             <Table stickyHeader aria-label="sticky table">
                               <TableHead sx={{ backgroundColor: "#9e9e9e" }}>
                                 <StyledTableRow>
