@@ -114,12 +114,21 @@ const MyComponent: React.FC<MyComponentProps> = ({
     };
 
   const selectFieldStyle: React.CSSProperties = {
-    width: "150px",
+    width: "200px",
     marginRight: "8px",
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", gap: "8px" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        gap: "8px",
+        // overflowX: "auto",
+        // justifyContent: "space-between",
+        padding: "5px 0 5px 0",
+      }}
+    >
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">MAC Address</InputLabel>
         <Select

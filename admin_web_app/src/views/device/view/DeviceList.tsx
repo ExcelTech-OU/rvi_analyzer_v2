@@ -16,6 +16,7 @@ import {
   Typography,
   gridClasses,
 } from "@mui/material";
+import { List } from "reselect/es/types";
 import { blue, green, grey } from "@mui/material/colors";
 import {
   DataGrid,
@@ -23,7 +24,7 @@ import {
   GridToolbar,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Device, useGetDevicesQuery } from "../../../services/device_service";
 import { AddDevice } from "../add/AddDevice";
 import { DeviceActions } from "./DeviceActions";
@@ -79,8 +80,23 @@ const columns: GridColDef[] = [
 
 export default function DeviceList() {
   const { data, error, isLoading } = useGetDevicesQuery("");
-  const [pageCount, setPageCount] = React.useState(1);
-  const [page, setPage] = React.useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const [devicesList, setDevicesList] = useState<List<Device>>([]);
+
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedDevices = devicesList.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    console.log(paginatedDevices);
+  }, [page]);
+
+  useEffect(() => {
+    if (data?.devices) {
+      setDevicesList(data.devices);
+    }
+  }, [data]);
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -131,6 +147,7 @@ export default function DeviceList() {
                   <Card
                     sx={{
                       maxWidth: 1600,
+                      maxHeight: "80vh",
                       backgroundColor: "#FFFFFF",
                       boxShadow: "1px 1px 10px 10px #e8e8e8",
                     }}
@@ -160,7 +177,7 @@ export default function DeviceList() {
                           }}
                         />
                         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-                          <TableContainer sx={{ maxHeight: 300 }}>
+                          <TableContainer sx={{ maxHeight: "100%" }}>
                             <Table stickyHeader aria-label="sticky table">
                               <TableHead sx={{ backgroundColor: "#9e9e9e" }}>
                                 <StyledTableRow>
@@ -176,7 +193,7 @@ export default function DeviceList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data!.devices.map((item, index) => {
+                                {paginatedDevices.map((item, index) => {
                                   return (
                                     <StyledTableRow
                                       hover
@@ -232,7 +249,7 @@ export default function DeviceList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            count={pageCount}
+                            count={Math.ceil(devicesList.length / rowsPerPage)}
                             sx={{ mt: 2 }}
                             variant="outlined"
                             shape="rounded"

@@ -15,6 +15,7 @@ import { testApi } from '../services/test_service'
 import { parameterApi } from '../services/parameter_service'
 import { gtTestingApi } from '../services/gt_service'
 import { poApi } from '../services/po_service'
+import { batteryApi } from '../services/battery_service'
 
 export const store = configureStore({
     reducer: {
@@ -32,6 +33,7 @@ export const store = configureStore({
         [sessionApi.reducerPath]: sessionApi.reducer,
         [questionsApi.reducerPath]: questionsApi.reducer,
         [gtTestingApi.reducerPath]: gtTestingApi.reducer,
+        [batteryApi.reducerPath]: batteryApi.reducer,
         [poApi.reducerPath]: poApi.reducer,
         loginStatus: loginSlice.reducer
     },
@@ -50,6 +52,7 @@ export const store = configureStore({
             .concat(sessionApi.middleware)
             .concat(questionsApi.middleware)
             .concat(gtTestingApi.middleware)
+            .concat(batteryApi.middleware)
             .concat(poApi.middleware),
 })
 

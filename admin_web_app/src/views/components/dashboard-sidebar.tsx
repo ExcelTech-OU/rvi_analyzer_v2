@@ -10,6 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import LooksOneIcon from "@mui/icons-material/LooksOne";
@@ -247,7 +248,6 @@ export const DashboardSidebar = ({
   var admin = "";
   var roles = localStorage.getItem("roles");
 
-  //get user roles from local storage
   if (roles === null) {
     console.log("roles empty");
   } else {
@@ -288,7 +288,11 @@ export const DashboardSidebar = ({
         }}
       >
         <div>
-          <Box sx={{ p: 4 }}></Box>
+          <Box sx={{ pt: 4, pl: 5 }}>
+            <Typography color="grey" variant="h5" sx={{}}>
+              RVI Analyzer
+            </Typography>
+          </Box>
         </div>
         <Divider
           sx={{
