@@ -53,7 +53,7 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
   const [style, setStyle] = useState("");
   const [admin, setAdmin] = useState("");
   const [allocateAdmin] = useAllocateAdminMutation();
-  const [submitted, setSubmitted] = useState(true);
+  const [submitted, setSubmitted] = useState(false);
 
   const {
     data: adminData,
@@ -118,7 +118,6 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
       style: Yup.string().max(255).required("Style is required"),
     }),
     onSubmit: (values, actions) => {
-      console.log(admin + " , " + style);
       allocateAdmin({
         admin: values.admin,
         name: values.style,
@@ -126,11 +125,11 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
         .unwrap()
         .then((payload) => {
           if (payload.status == "S1000") {
+            setSubmitted(true);
             actions.setSubmitting(false);
-            actions.resetForm();
             formik.setFieldValue("admin", "");
             formik.setFieldValue("style", "");
-            setSubmitted(true);
+            actions.resetForm();
             setOpenSuccess(true);
           }
         })
@@ -200,7 +199,6 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
                 variant="body2"
               >
                 Allocate admins
-                {/* {localStorage.getItem("user")} */}
               </Typography>
             </Box>
             <Box
@@ -236,67 +234,29 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
               </Typography>
             </Box>
           </Box>
-
-          {/* <TextField
+          <FormControl
+            sx={{ mt: 1 }}
             fullWidth
-            label="Style name"
-            margin="normal"
-            name="name"
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            value={formik.values.name}
-            variant="outlined"
-            error={Boolean(formik.touched.name && formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-          /> */}
-
-          {submitted === true ? (
-            <FormControl
-              sx={{ mt: 1 }}
-              fullWidth
-              error={Boolean(formik.touched.style && formik.errors.style)}
-            >
-              <CustomSelect
-                id="style"
-                options={styles}
-                placeholder="Style"
-                onChange={(value: { value: any }) => {
-                  formik.setFieldValue("style", value.value);
-                  setStyle(value.value);
-                }}
-                name="style"
-                className={"input"}
-                value={formik.values.style}
-                onBlur={formik}
-              />
-              <FormHelperText>
-                {formik.touched.style && formik.errors.style}
-              </FormHelperText>
-            </FormControl>
-          ) : (
-            <FormControl
-              sx={{ mt: 1 }}
-              fullWidth
-              error={Boolean(formik.touched.style && formik.errors.style)}
-            >
-              <CustomSelect
-                id="style"
-                options={styles}
-                placeholder="Style"
-                onChange={(value: { value: any }) => {
-                  formik.setFieldValue("style", value.value);
-                  setStyle(value.value);
-                }}
-                name="style"
-                className={"input"}
-                value={formik.values.style}
-                onBlur={formik}
-              />
-              <FormHelperText>
-                {formik.touched.style && formik.errors.style}
-              </FormHelperText>
-            </FormControl>
-          )}
+            error={Boolean(formik.touched.style && formik.errors.style)}
+          >
+            <CustomSelect
+              id="style"
+              options={styles}
+              placeholder="Style"
+              onChange={(value: { value: any }) => {
+                formik.setFieldValue("style", value.value);
+                setStyle(value.value);
+              }}
+              name="style"
+              className={"input"}
+              value={formik.values.style}
+              onBlur={formik}
+              submitted={submitted}
+            />
+            <FormHelperText>
+              {formik.touched.style && formik.errors.style}
+            </FormHelperText>
+          </FormControl>
 
           <FormControl
             sx={{ mt: 1 }}
@@ -315,6 +275,7 @@ export function AllocateAdminsModel({ open, changeOpenStatus }: AddStyleProps) {
               className={"input"}
               value={formik.values.admin}
               onBlur={formik}
+              submitted={submitted}
             />
             <FormHelperText>
               {formik.touched.admin && formik.errors.admin}

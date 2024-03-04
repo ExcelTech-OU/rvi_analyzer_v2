@@ -25,7 +25,7 @@ import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
 import CustomizedMenusUsers from "../../user/view/custom-menu-user";
 import { List } from "reselect/es/types";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
@@ -42,9 +42,20 @@ const columns: GridColDef[] = [
 
 export default function CustomerList() {
   const { data, error, isLoading } = useGetCustomerQuery("");
-  const [pageCount, setPageCount] = React.useState(1);
-  const [page, setPage] = React.useState(1);
   const [deleteCustomer] = useDeleteCustomerMutation();
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const [customersList, setCUstomersList] = useState<List<Customer>>([]);
+
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedCustomers = customersList.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    if (data?.customers) {
+      setCUstomersList(data?.customers);
+    }
+  }, [data]);
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -132,19 +143,19 @@ export default function CustomerList() {
                         <Divider
                           sx={{
                             borderColor: "grey",
-                            my: 1.5,
+                            my: 1,
                             borderStyle: "dashed",
                           }}
                         />
                         <Divider
                           sx={{
                             borderColor: "grey",
-                            my: 1.5,
+                            my: 1,
                             borderStyle: "dashed",
                           }}
                         />
                         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-                          <TableContainer sx={{ maxHeight: 440 }}>
+                          <TableContainer sx={{ maxHeight: 300 }}>
                             <Table stickyHeader aria-label="sticky table">
                               <TableHead sx={{ backgroundColor: "#9e9e9e" }}>
                                 <StyledTableRow>
@@ -160,7 +171,7 @@ export default function CustomerList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data?.customers
+                                {paginatedCustomers
                                   .map((customer: Customer, index: any) => {
                                     return (
                                       <StyledTableRow
@@ -228,7 +239,9 @@ export default function CustomerList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            count={pageCount}
+                            count={Math.ceil(
+                              customersList.length / rowsPerPage
+                            )}
                             sx={{ mt: 2 }}
                             variant="outlined"
                             shape="rounded"
