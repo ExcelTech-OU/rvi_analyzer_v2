@@ -70,59 +70,25 @@ export default function UserList() {
   const [page, setPage] = useState(1);
   var userRoles: string | string[] = [];
   var admin = "";
-  const [userList, setUserList] = useState<any>([]);
+  const [userList, setUserList] = useState<List<User>>([]);
   const [isUsersUpdated, setIsUsersUpdated] = useState(false);
   const [open, setOpen] = useState(false);
   var roles = localStorage.getItem("roles");
-  // const {
-  //   data: orderData,
-  //   error: orderError,
-  //   isLoading: orderLoading,
-  // } = useGetPOQuery("");
 
-  // useEffect(() => {
-  //   console.log(orderData?.orders);
-  // }, [data]);
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedUsers = userList.slice(startIndex, endIndex);
 
-  // var dataUsers: List<User> = [];
+  useEffect(() => {
+    console.log(paginatedUsers);
+  }, [page]);
 
-  // dataUsers = data?.users;
+  useEffect(() => {
+    if (data?.users) {
+      setUserList(data.users);
+    }
+  }, [data]);
 
-  // const fetchData = async () => {
-  //   const newUsers: User[] = data?.users;
-  //   setUserList(newUsers);
-  // };
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, [open]);
-
-  // userList = data?.users;
-
-  //pagination
-  // const startIndex = page * rowsPerPage;
-  // const endIndex = Math.min(startIndex + rowsPerPage, dataUsers.length);
-  // const visibleData = data?.users.slice(startIndex, endIndex);
-  // const [isUsersAvailable, setIsUsersAvailable] = useState(false);
-
-  // useEffect(() => {
-  //   const newUsers: any = data?.users;
-  //   setUserList(newUsers);
-  //   setIsUsersUpdated(true);
-  //   console.log("data is fetched");
-  // }, []);
-
-  // useEffect(() => {
-  //   if (isUsersUpdated) {
-  //     console.log(userList);
-  //   }
-  // }, [isUsersUpdated]);
-
-  //get user roles from local storage
   if (roles === null) {
     admin = "ADMIN";
     console.log("roles empty");
@@ -228,7 +194,7 @@ export default function UserList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data!.users
+                                {paginatedUsers
                                   .filter((user: User) => {
                                     if (admin === "ADMIN") {
                                       return user.group === "USER";
@@ -316,7 +282,7 @@ export default function UserList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            // count={Math.ceil(data?.users.length / rowsPerPage)}
+                            count={Math.ceil(userList.length / rowsPerPage)}
                             sx={{ mt: 2 }}
                             variant="outlined"
                             shape="rounded"

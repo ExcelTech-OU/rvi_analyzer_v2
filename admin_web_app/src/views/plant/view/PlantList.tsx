@@ -19,7 +19,7 @@ import { useGetUsersQuery, User } from "../../../services/user_service";
 import { StyledTableCell, StyledTableRow } from "../../mode_one/mode-one-list";
 import CustomizedMenusUsers from "../../user/view/custom-menu-user";
 import { List } from "reselect/es/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -56,8 +56,20 @@ const columns: GridColDef[] = [
 export default function PlantList() {
   const { data, error, isLoading } = useGetPlantQuery("");
   const [pageCount, setPageCount] = React.useState(1);
-  const [page, setPage] = React.useState(1);
   const [deletePlant] = useDeletePlantMutation();
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const [plantsList, setPlantsList] = useState<List<Plant>>([]);
+
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedPlants = plantsList.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    if (data?.plants) {
+      setPlantsList(data?.plants);
+    }
+  }, [data]);
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -177,7 +189,7 @@ export default function PlantList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data?.plants
+                                {paginatedPlants
                                   .map((plant: Plant, index: any) => {
                                     return (
                                       <StyledTableRow
@@ -245,7 +257,7 @@ export default function PlantList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            count={pageCount}
+                            count={Math.ceil(plantsList.length / rowsPerPage)}
                             sx={{ mt: 2 }}
                             variant="outlined"
                             shape="rounded"

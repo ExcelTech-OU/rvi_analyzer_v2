@@ -9,7 +9,11 @@ import {
 } from "@mui/material";
 import { Order, useGetPOQuery } from "../../services/po_service";
 import { List } from "reselect/es/types";
-import { ModeSeven, useGetGtTestsMutation } from "../../services/gt_service";
+import {
+  ModeSeven,
+  SessionResultModeSeven,
+  useGetGtTestsMutation,
+} from "../../services/gt_service";
 
 var count = 0;
 
@@ -20,7 +24,7 @@ interface MyComponentProps {
 }
 
 interface MacAddress {
-  id: number;
+  id: String;
   macAddress: String;
 }
 
@@ -57,15 +61,19 @@ const MyComponent: React.FC<MyComponentProps> = ({
 
   const extractMacAddresses = () => {
     // const macAddresses: String[] = [];
-    const macAddresses: MacAddress[] = [];
+    // const macAddresses: MacAddress[] = [];
+    const macAddresses: SessionResultModeSeven[] = [];
     data?.sessions.forEach((session: ModeSeven) => {
       if (session.result && session.result.reading) {
-        // macAddresses.push(session.result.reading.macAddress);
-        count = count + 1;
         macAddresses.push({
-          id: count,
-          macAddress: session.result.reading.macAddress,
+          testId: session.result.testId,
+          reading: session.result.reading,
         });
+        // macAddresses.push(session.result.reading.macAddress);
+        // macAddresses.push({
+        //   id: session.result.testId,
+        //   macAddress: session.result.reading.macAddress,
+        // });
       }
     });
     return macAddresses;
@@ -133,9 +141,9 @@ const MyComponent: React.FC<MyComponentProps> = ({
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {extractMacAddresses().map((option: MacAddress) => (
-            <MenuItem key={option.id} value={option.macAddress}>
-              {option.macAddress}
+          {extractMacAddresses().map((option: SessionResultModeSeven) => (
+            <MenuItem key={option.testId} value={option.reading.macAddress}>
+              {option.reading.macAddress}
             </MenuItem>
           ))}
         </Select>
