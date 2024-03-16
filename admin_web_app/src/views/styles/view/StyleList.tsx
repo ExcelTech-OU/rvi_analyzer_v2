@@ -72,13 +72,24 @@ export default function StyleList() {
     error: styleError,
     isLoading: styleLoading,
   } = useGetStyleQuery("");
-  const [pageCount, setPageCount] = React.useState(1);
-  const [page, setPage] = React.useState(1);
   var userRoles: string | string[] = [];
   var admin = "";
   const [open, setOpen] = useState(false);
   var roles = localStorage.getItem("roles");
   const [deleteStyle] = useDeleteStyleMutation();
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const [stylesList, setStylesList] = useState<List<Style>>([]);
+
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedStyles = stylesList.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    if (styleData?.styles) {
+      setStylesList(styleData?.styles);
+    }
+  }, [styleData]);
 
   //get user roles from local storage
   if (roles === null) {
@@ -129,6 +140,7 @@ export default function StyleList() {
                   <Card
                     sx={{
                       maxWidth: 1600,
+                      // maxHeight: "80vh",
                       backgroundColor: "#FFFFFF",
                       boxShadow: "1px 1px 10px 10px #e8e8e8",
                     }}
@@ -182,15 +194,14 @@ export default function StyleList() {
                         <Divider
                           sx={{
                             borderColor: "grey",
-                            my: 1.5,
+                            my: 1,
                             borderStyle: "dashed",
                           }}
                         />
-                        {/* <TableSearchForm searchFun={setSearchParams}></TableSearchForm> */}
                         <Divider
                           sx={{
                             borderColor: "grey",
-                            my: 1.5,
+                            my: 1,
                             borderStyle: "dashed",
                           }}
                         />
@@ -200,7 +211,7 @@ export default function StyleList() {
                             overflow: "hidden",
                           }}
                         >
-                          <TableContainer sx={{ maxHeight: 440 }}>
+                          <TableContainer sx={{ maxHeight: "100%" }}>
                             <Table
                               stickyHeader
                               aria-label="sticky table"
@@ -220,7 +231,7 @@ export default function StyleList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {styleData?.styles
+                                {paginatedStyles
                                   .map((item: Style, index: any) => {
                                     return (
                                       <StyledTableRow
@@ -299,7 +310,7 @@ export default function StyleList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            count={pageCount}
+                            count={Math.ceil(stylesList.length / rowsPerPage)}
                             sx={{ mt: 2 }}
                             variant="outlined"
                             shape="rounded"

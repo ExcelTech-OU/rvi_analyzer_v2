@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import Select from "react-select";
 import { useFormik } from "formik";
+import { Height } from "@mui/icons-material";
+import "../../../assets/css/custom_select.css";
+import { makeStyles } from "@mui/material";
 
 interface CustomSelectProps {
   onChange: any;
@@ -11,6 +14,7 @@ interface CustomSelectProps {
   id: any;
   onBlur: any;
   placeholder: any;
+  submitted: boolean;
 }
 
 export default ({
@@ -22,13 +26,11 @@ export default ({
   id,
   onBlur,
   placeholder,
+  submitted,
 }: CustomSelectProps) => {
   const defaultValue = (options: any[], values: any) => {
     return options ? options.find((option) => option.value === value) : "";
   };
-
-  const [blur, setHandleBlur] = useState(false);
-  const [focus, setHandleFocus] = useState(false);
 
   const customStyles = {
     control: (styles: any) => ({
@@ -47,11 +49,10 @@ export default ({
         id={id}
         isClearable
         placeholder={placeholder}
-        value={defaultValue(options, value)}
+        value={submitted ? "" : defaultValue(options, value)}
         onChange={(value) => onChange(value)}
-        // onFocus={handleFocus}
-        // onBlur={handleBlur}
         styles={customStyles}
+        // classNamePrefix="react-select"
       />
     </div>
   );

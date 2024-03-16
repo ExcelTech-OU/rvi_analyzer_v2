@@ -98,6 +98,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
   const [responseFeedback, setResponseFeedback] = useState<String>("");
   let materials: any = [];
   const [failMessage, setFailMessage] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     console.log(responseFeedback);
@@ -194,6 +195,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
         .then((payload) => {
           setResponseFeedback(String(payload.statusDescription));
           if (payload.status == "S1000") {
+            setSubmitted(true);
             actions.setSubmitting(false);
             setOpenSuccess(true);
             setParameterModes([]);
@@ -377,6 +379,7 @@ export function AddTestModel({ open, changeOpenStatus }: AddStyleProps) {
               className={"input"}
               value={formik.values.material}
               onBlur={formik}
+              submitted={submitted}
             />
             <FormHelperText>
               {formik.touched.material && formik.errors.material}

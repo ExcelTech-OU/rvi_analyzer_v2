@@ -56,6 +56,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
   let admin_options: any = [];
   var roles = localStorage.getItem("roles");
   const [failMessage, setFailMessage] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   admin_options = data?.users
     .filter((admin) => {
@@ -134,6 +135,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
         .unwrap()
         .then((payload) => {
           if (payload.status == "S1000") {
+            setSubmitted(true);
             actions.setSubmitting(false);
             actions.resetForm();
             // actions.setFieldValue("supervisor", "Select...");
@@ -372,6 +374,7 @@ export function AddUserModel({ open, changeOpenStatus }: AddUserProps) {
                   className={"input"}
                   value={formik.values.supervisor}
                   onBlur={formik}
+                  submitted={submitted}
                 />
                 <FormHelperText>
                   {formik.touched.supervisor && formik.errors.supervisor}

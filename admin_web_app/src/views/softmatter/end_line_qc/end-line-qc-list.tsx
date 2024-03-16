@@ -25,13 +25,15 @@ import { styled } from "@mui/material";
 // import TableSearchFormSoftmatter from "../table_search_form_softmatter";
 import SessionTimeoutPopup from "../../components/session_logout";
 import { handleGenerateExcelEndLineQc } from "./end_line_qc-excel";
-import { Download, Edit } from "@mui/icons-material";
-import { UpdateEndLinePopup } from "./update-end-line-qc";
+import { Download } from "@mui/icons-material";
 
 import { useState, useEffect } from "react";
 import MyComponent from "../table_search_form_softmatter";
 import BasicDateRangePicker from "../datePicker";
 import { ModeSeven, useGetGtTestsMutation } from "../../../services/gt_service";
+import { AnyObject } from "yup/lib/types";
+import { List } from "reselect/es/types";
+import { useGetPOQuery } from "../../../services/po_service";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -71,7 +73,7 @@ const columns: GridColDef[] = [
   },
   {
     field: "productionOrder",
-    headerName: "productionOrder",
+    headerName: "production Order",
     width: 100,
   },
   {
@@ -102,12 +104,12 @@ const columns: GridColDef[] = [
   {
     field: "date",
     headerName: "Date",
-    width: 100,
+    width: 150,
   },
   {
     field: "time",
     headerName: "Time",
-    width: 100,
+    width: 150,
   },
 ];
 
@@ -115,15 +117,57 @@ export default function EndLineQcList() {
   const [date, setDate] = React.useState<Date | null>(null);
   const [filterType, setFilterType] = React.useState("DATE_CODE");
   const [filterValue, setFilterValue] = React.useState("");
-  const [pageCount, setPageCount] = React.useState(1);
-  const [page, setPage] = React.useState(1);
   const [open, setOpen] = React.useState(false);
-  ///////////////////////
+  const {
+    data: poData,
+    error: poError,
+    isLoading: poLoading,
+  } = useGetPOQuery("");
+  const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
+  const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
+  const [feed, setFeed] = useState(false);
+  const [poList, setPOList] = useState<any>([]);
+  var filteredData: ModeSeven[] = [];
   const [values, setValues] = useState({
     field1: "",
     field2: "",
     field3: "",
   });
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const [modesList, setModesList] = useState<List<ModeSeven>>([]);
+  const [filteredModesList, setfilteredModesList] = useState<List<ModeSeven>>(modesList);
+
+  const [startingDate, setStartingDate] = useState(null);
+  const [finishingDate, setFinishingDate] = useState(null);
+
+
+  //////////////////
+  useEffect(() => {
+  const filteredModesList = modesList.filter((item: ModeSeven) => {
+    const itemDate = new Date(item.createdDateTime);
+    return (
+      item.result.reading.macAddress.includes(values.field1) &&
+      item.result.reading.productionOrder.includes(values.field2) &&
+      item.result.reading.result.includes(values.field3) &&
+      (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+      (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
+    );
+  });
+
+  setfilteredModesList(filteredModesList);
+  console.log(filteredModesList);
+  
+  }, [values,startingDate,finishingDate]);
+  //////////////////
+
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedModes = filteredModesList.slice(startIndex, endIndex);
+  // var paginatedModes: ModeSeven[] = [];
+  // paginatedModes = modesList.slice(startIndex, endIndex);
+
+  useEffect(() => {}, [data]);
 
   const handleInputChange = (field: string, value: string) => {
     setValues((prevValues) => ({
@@ -132,17 +176,29 @@ export default function EndLineQcList() {
     }));
   };
 
-  function getSelectedList(): ModeSeven[] {
-    return data?.sessions.filter((item, index) => selectedRows.includes(index)) || [];
-  }
+  // useEffect(() => {
+  //   if (data?.sessions) {
+  //     paginatedModes = data?.sessions
+  //       .filter((item: ModeSeven) => {
+  //         const itemDate = new Date(item.createdDateTime);
+  //         return (
+  //           item.result.reading.macAddress.includes(values.field1) &&
+  //           item.result.reading.productionOrder.includes(values.field2) &&
+  //           item.result.reading.result.includes(values.field3) &&
+  //           (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+  //           (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
+  //         );
+  //       })
+  //       .map((item) => ({
+  //         field1: item.result.reading.macAddress,
+  //         field2: item.result.reading.productionOrder,
+  //         field3: item.result.reading.result,
+  //         createdDateTime: item.createdDateTime,
+  //       }));
 
-const [getAll] = useGetGtTestsMutation()
-  ///////////////////////
-
-  const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
-  const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
-  const [feed, setFeed] = useState(false);
-  const [modeList, setModeList] = useState<ModeSeven[]>([]);
+  //     console.log(paginatedModes);
+  //   }
+  // }, [values]);
 
   useEffect(() => {
     getGtTests({});
@@ -150,11 +206,24 @@ const [getAll] = useGetGtTestsMutation()
   }, []);
 
   useEffect(() => {
-    console.log(data?.sessions);
-    if (data && data.sessions) {
-      setModeList(data.sessions);
+    if (poData && poData.orders) {
+      setPOList(poData.orders);
+    }
+    if (data?.sessions) {
+      setModesList(data?.sessions);
     }
   }, [data]);
+
+  useEffect(() => {
+    setfilteredModesList(modesList)
+  }, [modesList]);
+
+  function getSelectedList(): any {
+    return (
+      paginatedModes.filter((item, index) => selectedRows.includes(index)) || []
+    );
+  }
+  const [getAll] = useGetGtTestsMutation();
 
   const handleRowClick = (id: number) => {
     if (selectedRows.includes(id)) {
@@ -164,8 +233,7 @@ const [getAll] = useGetGtTestsMutation()
     }
   };
 
-  const [startingDate, setStartingDate] = useState(null);
-  const [finishingDate, setFinishingDate] = useState(null);
+
 
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
     setStartingDate(date);
@@ -181,12 +249,7 @@ const [getAll] = useGetGtTestsMutation()
     setPage(value);
   };
 
-  React.useEffect(() => {
-    if (data?.sessions != null) {
-      setPageCount(Math.trunc((Number(data.total) + 15 - 1) / 15));
-    }
-    setSelectedRows([]);
-  }, [data]);
+  
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -228,54 +291,82 @@ const [getAll] = useGetGtTestsMutation()
                     <Grid item xs={4} sm={2} md={6}>
                       <Box display="flex" justifyContent="flex-end">
                         <Button
+                          sx={{ padding: 2 }}
                           variant="contained"
                           startIcon={<Download />}
                           color="success"
                           onClick={() =>
-                            handleGenerateExcelEndLineQc(getSelectedList())}
+                            handleGenerateExcelEndLineQc(getSelectedList())
+                          }
                           disabled={selectedRows.length == 0}
                         >
-                          Download selected
+                          Download Selected
                         </Button>
                         <Button
-                          sx={{ ml: 2 }}
+                          sx={{ ml: 2, padding: 2 }}
                           variant="contained"
                           startIcon={<GridOnIcon />}
                           color="success"
                           onClick={() => {
-                            getAll({ data: { date: date, filterType: filterType, filterValue: filterValue }, page: "all" })
-                            .unwrap()
-                            .then((payload) => {
-                              const filteredData = payload.sessions.filter((item) => {
-                                const itemDate = new Date(item.createdDateTime);
+                            getAll({
+                              data: {
+                                date: date,
+                                filterType: filterType,
+                                filterValue: filterValue,
+                              },
+                              page: "all",
+                            })
+                              .unwrap()
+                              .then((payload) => {
+                                filteredData = payload.sessions.filter(
+                                  (item) => {
+                                    const itemDate = new Date(
+                                      item.createdDateTime
+                                    );
 
-                                const originalFilterCondition =
-                                  item.result.reading.macAddress.includes(values.field1) &&
-                                  item.result.reading.productionOrder.includes(values.field2) &&
-                                  item.result.reading.result.includes(values.field3) &&
-                                  (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
-                                  (!finishingDate || new Date(itemDate) <= new Date(finishingDate));
+                                    const originalFilterCondition =
+                                      item.result.reading.macAddress.includes(
+                                        values.field1
+                                      ) &&
+                                      item.result.reading.productionOrder.includes(
+                                        values.field2
+                                      ) &&
+                                      item.result.reading.result.includes(
+                                        values.field3
+                                      ) &&
+                                      (!startingDate ||
+                                        new Date(itemDate) >=
+                                          new Date(startingDate)) &&
+                                      (!finishingDate ||
+                                        new Date(itemDate) <=
+                                          new Date(finishingDate));
 
-                                return originalFilterCondition;
+                                    return originalFilterCondition;
+                                  }
+                                );
+
+                                handleGenerateExcelEndLineQc(filteredData);
                               });
-
-                              handleGenerateExcelEndLineQc(filteredData);
-                            });
-
-                        }}
+                          }}
                         >
                           Download
                         </Button>
                       </Box>
                     </Grid>
-                    <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
+                    <Grid
+                      item
+                      xs={4}
+                      sm={8}
+                      md={12}
+                      sx={{ mt: 1, maxHeight: "100%" }}
+                    >
                       <Box display="flex" justifyContent="flex-end">
                         <Typography
                           gutterBottom
                           variant="h6"
                           component="div"
                           color="grey"
-                          sx={{ mr: 2 }}
+                          sx={{ mr: 4 }}
                         >
                           {"TOTAL : " + data?.total}
                         </Typography>
@@ -284,9 +375,14 @@ const [getAll] = useGetGtTestsMutation()
                           variant="h6"
                           component="div"
                           color="grey"
-                          sx={{ mr: 2 }}
+                          sx={{ mr: 4 }}
                         >
-                          {/* {"PASSED : " + data?.totalSuccess} */}
+                          PASSED :{" "}
+                          {data?.sessions
+                            ? data?.sessions.filter((item: ModeSeven) => {
+                                return item.result.reading.result !== "FAIL";
+                              }).length
+                            : 0}
                         </Typography>
                         <Typography
                           gutterBottom
@@ -294,7 +390,12 @@ const [getAll] = useGetGtTestsMutation()
                           component="div"
                           color="grey"
                         >
-                          {/* {"FAILED : " + (data?.total! - data?.totalSuccess!)} */}
+                          FAILED :{" "}
+                          {data?.sessions
+                            ? data?.sessions.filter((item: ModeSeven) => {
+                                return item.result.reading.result === "FAIL";
+                              }).length
+                            : 0}
                         </Typography>
                       </Box>
                     </Grid>
@@ -311,21 +412,31 @@ const [getAll] = useGetGtTestsMutation()
                       display: "flex",
                       alignItems: "center",
                       marginBottom: "20px",
+                      width: "100%",
+                      overflowX: "auto",
+                      flexDirection: "row",
                     }}
                   >
                     <MyComponent
                       initialValues={values}
                       onInputChange={handleInputChange}
+                      orders={poList}
                     />
 
-                    <div style={{ marginLeft: "10px", marginRight: "10px" }}>
+                    <div
+                      style={{
+                        marginLeft: "10px",
+                        marginRight: "10px",
+                        width: "250px",
+                      }}
+                    >
                       <BasicDateRangePicker
                         label="Starting Date"
                         onChange={handleStartingDateChange}
                       />
                     </div>
 
-                    <div style={{ marginRight: "10px" }}>
+                    <div style={{ marginRight: "10px", width: "250px" }}>
                       <BasicDateRangePicker
                         label="Finishing Date"
                         onChange={handleFinishingDateChange}
@@ -357,12 +468,19 @@ const [getAll] = useGetGtTestsMutation()
                           </StyledTableRow>
                         </TableHead>
                         <TableBody>
-                          {modeList.filter((item) => {
+                          {paginatedModes
+                            .filter((item: ModeSeven) => {
                               const itemDate = new Date(item.createdDateTime);
                               return (
-                                item.result.reading.macAddress.includes(values.field1) &&
-                                item.result.reading.productionOrder.includes(values.field2) &&
-                                item.result.reading.result.includes(values.field3) &&
+                                item.result.reading.macAddress.includes(
+                                  values.field1
+                                ) &&
+                                item.result.reading.productionOrder.includes(
+                                  values.field2
+                                ) &&
+                                item.result.reading.result.includes(
+                                  values.field3
+                                ) &&
                                 (!startingDate ||
                                   new Date(itemDate) >=
                                     new Date(startingDate)) &&
@@ -371,72 +489,68 @@ const [getAll] = useGetGtTestsMutation()
                               );
                             })
                             .map((item: ModeSeven, index: any) => {
-                            return (
-                              <StyledTableRow
-                                hover
-                                role="checkbox"
-                                tabIndex={-1}
-                                key={index}
-                                onClick={() => handleRowClick(index)}
-                                selected={selectedRows.includes(index)}
-                              >
-                                <StyledTableCell align={"left"}>
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedRows.includes(index)}
-                                  />
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.defaultConfigurations.customerName}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.macAddress}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.productionOrder}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.defaultConfigurations.operatorId}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.voltage}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.current}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.resistance}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.result.reading.result}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.createdDateTime.split('T')[0]}
-                                </StyledTableCell>
-                                <StyledTableCell align={"left"}>
-                                  {item.createdDateTime.split('T')[1]}
-                                </StyledTableCell>
-                              </StyledTableRow>
-                            );
-                          })}
+                              return (
+                                <StyledTableRow
+                                  hover
+                                  role="checkbox"
+                                  tabIndex={-1}
+                                  key={index}
+                                  onClick={() => handleRowClick(index)}
+                                  selected={selectedRows.includes(index)}
+                                >
+                                  <StyledTableCell align={"left"}>
+                                    <input
+                                      type="checkbox"
+                                      checked={selectedRows.includes(index)}
+                                    />
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.defaultConfigurations.customerName}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.macAddress}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.productionOrder}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.defaultConfigurations.operatorId}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.voltage}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.current}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.resistance}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.result.reading.result}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.createdDateTime.split("T")[0]}
+                                  </StyledTableCell>
+                                  <StyledTableCell align={"left"}>
+                                    {item.createdDateTime.split("T")[1]}
+                                  </StyledTableCell>
+                                </StyledTableRow>
+                              );
+                            })}
                         </TableBody>
                       </Table>
                     </TableContainer>
                   </Paper>
-                  {pageCount != 0 ? (
-                    <Box display="flex" justifyContent="flex-end">
-                      <Pagination
-                        count={pageCount}
-                        sx={{ mt: 2 }}
-                        variant="outlined"
-                        shape="rounded"
-                        page={page}
-                        onChange={handleChange}
-                      />
-                    </Box>
-                  ) : (
-                    <></>
-                  )}
+                  <Box display="flex" justifyContent="flex-end">
+                    <Pagination
+                      count={Math.ceil(filteredModesList.length / rowsPerPage)}
+                      sx={{ mt: 2 }}
+                      variant="outlined"
+                      shape="rounded"
+                      page={page}
+                      onChange={handleChange}
+                    />
+                  </Box>
                 </CardContent>
               </CardActionArea>
             </Card>

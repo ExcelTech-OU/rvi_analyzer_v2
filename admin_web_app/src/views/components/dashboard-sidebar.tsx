@@ -10,6 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import LooksOneIcon from "@mui/icons-material/LooksOne";
@@ -24,6 +25,7 @@ import BugReport from "@mui/icons-material/BugReport";
 import HardwareIcon from "@mui/icons-material/Hardware";
 import AddIcon from "@mui/icons-material/Add";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import SportsMmaIcon from "@mui/icons-material/SportsMma";
 import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import CableIcon from "@mui/icons-material/Cable";
@@ -218,7 +220,7 @@ const items = [
       },
       {
         href: "#",
-        icon: <BatteryChargingFullIcon fontSize="small" />,
+        icon: <SportsMmaIcon fontSize="small" />,
         title: "Glove Testing",
         childs: [
           {
@@ -246,7 +248,6 @@ export const DashboardSidebar = ({
   var admin = "";
   var roles = localStorage.getItem("roles");
 
-  //get user roles from local storage
   if (roles === null) {
     console.log("roles empty");
   } else {
@@ -287,7 +288,11 @@ export const DashboardSidebar = ({
         }}
       >
         <div>
-          <Box sx={{ p: 4 }}></Box>
+          <Box sx={{ pt: 4, pl: 5 }}>
+            <Typography color="grey" variant="h5" sx={{}}>
+              RVI Analyzer
+            </Typography>
+          </Box>
         </div>
         <Divider
           sx={{

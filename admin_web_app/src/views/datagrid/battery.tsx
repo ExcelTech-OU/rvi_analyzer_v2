@@ -9,11 +9,16 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, GridColDef } from "@mui/x-data-grid";
 import { collection, getDocs } from "firebase/firestore";
 import TableSearchForm from "../components/table_search_form";
 import { db } from "./firebase_config";
 import BasicDateRangePicker from "./date_range_picker";
+import BasicSelect from "./filter";
+
+
+
+
 
 interface Row {
   id: string;
@@ -26,6 +31,8 @@ interface Row {
   LED_status: string;
   time: string;
   date: string;
+  DV_status: string;
+  IV_status: string;
 }
 
 interface YourDocumentData {
@@ -41,6 +48,13 @@ interface YourDocumentData {
   IV: number;
   UID: string;
   LED_status: string;
+  DV_status: string;
+  IV_status: string;
+}
+
+interface BasicSelectProps {
+  label: string;
+  onSelectChange: (value: string) => void;
 }
 
 interface DatasetTableProps {
@@ -63,6 +77,12 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
 
+  /////////////////////////////////
+  const [activeCard, setActiveCard] = useState<string | null>('All');
+
+
+  /////////////////////////////////
+
   const database1 = collection(db, collection1);
   const database2 = collection(db, collection2);
 
@@ -75,6 +95,9 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
       const dateValue = new Date(timeInMilliseconds).toLocaleDateString();
       const timeValue = new Date(timeInMilliseconds).toLocaleTimeString();
 
+
+      
+      
       return {
         ...docData,
         id: doc.id,
@@ -82,6 +105,8 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
         date: dateValue,
       };
     });
+
+  // console.log(updatedRows1);
 
     const data2 = await getDocs(database2);
     const updatedRows2 = data2.docs.map((doc) => {
@@ -104,7 +129,7 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     const uniqueUIDs = new Set<string>();
 
     const uniqueRows = combinedRows.filter((row) => {
-      if (row.LED_status == "Pass") {
+      if (row.LED_status === "PASS" && row.DV_status === "PASS" && row.IV_status === "PASS") {
         if (!uniqueUIDs.has(row.UID)) {
           uniqueUIDs.add(row.UID);
           return true;
@@ -128,7 +153,7 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
 
   const handleDelete = (params: any): void => {
     const { id } = params.row;
-    console.log(`Deleting row with ID: ${id}`);
+    // console.log(`Deleting row with ID: ${id}`);
 
     // Send DELETE request to the server
     // axios.delete(`http://localhost:4000/pcb_test/delete/${id}`)
@@ -160,6 +185,9 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     const searchTerm = filterValue.toLowerCase();
     const filteredData = rows.filter((row) => {
       const isDateInRange =
+        (!ledSequence || ledSequence.includes(row.LED_status)) &&
+        (!dvStatus || dvStatus.includes(row.DV_status)) &&
+        (!ivStatus || ivStatus.includes(row.IV_status)) &&
         (!startingDate || new Date(row.date) >= new Date(startingDate)) &&
         (!finishingDate || new Date(row.date) <= new Date(finishingDate));
 
@@ -175,53 +203,73 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
   ): void => {
     setSelectedColumn(event.target.value as string);
   };
+  
 
-  const columns = [
+  const columns : GridColDef[] = [
     {
       field: "id",
       headerName: "id",
       flex: 1,
       headerClassName: "customDataGridHeader",
+      
     },
     {
       field: "UID",
       headerName: "UID",
       flex: 1.5,
       headerClassName: "customDataGridHeader",
+      description: "USER_ID",
     },
     {
       field: "IV",
       headerName: "IV",
       flex: 1,
       headerClassName: "customDataGridHeader",
+      description: "IDEAL_VOLTAGE",
     },
     {
       field: "CI",
       headerName: "CI",
       flex: 1,
       headerClassName: "customDataGridHeader",
+      description: "CHARGING_CURRENT",
     },
     {
       field: "CV",
       headerName: "CV",
       flex: 1,
       headerClassName: "customDataGridHeader",
+      description: "CHARGING_VOLTAGE",
     },
     {
       field: "DI",
       headerName: "DI",
       flex: 1,
       headerClassName: "customDataGridHeader",
+      description: "DISCHARGING_CURRENT",
     },
     {
       field: "DV",
       headerName: "DV",
       flex: 1,
       headerClassName: "customDataGridHeader",
+      description: "DISCHARGING_VOLTAGE",
     },
     {
       field: "LED_status",
       headerName: "LED_sequence",
+      flex: 1.2,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "DV_status",
+      headerName: "DV_status",
+      flex: 1.2,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "IV_status",
+      headerName: "IV_status",
       flex: 1.2,
       headerClassName: "customDataGridHeader",
     },
@@ -260,6 +308,41 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     // },
   ];
 
+
+
+  const [ledSequence, setLedSequence] = useState<string>('');
+  const [dvStatus, setDvStatus] = useState<string>('');
+  const [ivStatus, setIvStatus] = useState<string>('');
+
+  const handleChange = (label: string, selectedValue: string) => {
+    switch (label) {
+      case 'LED Sequence':
+        setLedSequence(selectedValue);
+        break;
+      case 'DV Status':
+        setDvStatus(selectedValue);
+        break;
+      case 'IV status':
+        setIvStatus(selectedValue);
+        break;
+      default:
+        // Handle default case or do nothing
+    }
+  };
+  
+  
+
+
+  ///////////////////////////
+const handlePrintPassData = (data: Row[], cardType: string) => {
+
+  setActiveCard(cardType);
+
+  setFilteredRows(data);
+
+};
+  ///////////////////////////
+
   const [startingDate, setStartingDate] = useState(null);
   const [finishingDate, setFinishingDate] = useState(null);
 
@@ -273,8 +356,12 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     // console.log(finishingDate);
   };
 
-  const passData = uniqueRows.filter((item) => item.LED_status === "Pass");
-  const failData = rows.filter((item) => item.LED_status === "Fail");
+  // const passData = uniqueRows.filter((item) => item.LED_status === "Pass");
+  // const failData = rows.filter((item) => item.LED_status === "Fail");
+  
+  const passData = uniqueRows.filter((item) => item.LED_status === "Pass" && item.DV_status === "Pass" && item.IV_status === "Pass");
+  const failData = rows.filter((item) => item.LED_status === "Fail" || item.DV_status === "Fail" || item.IV_status === "Fail");
+
 
   console.log(passData.length);
   console.log(failData.length);
@@ -287,10 +374,11 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
         justifyContent="center"
         style={{ padding: "20px" }}
       >
-        <Grid item xs={12} sm={6} md={4} lg={3}>
+        <Grid item xs={12} sm={6} md={4} lg={4}>
           <Card
+            onClick={() => handlePrintPassData(rows, 'All')}
             sx={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: activeCard === 'All' ? '#d3d3d3' : '#FFFFFF',
               boxShadow: "1px 1px 10px 10px #e8e8e8",
               display: "flex",
               flexDirection: "column",
@@ -300,43 +388,45 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
           >
             <CardContent>
               <Typography variant="h6" component="div">
-                Number of Data: {rows.length}
+                Number of Tests: {rows.length}
               </Typography>
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <Card
-            sx={{
-              backgroundColor: "#FFFFFF",
-              boxShadow: "1px 1px 10px 10px #e8e8e8",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <CardContent>
-              <Typography variant="h6" component="div">
-                Number of Pass Data: {passData.length}
-              </Typography>
-            </CardContent>
-          </Card>
+        <Grid item xs={12} sm={6} md={4} lg={4}>
+            <Card
+              onClick={() => handlePrintPassData(passData, 'Pass')} 
+              sx={{
+                backgroundColor: activeCard === 'Pass' ? '#d3d3d3' : '#FFFFFF',
+                boxShadow: "1px 1px 10px 10px #e8e8e8",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" component="div" >
+                  Number of Pass Tests: {passData.length}
+                </Typography>
+              </CardContent>
+            </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <Card
-            sx={{
-              backgroundColor: "#FFFFFF",
-              boxShadow: "1px 1px 10px 10px #e8e8e8",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
+        <Grid item xs={12} sm={6} md={4} lg={4}>
+            <Card
+              onClick={() => handlePrintPassData(failData, 'Fail')} 
+              sx={{
+                backgroundColor: activeCard === 'Fail' ? '#d3d3d3' : '#FFFFFF',
+                boxShadow: "1px 1px 10px 10px #e8e8e8",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
             <CardContent>
               <Typography variant="h6" component="div">
-                Number of Fail Data: {failData.length}
+                Number of Fail Tests: {failData.length}
               </Typography>
             </CardContent>
           </Card>
@@ -369,13 +459,22 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
           }}
         >
           <div style={{ marginRight: "10px" }}>
+            <BasicSelect label="LED Sequence" onSelectChange={(value) => handleChange('LED Sequence', value)} />
+          </div>
+          <div style={{ marginRight: "10px" }}>
+            <BasicSelect label="DV Status" onSelectChange={(value) => handleChange('DV Status', value)} />
+          </div>
+          <div style={{ marginRight: "10px" }}>
+            <BasicSelect label="IV status" onSelectChange={(value) => handleChange('IV status', value)} />
+          </div>
+          <div style={{ marginRight: "10px", width: "150px" }}>
             <BasicDateRangePicker
               label="Starting Date"
               onChange={handleStartingDateChange}
             />
           </div>
 
-          <div style={{ marginRight: "10px" }}>
+          <div style={{ marginRight: "10px" , width: "150px" }}>
             <BasicDateRangePicker
               label="Finishing Date"
               onChange={handleFinishingDateChange}

@@ -23,7 +23,7 @@ import React, { useEffect, useState } from "react";
 import SessionTimeoutPopup from "../../components/session_logout";
 import AddIcon from "@mui/icons-material/Add";
 import { AddUserModel } from "./add-user";
-
+import { useGetPOQuery } from "../../../services/po_service";
 const columns: GridColDef[] = [
   { field: "email", headerName: "Email", width: 200 },
   {
@@ -70,49 +70,25 @@ export default function UserList() {
   const [page, setPage] = useState(1);
   var userRoles: string | string[] = [];
   var admin = "";
-  const [userList, setUserList] = useState<any>([]);
+  const [userList, setUserList] = useState<List<User>>([]);
   const [isUsersUpdated, setIsUsersUpdated] = useState(false);
   const [open, setOpen] = useState(false);
   var roles = localStorage.getItem("roles");
-  // var dataUsers: List<User> = [];
 
-  // dataUsers = data?.users;
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedUsers = userList.slice(startIndex, endIndex);
 
-  // const fetchData = async () => {
-  //   const newUsers: User[] = data?.users;
-  //   setUserList(newUsers);
-  // };
+  useEffect(() => {
+    console.log(paginatedUsers);
+  }, [page]);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    if (data?.users) {
+      setUserList(data.users);
+    }
+  }, [data]);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, [open]);
-
-  // userList = data?.users;
-
-  //pagination
-  // const startIndex = page * rowsPerPage;
-  // const endIndex = Math.min(startIndex + rowsPerPage, dataUsers.length);
-  // const visibleData = data?.users.slice(startIndex, endIndex);
-  // const [isUsersAvailable, setIsUsersAvailable] = useState(false);
-
-  // useEffect(() => {
-  //   const newUsers: any = data?.users;
-  //   setUserList(newUsers);
-  //   setIsUsersUpdated(true);
-  //   console.log("data is fetched");
-  // }, []);
-
-  // useEffect(() => {
-  //   if (isUsersUpdated) {
-  //     console.log(userList);
-  //   }
-  // }, [isUsersUpdated]);
-
-  //get user roles from local storage
   if (roles === null) {
     admin = "ADMIN";
     console.log("roles empty");
@@ -160,6 +136,7 @@ export default function UserList() {
                   <Card
                     sx={{
                       maxWidth: 1600,
+                      // maxHeight: "80vh",
                       backgroundColor: "#FFFFFF",
                       boxShadow: "1px 1px 10px 10px #e8e8e8",
                     }}
@@ -190,20 +167,19 @@ export default function UserList() {
                         <Divider
                           sx={{
                             borderColor: "grey",
-                            my: 1.5,
+                            my: 1,
                             borderStyle: "dashed",
                           }}
                         />
-                        {/* <TableSearchForm searchFun={setSearchParams}></TableSearchForm> */}
                         <Divider
                           sx={{
                             borderColor: "grey",
-                            my: 1.5,
+                            my: 1,
                             borderStyle: "dashed",
                           }}
                         />
                         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-                          <TableContainer sx={{ maxHeight: 440 }}>
+                          <TableContainer sx={{ maxHeight: "100%" }}>
                             <Table stickyHeader aria-label="sticky table">
                               <TableHead sx={{ backgroundColor: "#9e9e9e" }}>
                                 <StyledTableRow>
@@ -219,7 +195,7 @@ export default function UserList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data!.users
+                                {paginatedUsers
                                   .filter((user: User) => {
                                     if (admin === "ADMIN") {
                                       return user.group === "USER";
@@ -307,7 +283,7 @@ export default function UserList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            // count={Math.ceil(data?.users.length / rowsPerPage)}
+                            count={Math.ceil(userList.length / rowsPerPage)}
                             sx={{ mt: 2 }}
                             variant="outlined"
                             shape="rounded"

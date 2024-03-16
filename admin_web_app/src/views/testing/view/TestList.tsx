@@ -65,28 +65,28 @@ const columns: GridColDef[] = [
 
 export default function TestList() {
   var { data, error, isLoading } = useGetTestQuery("");
-  const [pageCount, setPageCount] = React.useState(1);
-  const [page, setPage] = React.useState(1);
-  const [testList, setTestsList] = useState<any>([]);
   var userRoles: string | string[] = [];
   const [open, setOpen] = useState(false);
   var admin = "";
   var roles = localStorage.getItem("roles");
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const [testsList, setTestsList] = useState<List<Test>>([]);
 
-  // const fetchData = async () => {
-  //   const newList: Test[] = data?.tests;
-  //   setTestsList(newList);
-  // };
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedTests = testsList.slice(startIndex, endIndex);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    console.log(paginatedTests);
+  }, [page]);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, [open]);
+  useEffect(() => {
+    if (data?.tests) {
+      setTestsList(data.tests);
+    }
+  }, [data]);
 
-  //get user roles from local storage
   if (roles === null) {
     admin = "ADMIN";
     console.log("roles empty");
@@ -134,6 +134,7 @@ export default function TestList() {
                   <Card
                     sx={{
                       maxWidth: 1600,
+                      // maxHeight: "80vh",
                       backgroundColor: "#FFFFFF",
                       boxShadow: "1px 1px 10px 10px #e8e8e8",
                     }}
@@ -164,20 +165,19 @@ export default function TestList() {
                         <Divider
                           sx={{
                             borderColor: "grey",
-                            my: 1.5,
+                            my: 1,
                             borderStyle: "dashed",
                           }}
                         />
-                        {/* <TableSearchForm searchFun={setSearchParams}></TableSearchForm> */}
                         <Divider
                           sx={{
                             borderColor: "grey",
-                            my: 1.5,
+                            my: 1,
                             borderStyle: "dashed",
                           }}
                         />
                         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-                          <TableContainer sx={{ maxHeight: 440 }}>
+                          <TableContainer sx={{ maxHeight: "100%" }}>
                             <Table stickyHeader aria-label="sticky table">
                               <TableHead sx={{ backgroundColor: "#9e9e9e" }}>
                                 <StyledTableRow>
@@ -193,7 +193,7 @@ export default function TestList() {
                                 </StyledTableRow>
                               </TableHead>
                               <TableBody>
-                                {data!.tests
+                                {paginatedTests
                                   .map((item: Test, index: any) => {
                                     return (
                                       <StyledTableRow
@@ -246,7 +246,7 @@ export default function TestList() {
                         </Paper>
                         <Box display="flex" justifyContent="flex-end">
                           <Pagination
-                            count={pageCount}
+                            count={Math.ceil(testsList.length / rowsPerPage)}
                             sx={{ mt: 2 }}
                             variant="outlined"
                             shape="rounded"

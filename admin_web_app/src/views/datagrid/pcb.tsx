@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Button, Dialog, Box, Card, Grid } from "@mui/material";
+import { Button,
+  Dialog,
+  Box,
+  Chip,
+  Grid,
+  Card,
+  CardContent,
+  Typography, } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { collection, getDocs } from "firebase/firestore";
 import TableSearchForm from "../components/table_search_form";
 import { db } from "./firebase_config";
 import BasicDateRangePicker from "./date_range_picker";
+import BasicSelect from "./filter";
 
 interface Row {
   id: string;
@@ -16,6 +24,9 @@ interface Row {
   date: string;
   LED_V: number;
   HLC: number;
+  LED_C_status: string;
+  HLV_status: string;
+  HNLV_status: string;  
 }
 
 interface YourDocumentData {
@@ -30,6 +41,9 @@ interface YourDocumentData {
   id: string;
   LED_C: string;
   MAC_adress: string;
+  LED_C_status: string;
+  HLV_status: string;
+  HNLV_status: string; 
 }
 
 interface DatasetTableProps {
@@ -50,6 +64,7 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
   const [filterValue, setFilterValue] = React.useState("");
   const [pageCount, setPageCount] = React.useState(1);
   const [page, setPage] = React.useState(1);
+  const [uniqueRows, setUniqueRows] = useState<Row[]>([]);
 
   const database1 = collection(db, collection1);
   const database2 = collection(db, collection2);
@@ -94,22 +109,27 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
     const sortedRows = combinedRows.sort((a, b) => a.id.localeCompare(b.id));
 
     const uniqueRows = combinedRows.filter((row) => {
-      if (!uniqueMACs.has(row.MAC_adress)) {
-        uniqueMACs.add(row.MAC_adress);
+      if (row.LED_C_status == "Pass") {
+        if (!uniqueMACs.has(row.MAC_adress)) {
+          uniqueMACs.add(row.MAC_adress);
+          return true;
+        }
+        return false;
+      } else {
         return true;
       }
-      return false;
     });
 
-    console.log(combinedRows);
+    console.log(uniqueRows);
 
     // const sortedRows = combinedRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
     // const sortedRows = combinedRows.sort((a, b) => a.id - b.id);
 
-    console.log(sortedRows);
+    // console.log(sortedRows);
 
     setRows(sortedRows);
     setFilteredRows(sortedRows);
+    setUniqueRows(uniqueRows);
   };
 
   useEffect(() => {
@@ -150,6 +170,9 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
     const searchTerm = filterValue.toLowerCase();
     const filteredData = rows.filter((row) => {
       const isDateInRange =
+        (!LED_CStatus || LED_CStatus.includes(row.LED_C_status)) &&
+        (!HLV_status || HLV_status.includes(row.LED_C_status)) &&
+        (!HNLV_status || HNLV_status.includes(row.LED_C_status)) &&
         (!startingDate || new Date(row.date) >= new Date(startingDate)) &&
         (!finishingDate || new Date(row.date) <= new Date(finishingDate));
 
@@ -170,57 +193,76 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
     {
       field: "id",
       headerName: "id",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "MAC_adress",
       headerName: "MAC_adress",
-      flex: 2,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "HNLV",
       headerName: "HNLV",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "HLV",
       headerName: "HLV",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "HLC",
       headerName: "HLC",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "LED_V",
       headerName: "LED_V",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "LED_C",
       headerName: "LED_C",
-      flex: 1,
+      width: 100,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "LED_C_status",
+      headerName: "LED_C_status",
+      width: 100,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "HLV_status",
+      headerName: "HLV_status",
+      width: 100,
+      headerClassName: "customDataGridHeader",
+    },
+    {
+      field: "HNLV_status",
+      headerName: "HNLV_status",
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "date",
       headerName: "date",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "time",
       headerName: "time",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
+    
     // {
     //   field: 'actions',
     //   headerName: 'Actions',
@@ -257,8 +299,110 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
     console.log(finishingDate);
   };
 
+  const [LED_CStatus, setLED_CStatus] = useState('');
+  const [HLV_status, setHLV_status] = useState('');
+  const [HNLV_status, setHNLV_status] = useState('');
+
+  const handleChange = (label: string, selectedValue: string) => {
+    switch (label) {
+      case 'LED_C status':
+        setLED_CStatus(selectedValue);
+        break;
+      case 'HLV_status':
+        setHLV_status(selectedValue);
+        break;
+      case 'HNLV_status':
+        setHNLV_status(selectedValue);
+        break;
+      default:
+        // Handle default case or do nothing
+    }
+  };
+
+  ///////////////////////////////////////////////////
+  const [activeCard, setActiveCard] = useState<string | null>('All');
+
+  const handlePrintPassData = (data: Row[], cardType: string) => {
+
+    setActiveCard(cardType);
+  
+    setFilteredRows(data);
+  
+  };
+
+  ///////////////////////////////////////////////////
+
+  const passData = uniqueRows.filter((item) => item.LED_C_status === "Pass" && item.HLV_status === "Pass" && item.HNLV_status === "Pass");
+  const failData = rows.filter((item) => item.LED_C_status === "Fail" || item.HLV_status === "Fail" || item.HNLV_status === "Fail");
+
+  
+
   return (
     <div>
+      <Grid
+        container
+        spacing={4}
+        justifyContent="center"
+        style={{ padding: "20px" }}
+      >
+        <Grid item xs={12} sm={6} md={4} lg={4}>
+          <Card
+            onClick={() => handlePrintPassData(rows, 'All')}
+            sx={{
+              backgroundColor: activeCard === 'All' ? '#d3d3d3' : '#FFFFFF',
+              boxShadow: "1px 1px 10px 10px #e8e8e8",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <CardContent>
+              <Typography variant="h6" component="div">
+                Number of Tests: {rows.length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} lg={4}>
+            <Card
+              onClick={() => handlePrintPassData(passData, 'Pass')} 
+              sx={{
+                backgroundColor: activeCard === 'Pass' ? '#d3d3d3' : '#FFFFFF',
+                boxShadow: "1px 1px 10px 10px #e8e8e8",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" component="div" >
+                  Number of Pass Tests: {passData.length}
+                </Typography>
+              </CardContent>
+            </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} lg={4}>
+            <Card
+              onClick={() => handlePrintPassData(failData, 'Fail')} 
+              sx={{
+                backgroundColor: activeCard === 'Fail' ? '#d3d3d3' : '#FFFFFF',
+                boxShadow: "1px 1px 10px 10px #e8e8e8",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+            <CardContent>
+              <Typography variant="h6" component="div">
+                Number of Fail Tests: {failData.length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
       <Card
         sx={{
           maxWidth: 1600,
@@ -272,20 +416,30 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
         }}
       >
         <style>{`
-    .customDataGridHeader {
-      background-color: #9e9e9e;
-      color: white;
-    }
-  `}</style>
+          .customDataGridHeader {
+            background-color: #9e9e9e;
+            color: white;
+          }
+        `}
+        </style>
 
         <div
           style={{
             width: "100%",
             display: "flex",
-            justifyContent: "right",
+            justifyContent: "center",
             marginBottom: "20px",
           }}
         >
+          <div style={{ marginRight: "10px" }}>
+            <BasicSelect label="LED_C status" onSelectChange={(value) => handleChange('LED_C status', value)} />
+          </div>
+          <div style={{ marginRight: "10px" }}>
+            <BasicSelect label="HLV_status" onSelectChange={(value) => handleChange('HLV_status', value)} />
+          </div>
+          <div style={{ marginRight: "10px" }}>
+            <BasicSelect label="HNLV_status" onSelectChange={(value) => handleChange('HNLV_status', value)} />
+          </div>
           <div style={{ marginRight: "10px" }}>
             <BasicDateRangePicker
               label="Starting Date"
@@ -317,7 +471,7 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
             justifyContent: "flex-end",
           }}
         >
-          <DataGrid
+          <DataGrid sx={{ width: "100%", overflow: "hidden" }}
             rows={filteredRows.length > 0 ? filteredRows : []}
             columns={columns}
             getRowId={(row) => row.id}

@@ -3,12 +3,13 @@ import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DashboardNavbar } from "./dashboard-navbar";
 import { DashboardSidebar } from "./dashboard-sidebar";
+import { ModeSeven, useGetGtTestsMutation } from "../../services/gt_service";
 
 const DashboardLayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
   flex: "1 1 auto",
   maxWidth: "100%",
-  paddingTop: 64,
+  padding: "2% 0 2% 0",
   [theme.breakpoints.up("lg")]: {
     paddingLeft: 280,
   },

@@ -9,9 +9,10 @@ import { useGetRolesMutation, userApi } from "./services/user_service";
 import { useDispatch } from "react-redux";
 import { logout, rolesGetSuccess } from "./views/auth/login/auth-slice";
 import SignUp from "./views/auth/sign_up/sign_up";
-import { Password } from "@mui/icons-material";
+import { Height, Password } from "@mui/icons-material";
 import { deviceApi } from "./services/device_service";
 import { sessionApi } from "./services/sessions_service";
+import { green } from "@mui/material/colors";
 
 type AppProps = {
   children: ReactNode;
@@ -22,7 +23,7 @@ const footerStyles = {
   bottom: 0,
   left: 0,
   width: "100%",
-  height: "50px",
+  height: "5%",
   backgroundColor: "#f5f5f5",
   display: "flex",
   alignItems: "center",

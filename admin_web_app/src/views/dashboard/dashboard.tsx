@@ -13,6 +13,7 @@ import Looks5Icon from "@mui/icons-material/Looks5";
 import Looks6Icon from "@mui/icons-material/Looks6";
 import { SummaryCardThin } from "./summary_card_thin";
 import SessionTimeoutPopup from "../components/session_logout";
+import { GraphSummaryCardBattery } from "./summary_card_gt";
 
 export default function Dashboard() {
   const { data, error, isLoading } = useGetDashboardSummaryQuery("");
@@ -124,6 +125,12 @@ export default function Dashboard() {
               color="warning.main"
               path="/users"
             />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={3} sx={{ mt: 3 }}>
+          <Grid item lg={6} sm={6} xl={6} xs={12} sx={{ width: "100%" }}>
+            <GraphSummaryCardBattery />
           </Grid>
         </Grid>
       </Container>
