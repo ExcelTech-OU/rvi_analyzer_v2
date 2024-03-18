@@ -146,17 +146,37 @@ export default function EndLineQcList() {
   useEffect(() => {
   const filteredModesList = modesList.filter((item: ModeSeven) => {
     const itemDate = new Date(item.createdDateTime);
-    return (
-      item.result.reading.macAddress.includes(values.field1) &&
-      item.result.reading.productionOrder.includes(values.field2) &&
-      item.result.reading.result.includes(values.field3) &&
-      (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
-      (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
-    );
+    if (values.field3 === "PASS") {
+      return (
+        item.result.reading.macAddress.includes(values.field1) &&
+        item.result.reading.productionOrder.includes(values.field2) &&
+        item.result.reading.result === "PASS" &&
+        item.result.reading.currentResult === "PASS" &&
+        (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+        (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
+      );
+    } else if (values.field3 === "FAIL") {
+      return (
+        item.result.reading.macAddress.includes(values.field1) &&
+        item.result.reading.productionOrder.includes(values.field2) &&
+        (item.result.reading.result !== "PASS" ||
+          item.result.reading.currentResult !== "PASS") &&
+        (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+        (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
+      );
+    } else {
+      return (
+        item.result.reading.macAddress.includes(values.field1) &&
+        item.result.reading.productionOrder.includes(values.field2) &&
+        (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+        (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
+      );
+    }
   });
 
   setfilteredModesList(filteredModesList);
   console.log(filteredModesList);
+  setPage(1);
   
   }, [values,startingDate,finishingDate]);
   //////////////////
@@ -318,32 +338,30 @@ export default function EndLineQcList() {
                             })
                               .unwrap()
                               .then((payload) => {
-                                filteredData = payload.sessions.filter(
-                                  (item) => {
-                                    const itemDate = new Date(
-                                      item.createdDateTime
+                                filteredData = payload.sessions.filter((item) => {
+                                  const itemDate = new Date(item.createdDateTime);
+                                  const originalFilterCondition =
+                                    item.result.reading.macAddress.includes(values.field1) &&
+                                    item.result.reading.productionOrder.includes(values.field2) &&
+                                    (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+                                    (!finishingDate || new Date(itemDate) <= new Date(finishingDate));
+                                
+                                  if (values.field3 === "PASS") {
+                                    return (
+                                      originalFilterCondition &&
+                                      item.result.reading.result === "PASS" &&
+                                      item.result.reading.currentResult === "PASS"
                                     );
-
-                                    const originalFilterCondition =
-                                      item.result.reading.macAddress.includes(
-                                        values.field1
-                                      ) &&
-                                      item.result.reading.productionOrder.includes(
-                                        values.field2
-                                      ) &&
-                                      item.result.reading.result.includes(
-                                        values.field3
-                                      ) &&
-                                      (!startingDate ||
-                                        new Date(itemDate) >=
-                                          new Date(startingDate)) &&
-                                      (!finishingDate ||
-                                        new Date(itemDate) <=
-                                          new Date(finishingDate));
-
+                                  } else if (values.field3 === "FAIL") {
+                                    return (
+                                      originalFilterCondition &&
+                                      (item.result.reading.result !== "PASS" ||
+                                        item.result.reading.currentResult !== "PASS")
+                                    );
+                                  } else {
                                     return originalFilterCondition;
                                   }
-                                );
+                                });
 
                                 handleGenerateExcelEndLineQc(filteredData);
                               });
@@ -471,22 +489,32 @@ export default function EndLineQcList() {
                           {paginatedModes
                             .filter((item: ModeSeven) => {
                               const itemDate = new Date(item.createdDateTime);
-                              return (
-                                item.result.reading.macAddress.includes(
-                                  values.field1
-                                ) &&
-                                item.result.reading.productionOrder.includes(
-                                  values.field2
-                                ) &&
-                                item.result.reading.result.includes(
-                                  values.field3
-                                ) &&
-                                (!startingDate ||
-                                  new Date(itemDate) >=
-                                    new Date(startingDate)) &&
-                                (!finishingDate ||
-                                  new Date(itemDate) <= new Date(finishingDate))
-                              );
+                              if (values.field3 === "PASS") {
+                                return (
+                                  item.result.reading.macAddress.includes(values.field1) &&
+                                  item.result.reading.productionOrder.includes(values.field2) &&
+                                  item.result.reading.result === "PASS" &&
+                                  item.result.reading.currentResult === "PASS" &&
+                                  (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+                                  (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
+                                );
+                              } else if (values.field3 === "FAIL") {
+                                return (
+                                  item.result.reading.macAddress.includes(values.field1) &&
+                                  item.result.reading.productionOrder.includes(values.field2) &&
+                                  (item.result.reading.result !== "PASS" ||
+                                    item.result.reading.currentResult !== "PASS") &&
+                                  (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+                                  (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
+                                );
+                              } else {
+                                return (
+                                  item.result.reading.macAddress.includes(values.field1) &&
+                                  item.result.reading.productionOrder.includes(values.field2) &&
+                                  (!startingDate || new Date(itemDate) >= new Date(startingDate)) &&
+                                  (!finishingDate || new Date(itemDate) <= new Date(finishingDate))
+                                );
+                              }
                             })
                             .map((item: ModeSeven, index: any) => {
                               return (
@@ -526,7 +554,7 @@ export default function EndLineQcList() {
                                     {item.result.reading.resistance}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                    {item.result.reading.result}
+                                  {item.result.reading.result === "PASS" && item.result.reading.currentResult === "PASS" ? "PASS" : "FAIL"}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
                                     {item.createdDateTime.split("T")[0]}

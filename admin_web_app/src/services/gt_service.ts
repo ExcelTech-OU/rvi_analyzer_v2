@@ -28,6 +28,7 @@ export interface SessionSevenReading {
     voltage: string
     resistance: string
     result: string
+    currentResult: string
     productionOrder: string
     readAt: string
 }
