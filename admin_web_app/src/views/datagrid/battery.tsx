@@ -209,80 +209,80 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     {
       field: "id",
       headerName: "id",
-      flex: 1,
+      width: 80,
       headerClassName: "customDataGridHeader",
       
     },
     {
       field: "UID",
       headerName: "UID",
-      flex: 1.5,
+      width: 120,
       headerClassName: "customDataGridHeader",
       description: "USER_ID",
     },
     {
       field: "IV",
       headerName: "IV",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
       description: "IDEAL_VOLTAGE",
     },
     {
       field: "CI",
       headerName: "CI",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
       description: "CHARGING_CURRENT",
     },
     {
       field: "CV",
       headerName: "CV",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
       description: "CHARGING_VOLTAGE",
     },
     {
       field: "DI",
       headerName: "DI",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
       description: "DISCHARGING_CURRENT",
     },
     {
       field: "DV",
       headerName: "DV",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
       description: "DISCHARGING_VOLTAGE",
     },
     {
       field: "LED_status",
       headerName: "LED_sequence",
-      flex: 1.2,
+      width: 120,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "DV_status",
       headerName: "DV_status",
-      flex: 1.2,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "IV_status",
       headerName: "IV_status",
-      flex: 1.2,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "date",
       headerName: "date",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "time",
       headerName: "time",
-      flex: 1,
+      width: 100,
       headerClassName: "customDataGridHeader",
     },
     // {
@@ -458,7 +458,7 @@ const handlePrintPassData = (data: Row[], cardType: string) => {
             marginBottom: "20px",
           }}
         >
-          <div style={{ marginRight: "10px" }}>
+          <div style={{ marginRight: "10px", width: "150px" }}>
             <BasicSelect label="LED Sequence" onSelectChange={(value) => handleChange('LED Sequence', value)} />
           </div>
           <div style={{ marginRight: "10px" }}>
@@ -467,14 +467,14 @@ const handlePrintPassData = (data: Row[], cardType: string) => {
           <div style={{ marginRight: "10px" }}>
             <BasicSelect label="IV status" onSelectChange={(value) => handleChange('IV status', value)} />
           </div>
-          <div style={{ marginRight: "10px", width: "150px" }}>
+          <div style={{ marginRight: "10px"}}>
             <BasicDateRangePicker
               label="Starting Date"
               onChange={handleStartingDateChange}
             />
           </div>
 
-          <div style={{ marginRight: "10px" , width: "150px" }}>
+          <div style={{ marginRight: "10px"}}>
             <BasicDateRangePicker
               label="Finishing Date"
               onChange={handleFinishingDateChange}
@@ -499,7 +499,7 @@ const handlePrintPassData = (data: Row[], cardType: string) => {
             justifyContent: "center",
           }}
         >
-          <DataGrid
+          <DataGrid sx={{ width: "100%", overflow: "hidden" }}
             rows={filteredRows.length > 0 ? filteredRows : []}
             columns={columns}
             getRowId={(row) => row.id}

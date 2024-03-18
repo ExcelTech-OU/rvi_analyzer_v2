@@ -59,25 +59,46 @@ const MyComponent: React.FC<MyComponentProps> = ({
       }
     };
 
-  const extractMacAddresses = () => {
-    // const macAddresses: String[] = [];
-    // const macAddresses: MacAddress[] = [];
-    const macAddresses: SessionResultModeSeven[] = [];
-    data?.sessions.forEach((session: ModeSeven) => {
-      if (session.result && session.result.reading) {
-        macAddresses.push({
-          testId: session.result.testId,
-          reading: session.result.reading,
-        });
-        // macAddresses.push(session.result.reading.macAddress);
-        // macAddresses.push({
-        //   id: session.result.testId,
-        //   macAddress: session.result.reading.macAddress,
-        // });
-      }
-    });
-    return macAddresses;
-  };
+    const extractMacAddresses = () => {
+      const macAddressesSet = new Set();
+      const macAddresses: SessionResultModeSeven[] = [];
+    
+      data?.sessions.forEach((session: ModeSeven) => {
+        if (session.result && session.result.reading && session.result.reading.macAddress) {
+          const macAddress = session.result.reading.macAddress;
+          if (!macAddressesSet.has(macAddress)) {
+            macAddressesSet.add(macAddress);
+            macAddresses.push({
+              testId: session.result.testId,
+              reading: session.result.reading,
+            });
+          }
+        }
+      });
+    
+      return macAddresses;
+    };
+
+    const extractProductionOrders = () => {
+      const productionOrdersSet = new Set();
+      const productionOrders: SessionResultModeSeven[] = [];
+    
+      data?.sessions.forEach((session: ModeSeven) => {
+        if (session.result && session.result.reading && session.result.reading.productionOrder) {
+          const productionOrder = session.result.reading.productionOrder;
+          if (!productionOrdersSet.has(productionOrder)) {
+            productionOrdersSet.add(productionOrder);
+            productionOrders.push({
+              testId: session.result.testId,
+              reading: session.result.reading,
+            });
+          }
+        }
+      });
+    
+      return productionOrders;
+    };
+    
 
   useEffect(() => {
     if (poData && poData.orders) {
@@ -178,9 +199,9 @@ const MyComponent: React.FC<MyComponentProps> = ({
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            {optionsField2.map((option: Order) => (
-              <MenuItem key={option.orderId} value={option.orderId}>
-                {option.orderId}
+            {extractProductionOrders().map((option: SessionResultModeSeven) => (
+              <MenuItem key={option.testId} value={option.reading.productionOrder}>
+                {option.reading.productionOrder}
               </MenuItem>
             ))}
           </Select>

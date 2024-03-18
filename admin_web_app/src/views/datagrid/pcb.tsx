@@ -193,13 +193,13 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
     {
       field: "id",
       headerName: "id",
-      width: 100,
+      width: 80,
       headerClassName: "customDataGridHeader",
     },
     {
       field: "MAC_adress",
       headerName: "MAC_adress",
-      width: 100,
+      width: 150,
       headerClassName: "customDataGridHeader",
     },
     {
@@ -207,48 +207,56 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
       headerName: "HNLV",
       width: 100,
       headerClassName: "customDataGridHeader",
+      description: "Heater No Load Voltage",
     },
     {
       field: "HLV",
       headerName: "HLV",
       width: 100,
       headerClassName: "customDataGridHeader",
+      description: "Heater Voltage",
     },
     {
       field: "HLC",
       headerName: "HLC",
       width: 100,
       headerClassName: "customDataGridHeader",
+      description: "Heater Load Current",
     },
     {
       field: "LED_V",
       headerName: "LED_V",
       width: 100,
       headerClassName: "customDataGridHeader",
+      description: "LED Voltage",
     },
     {
       field: "LED_C",
       headerName: "LED_C",
       width: 100,
       headerClassName: "customDataGridHeader",
+      description: "LED Current",
     },
     {
       field: "LED_C_status",
       headerName: "LED_C_status",
-      width: 100,
+      width: 120,
       headerClassName: "customDataGridHeader",
+      description: "LED Current Status",
     },
     {
       field: "HLV_status",
       headerName: "HLV_status",
-      width: 100,
+      width: 120,
       headerClassName: "customDataGridHeader",
+      description: "Heater Load Voltage Status",
     },
     {
       field: "HNLV_status",
       headerName: "HNLV_status",
-      width: 100,
+      width: 120,
       headerClassName: "customDataGridHeader",
+      description: "Heater No Load Voltage Status",
     },
     {
       field: "date",
@@ -431,13 +439,13 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
             marginBottom: "20px",
           }}
         >
-          <div style={{ marginRight: "10px" }}>
+          <div style={{ marginRight: "10px", width: "150px" }}>
             <BasicSelect label="LED_C status" onSelectChange={(value) => handleChange('LED_C status', value)} />
           </div>
-          <div style={{ marginRight: "10px" }}>
+          <div style={{ marginRight: "10px", width: "150px" }}>
             <BasicSelect label="HLV_status" onSelectChange={(value) => handleChange('HLV_status', value)} />
           </div>
-          <div style={{ marginRight: "10px" }}>
+          <div style={{ marginRight: "10px", width: "150px" }}>
             <BasicSelect label="HNLV_status" onSelectChange={(value) => handleChange('HNLV_status', value)} />
           </div>
           <div style={{ marginRight: "10px" }}>

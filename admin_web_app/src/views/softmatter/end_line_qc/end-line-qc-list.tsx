@@ -98,13 +98,13 @@ const columns: GridColDef[] = [
   },
   {
     field: "ledSequence",
-    headerName: "LED Sequence",
+    headerName: "Device State",
     width: 100,
   },
   {
     field: "date",
     headerName: "Date",
-    width: 150,
+    width: 200,
   },
   {
     field: "time",
@@ -145,7 +145,7 @@ export default function EndLineQcList() {
   //////////////////
   useEffect(() => {
   const filteredModesList = modesList.filter((item: ModeSeven) => {
-    const itemDate = new Date(item.createdDateTime);
+    const itemDate = new Date(item.result.reading.readAt);
     if (values.field3 === "PASS") {
       return (
         item.result.reading.macAddress.includes(values.field1) &&
@@ -200,7 +200,7 @@ export default function EndLineQcList() {
   //   if (data?.sessions) {
   //     paginatedModes = data?.sessions
   //       .filter((item: ModeSeven) => {
-  //         const itemDate = new Date(item.createdDateTime);
+  //         const itemDate = new Date(item.result.reading.readAt);
   //         return (
   //           item.result.reading.macAddress.includes(values.field1) &&
   //           item.result.reading.productionOrder.includes(values.field2) &&
@@ -213,7 +213,7 @@ export default function EndLineQcList() {
   //         field1: item.result.reading.macAddress,
   //         field2: item.result.reading.productionOrder,
   //         field3: item.result.reading.result,
-  //         createdDateTime: item.createdDateTime,
+  //        .result.reading.readAt: item.result.reading.readAt,
   //       }));
 
   //     console.log(paginatedModes);
@@ -253,6 +253,12 @@ export default function EndLineQcList() {
     }
   };
 
+  const handleTypographyClick = (newValue: string) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      field3: newValue,
+    }));
+  };
 
 
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
@@ -339,7 +345,7 @@ export default function EndLineQcList() {
                               .unwrap()
                               .then((payload) => {
                                 filteredData = payload.sessions.filter((item) => {
-                                  const itemDate = new Date(item.createdDateTime);
+                                  const itemDate = new Date(item.result.reading.readAt);
                                   const originalFilterCondition =
                                     item.result.reading.macAddress.includes(values.field1) &&
                                     item.result.reading.productionOrder.includes(values.field2) &&
@@ -385,6 +391,7 @@ export default function EndLineQcList() {
                           component="div"
                           color="grey"
                           sx={{ mr: 4 }}
+                          onClick={() => handleTypographyClick("")}
                         >
                           {"TOTAL : " + data?.total}
                         </Typography>
@@ -394,6 +401,7 @@ export default function EndLineQcList() {
                           component="div"
                           color="grey"
                           sx={{ mr: 4 }}
+                          onClick={() => handleTypographyClick("PASS")}
                         >
                           PASSED :{" "}
                           {data?.sessions
@@ -407,6 +415,7 @@ export default function EndLineQcList() {
                           variant="h6"
                           component="div"
                           color="grey"
+                          onClick={() => handleTypographyClick("FAIL")}
                         >
                           FAILED :{" "}
                           {data?.sessions
@@ -488,7 +497,7 @@ export default function EndLineQcList() {
                         <TableBody>
                           {paginatedModes
                             .filter((item: ModeSeven) => {
-                              const itemDate = new Date(item.createdDateTime);
+                              const itemDate = new Date(item.result.reading.readAt);
                               if (values.field3 === "PASS") {
                                 return (
                                   item.result.reading.macAddress.includes(values.field1) &&
@@ -557,10 +566,10 @@ export default function EndLineQcList() {
                                   {item.result.reading.result === "PASS" && item.result.reading.currentResult === "PASS" ? "PASS" : "FAIL"}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                    {item.createdDateTime.split("T")[0]}
+                                    {item.result.reading.readAt.split("T")[0]}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                    {item.createdDateTime.split("T")[1]}
+                                    {item.result.reading.readAt.split("T")[1]}
                                   </StyledTableCell>
                                 </StyledTableRow>
                               );
