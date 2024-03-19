@@ -31,7 +31,8 @@ Future<LoginResponse> login(String userName, String password) async {
     LoginResponse loginResponse =
         LoginResponse.fromJson(jsonDecode(response.body));
     await storage.write(key: jwtK, value: loginResponse.jwt);
-    loginInfoRepo.addLoginInfo(LoginInfo(userName, loginResponse.jwt));
+    loginInfoRepo.addLoginInfo(
+        LoginInfo(userName, loginResponse.jwt, loginResponse.user!.group));
     return loginResponse;
   } else if (response.statusCode == 401) {
     LoginResponse loginResponse =
@@ -120,4 +121,13 @@ Future<bool> isLogout() async {
   } catch (e) {
     return true;
   }
+}
+
+// get username
+Future<String> getUsername() async {
+  final loginInfoRepo = LoginInfoRepository();
+
+  List<LoginInfo> infos = await loginInfoRepo.getAllLoginInfos();
+
+  return infos.first.username;
 }

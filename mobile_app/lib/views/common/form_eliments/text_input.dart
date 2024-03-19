@@ -23,7 +23,11 @@ class TestInputData {
 
 class TextInput extends StatefulWidget {
   final TestInputData data;
-  const TextInput({Key? key, required this.data}) : super(key: key);
+  final String? suffixText;
+  final Color? suffixTextColor;
+  const TextInput(
+      {Key? key, required this.data, this.suffixText, this.suffixTextColor})
+      : super(key: key);
 
   @override
   State<TextInput> createState() => _TextInputState(data.obscureText);
@@ -38,35 +42,55 @@ class _TextInputState extends State<TextInput> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context),
-      child: TextFormField(
-        autofocus: false,
-        enabled: widget.data.enabled,
-        maxLines: widget.data.maxLines,
-        style: const TextStyle(color: Colors.black),
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        textInputAction: widget.data.textInputAction ?? TextInputAction.next,
-        controller: widget.data.controller,
-        validator: (val) => widget.data.validatorFun(val),
-        obscureText: isPasswordVisible,
-        keyboardType: widget.data.inputType,
-        decoration: widget.data.obscureText
-            ? InputDecoration(
-                labelText: widget.data.labelText,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    !isPasswordVisible && widget.data.obscureText
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Colors.grey,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          TextFormField(
+            autofocus: false,
+            enabled: widget.data.enabled,
+            maxLines: widget.data.maxLines,
+            style: const TextStyle(color: Colors.black),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            textInputAction:
+                widget.data.textInputAction ?? TextInputAction.next,
+            controller: widget.data.controller,
+            validator: (val) => widget.data.validatorFun(val),
+            obscureText: isPasswordVisible,
+            keyboardType: widget.data.inputType,
+            decoration: widget.data.obscureText
+                ? InputDecoration(
+                    labelText: widget.data.labelText,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        !isPasswordVisible && widget.data.obscureText
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isPasswordVisible = !isPasswordVisible;
+                        });
+                      },
+                    ),
+                  )
+                : InputDecoration(labelText: widget.data.labelText),
+          ),
+          widget.suffixText == null
+              ? Container()
+              : Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: Icon(
+                      widget.suffixText == "PASS" ? Icons.done : Icons.close,
+                      color: widget.suffixText == "PASS"
+                          ? Colors.green[800]
+                          : Colors.red[800],
+                    ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      isPasswordVisible = !isPasswordVisible;
-                    });
-                  },
                 ),
-              )
-            : InputDecoration(labelText: widget.data.labelText),
+        ],
       ),
     );
   }

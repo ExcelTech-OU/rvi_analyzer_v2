@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-<!--    <property name="LOGS" value="/rvi/logs/rvi_analyzer" />-->
+   <property name="LOGS" value="/rvi/logs/rvi_analyzer" />
 
 <!--    <property name="LOGS" value="/Volumes/Beyond/projects/logs/rvi_analyzer" /> default value-->
-    <property name="LOGS" value="/home/himesh/rvi_analyzer"/>
+    <!-- <property name="LOGS" value="/Users/avishka/Documents/Flutter Projects/rvi_analyzer_v2/rvi-analyzer-server"/> -->
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">

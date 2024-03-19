@@ -8,5 +8,8 @@ class LoginInfo extends HiveObject {
   @HiveField(1)
   String jwt;
 
-  LoginInfo(this.username, this.jwt);
+  @HiveField(2)
+  String group;
+
+  LoginInfo(this.username, this.jwt, this.group);
 }

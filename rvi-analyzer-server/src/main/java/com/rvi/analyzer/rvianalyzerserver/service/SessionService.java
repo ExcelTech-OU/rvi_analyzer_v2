@@ -48,6 +48,7 @@ public class SessionService {
     final private ModeFiveRepository modeFiveRepository;
     final private ModeSixRepository modeSixRepository;
     final private ModeSevenRepository modeSevenRepository;
+    final private SettingsRepository settingsRepository;
     final private JwtUtils jwtUtils;
     final private UserService userService;
     final private UserGroupRoleService userGroupRoleService;
@@ -452,8 +453,7 @@ public class SessionService {
 
     private Mono<ResponseEntity<CommonResponse>> saveModeSeven(ModeSevenDto modeSevenDto) {
         return Mono.just(modeSevenMapper.modeSevenDtoToModeSeven(modeSevenDto))
-                .doOnNext(modeSeven -> {
-                    modeSeven.getResult().getReading().setReadAt(LocalDateTime.now());
+                        .doOnNext(modeSeven -> {
                     modeSeven.setCreatedDateTime(LocalDateTime.now());
                     modeSeven.setLastUpdatedDateTime(LocalDateTime.now());
                 })
@@ -752,6 +752,76 @@ public class SessionService {
                         .build())));
     }
 
+    public Mono<ResponseEntity<SettingsResponse>> getSettings(String jwt) {
+            return userService.getUser(jwtUtils.getUsername(jwt))
+                            .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+                                            .flatMap(userRoles -> {
+                                                    if (userRoles.contains(UserRoles.GET_MODE_SEVEN_CURRENT_RANGE)) {
+                                                            return settingsRepository
+                                                                            .getSettingBySettingId("current_range")
+                                                                            .flatMap(setting -> {
+                                                                                    SettingsResponse response = SettingsResponse
+                                                                                                    .success(setting.getLowerBound(),
+                                                                                                                    setting.getUpperBound());
+                                                                                    return Mono.just(ResponseEntity
+                                                                                                    .ok(response));
+                                                                            })
+                                                                            .switchIfEmpty(Mono.just(ResponseEntity
+                                                                                            .status(HttpStatus.NOT_FOUND)
+                                                                                            .body(SettingsResponse
+                                                                                                            .fail())));
+                                                    } else {
+                                                            return Mono.just(ResponseEntity
+                                                                            .status(HttpStatus.UNAUTHORIZED)
+                                                                            .body(SettingsResponse.fail()));
+                                                    }
+
+                                            }))
+                            .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                            .body(SettingsResponse.fail())));
+    }
+
+    public Mono<ResponseEntity<CommonResponse>> setSettings(SettingsDto settingsDto, String jwt) {
+            return userService.getUser(jwtUtils.getUsername(jwt))
+                            .flatMap(user -> userGroupRoleService.getUserRolesByUserGroup(user.getGroup())
+                                            .flatMap(userRoles -> {
+                                                    if (userRoles.contains(UserRoles.SET_MODE_SEVEN_CURRENT_RANGE)) {
+                                                            return settingsRepository
+                                                                            .getSettingBySettingId("current_range")
+                                                                            .flatMap(settings -> {
+                                                                                    settings.setSettingId(
+                                                                                                    "current_range");
+                                                                                    settings.setUpperBound(settingsDto
+                                                                                                    .getUpperBound());
+                                                                                    settings.setLowerBound(settingsDto
+                                                                                                    .getLowerBound());
+                                                                                    return settingsRepository
+                                                                                                    .save(settings)
+                                                                                                    .thenReturn(ResponseEntity
+                                                                                                                    .ok(CommonResponse
+                                                                                                                                    .success()));
+                                                                            })
+                                                                            .switchIfEmpty(Mono.just(ResponseEntity
+                                                                                            .status(HttpStatus.NOT_FOUND)
+                                                                                            .body(CommonResponse
+                                                                                                            .fail())));
+                                                    } else {
+                                                            return Mono.just(ResponseEntity
+                                                                            .status(HttpStatus.UNAUTHORIZED)
+                                                                            .body(CommonResponse.builder()
+                                                                                            .status("E2000")
+                                                                                            .statusDescription(
+                                                                                                            "Unauthorized to update settings")
+                                                                                            .build()));
+                                                    }
+                                            })
+                                            .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                                            .body(CommonResponse.builder()
+                                                                            .status("E2000")
+                                                                            .statusDescription("Unauthorized user")
+                                                                            .build()))));
+
+    }
 
     private Query getFilters(List<String> users, String pageNo, SessionSearchRequest request) {
         Query query = new Query();

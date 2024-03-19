@@ -6,13 +6,15 @@ class LoginInfoAdapter extends TypeAdapter<LoginInfo> {
   LoginInfo read(BinaryReader reader) {
     final username = reader.readString();
     final jwt = reader.readString();
-    return LoginInfo(username, jwt);
+    final group = reader.readString();
+    return LoginInfo(username, jwt, group);
   }
 
   @override
   void write(BinaryWriter writer, LoginInfo obj) {
     writer.writeString(obj.username);
     writer.writeString(obj.jwt);
+    writer.writeString(obj.group);
   }
 
   @override

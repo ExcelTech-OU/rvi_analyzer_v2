@@ -62,6 +62,7 @@ class SessionSevenReading {
   final String productionOrder;
   final String? result;
   final String? readAt;
+  final String? currentResult;
 
   SessionSevenReading({
     required this.macAddress,
@@ -71,6 +72,7 @@ class SessionSevenReading {
     required this.productionOrder,
     this.result,
     this.readAt,
+    this.currentResult,
   });
 
   Map toJson() => {
@@ -81,6 +83,7 @@ class SessionSevenReading {
         'productionOrder': productionOrder,
         'result': result,
         'readAt': readAt,
+        'currentResult': currentResult,
       };
 
   factory SessionSevenReading.fromJson(Map<String, dynamic> json) {
@@ -92,6 +95,7 @@ class SessionSevenReading {
       productionOrder: json['productionOrder'] as String,
       result: json['result'] as String?,
       readAt: json['readAt'] as String?,
+      currentResult: json['currentResult'] as String?,
     );
   }
 }

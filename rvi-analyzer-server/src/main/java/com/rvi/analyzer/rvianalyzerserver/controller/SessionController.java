@@ -140,6 +140,17 @@ public class SessionController {
         return sessionService.getAllModeSeven(jwt);
     }
 
+    @GetMapping(path = "/rvi/analyzer/v1/session/get/settings")
+    public Mono<ResponseEntity<SettingsResponse>> getCurrentRange(@RequestHeader("Authorization") String jwt) {
+        return sessionService.getSettings(jwt);
+    }
+
+    @PostMapping(path = "/rvi/analyzer/v1/session/set/settings")
+    public Mono<ResponseEntity<CommonResponse>> setCurrentRange(@RequestBody SettingsDto settingsDto,
+            @RequestHeader("Authorization") String jwt) {
+        return sessionService.setSettings(settingsDto, jwt);
+    }
+
     @GetMapping(path = "/report/status/{hash}")
     public Mono<ResponseEntity<CommonResponse>> checkReportStatus(@PathVariable("hash") String hash) {
         return sessionService.checkReportStatus(hash);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rvi_analyzer/providers/device_state_provider.dart';
+import 'package:rvi_analyzer/service/login_service.dart';
 import 'package:rvi_analyzer/views/common/drop_down.dart';
 import 'package:rvi_analyzer/views/common/form_eliments/text_input.dart';
 import 'package:intl/intl.dart';
@@ -36,19 +37,19 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
     'Mode 04',
     'Mode 05',
     'Mode 06',
-    'Mode 07'
+    'Gamer Tech'
   ];
 
-  void setQRCode(String? qrCode) {
-    setState(() {
-      if (qrCode != null) {
-        ref
-            .watch(deviceDataMap[widget.sc.device.id.id]!)
-            .serialNoController
-            .text = qrCode;
-      }
-    });
-  }
+  // void setQRCode(String? qrCode) {
+  //   setState(() {
+  //     if (qrCode != null) {
+  //       ref
+  //           .watch(deviceDataMap[widget.sc.device.id.id]!)
+  //           .serialNoController
+  //           .text = qrCode;
+  //     }
+  //   });
+  // }
 
   @override
   void initState() {
@@ -69,6 +70,14 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
         milliseconds.toString();
     ref.read(deviceDataMap[widget.sc.device.id.id]!).sessionIdController.text =
         "S_$milliseconds";
+        
+    setOperatorId();
+  }
+
+  Future<void> setOperatorId() async {
+    String username = await getUsername();
+    ref.read(deviceDataMap[widget.sc.device.id.id]!).operatorIdController.text =
+        username;
   }
 
   @override
@@ -223,7 +232,7 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                                 .serialNoController,
                             validatorFun: (val) {
                               if (val!.isEmpty) {
-                                return "Serial No cannot be empty";
+                                return null;
                               } else {
                                 null;
                               }
@@ -231,35 +240,33 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                             labelText: 'Serial No',
                             textInputAction: TextInputAction.done,
                             obscureText: false,
-                            enabled: !ref
-                                .watch(deviceDataMap[widget.sc.device.id.id]!)
-                                .started)),
+                            enabled: false)),
                   ),
-                  const SizedBox(width: 10),
-                  SizedBox(
-                    width: 80,
-                    height: 55,
-                    child: CupertinoButton(
-                      color: Colors.cyan,
-                      padding: const EdgeInsets.all(0),
-                      onPressed: ref
-                              .watch(deviceDataMap[widget.sc.device.id.id]!)
-                              .started
-                          ? null
-                          : () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          QRScanner(updateQRCode: setQRCode)));
-                            },
-                      child: const Text(
-                        'QR Scan',
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 255, 255, 255)),
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(width: 10),
+                  // SizedBox(
+                  //   width: 80,
+                  //   height: 55,
+                  //   child: CupertinoButton(
+                  //     color: Colors.cyan,
+                  //     padding: const EdgeInsets.all(0),
+                  //     onPressed: ref
+                  //             .watch(deviceDataMap[widget.sc.device.id.id]!)
+                  //             .started
+                  //         ? null
+                  //         : () {
+                  //             Navigator.push(
+                  //                 context,
+                  //                 MaterialPageRoute(
+                  //                     builder: (context) =>
+                  //                         QRScanner(updateQRCode: setQRCode)));
+                  //           },
+                  //     child: const Text(
+                  //       'QR Scan',
+                  //       style: TextStyle(
+                  //           color: Color.fromARGB(255, 255, 255, 255)),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(
@@ -297,9 +304,10 @@ class _ConfigureLeftPanelState extends ConsumerState<ConfigureLeftPanel> {
                         }
                       },
                       labelText: 'Operator ID',
-                      enabled: !ref
-                          .watch(deviceDataMap[widget.sc.device.id.id]!)
-                          .started)),
+                      enabled: (!ref
+                              .watch(deviceDataMap[widget.sc.device.id.id]!)
+                              .started &&
+                          getUsername() == ""))),
               const SizedBox(
                 height: 10,
               ),

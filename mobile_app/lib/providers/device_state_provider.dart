@@ -239,7 +239,8 @@ class StreamData extends ChangeNotifier {
 
   double get voltage => (notifyDataList[4] * 255 + notifyDataList[5]) / 100;
 
-  double get current => (notifyDataList[6] * 255 + notifyDataList[7]) / 1000;
+  double get current =>
+      (notifyDataList[6] * 255 + notifyDataList[7]).toDouble();
 
   double get resistance => voltage / current;
 

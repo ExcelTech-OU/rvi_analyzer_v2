@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:rvi_analyzer/common/config.dart';
 import 'package:rvi_analyzer/common/key_box.dart';
 import 'package:rvi_analyzer/domain/ModeFiveResp.dart';
+import 'package:rvi_analyzer/domain/CurrentRangeResp.dart';
 import 'package:rvi_analyzer/domain/ModeFourResp.dart';
 import 'package:rvi_analyzer/domain/ModeOneResp.dart';
 import 'package:rvi_analyzer/domain/ModeSixResp.dart';
@@ -71,7 +72,6 @@ Future<CommonResponse> saveModeSeven(ModeSeven modeSeven, String username,
       body: jsonEncode(modeSeven),
     );
 
-    print(response.body);
     if (response.statusCode == 200) {
       return CommonResponse.fromJson(jsonDecode(response.body));
     } else if (response.statusCode == 401) {
@@ -82,6 +82,70 @@ Future<CommonResponse> saveModeSeven(ModeSeven modeSeven, String username,
     }
   } catch (e) {
     return CommonResponse.fromDetails(
+        "E1000", "Cannot update the data. Please try again");
+  }
+}
+
+Future<CommonResponse> saveCurrentRange(String lowerBound, String upperBound,
+    {bool needToSaveLocal = false}) async {
+  const storage = FlutterSecureStorage();
+
+  try {
+    String? jwt = await storage.read(key: jwtK);
+
+    final response = await http.post(
+      Uri.parse('$baseUrl$setCurrentRangePath'),
+      headers: <String, String>{
+        contentTypeK: contentTypeJsonK,
+        authorizationK: '$bearerK $jwt',
+      },
+      body: jsonEncode({
+        'lowerBound': lowerBound,
+        'upperBound': upperBound,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return CommonResponse.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 401) {
+      return CommonResponse.fromDetails("E2000", "Session Expired");
+    } else {
+      return CommonResponse.fromDetails(
+          "E1000", "Cannot update the data. Please try again");
+    }
+  } catch (e) {
+    return CommonResponse.fromDetails(
+        "E1000", "Cannot update the data. Please try again");
+  }
+}
+
+Future<CurrentRangeResp> getCurrentRange() async {
+  const storage = FlutterSecureStorage();
+
+  CurrentRangeResp resp = CurrentRangeResp.fromDetails("", "");
+
+  try {
+    String? jwt = await storage.read(key: jwtK);
+    final response = await http.get(
+      Uri.parse('$baseUrl$getCurrentRangePath'),
+      headers: <String, String>{
+        contentTypeK: contentTypeJsonK,
+        authorizationK: '$bearerK $jwt',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      resp = CurrentRangeResp.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 401) {
+      resp = CurrentRangeResp.fromDetails("E2000", "Session Expired");
+    } else {
+      resp = CurrentRangeResp.fromDetails(
+          "E1000", "Cannot update the data. Please try again");
+    }
+
+    return resp;
+  } catch (e) {
+    return CurrentRangeResp.fromDetails(
         "E1000", "Cannot update the data. Please try again");
   }
 }
