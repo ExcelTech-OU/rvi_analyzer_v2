@@ -129,7 +129,7 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     const uniqueUIDs = new Set<string>();
 
     const uniqueRows = combinedRows.filter((row) => {
-      if (row.LED_status === "PASS" && row.DV_status === "PASS" && row.IV_status === "PASS") {
+      if (row.LED_status === "Pass" && row.DV_status === "Pass" && row.IV_status === "Pass") {
         if (!uniqueUIDs.has(row.UID)) {
           uniqueUIDs.add(row.UID);
           return true;
@@ -139,6 +139,8 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
         return true;
       }
     });
+
+    console.log(uniqueRows);
 
     const sortedRows = combinedRows.sort((a, b) => a.id.localeCompare(b.id));
     // const sortedRows = combinedRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());

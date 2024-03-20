@@ -31,6 +31,9 @@ const BasicSelect: React.FC<BasicSelectProps> = ({label, onSelectChange }) => {
           label={label}
           onChange={handleChange}
         >
+             <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
           <MenuItem value={"Pass"}>Pass</MenuItem>
           <MenuItem value={"Fail"}>Fail</MenuItem>
         </Select>

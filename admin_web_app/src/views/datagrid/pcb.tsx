@@ -109,7 +109,7 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
     const sortedRows = combinedRows.sort((a, b) => a.id.localeCompare(b.id));
 
     const uniqueRows = combinedRows.filter((row) => {
-      if (row.LED_C_status == "Pass") {
+      if (row.LED_C_status == "Pass" && row.HLV_status === "Pass" && row.HNLV_status === "Pass") {
         if (!uniqueMACs.has(row.MAC_adress)) {
           uniqueMACs.add(row.MAC_adress);
           return true;
@@ -168,11 +168,13 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
 
   const handleFilter = (): void => {
     const searchTerm = filterValue.toLowerCase();
+    console.log(LED_CStatus +  HLV_status + HNLV_status);
+    
     const filteredData = rows.filter((row) => {
       const isDateInRange =
         (!LED_CStatus || LED_CStatus.includes(row.LED_C_status)) &&
-        (!HLV_status || HLV_status.includes(row.LED_C_status)) &&
-        (!HNLV_status || HNLV_status.includes(row.LED_C_status)) &&
+        (!HLV_status || HLV_status.includes(row.HLV_status)) &&
+        (!HNLV_status || HNLV_status.includes(row.HNLV_status)) &&
         (!startingDate || new Date(row.date) >= new Date(startingDate)) &&
         (!finishingDate || new Date(row.date) <= new Date(finishingDate));
 
@@ -307,9 +309,9 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
     console.log(finishingDate);
   };
 
-  const [LED_CStatus, setLED_CStatus] = useState('');
-  const [HLV_status, setHLV_status] = useState('');
-  const [HNLV_status, setHNLV_status] = useState('');
+  const [LED_CStatus, setLED_CStatus] = useState<string>('');
+  const [HLV_status, setHLV_status] = useState<string>('');
+  const [HNLV_status, setHNLV_status] = useState<string>('');
 
   const handleChange = (label: string, selectedValue: string) => {
     switch (label) {
@@ -325,6 +327,8 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
       default:
         // Handle default case or do nothing
     }
+
+    
   };
 
   ///////////////////////////////////////////////////
