@@ -331,6 +331,9 @@ class _ConfigureRightPanelType07State
                   .read(deviceDataMap[widget.sc.device.id.id]!)
                   .saveClickedMode07 = false
             });
+
+    await blue.stop(widget.sc.device);
+
     widget.updateTestId();
   }
 
@@ -808,18 +811,18 @@ class _ConfigureRightPanelType07State
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black54),
                             ),
-                            const SizedBox(
-                              width: 50,
-                            ),
-                            Expanded(
-                              child: Text(
-                                "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData).notifyData}]",
-                                style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
-                              ),
-                            ),
+                            // const SizedBox(
+                            //   width: 50,
+                            // ),
+                            // Expanded(
+                            //   child: Text(
+                            //     "[service data  : ${ref.watch(ref.watch(deviceDataMap[widget.sc.device.id.id]!).streamData).notifyData}]",
+                            //     style: const TextStyle(
+                            //         fontSize: 15,
+                            //         fontWeight: FontWeight.bold,
+                            //         color: Colors.black54),
+                            //   ),
+                            // ),
                           ],
                         ),
                         const SizedBox(
