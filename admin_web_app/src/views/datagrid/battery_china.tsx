@@ -5,7 +5,7 @@ import { ModeSeven, useGetGtTestsMutation } from "../../services/gt_service";
 export const Battery_china = () => {
   return (
     <div>
-      <BatteryTest collection1="battery_test_3" collection2="battery_test_4" />
+      <BatteryTest collection1="battery_test_1" collection2="battery_test_2" />
     </div>
   );
 };

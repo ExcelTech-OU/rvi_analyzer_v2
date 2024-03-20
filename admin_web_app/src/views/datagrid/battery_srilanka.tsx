@@ -16,7 +16,7 @@ export const Battery_srilanka = () => {
   }, [data]);
   return (
     <div>
-      <BatteryTest collection1="battery_test_1" collection2="battery_test_2" />
+      <BatteryTest collection1="battery_test_3" collection2="battery_test_4" />
     </div>
   );
 };
