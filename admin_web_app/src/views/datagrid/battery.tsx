@@ -60,11 +60,15 @@ interface BasicSelectProps {
 interface DatasetTableProps {
   collection1: string;
   collection2: string;
+  hours: number;
+  minutes: number;
 }
 
 const BatteryTest: React.FC<DatasetTableProps> = ({
   collection1,
   collection2,
+  hours,
+  minutes,
 }) => {
   const [rows, setRows] = useState<Row[]>([]);
   const [uniqueRows, setUniqueRows] = useState<Row[]>([]);
@@ -90,19 +94,21 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     const data1 = await getDocs(database1);
     const updatedRows1 = data1.docs.map((doc) => {
       const docData = doc.data() as YourDocumentData;
-      const timeInMilliseconds =
-        docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
-      const dateValue = new Date(timeInMilliseconds).toLocaleDateString();
-      const timeValue = new Date(timeInMilliseconds).toLocaleTimeString();
-
-
+      const timeInMilliseconds1 =
+      docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
+    const adjustedTime1 = new Date(timeInMilliseconds1);
+    adjustedTime1.setHours(adjustedTime1.getHours() - hours);
+    adjustedTime1.setMinutes(adjustedTime1.getMinutes() - minutes);
+  
+    const dateValue1 = adjustedTime1.toLocaleDateString();
+    const timeValue1 = adjustedTime1.toLocaleTimeString();
       
       
       return {
         ...docData,
         id: doc.id,
-        time: timeValue,
-        date: dateValue,
+        time: timeValue1,
+        date: dateValue1,
       };
     });
 
@@ -111,16 +117,20 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     const data2 = await getDocs(database2);
     const updatedRows2 = data2.docs.map((doc) => {
       const docData = doc.data() as YourDocumentData;
-      const timeInMilliseconds =
-        docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
-      const dateValue = new Date(timeInMilliseconds).toLocaleDateString();
-      const timeValue = new Date(timeInMilliseconds).toLocaleTimeString();
+      const timeInMilliseconds2 =
+      docData.time.seconds * 1000 + docData.time.nanoseconds / 1e6;
+    const adjustedTime2 = new Date(timeInMilliseconds2);
+    adjustedTime2.setHours(adjustedTime2.getHours() - hours); 
+    adjustedTime2.setMinutes(adjustedTime2.getMinutes() - minutes); 
+  
+    const dateValue2 = adjustedTime2.toLocaleDateString();
+    const timeValue2 = adjustedTime2.toLocaleTimeString();
 
       return {
         ...docData,
         id: doc.id,
-        time: timeValue,
-        date: dateValue,
+        time: timeValue2,
+        date: dateValue2,
       };
     });
 
@@ -284,7 +294,7 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     {
       field: "time",
       headerName: "time",
-      width: 100,
+      width: 120,
       headerClassName: "customDataGridHeader",
     },
     // {
