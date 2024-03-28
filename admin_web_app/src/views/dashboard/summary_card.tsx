@@ -28,7 +28,7 @@ export function SummaryCard({ title, value, icon, path, color }: SummaryCardData
         <CardContent>
           <Grid
             container
-            sx={{ justifyContent: 'space-between' }}
+            sx={{ justifyContent: 'space-between' ,height:150 }}
           >
             <Grid item>
               <Typography
@@ -54,7 +54,7 @@ export function SummaryCard({ title, value, icon, path, color }: SummaryCardData
               </Typography>
             </Grid>
             <Grid item>
-              <Avatar
+              {/* <Avatar
                 sx={{
                   backgroundColor: color,
                   height: 35,
@@ -62,7 +62,7 @@ export function SummaryCard({ title, value, icon, path, color }: SummaryCardData
                 }}
               >
                 {icon}
-              </Avatar>
+              </Avatar> */}
             </Grid>
           </Grid>
 

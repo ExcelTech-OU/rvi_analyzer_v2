@@ -133,7 +133,6 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
       }
     });
 
-    console.log(uniqueRows);
 
     // const sortedRows = combinedRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
     // const sortedRows = combinedRows.sort((a, b) => a.id - b.id);
@@ -181,7 +180,6 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
 
   const handleFilter = (): void => {
     const searchTerm = filterValue.toLowerCase();
-    console.log(LED_CStatus +  HLV_status + HNLV_status);
     
     const filteredData = rows.filter((row) => {
       const isDateInRange =
@@ -193,7 +191,7 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
 
       return !searchTerm && isDateInRange;
     });
-    console.log(filteredData);
+    // console.log(filteredData);
 
     setFilteredRows(filteredData);
   };
@@ -314,12 +312,12 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
 
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
     setStartingDate(date);
-    console.log(startingDate);
+    // console.log(startingDate);
   };
 
   const handleFinishingDateChange = (date: React.SetStateAction<null>) => {
     setFinishingDate(date);
-    console.log(finishingDate);
+    // console.log(finishingDate);
   };
 
   const [LED_CStatus, setLED_CStatus] = useState<string>('');

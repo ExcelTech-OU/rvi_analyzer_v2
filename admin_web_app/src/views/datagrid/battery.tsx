@@ -150,7 +150,6 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
       }
     });
 
-    console.log(uniqueRows);
 
     const sortedRows = combinedRows.sort((a, b) => a.id.localeCompare(b.id));
     // const sortedRows = combinedRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
@@ -205,7 +204,7 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
 
       return !searchTerm && isDateInRange;
     });
-    console.log(filteredData);
+    // console.log(filteredData);
 
     setFilteredRows(filteredData);
   };
@@ -360,7 +359,7 @@ const handlePrintPassData = (data: Row[], cardType: string) => {
 
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
     setStartingDate(date);
-    // console.log("fff"+startingDate);
+    // console.log("startingDate);
   };
 
   const handleFinishingDateChange = (date: React.SetStateAction<null>) => {
