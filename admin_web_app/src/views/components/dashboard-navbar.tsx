@@ -13,10 +13,11 @@ const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
 }));
 
 interface DashboardNavbarProps {
-  openSideBar: () => void
+  openSideBar: () => void;
+  title: string;
 }
 
-export const DashboardNavbar = ({ openSideBar }: DashboardNavbarProps) => {
+export const DashboardNavbar = ({ openSideBar, title}: DashboardNavbarProps) => {
   const settingsRef = useRef(null);
   const [openAccountPopover, setOpenAccountPopover] = useState(false);
 
@@ -56,7 +57,7 @@ export const DashboardNavbar = ({ openSideBar }: DashboardNavbarProps) => {
             variant="h5"
             sx={{ ml: 5 }}
           >
-            RVI Analyzer Admin Panel
+            {title}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Avatar

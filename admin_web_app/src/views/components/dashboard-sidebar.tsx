@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -30,6 +30,7 @@ import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import CableIcon from "@mui/icons-material/Cable";
 import { NavItem } from "./nav-item";
+import { DashboardNavbar } from "./dashboard-navbar";
 import {
   Add,
   Construction,
@@ -248,6 +249,14 @@ export const DashboardSidebar = ({
   var admin = "";
   var roles = localStorage.getItem("roles");
 
+  //////////////////
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleOpen = () => {
+    setSidebarOpen(true);
+  };
+  //////////////////
+
   if (roles === null) {
     console.log("roles empty");
   } else {
@@ -293,6 +302,7 @@ export const DashboardSidebar = ({
               RVI Analyzer
             </Typography>
           </Box>
+          
         </div>
         <Divider
           sx={{
@@ -301,6 +311,7 @@ export const DashboardSidebar = ({
           }}
         />
         <Box sx={{ flexGrow: 1, marginY: 2 }}>
+          {/* <DashboardNavbar openSideBar={() => handleOpen()} title="RVI Analyzer Admin Pan"/> */}
           {admin === "ADMIN"
             ? newList.map((item) => (
                 <NavItem

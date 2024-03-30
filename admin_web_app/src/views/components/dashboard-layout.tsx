@@ -43,7 +43,7 @@ export const DashboardLayout = (props: any) => {
           {children}
         </Box>
       </DashboardLayoutRoot>
-      <DashboardNavbar openSideBar={() => handleOpen()} />
+      <DashboardNavbar openSideBar={() => handleOpen()} title="Gamertech Admin Panel"/>
       <DashboardSidebar
         closeSideBar={() => handleClose()}
         open={isSidebarOpen}
