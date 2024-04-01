@@ -12,7 +12,7 @@ export const Pcb_srilanka = () => {
           >
            PCB Test Sri Lanka
           </Typography>
-      <DatasetTable collection1="pcb_test_3" collection2="pcb_test_4" hours={5} minutes={20} />
+      <DatasetTable collection1="pcb_test_3" collection2="pcb_test_4" hours={5} minutes={30} />
     </div>
   );
 };
