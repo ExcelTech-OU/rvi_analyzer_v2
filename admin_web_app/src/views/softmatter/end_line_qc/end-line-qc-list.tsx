@@ -239,7 +239,8 @@ export default function EndLineQcList() {
       setPOList(poData.orders);
     }
     if (data?.sessions) {
-      setModesList(data?.sessions);
+      const reversedModesList = [...data.sessions].reverse();
+      setModesList(reversedModesList);
     }
   }, [data]);
 
@@ -386,6 +387,9 @@ export default function EndLineQcList() {
                                     return originalFilterCondition;
                                   }
                                 });
+
+                                
+                                filteredData = filteredData.reverse();
 
                                 handleGenerateExcelEndLineQc(filteredData);
                               });

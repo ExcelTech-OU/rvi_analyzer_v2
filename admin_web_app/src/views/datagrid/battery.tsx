@@ -151,7 +151,7 @@ const BatteryTest: React.FC<DatasetTableProps> = ({
     });
 
 
-    const sortedRows = combinedRows.sort((a, b) => a.id.localeCompare(b.id));
+    const sortedRows = combinedRows.sort((a, b) => b.id.localeCompare(a.id));
     // const sortedRows = combinedRows.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
     setRows(sortedRows);
     setFilteredRows(sortedRows);

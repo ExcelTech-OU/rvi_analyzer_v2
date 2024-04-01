@@ -118,8 +118,9 @@ const DatasetTable: React.FC<DatasetTableProps> = ({
     const combinedRows = [...updatedRows1, ...updatedRows2];
 
     const uniqueMACs = new Set<string>();
+    
+    const sortedRows = combinedRows.sort((a, b) => b.id.localeCompare(a.id));
 
-    const sortedRows = combinedRows.sort((a, b) => a.id.localeCompare(b.id));
 
     const uniqueRows = combinedRows.filter((row) => {
       if (row.LED_C_status == "Pass" && row.HLV_status === "Pass" && row.HNLV_status === "Pass") {

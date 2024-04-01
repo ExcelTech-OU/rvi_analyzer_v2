@@ -24,7 +24,7 @@ export const Battery_srilanka = () => {
           >
            Battery Test Sri Lanka
           </Typography>
-      <BatteryTest collection1="battery_test_3" collection2="battery_test_4" hours={5} minutes={30}/>
+      <BatteryTest collection1="battery_test_3" collection2="battery_test_4" hours={5} minutes={20}/>
     </div>
   );
 };
