@@ -29,6 +29,7 @@ import { Pcb_china } from "./views/datagrid/pcb_china";
 import { Battery_srilanka } from "./views/datagrid/battery_srilanka";
 import { Battery_china } from "./views/datagrid/battery_china";
 import EndLineQcList from "./views/softmatter/end_line_qc/end-line-qc-list";
+import PackagingBoxList from "./views/gt_packaging/packaging-box-list";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -58,6 +59,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <Route path="/battery_srilanka" element={<Battery_srilanka />} />
               <Route path="/battery_china" element={<Battery_china />} />
               <Route path="/end/line/qc" element={<EndLineQcList />} />
+              <Route path="/packaging-box" element={<PackagingBoxList />} />
               {/* <Route path="/sign-up" element={<SignUp />} /> */}
               <Route path="*" element={<Dashboard />} />
             </Routes>

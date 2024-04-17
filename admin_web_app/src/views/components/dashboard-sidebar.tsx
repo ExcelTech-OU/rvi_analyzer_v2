@@ -16,6 +16,10 @@ import {
 import LooksOneIcon from "@mui/icons-material/LooksOne";
 import LooksTwoIcon from "@mui/icons-material/LooksTwo";
 import Looks3Icon from "@mui/icons-material/Looks3";
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import AllInboxIcon from '@mui/icons-material/AllInbox';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import Looks4Icon from "@mui/icons-material/Looks4";
 import Looks5Icon from "@mui/icons-material/Looks5";
 import Looks6Icon from "@mui/icons-material/Looks6";
@@ -37,6 +41,7 @@ import {
   Domain,
   Group,
   ListAlt,
+  LocalShipping,
   People,
   PersonAddAlt,
 } from "@mui/icons-material";
@@ -233,6 +238,56 @@ const items = [
       },
     ],
   },
+
+  {
+    href: "#",
+    icon: <LocalShippingIcon fontSize="small" />,
+    title: "GT Packaging",
+    childs: [
+      {
+        href: "#",
+        icon: <AllInboxIcon fontSize="small" />,
+        title: "Packaging Box",
+        childs: [
+          {
+            href: "/packaging-box",
+            icon: <ListAlt fontSize="small" />,
+            title: "List",
+            childs: [],
+          },          
+        ],
+      },
+      {
+        href: "#",
+        icon: <InventoryIcon fontSize="small" />,
+        title: "Corrugated Box",
+        childs: [
+          {
+            href: "/corBox",
+            icon: <ListAlt fontSize="small" />,
+            title: "List",
+            childs: [],
+          },         
+        ],
+      },
+      {
+        href: "#",
+        icon: <PeopleAltIcon fontSize="small" />,
+        title: "Users",
+        childs: [
+          {
+            href: "/end/line/qc",
+            icon: <ListAlt fontSize="small" />,
+            title: "List",
+            childs: [],
+          },
+        ],
+      },
+    ],
+  },
+
+  
+
 ];
 
 type DashboardSidebarData = {
