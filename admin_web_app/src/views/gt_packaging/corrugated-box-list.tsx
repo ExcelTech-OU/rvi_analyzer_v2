@@ -22,7 +22,7 @@ import {
   import TableRow from "@mui/material/TableRow";
   import { styled } from "@mui/material";
 //   import SessionTimeoutPopup from "../../components/session_logout";
-import { handleGenerateExcelPackageBox } from "./packaging-box-excel";
+import { handleGenerateExcelCorrugatedBox } from "./corrugated-box-excel";
 import { Download } from "@mui/icons-material";
 
 import { useState, useEffect } from "react";
@@ -32,9 +32,7 @@ import { useState, useEffect } from "react";
 import { AnyObject } from "yup/lib/types";
 import { List } from "reselect/es/types";
 // import { useGetPOQuery } from "../../../services/po_service";
-
-import MyComponentPackagingBox from "./table_search_form_packagingBox";
-import DatePickerComponentPackagingBox from "./date_picker_packagingBox";
+import MyComponentCorrugatedBox from "./table_search_form_corrugatedBox";
 
 
 
@@ -63,49 +61,31 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
         headerName: "Select",
         width: 80,
     },
+    
     {
-      field: "Select",
+      field: "corrugatedBoxID",
       headerName: "Corrugated Box ID",
-      width: 80,
-    },
-    {
-      field: "elementNumber",
-      headerName: "Packaging Box ID",
       width: 150,
     },
     {
-      field: "battery01Serial",
-      headerName: "Battery01 Serial",
+        field: "where",
+        headerName: "where",
+        width: 150,
+    },
+    {
+      field: "shippingID",
+      headerName: "Shipping ID",
+      width: 150,
+    },
+    {
+      field: "customerPO",
+      headerName: "Customer PO",
       width: 100,
     },
-    {
-      field: "battery02Serial",
-      headerName: "Battery02 Serial",
-      width: 100,
-    },
-    {
-      field: "deviceLMac",
-      headerName: "DeviceL Mac",
-      width: 100,
-    },
-    {
-        field: "deviceRMac",
-        headerName: "DeviceR Mac",
-        width: 100,
-      },
-    {
-        field: "packedDate",
-        headerName: "Packed Date",
-        width: 100,
-      },
-    {
-        field: "packedBy",
-        headerName: "Packed By",
-        width: 100,
-    },
+    
    
   ];
-export default function PackagingBoxList() {
+export default function CorrugatedBoxList() {
     const [data, setData] = React.useState<any[]>([]);
     const [isLoading, setIsLoading] = React.useState(false);
     const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
@@ -113,15 +93,11 @@ export default function PackagingBoxList() {
     // const paginatedModes = modesList.slice(startIndex, endIndex);
 
     const [values, setValues] = useState({
-      field1: "",
-      field2: "",
-      field3: "",
-      field4: "",
-      field5: "",
-      field6: "",
-      field7: "",
-    });
-
+        field1: "",
+        field2: "",
+        field3: "",
+        field4: "",
+      });
     useEffect(() => {
       fetchData();
     }, []);
@@ -129,7 +105,7 @@ export default function PackagingBoxList() {
     const fetchData = async () => {
         try {
             setIsLoading(true);
-          const response = await fetch('http://52.187.127.25:8090/api/packagingBoxes');
+          const response = await fetch('http://52.187.127.25:8090/api/mainTiles');
           const jsonData = await response.json();
           if(response.ok){
             setIsLoading(false);
@@ -141,12 +117,19 @@ export default function PackagingBoxList() {
         }
       };
 
-      function getSelectedList(): any {
+    //   function getSelectedList(): any {
+    //     return (
+    //       paginatedModes.filter((item, index) => selectedRows.includes(index)) || []
+    //     );
+    //   }
+    //   const [getAll] = useGetGtTestsMutation();
+    function getSelectedList(): any {
+        console.log(selectedRows);
+        
         return (
-          data.filter((item, index) => selectedRows.includes(item.element_number)) || []
+          data.filter((item, index) => selectedRows.includes(item.corBox_QR)) || []
         );
       }
-      // const [getAll] = useGetGtTestsMutation();
 
       const handleRowClick = (id: number) => {
         if (selectedRows.includes(id)) {
@@ -163,14 +146,6 @@ export default function PackagingBoxList() {
         }));
         
       };
-
-      const [packedDate, setPackedDate] = useState(null);
-
-      const handleDateChange = (date: React.SetStateAction<null>) => {
-        setPackedDate(date);
-        console.log(packedDate);
-      };
-
 
       if (isLoading) {
         return <div>Loading...</div>;
@@ -237,7 +212,7 @@ export default function PackagingBoxList() {
                         component="div"
                         color="grey"
                       >
-                        GT Packaging Package Boxes
+                        GT Packaging Corrugated Boxes
                       </Typography>
                     </Grid>
                     <Grid item xs={4} sm={2} md={6}>
@@ -248,7 +223,7 @@ export default function PackagingBoxList() {
                           startIcon={<Download />}
                           color="success"
                           onClick={() =>
-                            handleGenerateExcelPackageBox(getSelectedList())
+                            handleGenerateExcelCorrugatedBox(getSelectedList())
                           }
                           disabled={selectedRows.length == 0}
                         >
@@ -260,7 +235,7 @@ export default function PackagingBoxList() {
                           startIcon={<GridOnIcon />}
                           color="success"
                           onClick={() =>
-                            handleGenerateExcelPackageBox(data)
+                            handleGenerateExcelCorrugatedBox(data)
                           }
                         //   onClick={() => {
                         //     getAll({
@@ -327,7 +302,7 @@ export default function PackagingBoxList() {
                       flexDirection: "row",
                     }}
                   >
-                   <MyComponentPackagingBox
+                   <MyComponentCorrugatedBox
                       initialValues={values}
                       onInputChange={handleInputChange}
                       orders={poList}
@@ -335,19 +310,6 @@ export default function PackagingBoxList() {
 
                     
                   </div>
-
-                  <div
-                      style={{
-                        marginLeft: "10px",
-                        marginRight: "10px",
-                        width: "250px",
-                      }}
-                    >
-                      <DatePickerComponentPackagingBox
-                        label="Packed Date"
-                        onChange={handleDateChange}
-                      />
-                    </div>
 
                   <Divider
                     sx={{
@@ -375,36 +337,21 @@ export default function PackagingBoxList() {
                         <TableBody>
                           {data
                           .filter((item) => {
-                            const itemDate = new Date(item.packed_Date);
-                            console.log(itemDate);
                             
-                          
                             return (
                               item.corBox_QR.includes(
                                 values.field1
                               ) &&
-                              item.element_number.includes(
+                              item.destination.includes(
                                 values.field2
                               ) &&
-                              item.battery01_Serial.includes(
+                              item.shipping_Id.includes(
                                 values.field3
                               ) &&
-                              item.battery02_Serial.includes(
+                              item.customer_PO.includes(
                                 values.field4
-                              ) &&
-                              item.deviceL_Mac.includes(
-                                values.field5
-                              ) &&
-                              item.deviceR_Mac.includes(
-                                values.field6
-                              ) &&
-                              item.packed_By.includes(
-                                values.field7
-                              ) &&
-                              (!packedDate ||
-                                new Date(packedDate).toLocaleDateString() ==
-                                  new Date(itemDate).toLocaleDateString())
-                                  
+                              ) 
+                             
                             );
                           }).map((box) => {
                               return (
@@ -412,39 +359,27 @@ export default function PackagingBoxList() {
                                   hover
                                   role="checkbox"
                                   tabIndex={-1}
-                                  key={box.element_number}
-                                  onClick={() => handleRowClick(box.element_number)}
-                                  selected={selectedRows.includes(box.element_number)}
+                                  key={box.corBox_QR}
+                                  onClick={() => handleRowClick(box.corBox_QR)}
+                                  selected={selectedRows.includes(box.corBox_QR)}
                                 >
                                   <StyledTableCell align={"left"}>
                                     <input
                                       type="checkbox"
-                                      checked={selectedRows.includes(box.element_number)}
+                                      checked={selectedRows.includes(box.corBox_QR)}
                                     />
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
                                   {box.corBox_QR}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                  {box.element_number}
+                                  {box.destination}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                  {box.battery01_Serial}
+                                  {box.shipping_Id}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                  {box.battery02_Serial}
-                                  </StyledTableCell>
-                                  <StyledTableCell align={"left"}>
-                                  {box.deviceL_Mac}
-                                  </StyledTableCell>
-                                  <StyledTableCell align={"left"}>
-                                  {box.deviceR_Mac}
-                                  </StyledTableCell>
-                                  <StyledTableCell align={"left"}>
-                                  {new Date(box.packed_Date).toLocaleDateString()}
-                                  </StyledTableCell>
-                                  <StyledTableCell align={"left"}>
-                                  {box.packed_By}
+                                  {box.customer_PO}
                                   </StyledTableCell>
                                   {/* <StyledTableCell align={"left"}>
                                     {item.result.reading.result}
