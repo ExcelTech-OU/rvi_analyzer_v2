@@ -9,6 +9,7 @@ import 'package:rvi_analyzer/providers/device_state_provider.dart';
 import 'package:rvi_analyzer/repository/entity/login_info.dart';
 import 'package:rvi_analyzer/repository/login_repo.dart';
 import 'package:rvi_analyzer/service/flutter_blue_service_impl.dart';
+import 'package:rvi_analyzer/service/login_service.dart';
 import 'package:rvi_analyzer/views/common/bluetooth_device_disconnected_popup.dart';
 import 'package:rvi_analyzer/views/common/bluetooth_disconnected_popup.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,8 @@ import 'package:rvi_analyzer/views/history/modes/mode_six_view.dart';
 import 'package:rvi_analyzer/views/history/modes/mode_three_view.dart';
 import 'package:rvi_analyzer/views/history/modes/mode_two_view.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+
+import '../../service/common_service.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   int initialIndex = 0;
@@ -140,6 +143,15 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showLogoutAlert(context, ref);
+          },
+          child: const Icon(Icons.logout),
+          backgroundColor: Colors.red[800],
+        ),
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.miniStartFloat,
         body: SafeArea(
             child: isLandscape
                 ? Container(
