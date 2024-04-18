@@ -263,7 +263,7 @@ const items = [
         title: "Corrugated Box",
         childs: [
           {
-            href: "/corBox",
+            href: "/corrugated-box",
             icon: <ListAlt fontSize="small" />,
             title: "List",
             childs: [],
