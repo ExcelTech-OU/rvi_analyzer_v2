@@ -276,7 +276,7 @@ const items = [
         title: "Users",
         childs: [
           {
-            href: "/end/line/qc",
+            href: "/box-user-list",
             icon: <ListAlt fontSize="small" />,
             title: "List",
             childs: [],
