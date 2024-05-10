@@ -272,6 +272,19 @@ const items = [
       },
       {
         href: "#",
+        icon: <InventoryIcon fontSize="small" />,
+        title: "GT Tracking",
+        childs: [
+          {
+            href: "/gtTracking-box",
+            icon: <ListAlt fontSize="small" />,
+            title: "List",
+            childs: [],
+          },         
+        ],
+      },
+      {
+        href: "#",
         icon: <PeopleAltIcon fontSize="small" />,
         title: "Users",
         childs: [
