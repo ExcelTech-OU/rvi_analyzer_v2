@@ -33,7 +33,7 @@ import React, { useEffect } from "react";
 // }
 ///////////////////////
 
-export function handleGenerateExcelPackageBox(datas) {
+export function handleGenerateExcelPackageBox(datas: any[]) {
     // const [data, setData] = React.useState<any[]>([]);
     // const [isLoading, setIsLoading] = React.useState(false);
     // useEffect(() => {
@@ -60,20 +60,28 @@ export function handleGenerateExcelPackageBox(datas) {
   // Create a new worksheet 'NOISE_IDLE', 'SETTINGS_NOISE_MIN', 'SETTINGS_NOISE_MAX', 'NOISE_STATUS_IDLE', 'NOISE_FL', 'NOISE_STATUS_FL'
   const worksheet = XLSX.utils.aoa_to_sheet([
     [
-      "Element Number",
-      "Battery01 Serial",
-      "Battery02 Serial",
-      "DeviceL Mac",
-      "DeviceR Mac",
+      "Corrugated Box QR",
+      "Packaging Box QR",
+      "Battery 01 NFC",
+      "Battery 02 NFC",
+      "Device L Mac",
+      "Device R Mac",
+      "Where",
+      "Shipping Id",
+      "Customer PO",
       "Packed Date",
       "Packed By",
     ],
     ...datas.map((data) => [
-        data.element_number,
+      data.corBox_Qr,
+      data.retailBox_QR,
       data.battery01_Serial,
       data.battery02_Serial,
       data.deviceL_Mac,
       data.deviceR_Mac,
+      data.destination,
+      data.shipping_Id,
+      data.customer_PO,
       data.packed_Date,
       data.packed_By,
 

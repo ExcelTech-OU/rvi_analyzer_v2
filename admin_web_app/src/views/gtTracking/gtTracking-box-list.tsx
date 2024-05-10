@@ -75,12 +75,12 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
     {
       field: "battery01Serial",
-      headerName: "Battery01 Serial",
+      headerName: "Battery 01 NFC",
       width: 100,
     },
     {
       field: "battery02Serial",
-      headerName: "Battery02 Serial",
+      headerName: "Battery 02 NFC",
       width: 100,
     },
     {
@@ -109,15 +109,15 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
         width: 100,
     },
     {
+        field: "packedDate",
+        headerName: "Packed Date",
+        width: 100,
+    },
+    {
         field: "packedBy",
         headerName: "Packed By",
         width: 100,
     },
-    {
-        field: "packedDate",
-        headerName: "Packed Date",
-        width: 100,
-      },
    
   ];
 export default function GtTrackingBoxList() {
@@ -243,7 +243,7 @@ export default function GtTrackingBoxList() {
 
       function getSelectedList(): any {
         return (
-          data.filter((item, index) => selectedRows.includes(item.element_number)) || []
+          updatedRetailData.filter((item, index) => selectedRows.includes(item.id)) || []
         );
       }
       // const [getAll] = useGetGtTestsMutation();
@@ -364,7 +364,7 @@ export default function GtTrackingBoxList() {
                           startIcon={<GridOnIcon />}
                           color="success"
                           onClick={() =>
-                            handleGenerateExcelPackageBox(data)
+                            handleGenerateExcelPackageBox(updatedRetailData)
                           }
                         //   onClick={() => {
                         //     getAll({
@@ -551,10 +551,10 @@ export default function GtTrackingBoxList() {
                                   {box.customer_PO}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                  {box.packed_By}
+                                  {new Date(box.packed_Date).toLocaleDateString()}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                  {new Date(box.packed_Date).toLocaleDateString()}
+                                  {box.packed_By}
                                   </StyledTableCell>
                                   {/* <StyledTableCell align={"left"}>
                                     {item.result.reading.result}
