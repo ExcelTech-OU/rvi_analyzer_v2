@@ -367,7 +367,7 @@ export default function GtTrackingBoxList() {
                         component="div"
                         color="grey"
                       >
-                        GT Packaging Package Boxes
+                        GT Tracking
                       </Typography>
                     </Grid>
                     <Grid item xs={4} sm={2} md={6}>
@@ -397,7 +397,7 @@ export default function GtTrackingBoxList() {
                               item.deviceL_Mac.includes(values.field4) &&
                               item.deviceR_Mac.includes(values.field5) &&
                               item.packed_By.includes(values.field6) &&
-                              (!packedEndDate || new Date(item.itemDate).setHours(0,0,0,0) <= new Date(packedEndDate).setHours(0,0,0,0))
+                              (!packedDate || new Date(new Date(item.packed_Date)).setHours(0,0,0,0) == new Date(packedDate).setHours(0,0,0,0))
                             );
                             if (values) {
                                 handleGenerateExcelPackageBox(filteredData);
@@ -541,9 +541,9 @@ export default function GtTrackingBoxList() {
                               item.packed_By.includes(
                                 values.field6
                               )  &&
-                              // (!packedDate || new Date(itemDate).setHours(0,0,0,0) >= new Date(packedDate).setHours(0,0,0,0))
+                              (!packedDate || new Date(itemDate).setHours(0,0,0,0) == new Date(packedDate).setHours(0,0,0,0))
                                 // &&
-                                  (!packedEndDate || new Date(itemDate).setHours(0,0,0,0) <= new Date(packedEndDate).setHours(0,0,0,0))
+                                  // (!packedEndDate || new Date(itemDate).setHours(0,0,0,0) <= new Date(packedEndDate).setHours(0,0,0,0))
                                  
                             );
                           }).map((box) => {
