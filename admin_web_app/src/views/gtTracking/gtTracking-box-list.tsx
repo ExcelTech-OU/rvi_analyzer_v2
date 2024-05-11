@@ -227,10 +227,33 @@ export default function GtTrackingBoxList() {
 
         return updatedData;
       }
-
-      // Example usage
+      
+      
+      
       const updatedRetailData = updateRetailDataWithCorrelationData(dataCorWeb, dataRetailWeb);
       console.log(updatedRetailData);
+      // setFilteredData(updatedRetailData);
+
+      const [filteredData, setFilteredData] = useState<any[]>(updatedRetailData);
+
+      // useEffect(() => {
+      //   const filteredData = updatedRetailData.filter(item =>
+      //     item.retailBox_QR.includes(values.field1) &&
+      //     item.battery01_Serial.includes(values.field2) &&
+      //     item.battery02_Serial.includes(values.field3) &&
+      //     item.deviceL_Mac.includes(values.field4) &&
+      //     item.deviceR_Mac.includes(values.field5) &&
+      //     item.packed_By.includes(values.field6) &&
+      //     (!packedEndDate || new Date(item.itemDate).setHours(0,0,0,0) <= new Date(packedEndDate).setHours(0,0,0,0))
+      //   );
+
+      //   setFilteredData(filteredData);
+      //   console.log(filteredData);
+        
+
+        
+      // }, [values]);
+    
 
       
 
@@ -261,6 +284,9 @@ export default function GtTrackingBoxList() {
           ...prevValues,
           [field]: value,
         }));
+
+        console.log("hj");
+        
         
       };
 
@@ -363,9 +389,22 @@ export default function GtTrackingBoxList() {
                           variant="contained"
                           startIcon={<GridOnIcon />}
                           color="success"
-                          onClick={() =>
-                            handleGenerateExcelPackageBox(updatedRetailData)
-                          }
+                          onClick={() => {
+                            const filteredData = updatedRetailData.filter(item =>
+                              item.retailBox_QR.includes(values.field1) &&
+                              item.battery01_Serial.includes(values.field2) &&
+                              item.battery02_Serial.includes(values.field3) &&
+                              item.deviceL_Mac.includes(values.field4) &&
+                              item.deviceR_Mac.includes(values.field5) &&
+                              item.packed_By.includes(values.field6) &&
+                              (!packedEndDate || new Date(item.itemDate).setHours(0,0,0,0) <= new Date(packedEndDate).setHours(0,0,0,0))
+                            );
+                            if (values) {
+                                handleGenerateExcelPackageBox(filteredData);
+                            } else {
+                                handleGenerateExcelPackageBox(updatedRetailData);
+                            }
+                        }}
                         //   onClick={() => {
                         //     getAll({
                         //       data: {
