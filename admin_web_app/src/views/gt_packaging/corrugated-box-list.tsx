@@ -105,7 +105,7 @@ export default function CorrugatedBoxList() {
     const fetchData = async () => {
         try {
             setIsLoading(true);
-          const response = await fetch('http://52.187.127.25:8090/api/mainTiles');
+          const response = await fetch('http://52.187.127.25:8090/api/getCorWeb');
           const jsonData = await response.json();
           if(response.ok){
             setIsLoading(false);
