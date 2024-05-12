@@ -201,6 +201,8 @@ export default function GtTrackingBoxList() {
         [key: string]: any;
       }
 
+      
+
       // Function to update retail data with correlation data
       function updateRetailDataWithCorrelationData(dataCorWeb: CorrelationObject[], dataRetailWeb: RetailObject[]): any[] {
         const updatedData: any[] = [];
@@ -233,6 +235,7 @@ export default function GtTrackingBoxList() {
 
             
         });
+        
 
         return updatedData;
       }
@@ -251,9 +254,7 @@ export default function GtTrackingBoxList() {
       const [packedDate, setPackedDate] = useState(null);
       const [packedEndDate, setPackedEndDate] = useState(null);
 
-      useEffect(() => {
-        setFilteredData(updatedRetailData);
-      }, [updatedRetailData]);
+      
 
       useEffect(() => {
         const filteredData = updatedRetailData.filter(item =>
@@ -267,7 +268,7 @@ export default function GtTrackingBoxList() {
         );
 
         setFilteredData(filteredData);
-        // console.log(filteredData);
+        console.log("ilteredData");
         
 
         
@@ -291,7 +292,7 @@ export default function GtTrackingBoxList() {
 
       function getSelectedList(): any {
         return (
-          updatedRetailData.filter((item, index) => selectedRows.includes(item.id)) || []
+          paginatedModes.filter((item, index) => selectedRows.includes(item.id)) || []
         );
       }
       // const [getAll] = useGetGtTestsMutation();
@@ -313,6 +314,10 @@ export default function GtTrackingBoxList() {
         
         
       };
+
+      useEffect(() => {
+        setFilteredData(updatedRetailData);
+      }, [dataCorWeb]);
 
       
 
