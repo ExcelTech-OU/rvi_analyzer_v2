@@ -181,7 +181,7 @@ export default function GtTrackingBoxList() {
             setIsLoadingMainTiles(false);
           console.error('Error fetching data:', error);
         }
-        console.log(dataCorWeb);
+        // console.log(dataCorWeb);
       };
 
       /////////////////////////////////////////////////
@@ -241,7 +241,7 @@ export default function GtTrackingBoxList() {
       
       
       const updatedRetailData = updateRetailDataWithCorrelationData(dataCorWeb, dataRetailWeb);
-      console.log(updatedRetailData);
+      // console.log(updatedRetailData);
       // setFilteredData(updatedRetailData);
 
       
@@ -250,6 +250,10 @@ export default function GtTrackingBoxList() {
 
       const [packedDate, setPackedDate] = useState(null);
       const [packedEndDate, setPackedEndDate] = useState(null);
+
+      useEffect(() => {
+        setFilteredData(updatedRetailData);
+      }, [updatedRetailData]);
 
       useEffect(() => {
         const filteredData = updatedRetailData.filter(item =>
@@ -263,7 +267,7 @@ export default function GtTrackingBoxList() {
         );
 
         setFilteredData(filteredData);
-        console.log(filteredData);
+        // console.log(filteredData);
         
 
         
@@ -283,7 +287,7 @@ export default function GtTrackingBoxList() {
       };
       
       // setData(updatedRetailData);
-      console.log(data);
+      // console.log(data);
 
       function getSelectedList(): any {
         return (
@@ -306,7 +310,6 @@ export default function GtTrackingBoxList() {
           [field]: value,
         }));
 
-        console.log("hj");
         
         
       };
@@ -538,7 +541,7 @@ export default function GtTrackingBoxList() {
                           </StyledTableRow>
                         </TableHead>
                         <TableBody>
-                          {updatedRetailData
+                          {paginatedModes
                           .filter((item) => {
                             const itemDate = new Date(item.packed_Date);
                             // console.log(itemDate);
