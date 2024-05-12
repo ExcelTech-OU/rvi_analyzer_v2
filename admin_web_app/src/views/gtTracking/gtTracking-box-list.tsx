@@ -464,10 +464,12 @@ export default function GtTrackingBoxList() {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      marginBottom: "20px",
+                      marginBottom: "5px",
                       width: "100%",
-                      overflowX: "auto",
+                      maxWidth: 1600,
+                      // overflowX: "auto",
                       flexDirection: "row",
+                      flexWrap: "wrap",
                     }}
                   >
                    <MyComponentPackagingBox
@@ -481,7 +483,7 @@ export default function GtTrackingBoxList() {
 
                   <div
                       style={{
-                        marginLeft: "10px",
+                        marginLeft: "1px",
                         marginRight: "10px",
                         width: "250px",
                       }}

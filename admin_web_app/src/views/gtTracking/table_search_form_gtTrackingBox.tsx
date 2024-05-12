@@ -225,13 +225,15 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
 
   return (
     <div
+    style={{
+      gap: "5px",
+      marginBottom:"5px",
+    }}>
+    <div
       style={{
         display: "flex",
-        flexDirection: "row",
-        gap: "8px",
-        // overflowX: "auto",
-        // justifyContent: "space-between",
-        padding: "5px 0 5px 0",
+        gap: "5px",
+        marginBottom:"5px"
       }}
     >
       <FormControl fullWidth>
@@ -351,6 +353,14 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
             ))}
         </Select>
       </FormControl>
+      
+      </div>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+        }}
+      >
 
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Packed By</InputLabel>
@@ -373,6 +383,7 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
             ))}
         </Select>
       </FormControl>
+    </div>
     </div>
   );
 };

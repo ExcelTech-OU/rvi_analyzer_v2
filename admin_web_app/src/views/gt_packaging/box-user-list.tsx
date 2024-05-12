@@ -69,7 +69,7 @@ const columns: GridColDef[] = [
   },
   {
     field: "user_name",
-    headerName: "User name",
+    headerName: "Created By",
     width: 150,
   },
   {

@@ -226,7 +226,7 @@ export function AddBoxUserModel({ open, changeOpenStatus }: AddUserProps) {
           />
           <TextField
             fullWidth
-            label="User Name"
+            label="Created By"
             margin="normal"
             name="user_name"
             onBlur={formik.handleBlur}
