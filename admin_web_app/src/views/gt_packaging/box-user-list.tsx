@@ -56,11 +56,11 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 const columns: GridColDef[] = [
-  {
-    field: "Select",
-    headerName: "Select",
-    width: 80,
-  },
+  // {
+  //   field: "Select",
+  //   headerName: "Select",
+  //   width: 80,
+  // },
 
   {
     field: "user_email",
@@ -99,7 +99,7 @@ export default function BoxUserList() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("http://52.187.127.25:8090/api/mainTiles");
+      const response = await fetch("http://52.187.127.25:8090/api/getUsers");
       const jsonData = await response.json();
       if (response.ok) {
         setIsLoading(false);
@@ -204,7 +204,7 @@ export default function BoxUserList() {
                           component="div"
                           color="grey"
                         >
-                          GT Packaging Corrugated Boxes
+                          GT packaging App Users
                         </Typography>
                       </Grid>
                       <Grid item xs={4} sm={2} md={6}>
@@ -222,7 +222,7 @@ export default function BoxUserList() {
                           >
                             ADD
                           </Button>
-                          <Button
+                          {/* <Button
                             sx={{ padding: 2 }}
                             variant="contained"
                             startIcon={<Download />}
@@ -287,7 +287,7 @@ export default function BoxUserList() {
                             //   }}
                           >
                             Download
-                          </Button>
+                          </Button> */}
                         </Box>
                       </Grid>
                     </Grid>
@@ -298,7 +298,7 @@ export default function BoxUserList() {
                         borderStyle: "dashed",
                       }}
                     />
-                    <div
+                    {/* <div
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -313,7 +313,7 @@ export default function BoxUserList() {
                         onInputChange={handleInputChange}
                         orders={poList}
                       />
-                    </div>
+                    </div> */}
 
                     <Divider
                       sx={{
@@ -340,14 +340,14 @@ export default function BoxUserList() {
                           </TableHead>
                           <TableBody>
                             {data
-                              .filter((item) => {
-                                return (
-                                  item.corBox_QR.includes(values.field1) &&
-                                  item.destination.includes(values.field2) &&
-                                  item.shipping_Id.includes(values.field3) &&
-                                  item.customer_PO.includes(values.field4)
-                                );
-                              })
+                              // .filter((item) => {
+                              //   return (
+                              //     item.corBox_QR.includes(values.field1) &&
+                              //     item.destination.includes(values.field2) &&
+                              //     item.shipping_Id.includes(values.field3) &&
+                              //     item.customer_PO.includes(values.field4)
+                              //   );
+                              // })
                               .map((user) => {
                                 return (
                                   <StyledTableRow
@@ -362,14 +362,14 @@ export default function BoxUserList() {
                                       user.user_name
                                     )}
                                   >
-                                    <StyledTableCell align={"left"}>
+                                    {/* <StyledTableCell align={"left"}>
                                       <input
                                         type="checkbox"
                                         checked={selectedRows.includes(
                                           user.user_name
                                         )}
                                       />
-                                    </StyledTableCell>
+                                    </StyledTableCell> */}
                                     <StyledTableCell align={"left"}>
                                       {user.user_email}
                                     </StyledTableCell>

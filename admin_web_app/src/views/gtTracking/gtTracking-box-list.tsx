@@ -85,12 +85,12 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
     {
       field: "deviceLMac",
-      headerName: "DeviceL Mac",
+      headerName: "Device L Mac",
       width: 100,
     },
     {
         field: "deviceRMac",
-        headerName: "DeviceR Mac",
+        headerName: "Device R Mac",
         width: 100,
     },
     {
@@ -348,7 +348,7 @@ export default function GtTrackingBoxList() {
             <Card
               sx={{
                 maxWidth: 1600,
-                maxHeight: "80vh",
+                maxHeight: "100vh",
                 backgroundColor: "#FFFFFF",
                 boxShadow: "1px 1px 10px 10px #e8e8e8",
               }}
@@ -587,7 +587,7 @@ export default function GtTrackingBoxList() {
                                   {box.shipping_Id}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
-                                  {box.customer_PO}
+                                  {box.customer_Po}
                                   </StyledTableCell>
                                   <StyledTableCell align={"left"}>
                                   {new Date(box.packed_Date).toLocaleDateString()}
