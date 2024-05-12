@@ -76,22 +76,22 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     {
       field: "battery01Serial",
       headerName: "Battery 01 NFC",
-      width: 100,
+      width: 200,
     },
     {
       field: "battery02Serial",
       headerName: "Battery 02 NFC",
-      width: 100,
+      width: 200,
     },
     {
       field: "deviceLMac",
       headerName: "Device L Mac",
-      width: 100,
+      width: 200,
     },
     {
         field: "deviceRMac",
         headerName: "Device R Mac",
-        width: 100,
+        width: 200,
     },
     {
         field: "destination",
@@ -137,6 +137,11 @@ export default function GtTrackingBoxList() {
       field7: "",
     });
 
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [page, setPage] = useState(1);
+
+    
+
     useEffect(() => {
       fetchData();
       fetchDataMainTiles();
@@ -180,6 +185,10 @@ export default function GtTrackingBoxList() {
       };
 
       /////////////////////////////////////////////////
+
+
+
+
       // Define the interfaces for CorrelationObject and RetailObject
       interface CorrelationObject {
         corBox_Id: string;
@@ -228,38 +237,50 @@ export default function GtTrackingBoxList() {
         return updatedData;
       }
       
+
       
       
       const updatedRetailData = updateRetailDataWithCorrelationData(dataCorWeb, dataRetailWeb);
       console.log(updatedRetailData);
       // setFilteredData(updatedRetailData);
 
+      
+
       const [filteredData, setFilteredData] = useState<any[]>(updatedRetailData);
 
-      // useEffect(() => {
-      //   const filteredData = updatedRetailData.filter(item =>
-      //     item.retailBox_QR.includes(values.field1) &&
-      //     item.battery01_Serial.includes(values.field2) &&
-      //     item.battery02_Serial.includes(values.field3) &&
-      //     item.deviceL_Mac.includes(values.field4) &&
-      //     item.deviceR_Mac.includes(values.field5) &&
-      //     item.packed_By.includes(values.field6) &&
-      //     (!packedEndDate || new Date(item.itemDate).setHours(0,0,0,0) <= new Date(packedEndDate).setHours(0,0,0,0))
-      //   );
+      const [packedDate, setPackedDate] = useState(null);
+      const [packedEndDate, setPackedEndDate] = useState(null);
 
-      //   setFilteredData(filteredData);
-      //   console.log(filteredData);
+      useEffect(() => {
+        const filteredData = updatedRetailData.filter(item =>
+          item.retailBox_QR.includes(values.field1) &&
+          item.battery01_Serial.includes(values.field2) &&
+          item.battery02_Serial.includes(values.field3) &&
+          item.deviceL_Mac.includes(values.field4) &&
+          item.deviceR_Mac.includes(values.field5) &&
+          item.packed_By.includes(values.field6) &&
+          (!packedDate || new Date(item.itemDate).setHours(0,0,0,0) == new Date(packedDate).setHours(0,0,0,0))
+        );
+
+        setFilteredData(filteredData);
+        console.log(filteredData);
         
 
         
-      // }, [values]);
+      }, [values,packedDate]);
     
-
+      const startIndex = (page - 1) * rowsPerPage;
+      const endIndex = startIndex + rowsPerPage;
+      const paginatedModes = filteredData.slice(startIndex, endIndex);
       
 
       /////////////////////////////////////////////////
 
       const [data, setData] = React.useState<any[]>([]);
+
+      const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+      };
       
       // setData(updatedRetailData);
       console.log(data);
@@ -290,8 +311,7 @@ export default function GtTrackingBoxList() {
         
       };
 
-      const [packedDate, setPackedDate] = useState(null);
-      const [packedEndDate, setPackedEndDate] = useState(null);
+      
 
       const handleDateChange = (date: React.SetStateAction<null>) => {
         setPackedDate(date);
@@ -613,16 +633,16 @@ export default function GtTrackingBoxList() {
                       </Table>
                     </TableContainer>
                   </Paper>
-                  {/* <Box display="flex" justifyContent="flex-end">
+                  <Box display="flex" justifyContent="flex-end">
                     <Pagination
-                      count={Math.ceil(modesList.length / rowsPerPage)}
+                      count={Math.ceil(filteredData.length / rowsPerPage)}
                       sx={{ mt: 2 }}
                       variant="outlined"
                       shape="rounded"
                       page={page}
                       onChange={handleChange}
                     />
-                  </Box> */}
+                  </Box>
                 </CardContent>
               </CardActionArea>
             </Card>
