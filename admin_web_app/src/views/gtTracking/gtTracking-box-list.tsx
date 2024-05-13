@@ -317,7 +317,7 @@ export default function GtTrackingBoxList() {
 
       useEffect(() => {
         setFilteredData(updatedRetailData);
-      }, [dataCorWeb]);
+      }, [dataCorWeb,dataRetailWeb]);
 
       
 
