@@ -147,6 +147,7 @@ export default function GtTrackingBoxList() {
       fetchDataMainTiles();
       
       // console.log(dataRetailWeb);
+      // updateRetailDataWithCorrelationData(dataCorWeb, dataRetailWeb);
       
     }, []);
 
@@ -168,6 +169,8 @@ export default function GtTrackingBoxList() {
       const [dataRetailWeb, setDataRetailWeb] = React.useState<any[]>([]);
       const [isLoadingMainTiles, setIsLoadingMainTiles] = React.useState(false);
 
+      const [dataSet, setDataSet] = React.useState(false);
+
       const fetchDataMainTiles = async () => {
         try {
             setIsLoadingMainTiles(true);
@@ -186,7 +189,7 @@ export default function GtTrackingBoxList() {
 
       /////////////////////////////////////////////////
 
-
+      const [updatedRetailData, setUpdatedRetailData] = useState<any[]>([]);
 
 
       // Define the interfaces for CorrelationObject and RetailObject
@@ -235,18 +238,21 @@ export default function GtTrackingBoxList() {
 
             
         });
-        
-
+        // setDataSet(true);
+        setUpdatedRetailData(updatedData);
         return updatedData;
       }
       
 
       
+      useEffect(() => {
+        updateRetailDataWithCorrelationData(dataCorWeb, dataRetailWeb);
+        // setUpdatedRetailData(updatedRetailData);
+      }, [dataCorWeb, dataRetailWeb]);
       
-      const updatedRetailData = updateRetailDataWithCorrelationData(dataCorWeb, dataRetailWeb);
-      // console.log(updatedRetailData);
-      // setFilteredData(updatedRetailData);
-
+      console.log(updatedRetailData);
+      
+      
       
 
       const [filteredData, setFilteredData] = useState<any[]>(updatedRetailData);
@@ -268,7 +274,6 @@ export default function GtTrackingBoxList() {
         );
 
         setFilteredData(filteredData);
-        console.log("ilteredData");
         
 
         
@@ -317,7 +322,7 @@ export default function GtTrackingBoxList() {
 
       useEffect(() => {
         setFilteredData(updatedRetailData);
-      }, [dataCorWeb,dataRetailWeb]);
+      }, [updatedRetailData]);
 
       
 
