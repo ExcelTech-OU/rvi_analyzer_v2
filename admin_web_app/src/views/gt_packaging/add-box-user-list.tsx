@@ -89,7 +89,7 @@ export function AddBoxUserModel({ open, changeOpenStatus }: AddUserProps) {
     }),
     onSubmit: async (values, actions) => {
       try {
-        const response = await fetch('http://52.187.127.25:8090/api/addusers', {
+        const response = await fetch('http://52.187.127.25/api/addusers', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
