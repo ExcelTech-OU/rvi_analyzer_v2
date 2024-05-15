@@ -154,7 +154,7 @@ export default function GtTrackingBoxList() {
     const fetchData = async () => {
         try {
             setIsLoading(true);
-          const response = await fetch('http://52.187.127.25:8090/api/getCorWeb');
+          const response = await fetch('http://52.187.127.25/api/getCorWeb');
           const jsonData = await response.json();
           if(response.ok){
             setIsLoading(false);
@@ -174,7 +174,7 @@ export default function GtTrackingBoxList() {
       const fetchDataMainTiles = async () => {
         try {
             setIsLoadingMainTiles(true);
-          const response = await fetch('http://52.187.127.25:8090/api/getRetailWeb');
+          const response = await fetch('http://52.187.127.25/api/getRetailWeb');
           const jsonData = await response.json();
           if(response.ok){
             setIsLoadingMainTiles(false);
