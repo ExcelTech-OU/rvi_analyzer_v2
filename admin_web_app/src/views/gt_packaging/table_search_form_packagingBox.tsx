@@ -42,7 +42,7 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
   } = useGetPOQuery("");
   const [poList, setPOList] = useState<any>([]);
   const [macList, setMacList] = useState<any>([]);
-//   const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
+  //   const [getGtTests, { data, error, isLoading }] = useGetGtTestsMutation();
   const [optionsField1, setOptionsField1] = useState<any>();
 
   const handleInputChangeLocal =
@@ -59,39 +59,11 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
       }
     };
 
-//   const extractMacAddresses = () => {
-//     // const macAddresses: String[] = [];
-//     // const macAddresses: MacAddress[] = [];
-//     const macAddresses: SessionResultModeSeven[] = [];
-//     data?.sessions.forEach((session: ModeSeven) => {
-//       if (session.result && session.result.reading) {
-//         macAddresses.push({
-//           testId: session.result.testId,
-//           reading: session.result.reading,
-//         });
-//         // macAddresses.push(session.result.reading.macAddress);
-//         // macAddresses.push({
-//         //   id: session.result.testId,
-//         //   macAddress: session.result.reading.macAddress,
-//         // });
-//       }
-//     });
-//     return macAddresses;
-//   };
-
   useEffect(() => {
     if (poData && poData.orders) {
       setPOList(poData.orders);
     }
   }, [poData]);
-
-//   useEffect(() => {
-//     getGtTests({});
-//   }, []);
-
-//   useEffect(() => {
-//     setOptionsField1(extractMacAddresses());
-//   }, [data]);
 
   useEffect(() => {
     console.log(macList);
@@ -100,8 +72,6 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
   const optionsField2 = poList;
   const optionsPassFail = ["PASS", "FAIL"];
 
-  //////////////////////////////////////////
-  
   const [data, setData] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -110,19 +80,19 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
   }, []);
 
   const fetchData = async () => {
-      try {
-          setIsLoading(true);
-        const response = await fetch('http://52.187.127.25:8090/api/packagingBoxes');
-        const jsonData = await response.json();
-        if(response.ok){
-          setIsLoading(false);
-          setData(jsonData);
-        }
-      } catch (error) {
-          setIsLoading(false);
-        console.error('Error fetching data:', error);
+    try {
+      setIsLoading(true);
+      const response = await fetch("http://52.187.127.25/api/getRetailWeb");
+      const jsonData = await response.json();
+      if (response.ok) {
+        setIsLoading(false);
+        setData(jsonData);
       }
-    };
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error fetching data:", error);
+    }
+  };
 
   //////////////////////////////////////////
 
@@ -156,37 +126,7 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
       }}
     >
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Corrugated BOX ID</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Corrugated BOX ID"
-          variant="outlined"
-          value={fieldValues.field1 || ""}
-          onChange={handleSelectChange("field1")}
-          style={selectFieldStyle}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                maxHeight: 150,
-              },
-            },
-          }}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {[...new Set(data.map(item => item.corBox_QR))].map((corBox_QR) => (
-                <MenuItem key={corBox_QR} value={corBox_QR}>
-                    {corBox_QR}
-                </MenuItem>
-            ))}
-
-        </Select>
-      </FormControl>
-
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Packaging Box ID</InputLabel>
+        <InputLabel id="demo-simple-select-label">Packaging Box QR</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -199,11 +139,13 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {[...new Set(data.map(item => item.element_number))].map((element_number) => (
-                <MenuItem key={element_number} value={element_number}>
-                    {element_number}
-                </MenuItem>
-            ))}
+          {[...new Set(data.map((item) => item.retailBox_QR))].map(
+            (retailBox_QR) => (
+              <MenuItem key={retailBox_QR} value={retailBox_QR}>
+                {retailBox_QR}
+              </MenuItem>
+            )
+          )}
         </Select>
       </FormControl>
 
@@ -221,11 +163,13 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {[...new Set(data.map(item => item.battery01_Serial))].map((battery01_Serial) => (
-                <MenuItem key={battery01_Serial} value={battery01_Serial}>
-                    {battery01_Serial}
-                </MenuItem>
-            ))}
+          {[...new Set(data.map((item) => item.battery01_Serial))].map(
+            (battery01_Serial) => (
+              <MenuItem key={battery01_Serial} value={battery01_Serial}>
+                {battery01_Serial}
+              </MenuItem>
+            )
+          )}
         </Select>
       </FormControl>
 
@@ -243,11 +187,13 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {[...new Set(data.map(item => item.battery02_Serial))].map((battery02_Serial) => (
-                <MenuItem key={battery02_Serial} value={battery02_Serial}>
-                    {battery02_Serial}
-                </MenuItem>
-            ))}
+          {[...new Set(data.map((item) => item.battery02_Serial))].map(
+            (battery02_Serial) => (
+              <MenuItem key={battery02_Serial} value={battery02_Serial}>
+                {battery02_Serial}
+              </MenuItem>
+            )
+          )}
         </Select>
       </FormControl>
 
@@ -265,11 +211,13 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {[...new Set(data.map(item => item.deviceL_Mac))].map((deviceL_Mac) => (
-                <MenuItem key={deviceL_Mac} value={deviceL_Mac}>
-                    {deviceL_Mac}
-                </MenuItem>
-            ))}
+          {[...new Set(data.map((item) => item.deviceL_Mac))].map(
+            (deviceL_Mac) => (
+              <MenuItem key={deviceL_Mac} value={deviceL_Mac}>
+                {deviceL_Mac}
+              </MenuItem>
+            )
+          )}
         </Select>
       </FormControl>
 
@@ -287,33 +235,13 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {[...new Set(data.map(item => item.deviceR_Mac))].map((deviceR_Mac) => (
-                <MenuItem key={deviceR_Mac} value={deviceR_Mac}>
-                    {deviceR_Mac}
-                </MenuItem>
-            ))}
-        </Select>
-      </FormControl>
-
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Packed Date</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Packed Date"
-          variant="outlined"
-          value={fieldValues.field7 || ""}
-          onChange={handleSelectChange("field7")}
-          style={selectFieldStyle}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {data.map((item) => (
-            <MenuItem key={item.corBox_QR} value={item.corBox_QR}>
-              {item.corBox_QR}
-            </MenuItem>
-          ))}
+          {[...new Set(data.map((item) => item.deviceR_Mac))].map(
+            (deviceR_Mac) => (
+              <MenuItem key={deviceR_Mac} value={deviceR_Mac}>
+                {deviceR_Mac}
+              </MenuItem>
+            )
+          )}
         </Select>
       </FormControl>
 
@@ -331,11 +259,11 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {[...new Set(data.map(item => item.packed_By))].map((packed_By) => (
-                <MenuItem key={packed_By} value={packed_By}>
-                    {packed_By}
-                </MenuItem>
-            ))}
+          {[...new Set(data.map((item) => item.packed_By))].map((packed_By) => (
+            <MenuItem key={packed_By} value={packed_By}>
+              {packed_By}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     </div>
