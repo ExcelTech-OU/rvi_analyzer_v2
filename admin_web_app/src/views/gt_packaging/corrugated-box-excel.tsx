@@ -4,88 +4,33 @@ import { List } from "reselect/es/types";
 import { format, parseISO } from "date-fns";
 import React, { useEffect } from "react";
 
-// import { ModeSeven } from "../../../services/gt_service";
-
-///////////////////////
-// interface FullGarment {
-//     _id: string
-//     dateCode: string
-//     idleCurrent: string
-//     settingsIdleCurrentMin: string
-//     settingsIdleCurrentMax: string
-//     idleCurrentStatus: string
-//     flCurrent: string
-//     settingsFLCurrentMin: string
-//     settingsFLCurrentMax: string
-//     flCurrentStatus: string
-//     voltage: string
-//     noiseIdle: string
-//     settingsNoiseMin: string
-//     settingsNoiseMax: string
-//     noiseStatusIdle: string
-//     noiseFL: string
-//     noiseStatusFL: string
-//     createdBy: string
-//     soNumber: string
-//     productionOrder: string
-//     qrCode: string
-//     createdDateTime: string
-// }
-///////////////////////
-
 export function handleGenerateExcelCorrugatedBox(datas: any[]) {
-  // const [data, setData] = React.useState<any[]>([]);
-  // const [isLoading, setIsLoading] = React.useState(false);
-  // useEffect(() => {
-  //     fetchData();
-  //   }, []);
 
-  //   const fetchData = async () => {
-  //       try {
-  //           setIsLoading(true);
-  //         const response = await fetch('http://52.187.127.25:8090/api/packagingBoxes');
-  //         const jsonData = await response.json();
-  //         if(response.ok){
-  //           setIsLoading(false);
-  //           setData(jsonData);
-  //         }
-  //       } catch (error) {
-  //           setIsLoading(false);
-  //         console.error('Error fetching data:', error);
-  //       }
-  //     };
-  // Create a new workbook
   const workbook = XLSX.utils.book_new();
 
-  // Create a new worksheet 'NOISE_IDLE', 'SETTINGS_NOISE_MIN', 'SETTINGS_NOISE_MAX', 'NOISE_STATUS_IDLE', 'NOISE_FL', 'NOISE_STATUS_FL'
+
   const worksheet = XLSX.utils.aoa_to_sheet([
-    ["Corrugated Box ID", "Where", "Shipping ID", "Customer PO"],
+    ["Corrugated Box ID","Packaging Box Qr-1", "Packaging Box Qr-2","Packaging Box Qr-3","Packaging Box Qr-4","Packaging Box Qr-5","Packaging Box Qr-6","Packaging Box Qr-7","Packaging Box Qr-8","Packaging Box Qr-9","Packaging Box Qr-10", "Where", "Shipping ID", "Customer PO","Packed Data","Packed By"],
     ...datas.map((data) => [
       data.corBox_QR,
+      data.retailQR_1,
+      data.retailQR_2,
+      data.retailQR_3,
+      data.retailQR_4,
+      data.retailQR_5,
+      data.retailQR_6,
+      data.retailQR_7,
+      data.retailQR_8,
+      data.retailQR_9,
+      data.retailQR_10,
       data.destination,
       data.shipping_Id,
       data.customer_PO,
+      data.packed_date,
+      data.packed_by
       
 
-      //   data.defaultConfigurations.customerName,
-      //   data.result.reading.macAddress,
-      //   data.result.reading.productionOrder,
-      //   data.defaultConfigurations.operatorId,
-      //   data.result.reading.voltage,
-      //   data.result.reading.current,
-      //   data.result.reading.resistance,
-      //   data.result.reading.result,
-      //   data.createdDateTime.split("T")[0],
-      //   data.createdDateTime.split("T")[1],
-
-      // data.noiseIdle,
-      // data.settingsNoiseMin,
-      // data.settingsNoiseMax,
-      // data.noiseStatusIdle,
-      // data.noiseFL,
-      // data.noiseStatusFL,
-
-      // format(parseISO(data.createdDateTime), 'yyyy-MM-dd hh:mm:ss a')
+      
     ]),
   ]);
 
@@ -93,5 +38,5 @@ export function handleGenerateExcelCorrugatedBox(datas: any[]) {
   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
   // Save the workbook as an Excel file
-  XLSX.writeFile(workbook, "corrugated_box_" + new Date().toISOString() + ".xlsx");
+  XLSX.writeFile(workbook, "Corrugated_box_" + new Date().toISOString() + ".xlsx");
 }
