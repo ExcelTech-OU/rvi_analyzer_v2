@@ -112,7 +112,7 @@ const MyComponentCorrugatedBox: React.FC<MyComponentProps> = ({
   const fetchData = async () => {
       try {
           setIsLoading(true);
-        const response = await fetch('http://52.187.127.25:8090/api/mainTiles');
+        const response = await fetch('http://52.187.127.25/api/getCorWeb');
         const jsonData = await response.json();
         if(response.ok){
           setIsLoading(false);
@@ -249,7 +249,49 @@ const MyComponentCorrugatedBox: React.FC<MyComponentProps> = ({
                 </MenuItem>
             ))}
         </Select>
+      </FormControl>     
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Packed By</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          label="Packed By"
+          variant="outlined"
+          value={fieldValues.field5 || ""}
+          onChange={handleSelectChange("field5")}
+          style={selectFieldStyle}
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          {[...new Set(data.map(item => item.packed_by))].map((packed_by) => (
+                <MenuItem key={packed_by} value={packed_by}>
+                    {packed_by}
+                </MenuItem>
+            ))}
+        </Select>
       </FormControl>
+      {/* <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Packed Date</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          label="Packed Date"
+          variant="outlined"
+          value={fieldValues.field6 || ""}
+          onChange={handleSelectChange("field6")}
+          style={selectFieldStyle}
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          {[...new Set(data.map(item => item.packed_date))].map((packed_date) => (
+                <MenuItem key={packed_date} value={packed_date}>
+                    {new Date(packed_date).toLocaleDateString()}
+                </MenuItem>
+            ))}
+        </Select>
+      </FormControl> */}
 
       
     </div>
