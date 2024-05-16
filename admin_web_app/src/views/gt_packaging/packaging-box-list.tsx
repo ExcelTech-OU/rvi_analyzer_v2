@@ -129,7 +129,7 @@ export default function PackagingBoxList() {
     const fetchData = async () => {
         try {
             setIsLoading(true);
-          const response = await fetch('http://52.187.127.25:8090/api/packagingBoxes');
+          const response = await fetch('http://52.187.127.25:8090/api/getRetailWeb');
           const jsonData = await response.json();
           if(response.ok){
             setIsLoading(false);

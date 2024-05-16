@@ -162,6 +162,7 @@ export default function CorrugatedBoxList() {
     fetchData();
   }, []);
 
+
   const fetchData = async () => {
     try {
       setIsLoading(true);
