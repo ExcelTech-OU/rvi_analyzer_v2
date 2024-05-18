@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -16,6 +16,10 @@ import {
 import LooksOneIcon from "@mui/icons-material/LooksOne";
 import LooksTwoIcon from "@mui/icons-material/LooksTwo";
 import Looks3Icon from "@mui/icons-material/Looks3";
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import AllInboxIcon from '@mui/icons-material/AllInbox';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import Looks4Icon from "@mui/icons-material/Looks4";
 import Looks5Icon from "@mui/icons-material/Looks5";
 import Looks6Icon from "@mui/icons-material/Looks6";
@@ -30,7 +34,6 @@ import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import CableIcon from "@mui/icons-material/Cable";
 import { NavItem } from "./nav-item";
-import { DashboardNavbar } from "./dashboard-navbar";
 import {
   Add,
   Construction,
@@ -38,6 +41,7 @@ import {
   Domain,
   Group,
   ListAlt,
+  LocalShipping,
   People,
   PersonAddAlt,
 } from "@mui/icons-material";
@@ -234,6 +238,69 @@ const items = [
       },
     ],
   },
+
+  {
+    href: "#",
+    icon: <LocalShippingIcon fontSize="small" />,
+    title: "GT Packaging",
+    childs: [
+      {
+        href: "#",
+        icon: <AllInboxIcon fontSize="small" />,
+        title: "Packaging Box",
+        childs: [
+          {
+            href: "/packaging-box",
+            icon: <ListAlt fontSize="small" />,
+            title: "List",
+            childs: [],
+          },          
+        ],
+      },
+      {
+        href: "#",
+        icon: <InventoryIcon fontSize="small" />,
+        title: "Corrugated Box",
+        childs: [
+          {
+            href: "/corrugated-box",
+            icon: <ListAlt fontSize="small" />,
+            title: "List",
+            childs: [],
+          },         
+        ],
+      },
+      {
+        href: "#",
+        icon: <InventoryIcon fontSize="small" />,
+        title: "GT Tracking",
+        childs: [
+          {
+            href: "/gtTracking-box",
+            icon: <ListAlt fontSize="small" />,
+            title: "List",
+            childs: [],
+          },         
+        ],
+      },
+      {
+        href: "#",
+        icon: <PeopleAltIcon fontSize="small" />,
+        title: "Users",
+        childs: [
+          {
+            href: "/box-user-list",
+            icon: <ListAlt fontSize="small" />,
+            title: "List",
+            childs: [],
+          },
+        ],
+      },
+    ],
+  },
+
+  
+
 ];
 
 type DashboardSidebarData = {
@@ -248,14 +315,6 @@ export const DashboardSidebar = ({
   var userRoles: string | string[] = [];
   var admin = "";
   var roles = localStorage.getItem("roles");
-
-  //////////////////
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-
-  const handleOpen = () => {
-    setSidebarOpen(true);
-  };
-  //////////////////
 
   if (roles === null) {
     console.log("roles empty");
@@ -302,7 +361,6 @@ export const DashboardSidebar = ({
               RVI Analyzer
             </Typography>
           </Box>
-          
         </div>
         <Divider
           sx={{
@@ -311,7 +369,6 @@ export const DashboardSidebar = ({
           }}
         />
         <Box sx={{ flexGrow: 1, marginY: 2 }}>
-          {/* <DashboardNavbar openSideBar={() => handleOpen()} title="RVI Analyzer Admin Pan"/> */}
           {admin === "ADMIN"
             ? newList.map((item) => (
                 <NavItem
