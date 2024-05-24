@@ -9,6 +9,8 @@ import {
   Grid,
   Pagination,
   Typography,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import GridOnIcon from "@mui/icons-material/GridOn";
@@ -25,6 +27,10 @@ import AddIcon from "@mui/icons-material/Add";
 //   import SessionTimeoutPopup from "../../components/session_logout";
 import { handleGenerateExcelCorrugatedBox } from "./corrugated-box-excel";
 import { Download } from "@mui/icons-material";
+
+import { useGetGtTracking_userQuery,useDeleteGtTracking_userMutation, gtTrackingUser } from "../../services/gtTracking_user_service";
+
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import { useState, useEffect } from "react";
 // import MyComponent from "../../table_search_form_softmatter";
@@ -77,14 +83,35 @@ const columns: GridColDef[] = [
     headerName: "Password",
     width: 150,
   },
+  { 
+    field: "action", 
+    headerName: "Action", 
+    width: 150 
+  },
 ];
 export default function BoxUserList() {
-  const [data, setData] = React.useState<any[]>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
+  // const [data, setData] = React.useState<any[]>([]);
+  // const [isLoading, setIsLoading] = React.useState(false);
   const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
   const [poList, setPOList] = useState<any>([]);
   const [open, setOpen] = useState(false);
   // const paginatedModes = modesList.slice(startIndex, endIndex);
+
+  const { data, error, isLoading } = useGetGtTracking_userQuery("");
+  const [deleteUser] = useDeleteGtTracking_userMutation();
+  const [users, setUsers] = useState<gtTrackingUser[]>([]);
+
+  const [openSuccess, setOpenSuccess] = React.useState(false);
+  const [openFail, setOpenFail] = React.useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleCloseSuccess = () => {
+    setOpenSuccess(false);
+  };
+
+  const handleCloseFail = () => {
+    setOpenFail(false);
+  };
 
   const [values, setValues] = useState({
     field1: "",
@@ -93,23 +120,47 @@ export default function BoxUserList() {
     field4: "",
   });
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("http://52.187.127.25/api/getUsers");
-      const jsonData = await response.json();
-      if (response.ok) {
-        setIsLoading(false);
-        setData(jsonData);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.error("Error fetching data:", error);
+    if (data && Array.isArray(data)) {
+      setUsers(data);
     }
-  };
+    
+  }, [data]);
+
+  // const fetchData = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await fetch("http://52.187.127.25/api/getUsers");
+  //     const jsonData = await response.json();
+  //     if (response.ok) {
+  //       setIsLoading(false);
+  //       setData(jsonData);
+  //     }
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+  // async function deleteUser(userEmail: string): Promise<void> {
+  //   // console.log(userEmail);
+    
+  //   const url = `http://52.187.127.25/api/deleteUser/${userEmail}`;
+
+  //   try {
+  //       const response = await fetch(url, {
+  //           method: 'DELETE',
+  //       });
+
+  //       if (!response.ok) {
+  //           throw new Error(`Failed to delete user: ${response.statusText}`);
+  //       }
+
+  //       console.log(`User ${userEmail} deleted successfully.`);
+  //       setOpenSuccess(true);
+  //   } catch (error) {
+       
+  //   }
+  // }
 
   //   function getSelectedList(): any {
   //     return (
@@ -117,13 +168,14 @@ export default function BoxUserList() {
   //     );
   //   }
   //   const [getAll] = useGetGtTestsMutation();
-  function getSelectedList(): any {
-    console.log(selectedRows);
 
-    return (
-      data.filter((item, index) => selectedRows.includes(item.corBox_QR)) || []
-    );
-  }
+  // function getSelectedList(): any {
+  //   console.log(selectedRows);
+
+  //   return (
+  //     users.filter((item, index) => selectedRows.includes(item.corBox_QR)) || []
+  //   );
+  // }
 
   const handleRowClick = (id: number) => {
     if (selectedRows.includes(id)) {
@@ -160,7 +212,7 @@ export default function BoxUserList() {
           </tr>
         </thead>
         <tbody>
-          {data.map((box) => (
+          {users.map((box) => (
             <tr key={box.element_number}>
               <td>{box.element_number}</td>
               <td>{box.battery01_Serial}</td>
@@ -222,72 +274,6 @@ export default function BoxUserList() {
                           >
                             ADD
                           </Button>
-                          {/* <Button
-                            sx={{ padding: 2 }}
-                            variant="contained"
-                            startIcon={<Download />}
-                            color="success"
-                            onClick={() =>
-                              handleGenerateExcelCorrugatedBox(
-                                getSelectedList()
-                              )
-                            }
-                            disabled={selectedRows.length == 0}
-                          >
-                            Download Selected
-                          </Button>
-                          <Button
-                            sx={{ ml: 2, padding: 2 }}
-                            variant="contained"
-                            startIcon={<GridOnIcon />}
-                            color="success"
-                            onClick={() =>
-                              handleGenerateExcelCorrugatedBox(data)
-                            }
-                            //   onClick={() => {
-                            //     getAll({
-                            //       data: {
-                            //         date: date,
-                            //         filterType: filterType,
-                            //         filterValue: filterValue,
-                            //       },
-                            //       page: "all",
-                            //     })
-                            //       .unwrap()
-                            //       .then((payload) => {
-                            //         filteredData = payload.sessions.filter(
-                            //           (item) => {
-                            //             const itemDate = new Date(
-                            //               item.createdDateTime
-                            //             );
-
-                            //             const originalFilterCondition =
-                            //               item.result.reading.macAddress.includes(
-                            //                 values.field1
-                            //               ) &&
-                            //               item.result.reading.productionOrder.includes(
-                            //                 values.field2
-                            //               ) &&
-                            //               item.result.reading.result.includes(
-                            //                 values.field3
-                            //               ) &&
-                            //               (!startingDate ||
-                            //                 new Date(itemDate) >=
-                            //                   new Date(startingDate)) &&
-                            //               (!finishingDate ||
-                            //                 new Date(itemDate) <=
-                            //                   new Date(finishingDate));
-
-                            //             return originalFilterCondition;
-                            //           }
-                            //         );
-
-                            //         handleGenerateExcelEndLineQc(filteredData);
-                            //       });
-                            //   }}
-                          >
-                            Download
-                          </Button> */}
                         </Box>
                       </Grid>
                     </Grid>
@@ -298,22 +284,6 @@ export default function BoxUserList() {
                         borderStyle: "dashed",
                       }}
                     />
-                    {/* <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "20px",
-                        width: "100%",
-                        overflowX: "auto",
-                        flexDirection: "row",
-                      }}
-                    >
-                      <MyComponentCorrugatedBox
-                        initialValues={values}
-                        onInputChange={handleInputChange}
-                        orders={poList}
-                      />
-                    </div> */}
 
                     <Divider
                       sx={{
@@ -339,7 +309,7 @@ export default function BoxUserList() {
                             </StyledTableRow>
                           </TableHead>
                           <TableBody>
-                            {data
+                            {users
                               // .filter((item) => {
                               //   return (
                               //     item.corBox_QR.includes(values.field1) &&
@@ -354,13 +324,13 @@ export default function BoxUserList() {
                                     hover
                                     role="checkbox"
                                     tabIndex={-1}
-                                    key={user.user_name}
-                                    onClick={() =>
-                                      handleRowClick(user.user_name)
-                                    }
-                                    selected={selectedRows.includes(
-                                      user.user_name
-                                    )}
+                                    key={user.user_email}
+                                    // onClick={() =>
+                                    //   handleRowClick(user.user_email)
+                                    // }
+                                    // selected={selectedRows.includes(
+                                    //   user.user_email
+                                    // )}
                                   >
                                     {/* <StyledTableCell align={"left"}>
                                       <input
@@ -379,15 +349,70 @@ export default function BoxUserList() {
                                     <StyledTableCell align={"left"}>
                                       {user.password}
                                     </StyledTableCell>
-                                    {/* <StyledTableCell align={"left"}>
-                                    {item.result.reading.result}
-                                  </StyledTableCell>
-                                  <StyledTableCell align={"left"}>
-                                    {item.createdDateTime.split("T")[0]}
-                                  </StyledTableCell>
-                                  <StyledTableCell align={"left"}>
-                                    {item.createdDateTime.split("T")[1]}
-                                  </StyledTableCell> */}
+                                    <StyledTableCell align={"left"}>
+                                      <Box
+                                        display="flex"
+                                        justifyContent="flex-center"
+                                      >
+                                        <Button
+                                          variant="contained"
+                                          startIcon={<DeleteIcon />}
+                                          sx={{
+                                            backgroundColor: "#f50057",
+                                            mx: 1,
+                                            "&:hover": {
+                                              backgroundColor: "#ab003c",
+                                            },
+                                          }}
+                                          onClick={() => {
+                                            deleteUser({user_email: user.user_email,})
+                                            .unwrap()
+                                                  .then((payload) => {                                                    
+                                                    if (
+                                                      payload.message == "User Delete successfully!"
+                                                    ) {
+                                                      setOpenSuccess(true)
+                                                      setMessage(payload.message)
+                                                    }
+                                                  })
+                                                  .catch((error) => {
+                                                    setOpenFail(true)
+                                                    setMessage(error)
+                                                  });
+                                          }}
+                                        >
+                                          Delete
+                                        </Button>
+                                      </Box>
+                                    </StyledTableCell>
+                                    <Snackbar
+                                      open={openSuccess}
+                                      autoHideDuration={6000}
+                                      onClose={handleCloseSuccess}
+                                      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                                    >
+                                      <Alert
+                                        onClose={handleCloseSuccess}
+                                        severity="success"
+                                        sx={{ width: "100%" }}
+                                      >
+                                        {message}
+                                      </Alert>
+                                    </Snackbar>
+                                    <Snackbar
+                                      open={openFail}
+                                      autoHideDuration={6000}
+                                      onClose={handleCloseFail}
+                                      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                                    >
+                                      <Alert
+                                        onClose={handleCloseFail}
+                                        severity="error"
+                                        sx={{ width: "100%" }}
+                                      >
+                                        {message}
+                                      </Alert>
+                                    </Snackbar>
                                   </StyledTableRow>
                                 );
                               })}
