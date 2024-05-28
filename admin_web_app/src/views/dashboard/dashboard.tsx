@@ -124,7 +124,7 @@ export default function Dashboard() {
             <SummaryCard
               title="Glove test"
               icon={<Looks6Icon />}
-              value={data1?.sessions.length.toString() || "0"}
+              value={data1?.total.toString() || "0"}
               color="success.dark"
               path="/end/line/qc"
             />

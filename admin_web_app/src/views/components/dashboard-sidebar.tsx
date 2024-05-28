@@ -286,6 +286,19 @@ const items = [
       {
         href: "#",
         icon: <PeopleAltIcon fontSize="small" />,
+        title: "Shipping Details",
+        childs: [
+          {
+            href: "/shipping-detail-list",
+            icon: <ListAlt fontSize="small" />,
+            title: "List",
+            childs: [],
+          },
+        ],
+      },
+      {
+        href: "#",
+        icon: <PeopleAltIcon fontSize="small" />,
         title: "Users",
         childs: [
           {

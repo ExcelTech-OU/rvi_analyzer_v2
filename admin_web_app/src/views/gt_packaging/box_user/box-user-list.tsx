@@ -25,10 +25,9 @@ import TableRow from "@mui/material/TableRow";
 import { styled } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 //   import SessionTimeoutPopup from "../../components/session_logout";
-import { handleGenerateExcelCorrugatedBox } from "./corrugated-box-excel";
 import { Download } from "@mui/icons-material";
 
-import { useGetGtTracking_userQuery,useDeleteGtTracking_userMutation, gtTrackingUser } from "../../services/gtTracking_user_service";
+import { useGetGtTracking_userQuery,useDeleteGtTracking_userMutation, gtTrackingUser } from "../../../services/gtTracking_user_service";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -39,8 +38,8 @@ import { useState, useEffect } from "react";
 import { AnyObject } from "yup/lib/types";
 import { List } from "reselect/es/types";
 // import { useGetPOQuery } from "../../../services/po_service";
-import MyComponentCorrugatedBox from "./table_search_form_corrugatedBox";
 import { AddBoxUserModel } from "./add-box-user-list";
+import CustomizedMenusUsers from "./custom-new-box-user";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -87,6 +86,12 @@ const columns: GridColDef[] = [
     field: "action", 
     headerName: "Action", 
     width: 150 
+  },
+  {
+    field: "actions",
+    headerName: "Actions",
+    type: "actions",
+    width: 150,
   },
 ];
 export default function BoxUserList() {
@@ -413,6 +418,11 @@ export default function BoxUserList() {
                                         {message}
                                       </Alert>
                                     </Snackbar>
+                                    <StyledTableCell align={"right"}>
+                                          <CustomizedMenusUsers
+                                            user={user as gtTrackingUser}
+                                          />
+                                        </StyledTableCell>
                                   </StyledTableRow>
                                 );
                               })}

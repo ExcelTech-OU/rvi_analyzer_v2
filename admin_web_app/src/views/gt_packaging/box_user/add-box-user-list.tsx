@@ -25,7 +25,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import CircleIcon from "@mui/icons-material/Circle";
 import CloseIcon from "@mui/icons-material/Close";
 import Lottie from "react-lottie";
-import animationData from "../animations/active.json";
+import animationData from "../../animations/active.json";
 
 type AddUserProps = {
   open: boolean;
