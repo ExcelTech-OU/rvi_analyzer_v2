@@ -239,6 +239,8 @@ export default function GtTrackingBoxList() {
             
         });
         // setDataSet(true);
+        
+        
         setUpdatedRetailData(updatedData);
         return updatedData;
       }
@@ -250,7 +252,7 @@ export default function GtTrackingBoxList() {
         // setUpdatedRetailData(updatedRetailData);
       }, [dataCorWeb, dataRetailWeb]);
       
-      console.log(updatedRetailData);
+      // console.log(updatedRetailData);
       
       
       
