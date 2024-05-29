@@ -21,18 +21,16 @@ import {
   import TableHead from "@mui/material/TableHead";
   import TableRow from "@mui/material/TableRow";
   import { styled } from "@mui/material";
-//   import SessionTimeoutPopup from "../../components/session_logout";
-// import { handleGenerateExcelCorrugatedBox } from "./corrugated-box-excel";
 import { Download } from "@mui/icons-material";
 
 import { useState, useEffect } from "react";
-// import MyComponent from "../../table_search_form_softmatter";
 import { AnyObject } from "yup/lib/types";
 import { List } from "reselect/es/types";
-// import { useGetPOQuery } from "../../../services/po_service";
-// import MyComponentCorrugatedBox from "./table_search_form_corrugatedBox";
+
+import AddIcon from "@mui/icons-material/Add";
 
 import { Destination, Shipping_Id, Customer_PO, ShippingDetail, useGetShippingDetailsQuery } from "../../../services/shippingDetails_service";
+import { AddShippingDetailModel } from "./add-shipping-detail-list";
 
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -81,6 +79,10 @@ export default function ShippingDetailList() {
     const [destination, setDestination] = useState<Destination[]>([]);
     const [shipping_Id, setShipping_Id] = useState<Shipping_Id[]>([]);
     const [customer_PO, setCustomer_PO] = useState<Customer_PO[]>([]);
+
+    const [open, setOpen] = useState(false);
+    const [label, setLabel] = useState<string>("");
+
 
     const { data, error, isLoading } = useGetShippingDetailsQuery("");
 
@@ -153,24 +155,14 @@ export default function ShippingDetailList() {
         field3: "",
         field4: "",
       });
-    // useEffect(() => {
-    //   fetchData();
-    // }, []);
+    
+    
+    
 
-    // const fetchData = async () => {
-    //     try {
-    //         setIsLoading(true);
-    //       const response = await fetch('http://52.187.127.25:8090/api/mainTiles');
-    //       const jsonData = await response.json();
-    //       if(response.ok){
-    //         setIsLoading(false);
-    //         setData(jsonData);
-    //       }
-    //     } catch (error) {
-    //         setIsLoading(false);
-    //       console.error('Error fetching data:', error);
-    //     }
-    //   };
+    function addDataDropDown(label: any): any {
+        setLabel(label);
+        setOpen(true);
+      }
 
       // function getSelectedList(): any {
       //   return (
@@ -273,70 +265,45 @@ export default function ShippingDetailList() {
                     </Grid>
                     <Grid item xs={4} sm={2} md={6}>
                       <Box display="flex" justifyContent="flex-end">
-                        {/* <Button
-                          sx={{ padding: 2 }}
-                          variant="contained"
-                          startIcon={<Download />}
-                          color="success"
-                          onClick={() =>
-                            handleGenerateExcelCorrugatedBox(getSelectedList())
-                          }
-                          disabled={selectedRows.length == 0}
-                        >
-                          Download Selected
-                        </Button> */}
-                        {/* <Button
-                          sx={{ ml: 2, padding: 2 }}
-                          variant="contained"
-                          startIcon={<GridOnIcon />}
-                          color="success"
-                          onClick={() =>
-                            handleGenerateExcelCorrugatedBox(data)
-                          }
-                        //   onClick={() => {
-                        //     getAll({
-                        //       data: {
-                        //         date: date,
-                        //         filterType: filterType,
-                        //         filterValue: filterValue,
-                        //       },
-                        //       page: "all",
-                        //     })
-                        //       .unwrap()
-                        //       .then((payload) => {
-                        //         filteredData = payload.sessions.filter(
-                        //           (item) => {
-                        //             const itemDate = new Date(
-                        //               item.createdDateTime
-                        //             );
-
-                        //             const originalFilterCondition =
-                        //               item.result.reading.macAddress.includes(
-                        //                 values.field1
-                        //               ) &&
-                        //               item.result.reading.productionOrder.includes(
-                        //                 values.field2
-                        //               ) &&
-                        //               item.result.reading.result.includes(
-                        //                 values.field3
-                        //               ) &&
-                        //               (!startingDate ||
-                        //                 new Date(itemDate) >=
-                        //                   new Date(startingDate)) &&
-                        //               (!finishingDate ||
-                        //                 new Date(itemDate) <=
-                        //                   new Date(finishingDate));
-
-                        //             return originalFilterCondition;
-                        //           }
-                        //         );
-
-                        //         handleGenerateExcelEndLineQc(filteredData);
-                        //       });
-                        //   }}
-                        >
-                          Download
-                        </Button> */}
+                        <Button
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            sx={{
+                                mr: 2,
+                              padding: 1,
+                              backgroundColor: "#00e676",
+                              "&:hover": { backgroundColor: "#00a152" },
+                            }}
+                            onClick={() => addDataDropDown("destination")}
+                          >
+                            ADD DESTINATION
+                        </Button>
+                        <Button
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            sx={{
+                                mr: 2,
+                              padding: 1,
+                              backgroundColor: "#00e676",
+                              "&:hover": { backgroundColor: "#00a152" },
+                            }}
+                            onClick={() => addDataDropDown("shipping_Id")}
+                          >
+                            ADD SHIPPING ID
+                        </Button>
+                        <Button
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            sx={{
+                                mr: 2,
+                              padding: 1,
+                              backgroundColor: "#00e676",
+                              "&:hover": { backgroundColor: "#00a152" },
+                            }}
+                            onClick={() => addDataDropDown("customer_PO")}
+                          >
+                            ADD CUSTOMER PO
+                        </Button>
                       </Box>
                     </Grid>
                     
@@ -457,6 +424,7 @@ export default function ShippingDetailList() {
           </Box>
         </>
       </Container>
+      <AddShippingDetailModel label={label} open={open} changeOpenStatus={setOpen} />
     </Box>
       
     </div>
