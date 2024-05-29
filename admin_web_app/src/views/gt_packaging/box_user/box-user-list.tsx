@@ -40,6 +40,7 @@ import { List } from "reselect/es/types";
 // import { useGetPOQuery } from "../../../services/po_service";
 import { AddBoxUserModel } from "./add-box-user-list";
 import CustomizedMenusUsers from "./custom-new-box-user";
+import { BoxUserActions } from "./box-userActions";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -83,13 +84,13 @@ const columns: GridColDef[] = [
     width: 150,
   },
   { 
-    field: "action", 
-    headerName: "Action", 
+    field: "delete", 
+    headerName: "Delete", 
     width: 150 
   },
   {
-    field: "actions",
-    headerName: "Actions",
+    field: "update",
+    headerName: "Update",
     type: "actions",
     width: 150,
   },
@@ -109,6 +110,17 @@ export default function BoxUserList() {
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openFail, setOpenFail] = React.useState(false);
   const [message, setMessage] = useState("");
+
+  const [openCloseDetailView, setOpenCloseDetailView] = useState(false);
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+      setAnchorEl(null);
+  };
+
 
   const handleCloseSuccess = () => {
     setOpenSuccess(false);
@@ -419,16 +431,38 @@ export default function BoxUserList() {
                                       </Alert>
                                     </Snackbar>
                                     <StyledTableCell align={"right"}>
-                                          <CustomizedMenusUsers
-                                            user={user as gtTrackingUser}
-                                          />
-                                        </StyledTableCell>
+                                      <Box
+                                          display="flex"
+                                          justifyContent="flex-center"
+                                        >
+                                        <Button
+                                          variant="contained"
+                                          startIcon={<DeleteIcon />}
+                                          sx={{
+                                            backgroundColor: "#f50057",
+                                            mx: 1,
+                                            "&:hover": {
+                                              backgroundColor: "#ab003c",
+                                            },
+                                          }}
+                                          onClick={() => {
+                                            setOpenCloseDetailView(true);
+                                            handleClose();
+                                          }}
+                                        >
+                                          Reset Password
+                                        </Button>
+                                      </Box>
+                                      
+                                    </StyledTableCell>
+                                    
                                   </StyledTableRow>
                                 );
                               })}
                           </TableBody>
                         </Table>
                       </TableContainer>
+                      
                     </Paper>
                     {/* <Box display="flex" justifyContent="flex-end">
                     <Pagination

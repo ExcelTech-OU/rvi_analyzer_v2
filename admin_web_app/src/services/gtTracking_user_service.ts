@@ -60,21 +60,21 @@ export const gtTracking_userApi = createApi({
             },
             invalidatesTags: [{ type: 'gtTracking_userList', id: "gtTracking_users" }]
         }),
-        addCustomer: build.mutation<CustomerGetResponse, {}>({
+        updateGtTracking_user: build.mutation<UserDeleteResponse, {}>({
             query(body) {
                 return {
-                    url: `register/customer`,
+                    url: `updateUser`,
                     method: 'POST',
                     body: body,
                 }
             },
-            invalidatesTags: [{ type: 'gtTracking_userList', id: "getCustomers" }]
+            invalidatesTags: [{ type: 'gtTracking_userList', id: "gtTracking_users" }]
         }),
     }),
 })
 
 export const {
     useGetGtTracking_userQuery,
-    useAddCustomerMutation,
-    useDeleteGtTracking_userMutation
+    useDeleteGtTracking_userMutation,
+    useUpdateGtTracking_userMutation,
 } = gtTracking_userApi
