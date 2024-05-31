@@ -62,12 +62,16 @@ export const gtTracking_userApi = createApi({
         }),
         updateGtTracking_user: build.mutation<UserDeleteResponse, {}>({
             query(body) {
+                console.log(body);
                 return {
                     url: `updateUser`,
-                    method: 'POST',
+                    method: 'PUT',
                     body: body,
                 }
+                
+                
             },
+
             invalidatesTags: [{ type: 'gtTracking_userList', id: "gtTracking_users" }]
         }),
     }),

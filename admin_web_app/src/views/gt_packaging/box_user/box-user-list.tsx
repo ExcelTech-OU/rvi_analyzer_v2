@@ -435,27 +435,11 @@ export default function BoxUserList() {
                                           display="flex"
                                           justifyContent="flex-center"
                                         >
-                                        <Button
-                                          variant="contained"
-                                          startIcon={<DeleteIcon />}
-                                          sx={{
-                                            backgroundColor: "#f50057",
-                                            mx: 1,
-                                            "&:hover": {
-                                              backgroundColor: "#ab003c",
-                                            },
-                                          }}
-                                          onClick={() => {
-                                            setOpenCloseDetailView(true);
-                                            handleClose();
-                                          }}
-                                        >
-                                          Reset Password
-                                        </Button>
+                                        <CustomizedMenusUsers
+                                            user={user as gtTrackingUser}
+                                          />
                                       </Box>
-                                      
                                     </StyledTableCell>
-                                    
                                   </StyledTableRow>
                                 );
                               })}

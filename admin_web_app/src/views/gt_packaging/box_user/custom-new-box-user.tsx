@@ -86,96 +86,24 @@ export default function CustomizedMenusUsers({ user }: CustomMenuPropsUsers) {
 
     return (
         <div>
-            <IconButton
-                aria-label="more"
-                id="long-button"
-                aria-controls={open ? 'long-menu' : undefined}
-                aria-expanded={open ? 'true' : undefined}
-                aria-haspopup="true"
-                onClick={handleClick}
-            >
-                <MoreVertIcon />
-            </IconButton>
-            <StyledMenu
-                id="demo-customized-menu"
-                MenuListProps={{
-                    'aria-labelledby': 'demo-customized-button',
+            <Button
+                variant="contained"
+                sx={{
+                backgroundColor: "#FAA21B",
+                mx: 1,
+                "&:hover": {
+                    backgroundColor: "#A66E10",
+                },
                 }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
+                onClick={() => {
+                setOpenCloseDetailView(true);
+                handleClose();
+                }}
             >
-                <MenuItem onClick={() => {
-                    setOpenCloseDetailView(true);
-                    handleClose();
-                }} disableRipple>
-                    <EditIcon />
-                    Update
-                </MenuItem>
-                <MenuItem onClick={() => {
-                    setOpenCloseLinkView(true);
-                    handleClose();
-                }} disableRipple>
-                    <LockResetIcon />
-                    Reset Password
-                </MenuItem>
-            </StyledMenu>
+                Reset Password
+            </Button>
             <BoxUserActions open={openCloseDetailView} changeOpenStatus={setOpenCloseDetailView} user={user} />
-            <Dialog
-                maxWidth="lg"
-                fullScreen={fullScreen}
-                open={openCloseLinkView}
-                onClose={() => setOpenCloseLinkView(false)}
-                aria-labelledby="responsive-dialog-title"
-            >
-                <DialogTitle id="alert-dialog-title" sx={{ pr: 7 }}>
-                    {"Are you sure to reset Password of user " + user.user_email + "?"}
-                </DialogTitle>
-                <DialogContent>
-                    <IconButton
-                        aria-label="close"
-                        onClick={() => setOpenCloseLinkView(false)}
-                        sx={{
-                            position: 'absolute',
-                            right: 15,
-                            top: 8,
-                            color: (theme) => theme.palette.grey[500],
-                        }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" color="warning" onClick={() => {
-                        resetPassword({ username: user.user_email })
-                            .unwrap()
-                            .then((payload) => {
-                                if (payload.status == 'S1000') {
-                                    setOpenSuccess(true)
-                                }
-                            })
-                            .catch((error) => {
-                                setOpenFail(true)
-                            });
-                    }}>
-                        RESET
-                    </Button>
-                    <Button variant="contained" onClick={() => setOpenCloseLinkView(false)} >
-                        CANCEL
-                    </Button>
-                </DialogActions>
-                <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleCloseSuccess} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-                    <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
-                        {user.user_email} Password Reset success
-                    </Alert>
-                </Snackbar>
-
-                <Snackbar open={openFail} autoHideDuration={6000} onClose={handleCloseFail} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-                    <Alert onClose={handleCloseFail} severity="error" sx={{ width: '100%' }}>
-                        {user.user_email} Password Reset failed
-                    </Alert>
-                </Snackbar>
-            </Dialog>
+            
         </div>
     );
 }

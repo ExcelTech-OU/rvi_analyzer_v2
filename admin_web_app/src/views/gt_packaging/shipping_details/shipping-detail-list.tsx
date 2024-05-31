@@ -9,6 +9,7 @@ import {
     Grid,
     Pagination,
     Typography,
+    IconButton
   } from "@mui/material";
   import { GridColDef } from "@mui/x-data-grid";
   import GridOnIcon from "@mui/icons-material/GridOn";
@@ -22,6 +23,7 @@ import {
   import TableRow from "@mui/material/TableRow";
   import { styled } from "@mui/material";
 import { Download } from "@mui/icons-material";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useState, useEffect } from "react";
 import { AnyObject } from "yup/lib/types";
@@ -41,6 +43,10 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.body}`]: {
       fontSize: 14,
     },
+    position: 'relative',
+    '&:hover .delete-button': {
+      visibility: 'visible',
+    },
   }));
   
   export const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -51,7 +57,18 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     "&:last-child td, &:last-child th": {
       border: 0,
     },
+
   }));
+
+
+  const DeleteButton = styled(IconButton)({
+    visibility: 'hidden',
+    // position: 'absolute',
+    // top: '50%',
+    // right: '8px',
+    // transform: 'translateY(-50%)',
+  });
+
   const columns: GridColDef[] = [
     {
       field: "destination",
@@ -373,6 +390,9 @@ export default function ShippingDetailList() {
                                 <StyledTableRow>
                                     <StyledTableCell align={"left"}>
                                     {box.destination}
+                                    <DeleteButton className="delete-button" >
+                                      <DeleteIcon />
+                                    </DeleteButton>
                                     </StyledTableCell>
                                   </StyledTableRow>
                                     )

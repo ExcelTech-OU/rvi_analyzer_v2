@@ -1,10 +1,10 @@
 import { Alert, Box, Button, Dialog, DialogContent, IconButton, MenuItem, Select, Snackbar, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import { User, useUpdateUserMutation } from "../../../services/user_service";
 import CloseIcon from '@mui/icons-material/Close';
 
-import { gtTrackingUser } from "../../../services/gtTracking_user_service";
+import { gtTrackingUser, useUpdateGtTracking_userMutation } from "../../../services/gtTracking_user_service";
+import { Password } from "@mui/icons-material";
 
 
 
@@ -23,7 +23,7 @@ export function BoxUserActions({ user, open, changeOpenStatus }: UserActionsProp
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const [edit, setEdit] = useState(false);
-  const [updateUser] = useUpdateUserMutation()
+  const [updateUser] = useUpdateGtTracking_userMutation()
 
 
   const handleCloseSuccess = () => {
@@ -47,12 +47,13 @@ export function BoxUserActions({ user, open, changeOpenStatus }: UserActionsProp
         actions.setSubmitting(false)
       } else {
         updateUser({
-          username: values.user_email,
-          status: values.password
+          user_email: user.user_email,
+          user_name: values.user_name,
+          password: values.password
         })
           .unwrap()
           .then((payload) => {
-            if (payload.status == 'S1000') {
+            if (payload.message == 'User updated successfully!') {
               actions.setSubmitting(false)
               setOpenSuccess(true)
               setEdit(false)
@@ -104,8 +105,8 @@ export function BoxUserActions({ user, open, changeOpenStatus }: UserActionsProp
             name="user_email"
             onBlur={formik.handleBlur}
             value={formik.values.user_email}
-            variant="outlined"
-            contentEditable
+            variant="outlined" 
+            disabled  
           />
           <TextField
             fullWidth
@@ -116,20 +117,18 @@ export function BoxUserActions({ user, open, changeOpenStatus }: UserActionsProp
             onChange={formik.handleChange}
             value={formik.values.user_name}
             variant="outlined"
-            contentEditable
-            // disabled
+            disabled
           />
 
           <TextField
             fullWidth
             label="Password"
             margin="normal"
-            name="Password"
-            onBlur={formik.handleBlur}
+            name="password"
             onChange={formik.handleChange}
             value={formik.values.password}
             variant="outlined"
-            contentEditable
+            disabled={!edit}
           />
 
           
