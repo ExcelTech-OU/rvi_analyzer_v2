@@ -63,10 +63,10 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
   const DeleteButton = styled(IconButton)({
     visibility: 'hidden',
-    // position: 'absolute',
-    // top: '50%',
-    // right: '8px',
-    // transform: 'translateY(-50%)',
+    position: 'absolute',
+    top: '50%',
+    right: '-20px',
+    transform: 'translateY(-50%)',
   });
 
   const columns: GridColDef[] = [
