@@ -1,29 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { List } from 'reselect/es/types'
 
-export interface CustomerListResponse {
-    status: string
-    statusDescription: string
-    customers: List<Customer>
-}
+
 
 export interface UserDeleteResponse {
     message: string,
 }
 
-export interface Customer {
-    name: string
-    plant: string
-    createdBy: string
-    createdDateTime: string
-    lastUpdatedDateTime: boolean
-}
-
-export interface CustomerGetResponse {
-    status: string,
-    statusDescription: string,
-    name: string
-}
 
 export interface gtTrackingUser {
     user_name: string

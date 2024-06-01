@@ -20,6 +20,7 @@ export interface SessionSevenReading {
 }
 
 export interface ShippingDetail {
+    id: string
     destination: string
     shipping_Id: string
     customer_PO: string
@@ -37,6 +38,10 @@ export interface Customer_PO {
     customer_PO: string
 }
 
+export interface ShippingDetailResponse {
+    message: string,
+}
+
 
 export const shippingDetailsApi = createApi({
     reducerPath: 'shippingDetailsApi',
@@ -51,9 +56,25 @@ export const shippingDetailsApi = createApi({
             providesTags: [{ type: 'shippingDetailList', id: "getShippingDetails" }]
 
         }),
+        updateShippingDetails: build.mutation<ShippingDetailResponse, {}>({
+            query(body) {
+                console.log(body);
+                return {
+                    url: `updateShipping`,
+                    method: 'PUT',
+                    body: body,
+                }
+                
+                
+            },
+
+            invalidatesTags: [{ type: 'shippingDetailList', id: "getShippingDetails"  }]
+        }),
     }),
+    
 })
 
 export const {
     useGetShippingDetailsQuery,
+    useUpdateShippingDetailsMutation,
 } = shippingDetailsApi

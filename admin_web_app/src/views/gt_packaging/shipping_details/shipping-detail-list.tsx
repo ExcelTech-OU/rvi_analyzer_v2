@@ -31,7 +31,7 @@ import { List } from "reselect/es/types";
 
 import AddIcon from "@mui/icons-material/Add";
 
-import { Destination, Shipping_Id, Customer_PO, ShippingDetail, useGetShippingDetailsQuery } from "../../../services/shippingDetails_service";
+import { ShippingDetail, useGetShippingDetailsQuery, useUpdateShippingDetailsMutation } from "../../../services/shippingDetails_service";
 import { AddShippingDetailModel } from "./add-shipping-detail-list";
 
 
@@ -93,12 +93,16 @@ export default function ShippingDetailList() {
     const [poList, setPOList] = useState<any>([]);
     // const paginatedModes = modesList.slice(startIndex, endIndex);
     const [shippingDetails, setShippingDetails] = useState<ShippingDetail[]>([]);
-    const [destination, setDestination] = useState<Destination[]>([]);
-    const [shipping_Id, setShipping_Id] = useState<Shipping_Id[]>([]);
-    const [customer_PO, setCustomer_PO] = useState<Customer_PO[]>([]);
+    const [destination, setDestination] = useState<ShippingDetail[]>([]);
+    const [shipping_Id, setShipping_Id] = useState<ShippingDetail[]>([]);
+    const [customer_PO, setCustomer_PO] = useState<ShippingDetail[]>([]);
 
     const [open, setOpen] = useState(false);
     const [label, setLabel] = useState<string>("");
+
+    const [openSuccess, setOpenSuccess] = React.useState(false);
+    const [openFail, setOpenFail] = React.useState(false);
+    const [message, setMessage] = useState("");
 
 
     const { data, error, isLoading } = useGetShippingDetailsQuery("");
@@ -119,13 +123,13 @@ export default function ShippingDetailList() {
     //////////////////////////////////
     const extractColumns = () => {
       const destinationsSet = new Set();
-      const destinations: Destination[] = [];
+      const destinations: ShippingDetail[] = [];
 
       const shippingIdsSet = new Set();
-      const shippingIds: Shipping_Id[] = [];
+      const shippingIds: ShippingDetail[] = [];
 
       const customerPOsSet = new Set();
-      const customerPOs: Customer_PO[] = [];
+      const customerPOs: ShippingDetail[] = [];
     
       shippingDetails.forEach((session: ShippingDetail) => {
         if (session && session.destination) {
@@ -133,7 +137,10 @@ export default function ShippingDetailList() {
           if (!destinationsSet.has(destination)) {
             destinationsSet.add(destination);
             destinations.push({
-              destination: session.destination
+              id:session.id,
+              destination: session.destination,
+              shipping_Id: session.shipping_Id,
+              customer_PO: session.customer_PO
             });
           }
         }
@@ -142,7 +149,10 @@ export default function ShippingDetailList() {
           if (!shippingIdsSet.has(shippingId)) {
             shippingIdsSet.add(shippingId);
             shippingIds.push({
-              shipping_Id: session.shipping_Id
+              id:session.id,
+              destination: session.destination,
+              shipping_Id: session.shipping_Id,
+              customer_PO: session.customer_PO
             });
           }
         }
@@ -151,6 +161,9 @@ export default function ShippingDetailList() {
           if (!customerPOsSet.has(customerPO)) {
             customerPOsSet.add(customerPO);
             customerPOs.push({
+              id:session.id,
+              destination: session.destination,
+              shipping_Id: session.shipping_Id,
               customer_PO: session.customer_PO
             });
           }
@@ -159,8 +172,7 @@ export default function ShippingDetailList() {
       setDestination(destinations);
       setShipping_Id(shippingIds);
       setCustomer_PO(customerPOs);
-
-      console.log(shippingIds);
+;
     };
     /////////////////////////////////
 
@@ -172,9 +184,39 @@ export default function ShippingDetailList() {
         field3: "",
         field4: "",
       });
-    
-    
-    
+
+      const [updateShippinDetails] = useUpdateShippingDetailsMutation()
+
+
+      const handleDelete = (box: ShippingDetail, label1:string) => {
+        if (label1 = "destination"){
+          updateShippinDetails({
+            id: box.id,
+            destination: "",
+            shipping_Id: box.shipping_Id,
+            customer_PO: box.customer_PO
+          })
+          }
+        if (label1 = "shipping_Id"){
+          updateShippinDetails({
+            id: box.id,
+            destination: box.destination,
+            shipping_Id: "",
+            customer_PO: box.customer_PO
+          })
+        }
+        if (label1 = "customer_PO"){
+          updateShippinDetails({
+            id: box.id,
+            destination: box.destination,
+            shipping_Id: box.shipping_Id,
+            customer_PO: ""
+          })
+        }
+         
+        }
+       
+
 
     function addDataDropDown(label: any): any {
         setLabel(label);
@@ -390,7 +432,29 @@ export default function ShippingDetailList() {
                                 <StyledTableRow>
                                     <StyledTableCell align={"left"}>
                                     {box.destination}
-                                    <DeleteButton className="delete-button" >
+                                    <DeleteButton className="delete-button" 
+                                     onClick={() => {
+                                      updateShippinDetails({
+                                        id: box.id,
+                                        destination: "",
+                                        shipping_Id: box.shipping_Id,
+                                        customer_PO: box.customer_PO
+                                      })
+                                      // .unwrap()
+                                      //       .then((payload) => {                                                    
+                                      //         if (
+                                      //           payload.message == "User Delete successfully!"
+                                      //         ) {
+                                      //           setOpenSuccess(true)
+                                      //           setMessage(payload.message)
+                                      //         }
+                                      //       })
+                                      //       .catch((error) => {
+                                      //         setOpenFail(true)
+                                      //         setMessage(error)
+                                      //       });
+                                    }}
+                                >
                                       <DeleteIcon />
                                     </DeleteButton>
                                     </StyledTableCell>
@@ -406,6 +470,18 @@ export default function ShippingDetailList() {
                               <StyledTableRow>
                                     <StyledTableCell align={"left"}>
                                     {box.shipping_Id}
+                                    <DeleteButton className="delete-button" 
+                                     onClick={() => {
+                                      updateShippinDetails({
+                                        id: box.id,
+                                        destination: box.destination,
+                                        shipping_Id: "",
+                                        customer_PO: box.customer_PO
+                                      })
+                                          }}
+                                      >
+                                      <DeleteIcon />
+                                    </DeleteButton>
                                     </StyledTableCell>
                               </StyledTableRow>
                               )
@@ -418,6 +494,18 @@ export default function ShippingDetailList() {
                                 <StyledTableRow>
                                     <StyledTableCell align={"left"}>
                                     {box.customer_PO}
+                                    <DeleteButton className="delete-button" 
+                                     onClick={() => {
+                                      updateShippinDetails({
+                                        id: box.id,
+                                        destination: box.destination,
+                                        shipping_Id: box.shipping_Id,
+                                        customer_PO: ""
+                                      })
+                                          }}
+                                      >
+                                      <DeleteIcon />
+                                    </DeleteButton>
                                     </StyledTableCell>
                                 </StyledTableRow>
                                     )
