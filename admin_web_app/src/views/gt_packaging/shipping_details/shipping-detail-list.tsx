@@ -300,7 +300,7 @@ export default function ShippingDetailList() {
             <Card
               sx={{
                 maxWidth: 1600,
-                maxHeight: "80vh",
+                maxHeight: "150vh",
                 backgroundColor: "#FFFFFF",
                 boxShadow: "1px 1px 10px 10px #e8e8e8",
               }}
@@ -319,7 +319,7 @@ export default function ShippingDetailList() {
                         component="div"
                         color="grey"
                       >
-                        GT Packaging Corrugated Boxes
+                        Shipping Details
                       </Typography>
                     </Grid>
                     <Grid item xs={4} sm={2} md={6}>

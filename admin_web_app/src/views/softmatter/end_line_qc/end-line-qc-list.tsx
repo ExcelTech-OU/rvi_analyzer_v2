@@ -273,12 +273,10 @@ export default function EndLineQcList() {
 
   const handleStartingDateChange = (date: React.SetStateAction<null>) => {
     setStartingDate(date);
-    console.log(startingDate);
   };
 
   const handleFinishingDateChange = (date: React.SetStateAction<null>) => {
     setFinishingDate(date);
-    console.log(finishingDate);
   };
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {

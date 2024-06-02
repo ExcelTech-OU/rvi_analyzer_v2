@@ -6,6 +6,7 @@ import {
   SelectChangeEvent,
   InputLabel,
   FormControl,
+  Autocomplete
 } from "@mui/material";
 import { Order, useGetPOQuery } from "../../services/po_service";
 import { List } from "reselect/es/types";
@@ -205,23 +206,24 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
   //////////////////////////////////////////
   const [data, setData] = React.useState<any[]>([]);
 
-  const handleSelectChange =
-    (fieldName: string) => (event: SelectChangeEvent<string>) => {
-      const newValue = event.target.value as string;
-      setFieldValues((prevValues) => ({
-        ...prevValues,
-        [fieldName]: newValue,
-      }));
+  const handleSelectChange = (fieldName: string) => (event: any, newValue: string | null) => {
+    const newValueStr = newValue || "";
+    setFieldValues((prevValues) => ({
+      ...prevValues,
+      [fieldName]: newValueStr,
+    }));
 
-      if (onInputChange) {
-        onInputChange(fieldName, newValue);
-      }
-    };
+    if (onInputChange) {
+      onInputChange(fieldName, newValueStr);
+    }
+  };
 
   const selectFieldStyle: React.CSSProperties = {
     width: "200px",
     marginRight: "8px",
   };
+
+  const getUniqueValues = (key: string) => [...new Set(updatedRetailData.map(item => item[key]))];
 
   return (
     <div
@@ -236,155 +238,178 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
         marginBottom:"5px"
       }}
     >
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Packaging Box QR</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Packaging Box QR"
-          variant="outlined"
-          value={fieldValues.field1 || ""}
-          onChange={handleSelectChange("field1")}
-          style={selectFieldStyle}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                maxHeight: 150,
-              },
-            },
-          }}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {[...new Set(updatedRetailData.map(item => item.retailBox_QR))].map((retailBox_QR) => (
-                <MenuItem key={retailBox_QR} value={retailBox_QR}>
-                    {retailBox_QR}
-                </MenuItem>
-            ))}
+    <FormControl fullWidth>
+      <Autocomplete
+        options={getUniqueValues('corBox_Qr')}
+        getOptionLabel={(option) => option || ""}
+        value={fieldValues.field1 || ""}
+        onChange={handleSelectChange("field1")}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Corrugated Box QR"
+            variant="outlined"
+            style={selectFieldStyle}
+          />
+        )}
+      />
+    </FormControl>
 
-        </Select>
-      </FormControl>
+    <FormControl fullWidth>
+      <Autocomplete
+        options={getUniqueValues('retailBox_QR')}
+        getOptionLabel={(option) => option || ""}
+        value={fieldValues.field2 || ""}
+        onChange={handleSelectChange("field2")}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Packaging Box QR"
+            variant="outlined"
+            style={selectFieldStyle}
+          />
+        )}
+      />
+    </FormControl>
 
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Battery 01 NFC ID</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Battery 01 NFC ID"
-          variant="outlined"
-          value={fieldValues.field2 || ""}
-          onChange={handleSelectChange("field2")}
-          style={selectFieldStyle}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {[...new Set(updatedRetailData.map(item => item.battery01_Serial))].map((battery01_Serial) => (
-                <MenuItem key={battery01_Serial} value={battery01_Serial}>
-                    {battery01_Serial}
-                </MenuItem>
-            ))}
-        </Select>
-      </FormControl>
+    <FormControl fullWidth>
+      <Autocomplete
+        options={getUniqueValues('battery01_Serial')}
+        getOptionLabel={(option) => option || ""}
+        value={fieldValues.field3 || ""}
+        onChange={handleSelectChange("field3")}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Battery 01 NFC ID"
+            variant="outlined"
+            style={selectFieldStyle}
+          />
+        )}
+      />
+    </FormControl>
 
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Battery 02 NFC ID</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Battery 02 NFC ID"
-          variant="outlined"
-          value={fieldValues.field3 || ""}
-          onChange={handleSelectChange("field3")}
-          style={selectFieldStyle}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {[...new Set(updatedRetailData.map(item => item.battery02_Serial))].map((battery02_Serial) => (
-                <MenuItem key={battery02_Serial} value={battery02_Serial}>
-                    {battery02_Serial}
-                </MenuItem>
-            ))}
-        </Select>
-      </FormControl>
+    <FormControl fullWidth>
+      <Autocomplete
+        options={getUniqueValues('battery02_Serial')}
+        getOptionLabel={(option) => option || ""}
+        value={fieldValues.field4 || ""}
+        onChange={handleSelectChange("field4")}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Battery 02 NFC ID"
+            variant="outlined"
+            style={selectFieldStyle}
+          />
+        )}
+      />
+    </FormControl>
 
+    <FormControl fullWidth>
+      <Autocomplete
+        options={getUniqueValues('deviceL_Mac')}
+        getOptionLabel={(option) => option || ""}
+        value={fieldValues.field5 || ""}
+        onChange={handleSelectChange("field5")}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Device L MAC"
+            variant="outlined"
+            style={selectFieldStyle}
+          />
+        )}
+      />
+    </FormControl>
+    </div>
+    <div style={{ display: "flex", gap: "8px" }}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Device L MAC</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Device L MAC"
-          variant="outlined"
-          value={fieldValues.field4 || ""}
-          onChange={handleSelectChange("field4")}
-          style={selectFieldStyle}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {[...new Set(updatedRetailData.map(item => item.deviceL_Mac))].map((deviceL_Mac) => (
-                <MenuItem key={deviceL_Mac} value={deviceL_Mac}>
-                    {deviceL_Mac}
-                </MenuItem>
-            ))}
-        </Select>
-      </FormControl>
-
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Device R MAC</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Device R MAC"
-          variant="outlined"
-          value={fieldValues.field5 || ""}
-          onChange={handleSelectChange("field5")}
-          style={selectFieldStyle}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {[...new Set(updatedRetailData.map(item => item.deviceR_Mac))].map((deviceR_Mac) => (
-                <MenuItem key={deviceR_Mac} value={deviceR_Mac}>
-                    {deviceR_Mac}
-                </MenuItem>
-            ))}
-        </Select>
-      </FormControl>
-      
-      </div>
-      <div
-        style={{
-          display: "flex",
-          gap: "8px",
-        }}
-      >
-
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Packed By</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Packed By"
-          variant="outlined"
+        <Autocomplete
+          options={getUniqueValues('deviceR_Mac')}
+          getOptionLabel={(option) => option || ""}
           value={fieldValues.field6 || ""}
           onChange={handleSelectChange("field6")}
-          style={selectFieldStyle}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {[...new Set(updatedRetailData.map(item => item.packed_By))].map((packed_By) => (
-                <MenuItem key={packed_By} value={packed_By}>
-                    {packed_By}
-                </MenuItem>
-            ))}
-        </Select>
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Device R MAC"
+              variant="outlined"
+              style={selectFieldStyle}
+            />
+          )}
+        />
+      </FormControl>
+
+      <FormControl fullWidth>
+        <Autocomplete
+          options={getUniqueValues('destination')}
+          getOptionLabel={(option) => option || ""}
+          value={fieldValues.field7 || ""}
+          onChange={handleSelectChange("field7")}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Where"
+              variant="outlined"
+              style={selectFieldStyle}
+            />
+          )}
+        />
+      </FormControl>
+
+      <FormControl fullWidth>
+        <Autocomplete
+          options={getUniqueValues('shipping_Id')}
+          getOptionLabel={(option) => option || ""}
+          value={fieldValues.field8 || ""}
+          onChange={handleSelectChange("field8")}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Shipping Id"
+              variant="outlined"
+              style={selectFieldStyle}
+            />
+          )}
+        />
+      </FormControl>
+
+      <FormControl fullWidth>
+        <Autocomplete
+          options={getUniqueValues('customer_Po')}
+          getOptionLabel={(option) => option || ""}
+          value={fieldValues.field9 || ""}
+          onChange={handleSelectChange("field9")}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Customer PO"
+              variant="outlined"
+              style={selectFieldStyle}
+            />
+          )}
+        />
+      </FormControl>
+
+      <FormControl fullWidth>
+        <Autocomplete
+          options={getUniqueValues('packed_By')}
+          getOptionLabel={(option) => option || ""}
+          value={fieldValues.field10 || ""}
+          onChange={handleSelectChange("field10")}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Packed By"
+              variant="outlined"
+              style={selectFieldStyle}
+            />
+          )}
+        />
       </FormControl>
     </div>
-    </div>
+  </div>
   );
 };
 

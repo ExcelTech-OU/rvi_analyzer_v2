@@ -135,6 +135,9 @@ export default function GtTrackingBoxList() {
       field5: "",
       field6: "",
       field7: "",
+      field8: "",
+      field9: "",
+      field10: "",      
     });
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -259,27 +262,32 @@ export default function GtTrackingBoxList() {
 
       const [filteredData, setFilteredData] = useState<any[]>(updatedRetailData);
 
-      const [packedDate, setPackedDate] = useState(null);
-      const [packedEndDate, setPackedEndDate] = useState(null);
+      const [startingDate, setStartingDate] = useState(null);
+      const [finishingDate, setFinishingDate] = useState(null);
 
       
 
       useEffect(() => {
         const filteredData = updatedRetailData.filter(item =>
-          item.retailBox_QR.includes(values.field1) &&
-          item.battery01_Serial.includes(values.field2) &&
-          item.battery02_Serial.includes(values.field3) &&
-          item.deviceL_Mac.includes(values.field4) &&
-          item.deviceR_Mac.includes(values.field5) &&
-          item.packed_By.includes(values.field6) &&
-          (!packedDate || new Date(item.itemDate).setHours(0,0,0,0) == new Date(packedDate).setHours(0,0,0,0))
+          item.corBox_Qr.includes(values.field1) &&
+          item.retailBox_QR.includes(values.field2) &&
+          item.battery01_Serial.includes(values.field3) &&
+          item.battery02_Serial.includes(values.field4) &&
+          item.deviceL_Mac.includes(values.field5) &&
+          item.deviceR_Mac.includes(values.field6) &&
+          item.destination.includes(values.field7) &&
+          item.shipping_Id.includes(values.field8) &&
+          item.customer_Po.includes(values.field9) &&
+          item.packed_By.includes(values.field10) &&
+          (!startingDate || new Date(item.packed_Date) >= new Date(startingDate)) &&
+          (!finishingDate || new Date(item.packed_Date) <= new Date(finishingDate))
         );
 
         setFilteredData(filteredData);
         
 
         
-      }, [values,packedDate]);
+      }, [values, startingDate, finishingDate]);
     
       const startIndex = (page - 1) * rowsPerPage;
       const endIndex = startIndex + rowsPerPage;
@@ -328,12 +336,12 @@ export default function GtTrackingBoxList() {
 
       
 
-      const handleDateChange = (date: React.SetStateAction<null>) => {
-        setPackedDate(date);
-        // console.log(packedDate);
-
-        setPackedEndDate(date);
-        // console.log(packedEndDate);
+      const handleStartingDateChange = (date: React.SetStateAction<null>) => {
+        setStartingDate(date);
+      };
+    
+      const handleFinishingDateChange = (date: React.SetStateAction<null>) => {
+        setFinishingDate(date);
       };
 
 
@@ -383,7 +391,7 @@ export default function GtTrackingBoxList() {
             <Card
               sx={{
                 maxWidth: 1600,
-                maxHeight: "100vh",
+                maxHeight: "150vh",
                 backgroundColor: "#FFFFFF",
                 boxShadow: "1px 1px 10px 10px #e8e8e8",
               }}
@@ -426,13 +434,18 @@ export default function GtTrackingBoxList() {
                           color="success"
                           onClick={() => {
                             const filteredData = updatedRetailData.filter(item =>
-                              item.retailBox_QR.includes(values.field1) &&
-                              item.battery01_Serial.includes(values.field2) &&
-                              item.battery02_Serial.includes(values.field3) &&
-                              item.deviceL_Mac.includes(values.field4) &&
-                              item.deviceR_Mac.includes(values.field5) &&
-                              item.packed_By.includes(values.field6) &&
-                              (!packedDate || new Date(new Date(item.packed_Date)).setHours(0,0,0,0) == new Date(packedDate).setHours(0,0,0,0))
+                              item.corBox_Qr.includes(values.field1) &&
+                              item.retailBox_QR.includes(values.field2) &&
+                              item.battery01_Serial.includes(values.field3) &&
+                              item.battery02_Serial.includes(values.field4) &&
+                              item.deviceL_Mac.includes(values.field5) &&
+                              item.deviceR_Mac.includes(values.field6) &&
+                              item.destination.includes(values.field7) &&
+                              item.shipping_Id.includes(values.field8) &&
+                              item.customer_Po.includes(values.field9) &&
+                              item.packed_By.includes(values.field10) &&
+                              (!startingDate || new Date(item.packed_Date) >= new Date(startingDate)) &&
+                              (!finishingDate || new Date(item.packed_Date) <= new Date(finishingDate))
                             );
                             if (values) {
                                 handleGenerateExcelPackageBox(filteredData);
@@ -495,39 +508,57 @@ export default function GtTrackingBoxList() {
                       borderStyle: "dashed",
                     }}
                   />
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginBottom: "5px",
-                      width: "100%",
-                      maxWidth: 1600,
-                      // overflowX: "auto",
-                      flexDirection: "row",
-                      flexWrap: "wrap",
-                    }}
-                  >
+                  {/* <div
+                    // style={{
+                    //   display: "flex",
+                    //   alignItems: "center",
+                    //   marginBottom: "5px",
+                    //   width: "100%",
+                    //   maxWidth: 1600,
+                    //   // overflowX: "auto",
+                    //   flexDirection: "row",
+                    //   flexWrap: "wrap",
+                    // }}
+                    
+                  > */}
+                   <Grid container spacing={2}>
+                  <Grid item xs={12}>
                    <MyComponentPackagingBox
                       initialValues={values}
                       onInputChange={handleInputChange}
                       orders={poList}
                     />
-
+                  </Grid>
+                  </Grid>
                     
-                  </div>
+                  {/* </div> */}
 
+                  <div style={{ display: "flex", alignItems: "center" }}>
                   <div
-                      style={{
-                        marginLeft: "1px",
-                        marginRight: "10px",
-                        width: "250px",
-                      }}
-                    >
-                      <DatePickerComponentPackagingBox
-                        label="Packed Date"
-                        onChange={handleDateChange}
-                      />
-                    </div>
+                    style={{
+                      marginLeft: "1px",
+                      marginRight: "10px",
+                      width: "200px",
+                    }}
+                  >
+                    <DatePickerComponentPackagingBox
+                      label="Starting Date"
+                      onChange={handleStartingDateChange}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      marginLeft: "1px",
+                      marginRight: "10px",
+                      width: "200px",
+                    }}
+                  >
+                    <DatePickerComponentPackagingBox
+                      label="Finishing Date"
+                      onChange={handleFinishingDateChange}
+                    />
+                  </div>
+                </div>
 
                   <Divider
                     sx={{
@@ -560,27 +591,38 @@ export default function GtTrackingBoxList() {
                             
                           
                             return (
-                              item.retailBox_QR.includes(
+                              item.corBox_Qr.includes(
                                 values.field1
                               ) &&
-                              item.battery01_Serial.includes(
+                              item.retailBox_QR.includes(
                                 values.field2
                               ) &&
-                              item.battery02_Serial.includes(
+                              item.battery01_Serial.includes(
                                 values.field3
                               ) &&
-                              item.deviceL_Mac.includes(
+                              item.battery02_Serial.includes(
                                 values.field4
                               ) &&
-                              item.deviceR_Mac.includes(
+                              item.deviceL_Mac.includes(
                                 values.field5
                               ) &&
-                              item.packed_By.includes(
+                              item.deviceR_Mac.includes(
                                 values.field6
+                              ) &&
+                              item.destination.includes(
+                                values.field7
                               )  &&
-                              (!packedDate || new Date(itemDate).setHours(0,0,0,0) == new Date(packedDate).setHours(0,0,0,0))
-                                // &&
-                                  // (!packedEndDate || new Date(itemDate).setHours(0,0,0,0) <= new Date(packedEndDate).setHours(0,0,0,0))
+                              item.shipping_Id.includes(
+                                values.field8
+                              )  &&
+                              item.customer_Po.includes(
+                                values.field9
+                              )  &&
+                              item.packed_By.includes(
+                                values.field10
+                              )  &&
+                              (!startingDate || new Date(item.packed_Date) >= new Date(startingDate)) &&
+                              (!finishingDate || new Date(item.packed_Date) <= new Date(finishingDate))
                                  
                             );
                           }).map((box) => {
