@@ -6,7 +6,8 @@ import {
   SelectChangeEvent,
   InputLabel,
   FormControl,
-  Autocomplete
+  Autocomplete,
+  Grid
 } from "@mui/material";
 import { Order, useGetPOQuery } from "../../services/po_service";
 import { List } from "reselect/es/types";
@@ -219,7 +220,7 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
   };
 
   const selectFieldStyle: React.CSSProperties = {
-    width: "200px",
+    width: "180px",
     marginRight: "8px",
   };
 
@@ -238,6 +239,7 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
         marginBottom:"5px"
       }}
     >
+    <Grid item xs={12} sm={6} md={4} lg={3}>
     <FormControl fullWidth>
       <Autocomplete
         options={getUniqueValues('corBox_Qr')}
@@ -254,7 +256,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
         )}
       />
     </FormControl>
+    </Grid>
 
+    <Grid item xs={12} sm={6} md={4} lg={3}>
     <FormControl fullWidth>
       <Autocomplete
         options={getUniqueValues('retailBox_QR')}
@@ -271,7 +275,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
         )}
       />
     </FormControl>
+    </Grid>
 
+    <Grid item xs={12} sm={6} md={4} lg={3}>
     <FormControl fullWidth>
       <Autocomplete
         options={getUniqueValues('battery01_Serial')}
@@ -288,7 +294,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
         )}
       />
     </FormControl>
+    </Grid>
 
+    <Grid item xs={12} sm={6} md={4} lg={3}>
     <FormControl fullWidth>
       <Autocomplete
         options={getUniqueValues('battery02_Serial')}
@@ -305,7 +313,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
         )}
       />
     </FormControl>
+    </Grid>
 
+    <Grid item xs={12} sm={6} md={4} lg={3}>
     <FormControl fullWidth>
       <Autocomplete
         options={getUniqueValues('deviceL_Mac')}
@@ -322,8 +332,10 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
         )}
       />
     </FormControl>
+    </Grid>
     </div>
     <div style={{ display: "flex", gap: "8px" }}>
+    <Grid item xs={12} sm={6} md={4} lg={3}>
       <FormControl fullWidth>
         <Autocomplete
           options={getUniqueValues('deviceR_Mac')}
@@ -340,7 +352,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           )}
         />
       </FormControl>
+      </Grid>
 
+      <Grid item xs={12} sm={6} md={4} lg={3}>
       <FormControl fullWidth>
         <Autocomplete
           options={getUniqueValues('destination')}
@@ -357,7 +371,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           )}
         />
       </FormControl>
+      </Grid>
 
+      <Grid item xs={12} sm={6} md={4} lg={3}>
       <FormControl fullWidth>
         <Autocomplete
           options={getUniqueValues('shipping_Id')}
@@ -374,7 +390,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           )}
         />
       </FormControl>
+      </Grid>
 
+      <Grid item xs={12} sm={6} md={4} lg={3}>
       <FormControl fullWidth>
         <Autocomplete
           options={getUniqueValues('customer_Po')}
@@ -391,7 +409,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           )}
         />
       </FormControl>
+      </Grid>
 
+      <Grid item xs={12} sm={6} md={4} lg={3}>
       <FormControl fullWidth>
         <Autocomplete
           options={getUniqueValues('packed_By')}
@@ -408,6 +428,7 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           )}
         />
       </FormControl>
+      </Grid>
     </div>
   </div>
   );

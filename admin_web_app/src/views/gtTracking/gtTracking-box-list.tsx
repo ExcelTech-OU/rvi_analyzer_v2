@@ -538,7 +538,7 @@ export default function GtTrackingBoxList() {
                     style={{
                       marginLeft: "1px",
                       marginRight: "10px",
-                      width: "200px",
+                      width: "180px",
                     }}
                   >
                     <DatePickerComponentPackagingBox
