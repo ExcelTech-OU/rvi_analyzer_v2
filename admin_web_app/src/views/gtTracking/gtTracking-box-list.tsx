@@ -536,7 +536,7 @@ export default function GtTrackingBoxList() {
                   <div style={{ display: "flex", alignItems: "center" }}>
                   <div
                     style={{
-                      marginLeft: "1px",
+                      marginLeft: "15px",
                       marginRight: "10px",
                       width: "180px",
                     }}

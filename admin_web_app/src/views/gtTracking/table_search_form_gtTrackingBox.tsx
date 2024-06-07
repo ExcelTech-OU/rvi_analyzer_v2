@@ -7,7 +7,8 @@ import {
   InputLabel,
   FormControl,
   Autocomplete,
-  Grid
+  Grid,
+  Box
 } from "@mui/material";
 import { Order, useGetPOQuery } from "../../services/po_service";
 import { List } from "reselect/es/types";
@@ -220,122 +221,114 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
   };
 
   const selectFieldStyle: React.CSSProperties = {
-    width: "180px",
-    marginRight: "8px",
+    width: "100%",
+    marginRight: "10px",
   };
 
   const getUniqueValues = (key: string) => [...new Set(updatedRetailData.map(item => item[key]))];
 
   return (
     <div
-    style={{
-      gap: "5px",
-      marginBottom:"5px",
-    }}>
-    <div
-      style={{
-        display: "flex",
-        gap: "5px",
-        marginBottom:"5px"
-      }}
-    >
-    <Grid item xs={12} sm={6} md={4} lg={3}>
-    <FormControl fullWidth>
-      <Autocomplete
-        options={getUniqueValues('corBox_Qr')}
-        getOptionLabel={(option) => option || ""}
-        value={fieldValues.field1 || ""}
-        onChange={handleSelectChange("field1")}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Corrugated Box QR"
-            variant="outlined"
-            style={selectFieldStyle}
-          />
-        )}
-      />
-    </FormControl>
+>
+
+
+<Grid container spacing={2} padding={2} wrap="wrap">
+    <Grid item xs={12} sm={6} md={4} lg={2.4}>
+      <FormControl fullWidth>
+        <Autocomplete
+          options={getUniqueValues('corBox_Qr')}
+          getOptionLabel={(option) => option || ""}
+          value={fieldValues.field1 || ""}
+          onChange={handleSelectChange("field1")}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Corrugated Box QR"
+              variant="outlined"
+              style={selectFieldStyle}
+            />
+          )}
+        />
+      </FormControl>
     </Grid>
 
-    <Grid item xs={12} sm={6} md={4} lg={3}>
-    <FormControl fullWidth>
-      <Autocomplete
-        options={getUniqueValues('retailBox_QR')}
-        getOptionLabel={(option) => option || ""}
-        value={fieldValues.field2 || ""}
-        onChange={handleSelectChange("field2")}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Packaging Box QR"
-            variant="outlined"
-            style={selectFieldStyle}
-          />
-        )}
-      />
-    </FormControl>
+    <Grid item xs={12} sm={6} md={4} lg={2.4}>
+      <FormControl fullWidth>
+        <Autocomplete
+          options={getUniqueValues('retailBox_QR')}
+          getOptionLabel={(option) => option || ""}
+          value={fieldValues.field2 || ""}
+          onChange={handleSelectChange("field2")}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Packaging Box QR"
+              variant="outlined"
+              style={selectFieldStyle}
+            />
+          )}
+        />
+      </FormControl>
     </Grid>
 
-    <Grid item xs={12} sm={6} md={4} lg={3}>
-    <FormControl fullWidth>
-      <Autocomplete
-        options={getUniqueValues('battery01_Serial')}
-        getOptionLabel={(option) => option || ""}
-        value={fieldValues.field3 || ""}
-        onChange={handleSelectChange("field3")}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Battery 01 NFC ID"
-            variant="outlined"
-            style={selectFieldStyle}
-          />
-        )}
-      />
-    </FormControl>
+    <Grid item xs={12} sm={6} md={4} lg={2.4}>
+      <FormControl fullWidth>
+        <Autocomplete
+          options={getUniqueValues('battery01_Serial')}
+          getOptionLabel={(option) => option || ""}
+          value={fieldValues.field3 || ""}
+          onChange={handleSelectChange("field3")}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Battery 01 NFC ID"
+              variant="outlined"
+              style={selectFieldStyle}
+            />
+          )}
+        />
+      </FormControl>
     </Grid>
 
-    <Grid item xs={12} sm={6} md={4} lg={3}>
-    <FormControl fullWidth>
-      <Autocomplete
-        options={getUniqueValues('battery02_Serial')}
-        getOptionLabel={(option) => option || ""}
-        value={fieldValues.field4 || ""}
-        onChange={handleSelectChange("field4")}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Battery 02 NFC ID"
-            variant="outlined"
-            style={selectFieldStyle}
-          />
-        )}
-      />
-    </FormControl>
+    <Grid item xs={12} sm={6} md={4} lg={2.4}>
+      <FormControl fullWidth>
+        <Autocomplete
+          options={getUniqueValues('battery02_Serial')}
+          getOptionLabel={(option) => option || ""}
+          value={fieldValues.field4 || ""}
+          onChange={handleSelectChange("field4")}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Battery 02 NFC ID"
+              variant="outlined"
+              style={selectFieldStyle}
+            />
+          )}
+        />
+      </FormControl>
     </Grid>
 
-    <Grid item xs={12} sm={6} md={4} lg={3}>
-    <FormControl fullWidth>
-      <Autocomplete
-        options={getUniqueValues('deviceL_Mac')}
-        getOptionLabel={(option) => option || ""}
-        value={fieldValues.field5 || ""}
-        onChange={handleSelectChange("field5")}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Device L MAC"
-            variant="outlined"
-            style={selectFieldStyle}
-          />
-        )}
-      />
-    </FormControl>
+    <Grid item xs={12} sm={6} md={4} lg={2.4}>
+      <FormControl fullWidth>
+        <Autocomplete
+          options={getUniqueValues('deviceL_Mac')}
+          getOptionLabel={(option) => option || ""}
+          value={fieldValues.field5 || ""}
+          onChange={handleSelectChange("field5")}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Device L MAC"
+              variant="outlined"
+              style={selectFieldStyle}
+            />
+          )}
+        />
+      </FormControl>
     </Grid>
-    </div>
-    <div style={{ display: "flex", gap: "8px" }}>
-    <Grid item xs={12} sm={6} md={4} lg={3}>
+
+    <Grid item xs={12} sm={6} md={4} lg={2.4}>
       <FormControl fullWidth>
         <Autocomplete
           options={getUniqueValues('deviceR_Mac')}
@@ -352,9 +345,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           )}
         />
       </FormControl>
-      </Grid>
+    </Grid>
 
-      <Grid item xs={12} sm={6} md={4} lg={3}>
+    <Grid item xs={12} sm={6} md={4} lg={2.4}>
       <FormControl fullWidth>
         <Autocomplete
           options={getUniqueValues('destination')}
@@ -371,9 +364,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           )}
         />
       </FormControl>
-      </Grid>
+    </Grid>
 
-      <Grid item xs={12} sm={6} md={4} lg={3}>
+    <Grid item xs={12} sm={6} md={4} lg={2.4}>
       <FormControl fullWidth>
         <Autocomplete
           options={getUniqueValues('shipping_Id')}
@@ -390,9 +383,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           )}
         />
       </FormControl>
-      </Grid>
+    </Grid>
 
-      <Grid item xs={12} sm={6} md={4} lg={3}>
+    <Grid item xs={12} sm={6} md={4} lg={2.4}>
       <FormControl fullWidth>
         <Autocomplete
           options={getUniqueValues('customer_Po')}
@@ -409,9 +402,9 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           )}
         />
       </FormControl>
-      </Grid>
+    </Grid>
 
-      <Grid item xs={12} sm={6} md={4} lg={3}>
+    <Grid item xs={12} sm={6} md={4} lg={2.4}>
       <FormControl fullWidth>
         <Autocomplete
           options={getUniqueValues('packed_By')}
@@ -428,8 +421,8 @@ const MyComponentPackagingBox: React.FC<MyComponentProps> = ({
           )}
         />
       </FormControl>
-      </Grid>
-    </div>
+    </Grid>
+  </Grid>
   </div>
   );
 };
