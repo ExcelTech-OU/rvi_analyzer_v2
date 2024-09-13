@@ -6,12 +6,15 @@ import {
   SelectChangeEvent,
   InputLabel,
   FormControl,
+  Grid,
+  Autocomplete,
 } from "@mui/material";
 import { Order, useGetPOQuery } from "../../services/po_service";
 import { List } from "reselect/es/types";
 import {
   ModeSeven,
   SessionResultModeSeven,
+  SessionSevenReading,
   useGetGtTestsMutation,
 } from "../../services/gt_service";
 
@@ -65,14 +68,10 @@ const MyComponent: React.FC<MyComponentProps> = ({
     
       data?.sessions.forEach((session: ModeSeven) => {
         if (session.result && session.result.reading && session.result.reading.macAddress) {
-          const macAddress = session.result.reading.macAddress;
-          if (!macAddressesSet.has(macAddress)) {
-            macAddressesSet.add(macAddress);
-            macAddresses.push({
-              testId: session.result.testId,
-              reading: session.result.reading,
-            });
-          }
+          macAddresses.push({
+            testId: session.result.testId,
+            reading: session.result.reading,
+          });
         }
       });
     
@@ -121,23 +120,27 @@ const MyComponent: React.FC<MyComponentProps> = ({
   const optionsField2 = poList;
   const optionsPassFail = ["PASS", "FAIL"];
 
-  const handleSelectChange =
-    (fieldName: string) => (event: SelectChangeEvent<string>) => {
-      const newValue = event.target.value as string;
-      setFieldValues((prevValues) => ({
-        ...prevValues,
-        [fieldName]: newValue,
-      }));
+  const handleSelectChange = (fieldName: string) => (event: any, newValue: string | null) => {
+    const newValueStr = newValue || "";
+    setFieldValues((prevValues) => ({
+      ...prevValues,
+      [fieldName]: newValueStr,
+    }));
 
-      if (onInputChange) {
-        onInputChange(fieldName, newValue);
-      }
-    };
+    if (onInputChange) {
+      onInputChange(fieldName, newValueStr);
+    }
+  };
 
   const selectFieldStyle: React.CSSProperties = {
     width: "200px",
     marginRight: "8px",
   };
+
+  const getUniqueValues = (key: keyof SessionSevenReading): string[] => {
+    return [...new Set(data?.sessions.map((session: ModeSeven) => session.result.reading[key]))];
+  };
+  
 
   return (
     <div
@@ -156,7 +159,25 @@ const MyComponent: React.FC<MyComponentProps> = ({
           padding: "0 0 5px 0",
         }}
       >
-        <FormControl fullWidth>
+        <Grid>
+          <FormControl fullWidth>
+          <Autocomplete
+            options={getUniqueValues('macAddress')}
+            getOptionLabel={(option: string) => option || ""}
+            value={fieldValues.field1 || ""}
+            onChange={handleSelectChange("field1")}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="MAC Address"
+                variant="outlined"
+                style={selectFieldStyle}
+              />
+            )}
+          />
+          </FormControl>
+        </Grid>
+        {/* <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">MAC Address</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -183,9 +204,28 @@ const MyComponent: React.FC<MyComponentProps> = ({
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
+
+        <Grid>
+          <FormControl fullWidth>
+          <Autocomplete
+            options={getUniqueValues('productionOrder')}
+            getOptionLabel={(option: string) => option || ""}
+            value={fieldValues.field2 || ""}
+            onChange={handleSelectChange("field2")}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Production Order"
+                variant="outlined"
+                style={selectFieldStyle}
+              />
+            )}
+          />
+          </FormControl>
+        </Grid>
   
-        <FormControl fullWidth>
+        {/* <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">Production Order</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -193,7 +233,7 @@ const MyComponent: React.FC<MyComponentProps> = ({
             label="Production Order"
             variant="outlined"
             value={fieldValues.field2 || ""}
-            onChange={handleSelectChange("field2")}
+            // onChange={handleSelectChange("field2")}
             style={selectFieldStyle}
           >
             <MenuItem value="">
@@ -205,9 +245,28 @@ const MyComponent: React.FC<MyComponentProps> = ({
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
+
+        <Grid>
+          <FormControl fullWidth>
+          <Autocomplete
+            options={getUniqueValues('result')}
+            getOptionLabel={(option: string) => option || ""}
+            value={fieldValues.field3 || ""}
+            onChange={handleSelectChange("field3")}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Result"
+                variant="outlined"
+                style={selectFieldStyle}
+              />
+            )}
+          />
+          </FormControl>
+        </Grid>
   
-        <FormControl fullWidth>
+        {/* <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">Result</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -227,7 +286,7 @@ const MyComponent: React.FC<MyComponentProps> = ({
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
       </div>
     </div>
   );
